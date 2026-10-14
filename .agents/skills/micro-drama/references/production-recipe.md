@@ -84,7 +84,9 @@ recorded, not retaken.
 
 Seedance cost scales with generated seconds, model and resolution. Never carry a
 price over from an earlier project or from this file; read current pricing from
-the available pricing tool or Ark CLI pricing surface (see
+the available pricing tool or Ark CLI pricing surface
+(`arkcli pricing models --model <model-id>` after `arkcli auth login`; it covers
+foundation-model video and image pricing but not voice or audio models) (see
 [routing](../../../contracts/routing.md)) for the exact model and resolution
 before committing, and record where the price was read.
 

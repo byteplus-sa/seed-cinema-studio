@@ -8,9 +8,11 @@ the provider acknowledges it. This contract applies to every Seedance 2.5 shot;
 
 ## Verified provider behavior
 
-Source: the `seedance_2_5_create_task` tool schema in `ark-mcp`, read 2026-10-14.
-Confirm it still holds through `ark_job_capabilities` before the first submission
-of a project, and record the result as capability evidence.
+Source: the `seedance_2_5_create_task` and `seedance_2_5_premium_create_task`
+tool schemas in `ark-mcp`, read through `ark_job_capabilities` on 2026-10-14,
+where both listed `draft` and `draft_task_id`. Check it again through
+`ark_job_capabilities` before the first submission of a project and record the
+result as capability evidence.
 
 | Step | Request | Result |
 | --- | --- | --- |

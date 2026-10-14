@@ -110,6 +110,7 @@ manager. For a connected series with shared canon, follow
 | Clip plan, prompt clauses, QA gates, retakes, budget, assembly | [Production recipe](references/production-recipe.md) |
 | Several independent episodes in parallel, checkpoints, portfolio, showreel | [Batch production](references/batch-production.md) |
 | Connected series: shared canon, continuity ledger, season order | [Series production](references/series-production.md) |
+| Series music identity, ambience beds, native audio that ignores a negative | [Music and ambience](references/music-and-ambience.md) |
 | Optional target market, language, platform and episode format | [Market card](references/market-card.md) |
 | Confirming a platform's current delivery specs before export or posting | [Platform specs](references/platform-specs.md) |
 

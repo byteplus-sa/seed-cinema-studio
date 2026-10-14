@@ -28,12 +28,23 @@ replace only the spoken lines.
 
 1. List the lines to change and their windows. A line cannot outlast its
    window; shorten the translation instead of stretching speech.
-2. Send the original video with its audio and the new text, and ask the model
-   to change the words; take the full audio back. Do not send dialogue alone
-   and rebuild the soundtrack by hand. Use whichever tool binding the current
-   capability evidence lists for text plus video to audio (registry operation
-   `text_video_to_audio`); if none is listed, say the route is unverified and
-   offer reference-audio generation with authorized voices, or route A.
+2. Build the new audio with the tools the `ark-mcp` schemas list (read
+   2026-10-14; recheck with `ark_job_capabilities`):
+   - `vod_separate_audio` splits the delivered audio into a voice stem and a
+     background stem; keep the background stem (music, effects, room tone).
+   - `seed_audio_generate` takes `text_prompt` plus up to three
+     `audio_references` (a speaker ID or an authorized reference clip of the
+     speaker) or one image reference. It has no video input, so it generates the
+     new lines on their own; time each line to its window.
+   - Mix the new lines with the kept background stem. The mix rule is the
+     "Mixed" row of the
+     [video-to-video inputs](../../../contracts/video-to-video-inputs.md)
+     contract.
+   - A binding that conditions the new audio on the video (registry operation
+     `text_video_to_audio`) is not in these schemas. Use it only when current
+     capability evidence lists it, and then send the original video with its
+     audio and the new text and take the full audio back. Otherwise record the
+     route as the stem-based one above, or use route A.
 3. Splice the new audio onto the video in Studio as a clip or overlay and
    render a new master version. Muted-source and post-audio rules follow
    [video-to-video inputs](../../../contracts/video-to-video-inputs.md).

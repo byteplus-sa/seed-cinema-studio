@@ -17,7 +17,7 @@ DEFAULT_MAX_CHARS = 32
 DEFAULT_MAX_CPS = 17.0
 LANGUAGE_DEFAULTS = {
     "zh": (16, 9.0),
-    "ja": (16, 9.0),
+    "ja": (13, 7.0),
     "ko": (16, 12.0),
 }
 RTL_LANGUAGES = {"ar", "he", "fa", "ur", "ps", "sd", "ug", "yi", "dv", "ckb"}

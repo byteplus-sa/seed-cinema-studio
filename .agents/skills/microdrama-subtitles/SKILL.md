@@ -56,13 +56,20 @@ file and every timing warning.
    text; otherwise the script splits an overlong run and warns.
 6. **Right-to-left text.** Each line gets a leading U+200F mark for
    right-to-left languages so punctuation sits on the correct side in basic
-   players. Inspect the result in a real player; mixed-direction lines are
-   unverified until seen.
-7. **Limits are house style.** Defaults: 32 characters per line (16 for
-   `zh`, `ja`, `ko`), two lines, 17 characters per second (9 for `zh` and
-   `ja`, 12 for `ko`), cue length 1 to 7 s, 40 ms between cues. Replace them
-   with the platform's or market card's numbers via the flags; the defaults
-   are not platform requirements.
+   players. Arabic and Hebrew WebVTT output, including mixed digits and
+   punctuation, was inspected in Chromium's native track rendering on
+   2026-10-14 and displayed correctly. Other players and mobile apps are not
+   verified; inspect the result in the target player.
+7. **Limits are conservative defaults, not platform requirements.** Defaults:
+   32 characters per line (16 for `zh` and `ko`, 13 for `ja`), two lines,
+   17 characters per second (9 for `zh`, 7 for `ja`, 12 for `ko`), cue length
+   1 to 7 s, 40 ms between cues. For comparison, the published Netflix timed
+   text style guides (read 2026-10-14) allow 42 characters per line and 20
+   characters per second for English adult programs, 16 characters per line and
+   9 per second for Simplified Chinese, 16 and 12 for Korean, 13 and up to 7 for
+   Japanese, two lines, 5/6 s minimum and 7 s maximum per cue. The narrower
+   Latin line here suits 9:16 video. Replace the defaults with the platform's or
+   market card's numbers via the flags.
 8. **Warnings are defects to look at.** Reading speed above the limit, a cue
    shorter than the minimum, a trimmed overlap and a split unbroken run are
    reported. Fix the source timing or text rather than silencing the limit.

@@ -107,7 +107,7 @@
       "source": "./local",
       "sourceType": "local",
       "skillPath": ".agents/skills/micro-drama/SKILL.md",
-      "computedHash": "86bef3201c179b779e6b250c59b0081d343ef6cfb47488c066d49cbbcd374a1e"
+      "computedHash": "46566d865332475fbd6b0e592abf8cd51e9845efeca3f87935f51df54782e3f2"
     },
     "microdrama-localize": {
       "source": "./local",
@@ -125,7 +125,7 @@
       "source": "./local",
       "sourceType": "local",
       "skillPath": ".agents/skills/microdrama-subtitles/SKILL.md",
-      "computedHash": "c061ef2f949918d832d0dee9c74b8591af74f88f90b1492715cc090c049312b6"
+      "computedHash": "4eb7e803fce10ace6ffc9ff96338759f9ba9052ae733f3e896ef7d2b3aa5ac7b"
     },
     "prompt-review": {
       "source": "./local",
