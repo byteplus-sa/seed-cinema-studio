@@ -89,8 +89,9 @@ Place a spoken line inside the shot that frames the speaker. Make the shot at
 least spoken words / 2.2 + 1 s long: the late start of speech (observed 0.5-1.5 s
 in this workspace's draft runs) needs the margin. Vary size and angle between
 speakers, and keep moves slow while a line is spoken so the lips and eyes stay
-readable. For Filipino or Taglish lines, compose with the dialogue partner skill
-for the delivery direction.
+readable. For non-English or multilingual lines, compose with the dialogue partner skill
+(`seedance-prompt-25-dialogue`, or a market pack such as the Filipino one) for
+the delivery direction.
 
 ## Examples
 

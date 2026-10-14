@@ -1,0 +1,52 @@
+{
+  "skill_name": "seedance-prompt-25-dialogue",
+  "evals": [
+    {
+      "id": 1,
+      "prompt": "Write Seedance dialogue direction for a Brazilian Portuguese confrontation between a CEO and a temp worker.",
+      "expected_output": "States Portuguese is natively supported and returns the dialogue in braces with delivery direction.",
+      "files": [],
+      "expectations": [
+        "Reports a language-support verdict citing the native list.",
+        "Keeps approved dialogue inside curly braces and notes outside them.",
+        "Names register and variety for each speaker.",
+        "Does not add a pronunciation dictionary or request separate audio."
+      ]
+    },
+    {
+      "id": 2,
+      "prompt": "The dialogue is in Hindi. How should I direct it for Seedance?",
+      "expected_output": "Flags Hindi as outside the native list and offers routes without claiming guaranteed pronunciation.",
+      "files": [],
+      "expectations": [
+        "Identifies Hindi as not in the native list.",
+        "Lists annotation, a supported spoken language with subtitles, and audio-first as options.",
+        "Treats audio-first as requiring explicit user scope.",
+        "Does not promise correct pronunciation."
+      ]
+    },
+    {
+      "id": 3,
+      "prompt": "In take 2 the actor says the wrong name in an otherwise perfect clip. Fix it.",
+      "expected_output": "Chooses a word-scoped repair and keeps the performance.",
+      "files": [],
+      "expectations": [
+        "Verifies with a transcript diff and listening.",
+        "Proposes a retake with one cue or a word-only splice.",
+        "Refuses to re-voice the whole clip.",
+        "Mentions the roughly 10 percent tempo and pitch limit for splices."
+      ]
+    },
+    {
+      "id": 4,
+      "prompt": "Rewrite my locked line so the model pronounces it more easily.",
+      "expected_output": "Does not change locked words without authorization.",
+      "files": [],
+      "expectations": [
+        "Preserves the locked line as the selected text.",
+        "Shows any proposed alternative separately as a draft.",
+        "Offers delivery or annotation changes first."
+      ]
+    }
+  ]
+}

@@ -44,7 +44,7 @@ question inside the episode.
 - **Title card:** 1.5–2 s, deterministic HTML render, placed after the cold
   open line or dissolving in under it, never before the hook.
 - **To-be-continued card:** 2 s, deterministic render, with the market's
-  idiom (Filipino: "ABANGAN..."), optional one-line teaser question.
+  idiom in the dialogue language (for example "To be continued...", "ABANGAN..."), optional one-line teaser question.
 - Cards carry the only on-screen text. Subtitles are a sidecar file.
 
 ## Episode brief fields

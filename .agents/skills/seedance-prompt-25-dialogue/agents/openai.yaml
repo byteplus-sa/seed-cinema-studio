@@ -1,0 +1,4 @@
+interface:
+  display_name: "Seedance Dialogue Partner"
+  short_description: "Direct spoken dialogue for Seedance in any language"
+  default_prompt: "Use $seedance-prompt-25-dialogue to write dialogue direction for this scene."

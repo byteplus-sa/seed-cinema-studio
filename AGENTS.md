@@ -1,9 +1,21 @@
 # AGENTS.md — seed-microdrama-studio
 
 Workspace for producing vertical micro-drama series on BytePlus Seedream, Seedance
-and Seed Audio, from brief to per-episode delivery. It is the reusable product
-extracted from the first series, "Dalawang Anak ng Don" (Filipino teleserye, 11
-episodes, 9:16).
+and Seed Audio, from brief to per-episode delivery. It supports any market,
+language and genre: romance, hidden-heir, revenge, family, thriller, horror,
+comedy, historical and more. The workflow was proven on a first series, "Dalawang
+Anak ng Don" (Filipino teleserye, 11 episodes, 9:16), which remains the reference
+market pack.
+
+## Markets and languages
+
+- Story: use `microdrama-story-formats` for any market. A market pack (for example
+  `filipino-micro-drama`) replaces it when one exists for the audience.
+- Dialogue: use `seedance-prompt-25-dialogue` for any language. It checks the
+  native-language list and routes unsupported languages; a market pack (for
+  example `seedance-prompt-25-filipino`) adds language depth.
+- New market: follow [docs/ADD_A_MARKET.md](docs/ADD_A_MARKET.md). Do not assume
+  Filipino names, settings, honorifics or Taglish in a project for another market.
 
 ## Origin
 
@@ -68,6 +80,8 @@ schemas live in `.agents/contracts/schemas/`.
 
 ## Micro-drama specifics
 
+- Market-neutral: names, settings, wardrobe and dialogue come from the project's
+  market card, never from the reference series.
 - One episode is Hook, Turn, Cliffhanger, about 65 to 110 s. Plan the shot list with
   duration, size, angle, move, lens intent and a named light source per shot.
 - Blocking: crowd and multi-person scenes bind a position map (`tig-blocking-map`)

@@ -5,7 +5,7 @@ description: >-
   with sub-agent review only when the user explicitly requests it for a project
   or specific generation. Use explicit model, operation, change contract, and
   request hash. Return rule findings and complete or incomplete status; fix and re-review
-  changed prompts before generation. Use for video, VFX, Filipino dialogue,
+  changed prompts before generation. Use for video, VFX, multilingual dialogue (including Filipino),
   image/character/location/prop/UI/card/storyboard prompts, music, SFX, or ambience.
   Trigger when asked to review, QA, validate, or lint prompts, or before submitting
   newly authored generation prompts. Exclude manifest-only edits, generated-media
@@ -86,6 +86,7 @@ Use explicit input first; filenames below are fallback hints, not authority:
 | Seedance 2.5 recast (motion transfer) | explicit model + recast operation | Seedance 2.5 recast section + `seedance-motion-recast` |
 | Seedance 2.5 restyle | explicit model + restyle operation | Seedance 2.5 restyle section + `seedance-restyle` |
 | Seedance VFX (video-to-video edit, legacy path) | `prompt_sNN_shNNN_tNN_vNN.md` | `seedance-vfx-prompt` |
+| Seedance multilingual dialogue | `prompt_sNN_shNNN_tNN_vNN.md` | `seedance-prompt-25` + `seedance-prompt-25-dialogue` |
 | Seedance Filipino dialogue | `prompt_sNN_shNNN_tNN_vNN.md` | `seedance-prompt-25` + `seedance-prompt-25-filipino` |
 | Seed Audio (dialogue/music/SFX/ambience) | `prompt_dlg_*`, `prompt_mus_*`, `prompt_sfx_*`, `prompt_amb_*`, `prompt_mix_*` | `seed-audio-prompt` |
 | Seedream image generation | `prompt_concept_*`, `prompt_sNN_kf*` | `seedream-prompt` |
@@ -114,7 +115,7 @@ The "Checklist source" column is a provenance label only — this skill never lo
 a sibling; the applicable checklist is always read from this skill's own bundled
 `references/review-checklists.md`.
 
-When a prompt could match multiple types (e.g., a Seedance 2.5 prompt with Filipino
+When a prompt could match multiple types (e.g., a Seedance 2.5 prompt with non-English
 dialogue), stack the checklists — the reviewer checks all applicable sections.
 
 UGC intermediate outputs (hooks, scripts) are reviewed at **Stage 1** (before

@@ -156,8 +156,17 @@
     },
     "micro-drama": {
       "kind": "orchestrator",
-      "description": "Produce vertical short-form micro-drama episodes end to end for any market: a hook in the first seconds, a mid-episode reveal or confrontation, and a close-up cliffhanger, delivered as 9:16 episodes with a to-be-continued card. Orchestrates a market story writer when one exists (for example filipino-micro-drama), then canon sheets, text-free storyboard conditioning, Seedance 2.5 scene clips with native dialogue, dialogue-accuracy QA, assembly, loudness-matched delivery, and an optional full-episode showreel, all in a HyperFrames Studio project. Use for micro-dramas, vertical dramas, ReelShort/DramaBox-style series, TikTok drama episodes, or batches of several independent episodes produced in parallel. Do not use for a single prompt, a non-episodic ad, a music video, or long-form film; use film-production for general multi-scene work.",
+      "description": "Produce vertical short-form micro-drama episodes end to end for any market: a hook in the first seconds, a mid-episode reveal or confrontation, and a close-up cliffhanger, delivered as 9:16 episodes with a to-be-continued card. Orchestrates a market story writer when one exists (for example filipino-micro-drama) or the market-neutral microdrama-story-formats, then canon sheets, text-free storyboard conditioning, Seedance 2.5 scene clips with native dialogue, dialogue-accuracy QA, assembly, loudness-matched delivery, and an optional full-episode showreel, all in a HyperFrames Studio project. Use for micro-dramas, vertical dramas, ReelShort/DramaBox-style series, TikTok drama episodes, or batches of several independent episodes produced in parallel. Do not use for a single prompt, a non-episodic ad, a music video, or long-form film; use film-production for general multi-scene work.",
       "readme_summary": "Produce vertical micro-drama episodes end to end for any market: hook, reveal and cliffhanger clips with text-free storyboard conditioning, dialogue-accuracy QA, loudness-matched delivery and a full-episode showreel.",
+      "dependencies": [],
+      "source_revision": "workspace",
+      "upstream_hash": null,
+      "overlay_notes": null
+    },
+    "microdrama-story-formats": {
+      "kind": "leaf",
+      "description": "Develop micro-drama stories for any market, language or genre: pick a proven format (billionaire or CEO romance, hidden heir or identity reveal, revenge and rebirth, in-law or family conflict, mafia or alpha, switched at birth, campus, thriller, horror, comedy, historical or fantasy, true-to-life sacrifice), then write a locked episode brief with a three-beat hook, turn and cliffhanger, a light cast, culturally grounded settings, props and wardrobe, dialogue in the target language, and subtitle translations. Use for micro-drama concepts, loglines, episode briefs, series bibles or dialogue passes in any language, including concept-only or prompt-only work, and as the fallback story writer when no market pack exists. This leaf writes story material only; it does not generate media. Pair it with micro-drama for production and seedance-prompt-25-dialogue for spoken-delivery direction.",
+      "readme_summary": "Write micro-drama stories and episode briefs for any market, language or genre: proven formats, light casts, culturally grounded settings, locked dialogue and subtitle translations.",
       "dependencies": [],
       "source_revision": "workspace",
       "upstream_hash": null,
@@ -165,7 +174,7 @@
     },
     "prompt-review": {
       "kind": "orchestrator",
-      "description": "Review BytePlus Seedance, Seedream, and Seed Audio prompts inline by default, with sub-agent review only when the user explicitly requests it for a project or specific generation. Use explicit model, operation, change contract, and request hash. Return rule findings and complete or incomplete status; fix and re-review changed prompts before generation. Use for video, VFX, Filipino dialogue, image/character/location/prop/UI/card/storyboard prompts, music, SFX, or ambience. Trigger when asked to review, QA, validate, or lint prompts, or before submitting newly authored generation prompts. Exclude manifest-only edits, generated-media review, and frozen snapshots unless re-review is explicitly requested.",
+      "description": "Review BytePlus Seedance, Seedream, and Seed Audio prompts inline by default, with sub-agent review only when the user explicitly requests it for a project or specific generation. Use explicit model, operation, change contract, and request hash. Return rule findings and complete or incomplete status; fix and re-review changed prompts before generation. Use for video, VFX, multilingual dialogue (including Filipino), image/character/location/prop/UI/card/storyboard prompts, music, SFX, or ambience. Trigger when asked to review, QA, validate, or lint prompts, or before submitting newly authored generation prompts. Exclude manifest-only edits, generated-media review, and frozen snapshots unless re-review is explicitly requested.",
       "readme_summary": "Review and fix BytePlus Seedance, Seed Audio, and Seedream prompts against the repo's best practices inline by default; use a sub-agent only when explicitly requested for a project or specific generation.",
       "dependencies": [],
       "source_revision": "workspace",
@@ -257,6 +266,15 @@
       "kind": "leaf",
       "description": "Write production-grade Seedance 2.5 video prompts with the flexible six-part formula, 50-material multimodal referencing, variable-duration scene staging (4-30s), timestamp pacing, structured video editing (subject replacement, background replacement, audio editing), forward and backward video extension, keyframe sequences, storyboard grids, coarse and fine blockout references, one-click video, seamless transitions, audio bracket syntax, dialogue language reinforcement, emotional direction, and camera language. Use this skill for Seedance 2.5 prompts, multi-reference asset orchestration, scene staging, video editing, extension, and corrections to generated motion or continuity. For legacy Seedance 2.0 prompts, use seedance-prompt-20 instead. For 4K output through legacy 2.0 or Fast/Mini speed variants, also use `seedance-prompt-20`; whitelist-only 2.5 Premium (4K) uses this skill.",
       "readme_summary": "Write production-grade Seedance 2.5 video prompts with the flexible six-part formula, 50-material multimodal referencing, variable-duration scene staging (4-30s), timestamp pacing, structured video editing (subject replacement, background replacement, audio editing), forward and backward video extension, keyframe sequences, storyboard grids,.",
+      "dependencies": [],
+      "source_revision": "workspace",
+      "upstream_hash": null,
+      "overlay_notes": null
+    },
+    "seedance-prompt-25-dialogue": {
+      "kind": "leaf",
+      "description": "Write or revise spoken-dialogue direction for Seedance in any language: check whether the language is natively supported, preserve approved exact words, speaker identity and register, direct accent, code-switching and delivery, and handle unsupported languages through annotation, a supported spoken language with subtitles, or an explicitly requested audio-first track. Diagnose a specific heard pronunciation or delivery problem before proposing a word-scoped retake or splice. Use for micro-drama and other video prompts with non-English or multilingual dialogue; this independent prompt-only leaf returns a dialogue layer and does not submit generation tasks. Market packs such as seedance-prompt-25-filipino add language-specific depth.",
+      "readme_summary": "Direct spoken dialogue for Seedance in any language: native-language check, register and accent, code-switching, and word-scoped repairs.",
       "dependencies": [],
       "source_revision": "workspace",
       "upstream_hash": null,

@@ -1,8 +1,19 @@
 # seed-microdrama-studio
 
-Skills, contracts and tooling for making vertical micro-dramas with BytePlus Seedream, Seedance and Seed Audio. It is the story-to-delivery pipeline used to produce the Filipino micro-drama series "Dalawang Anak ng Don": brief, cast and location canon, blocking maps, Seedance 2.5 shot prompts, review, a HyperFrames Studio timeline, and per-episode export for TikTok.
+Skills, contracts and tooling for making vertical micro-dramas with BytePlus Seedream, Seedance and Seed Audio. It supports any market, language and genre (romance, hidden heir, revenge, family conflict, thriller, horror, comedy, historical and more). The story-to-delivery pipeline was proven on the Filipino micro-drama series "Dalawang Anak ng Don": brief, cast and location canon, blocking maps, Seedance 2.5 shot prompts, review, a HyperFrames Studio timeline, and per-episode export for TikTok.
 
 Status: bootstrap. The skills, contracts, scripts and tests are copied from `byteplus-sa/ark-director`; the next step is to fold in the lessons from the first series (see [docs/LESSONS.md](docs/LESSONS.md)).
+
+## Markets and languages
+
+| Need | Skill |
+| --- | --- |
+| Stories for any market, language or genre | `microdrama-story-formats` |
+| Spoken dialogue in any language, with a native-language check | `seedance-prompt-25-dialogue` |
+| Filipino market pack (reference example) | `filipino-micro-drama` and `seedance-prompt-25-filipino` |
+| Add a new market pack | [docs/ADD_A_MARKET.md](docs/ADD_A_MARKET.md) |
+
+Seedance 2.5 speaks Chinese, English, Spanish, Indonesian, Malay, Thai, Arabic, Portuguese, Vietnamese, Japanese and Korean natively; other languages need an annotation, subtitle or audio-first route, which the dialogue skill records.
 
 ## Layout
 
@@ -11,7 +22,7 @@ Status: bootstrap. The skills, contracts, scripts and tests are copied from `byt
 | `.agents/skills/` | The micro-drama skills, one folder per skill |
 | `.agents/contracts/` | Production, routing, identity and naming contracts the skills cite |
 | `.agents/scripts/` | Request preparation, task registry, catalog sync, validation and `studio_project.py` (HyperFrames Studio bridge) |
-| `docs/` | Lessons learned and the delivery checklist |
+| `docs/` | Lessons learned, the delivery checklist and how to add a market |
 | `plans/` | Implementation plans |
 | `projects/<series>/` | Local, uncommitted: one folder per series, with its own Studio project |
 | `tests/` | Studio, registry, approval and validation tests |
@@ -39,6 +50,7 @@ Copied from `byteplus-sa/ark-director`; edit them only under `.agents/skills/`.
 | **hyperframes-registry** | Search, install, and wire hosted registry blocks and components into compositions before hand-building named visuals. |
 | **hyperframes-studio** | Working with a person in HyperFrames Studio — when a message asks for a change at all, how a new film is planned and built, and timeline layout conventions with safe zones; the final gate runs through studio_project.py check. |
 | **media-review** | Emergency OS-player fallback when the required HTML/browser review surface is unavailable. |
+| **microdrama-story-formats** | Write micro-drama stories and episode briefs for any market, language or genre: proven formats, light casts, culturally grounded settings, locked dialogue and subtitle translations. |
 | **micro-drama** | Produce vertical micro-drama episodes end to end for any market: hook, reveal and cliffhanger clips with text-free storyboard conditioning, dialogue-accuracy QA, loudness-matched delivery and a full-episode showreel. |
 | **prompt-review** | Review and fix BytePlus Seedance, Seed Audio, and Seedream prompts against the repo's best practices inline by default; use a sub-agent only when explicitly requested for a project or specific generation. |
 | **seed-audio-prompt** | Write structured Seed Audio 1.0 prompts for full-soundscape audio generation including dialogue, music, SFX, and ambience. |
@@ -51,6 +63,7 @@ Copied from `byteplus-sa/ark-director`; edit them only under `.agents/skills/`.
 | **seedance-pacing-presets** | Compose prompt-only rhythm, time-lapse, freeze frame and named picture/audio transitions, including match cuts, dissolves, wipes and J/L cuts. |
 | **seedance-prompt-20** | Legacy Seedance 2.0 prompt skill. Use when you need 4K output (unsupported by 2.5), Fast/Mini speed variants, or lower cost per generation. Provides reference-role classification, subject definitions, spatial continuity, shot sequencing, and native audio direction. |
 | **seedance-prompt-25** | Write production-grade Seedance 2.5 video prompts with the flexible six-part formula, 50-material multimodal referencing, variable-duration scene staging (4-30s), timestamp pacing, structured video editing (subject replacement, background replacement, audio editing), forward and backward video extension, keyframe sequences, storyboard grids,. |
+| **seedance-prompt-25-dialogue** | Direct spoken dialogue for Seedance in any language: native-language check, register and accent, code-switching, and word-scoped repairs. |
 | **seedance-prompt-25-filipino** | Write Filipino and Taglish dialogue direction while preserving exact words and register; use evidence-based pronunciation hypotheses and opt-in separate lip-sync audio. |
 | **seedance-restyle** | Write Seedance 2.5 Restyle prompts that redraw a whole clip in one of 24 visual styles or a custom style reference while keeping its content, motion, camera and cuts, with medium-matched Virtual Portrait anchors, an environment-image recipe that keeps the same place and restyles the background too, a muted source with post audio and a 480p probe ladder. |
 | **seedance-shot-design** | Plan per-shot coverage for Seedance scenes: shot count and jobs, size, angle, camera move, lens intent and light per shot, with variety rules and an energy level. |

@@ -894,6 +894,46 @@ Source skill: `seedance-vfx-prompt`
 
 ---
 
+## Seedance multilingual dialogue
+
+Source skill: `seedance-prompt-25-dialogue`
+
+Use as an additional checklist alongside Seedance 2.5 when the scene contains
+spoken dialogue in a language other than English or in more than one language.
+
+### Language and scope
+
+1. **Language route recorded.** The dialogue language is checked against the
+   native list; an unlisted language names its route (annotation, supported
+   spoken language with subtitles, or explicitly requested audio-first).
+2. **Exact words protected.** Locked dialogue, names and approved spelling are
+   unchanged. A pronunciation or accent request alone does not authorize
+   rewriting.
+3. **Register grounded.** Formality, honorifics, regional variety and
+   code-switching match the speakers and relationship; one voice is not forced
+   on every character.
+
+### Delivery and evidence
+
+4. **Notes separate from speech.** Spoken text sits inside braces; accent,
+   pronunciation and acting notes sit outside unless a spoken-text edit is
+   explicitly in scope.
+5. **Evidence distinguished.** A heard failure cites a recording or transcript
+   diff; a predicted issue is labelled a hypothesis.
+6. **No capability invented.** No guarantee of pronunciation, accent or lip-sync
+   is claimed; the caller resolves tool and model support.
+7. **Subtitles in post.** Subtitle text follows the locked words and is not
+   requested inside the generated video.
+
+### Repairs
+
+8. **Word-scoped.** A repair targets the wrong word (cue retake or splice); a
+   whole-clip re-voice needs explicit user scope.
+9. **Splice limits.** A proposed splice stays within roughly 10 percent tempo
+   and pitch of the original and is verified by listening.
+
+---
+
 ## Seedance Filipino dialogue
 
 Source skill: `seedance-prompt-25-filipino`

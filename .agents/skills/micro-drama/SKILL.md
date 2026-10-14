@@ -5,7 +5,7 @@ description: >-
   a hook in the first seconds, a mid-episode reveal or confrontation, and a
   close-up cliffhanger, delivered as 9:16 episodes with a to-be-continued card.
   Orchestrates a market story writer when one exists (for example
-  filipino-micro-drama), then canon sheets, text-free storyboard conditioning,
+  filipino-micro-drama) or the market-neutral microdrama-story-formats, then canon sheets, text-free storyboard conditioning,
   Seedance 2.5 scene clips with native dialogue, dialogue-accuracy QA,
   assembly, loudness-matched delivery, and an optional full-episode showreel,
   all in a HyperFrames Studio project. Use for micro-dramas, vertical
@@ -28,9 +28,10 @@ the production contracts; this skill does not relax them.
 
 Input: a market or audience, a premise or formula, the episode count, and any
 locked dialogue, cast, budget or approval mode. When a market writer skill
-exists for the audience, obtain a locked episode brief from it first. Otherwise
-draft the brief with the fields in
-[episode structure](references/episode-structure.md).
+exists for the audience, obtain a locked episode brief from it first; for any
+other market or language use `microdrama-story-formats`. Otherwise draft the
+brief with the fields in [episode structure](references/episode-structure.md).
+Any language, genre and market is in scope.
 
 Output per episode: a project under `projects/<slug>/` with all eight production
 stages closed, a final master (1080×1920 H.264/AAC), an English subtitle
@@ -59,7 +60,8 @@ and an optional full-episode showreel.
 5. **Audio preparation.** Mark it skipped unless the user requests a separate
    lip-sync track. Native Seedance audio carries the dialogue.
 6. **Shots.** Write each clip prompt from its shot plan with `seedance-prompt-25` and the market's
-   dialogue partner skill (for Filipino, `seedance-prompt-25-filipino`). Apply
+   dialogue partner skill (`seedance-prompt-25-dialogue` for any language; a
+   market pack such as `seedance-prompt-25-filipino` adds language depth). Apply
    the storyboard-leak and dialogue rules in the
    [production recipe](references/production-recipe.md). Run `prompt-review`
    inline by default; use a sub-agent only when the user explicitly requests

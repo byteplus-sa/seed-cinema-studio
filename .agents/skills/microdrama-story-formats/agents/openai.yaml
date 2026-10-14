@@ -1,0 +1,4 @@
+interface:
+  display_name: "Micro-Drama Story Formats"
+  short_description: "Write micro-drama stories and episode briefs for any market or language"
+  default_prompt: "Use $microdrama-story-formats to write this micro-drama episode brief."

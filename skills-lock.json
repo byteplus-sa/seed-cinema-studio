@@ -35,7 +35,7 @@
       "source": "./local",
       "sourceType": "local",
       "skillPath": ".agents/skills/film-production/SKILL.md",
-      "computedHash": "17a0f34f3f7b34f62457ad5074e79d77024f8cc21f80fc9037917eb11a080a6c"
+      "computedHash": "422db6c1c8d44928648c5730076c5c846c8bf62e9350fbd2be4b224617d4463f"
     },
     "html-graphic-render": {
       "source": "./local",
@@ -107,13 +107,19 @@
       "source": "./local",
       "sourceType": "local",
       "skillPath": ".agents/skills/micro-drama/SKILL.md",
-      "computedHash": "360c08a2845d7f3e259b5af1e78d46a1dc98e92e37841096ca5c240d38b88ce7"
+      "computedHash": "6c804959483e34e1a6fbf72c648fa9f55f5bdcf953cdbef48c3d0df0e81f5baa"
+    },
+    "microdrama-story-formats": {
+      "source": "./local",
+      "sourceType": "local",
+      "skillPath": ".agents/skills/microdrama-story-formats/SKILL.md",
+      "computedHash": "3d645473c3d2b2be0416163e715b323032e2be8774cd98bbc169330242d8803d"
     },
     "prompt-review": {
       "source": "./local",
       "sourceType": "local",
       "skillPath": ".agents/skills/prompt-review/SKILL.md",
-      "computedHash": "90cf13200627cf3f33ab932857e153dd1897e7d99f8750cc560053d369fbc320"
+      "computedHash": "d8104150882b7909b4a093d7d9cbdbc1eee92169f9b8c2b0d8f719afb03e70e4"
     },
     "seed-audio-prompt": {
       "source": "./local",
@@ -174,6 +180,12 @@
       "sourceType": "local",
       "skillPath": ".agents/skills/seedance-prompt-25/SKILL.md",
       "computedHash": "b9efb2224593141628868c8f7ade5bb453baf540025d8afb0f2df55d86a7201b"
+    },
+    "seedance-prompt-25-dialogue": {
+      "source": "./local",
+      "sourceType": "local",
+      "skillPath": ".agents/skills/seedance-prompt-25-dialogue/SKILL.md",
+      "computedHash": "fae5997efe4f7213a6b15125342722389c2332267bf6c0ff31f7a89c592337e0"
     },
     "seedance-prompt-25-filipino": {
       "source": "./local",

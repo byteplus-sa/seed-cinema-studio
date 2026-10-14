@@ -95,6 +95,7 @@ between modalities.
 | Narrative audio commercial | `seed-audio-commercial` |
 | Per-shot coverage, camera, lens intent and light for a scene | `seedance-shot-design` |
 | Seedance 2.5 video prompt | `seedance-prompt-25` |
+| Spoken dialogue in any language | `seedance-prompt-25-dialogue` with `seedance-prompt-25` |
 | Filipino or Taglish video dialogue | `seedance-prompt-25-filipino` with `seedance-prompt-25` |
 | Seedance 2.0 video prompt | `seedance-prompt-20` |
 | Footage-driven VFX prompt | `seedance-vfx-prompt` |
