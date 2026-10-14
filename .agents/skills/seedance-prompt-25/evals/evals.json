@@ -1,0 +1,109 @@
+{
+  "skill_name": "seedance-prompt-25",
+  "evals": [
+    {
+      "id": 1,
+      "prompt": "Write a 30-second Seedance 2.5 prompt for a flower shop order-packing process. Two characters — a Florist and a Store Assistant — arrange, wrap, and hand off a bouquet across three stages. I have reference images for both characters and the shop interior.",
+      "expected_output": "A clear three-stage flower-shop action with reference roles, coherent handoffs and observable end states; any readable format is acceptable.",
+      "files": [],
+      "expectations": [
+        "The central flower-shop objective is clear without requiring a named heading.",
+        "The three requested stages form a causal sequence with plausible actions for the requested duration.",
+        "Each stage makes the active person, physical action and resulting state clear.",
+        "Identity, clothing, prop ownership and travel direction remain coherent across stages.",
+        "Reference bindings identify the intended person or location; exclusions appear only for a plausible leakage risk."
+      ]
+    },
+    {
+      "id": 2,
+      "prompt": "I have 8 reference images for a museum conservation video: 4 characters (Conservator, Registrar, Exhibition Installer, Guide), 2 props (Sample Case, Record Board), and 2 scenes (Conservation Lab, Gallery). Plus a motion reference video and an audio reference. Write a Seedance 2.5 prompt that organizes all these references correctly.",
+      "expected_output": "A multi-reference prompt that follows the 5-step workflow: define roles, map subjects individually, group by type, build subject profiles, and select references by scene.",
+      "files": [],
+      "expectations": [
+        "Each supplied reference has an unambiguous subject or motion/audio role.",
+        "The mapping remains readable with eight images and the motion/audio references; no specific grouping headings are required.",
+        "Different characters remain distinguishable without indiscriminate repetition of negative clauses.",
+        "Recurring identities preserve their relevant established details.",
+        "Scene-specific input choices include only relevant assets.",
+        "Actions and end states remain clear across changes in scene."
+      ]
+    },
+    {
+      "id": 3,
+      "prompt": "I have a video of a desk with a yellow folding desk lamp. I want to replace only the lamp with a white one from a reference image. The lamp's arm rotations, hand occlusions, and exit timing must be preserved. Write a Seedance 2.5 editing prompt.",
+      "expected_output": "A structured editing prompt using the subject replacement pattern with Timeline Inheritance.",
+      "files": [],
+      "expectations": [
+        "The output defines @Video 1 as the sole editing master.",
+        "The white-lamp reference controls the target lamp while preserving unrelated subjects and the existing shot.",
+        "The output includes a [Timeline Inheritance] section stating the target inherits every appearance, motion, occlusion, and exit of the original.",
+        "The output specifies edit scope as replacing only the yellow lamp and preserving all other content.",
+        "The output notes that aspect ratio and duration are auto-locked to the input video."
+      ]
+    },
+    {
+      "id": 4,
+      "prompt": "I have a 10-second video of a gardener in a greenhouse. I need to extend it backward — show the empty greenhouse with morning mist drifting before the gardener arrives. The last frame of the extension must connect to the first frame of the source video. Write a Seedance 2.5 backward extension prompt.",
+      "expected_output": "A backward extension prompt that describes the preceding action first, then defines the source video's first frame as the explicit end state.",
+      "files": [],
+      "expectations": [
+        "The output declares @Video 1 as the source video to extend backward.",
+        "The output describes the preceding action before the source video begins.",
+        "The output defines the last frame of the extension as connecting to the first frame of @Video 1 with specific pose, prop, and background matching.",
+        "The output includes a continuity maintenance clause for identity, clothing, key props, and axis of action.",
+        "The extension preserves continuous subject identity and reaches the supplied opening state without duplication or an unexplained discontinuity."
+      ]
+    },
+    {
+      "id": 5,
+      "prompt": "Write a Seedance 2.5 prompt for a scene where a barista greets a customer in Japanese, a bell rings in the distance, soft piano music plays, and a subtitle appears saying 'Chapter One: Departure'. The dialogue must be in natural conversational Japanese.",
+      "expected_output": "A prompt that correctly uses all four audio/text bracket syntaxes and the dialogue language reinforcement formula.",
+      "files": [],
+      "expectations": [
+        "The output uses () for music: (Soft, rhythmic piano music plays in the background).",
+        "The output uses <> for sound effects: <A bell rings in the distance>.",
+        "The output uses {} for dialogue with Japanese text inside.",
+        "The output uses 【】 for the subtitle: 【Chapter One: Departure】.",
+        "The output specifies the dialogue language as Japanese before the dialogue line."
+      ]
+    },
+    {
+      "id": 6,
+      "prompt": "I have a coarse 3D blockout video showing a character walking path, cart direction, camera movements, and two cuts. I want to use it as a motion reference and define the real characters, props, and scenes with separate images. Write a Seedance 2.5 prompt using the blockout.",
+      "expected_output": "A coarse blockout prompt that maps each blockout subject to its real counterpart and states which temporal/spatial info to inherit.",
+      "files": [],
+      "expectations": [
+        "The output declares @Video 1 as a coarse blockout reference.",
+        "The output maps blockout geometric subjects to real subjects (e.g., 'The tall cylinder in @Video 1 corresponds to <Guide>').",
+        "The output states 'Do not use its blockout appearance, materials, or scene'.",
+        "The output defines character/prop/scene appearances with separate @Image references.",
+        "The output specifies which temporal info to keep from the blockout (motion path, blocking, camera, cuts)."
+      ]
+    },
+    {
+      "id": 7,
+      "prompt": "Write a Seedance 2.5 prompt where a chef tastes an overcooked dish and shifts from confidence to quiet disappointment. The emotion must be shown through observable physical cues, not abstract words.",
+      "expected_output": "An emotional direction prompt using the single emotional transition template with 2-4 observable physical cues.",
+      "files": [],
+      "expectations": [
+        "The tasting event causes an understandable emotional transition with a readable final state; no named template is required.",
+        "The output pairs the emotion word 'disappointment' with observable cues like chewing slowing, eyebrows drawing in, shoulders dropping.",
+        "The output does not use bare abstract emotion words without physical cues.",
+        "The output describes the final expression through restrained or explicit outward behavior."
+      ]
+    },
+    {
+      "id": 8,
+      "prompt": "I have a shot plan for a 12-second clip: Shot 1 high wide with a slow crane down to table height, window light from screen-left; Shot 2 medium close-up with a slow push-in on the door handle, the same window now cross-lighting the hand; Shot 3 low-angle close-up held static, contre-jour from the open door. Characters are @Image 1 (mother) and @Image 2 (boy). Write the Seedance 2.5 prompt.",
+      "expected_output": "A six-part prompt with one shared opening, a per-shot block carrying each shot's size, angle, move and light fact, bindings for both characters and one grade for the whole clip.",
+      "files": [],
+      "expectations": [
+        "Each shot line states size, angle, the move with start and end, and the light source and direction exactly as planned.",
+        "The shared opening binds @Image 1 and @Image 2 individually and states the scene and one grade once.",
+        "Time ranges are consecutive and non-overlapping and are not treated as frame-accurate cut points.",
+        "The static third shot is kept static and the other two shots keep their planned moves; no extra moves are added."
+      ]
+    }
+  ],
+  "evaluation_note": "Judge semantic effectiveness. Exact delimiters remain checks only where the selected model grammar requires them; headings and paraphrases are not quality proxies."
+}

@@ -1,0 +1,334 @@
+{
+  "schema_version": 1,
+  "evaluation_kind": "agent_behavior_scenarios",
+  "generation_policy": "mocked_only",
+  "scoring_note": "Expected decisions are a rubric, not observed outputs. Run an agent against each request with generation and publication disabled; do not score by matching skill prose.",
+  "cases": [
+    {
+      "id": "audio_unknown_without_id",
+      "skill": "seed-audio-commercial",
+      "prompt": "The audio generation call timed out without a provider ID. The prepared request is saved. Continue.",
+      "expected_decisions": {
+        "next_action": "reconcile",
+        "new_generation_calls": 0,
+        "submission_status": "submission_unknown"
+      }
+    },
+    {
+      "id": "audio_known_poll_timeout",
+      "skill": "seed-audio-commercial",
+      "prompt": "The provider returned task-17, then polling timed out. Finish the existing commercial.",
+      "expected_decisions": {
+        "next_action": "poll_existing",
+        "provider_task_id": "task-17",
+        "new_generation_calls": 0
+      }
+    },
+    {
+      "id": "audio_download_failure",
+      "skill": "seed-audio-commercial",
+      "prompt": "Task-17 succeeded, but the download failed. Get the commercial locally.",
+      "expected_decisions": {
+        "next_action": "download_existing",
+        "new_generation_calls": 0
+      }
+    },
+    {
+      "id": "template_review_disabled",
+      "skill": "template-factory",
+      "prompt": "The template sets storyboard.review=false. Choose the strongest of the three sketches and make video.",
+      "expected_decisions": {
+        "selection_field": "recommended_variant",
+        "video_submission_allowed": false,
+        "new_generation_calls": 0
+      }
+    },
+    {
+      "id": "draft_breakdown_before_canon",
+      "skill": "film-production",
+      "prompt": "Draft the scenes and list required Elements before we generate any references.",
+      "expected_decisions": {
+        "next_action": "draft_breakdown",
+        "require_approved_elements_before_draft": false,
+        "new_generation_calls": 0
+      }
+    },
+    {
+      "id": "incidental_cup",
+      "skill": "prompt-review",
+      "prompt": "Review a draft where a person lifts an unbranded disposable cup for one incidental beat. All required identity references exist.",
+      "expected_decisions": {
+        "prop_sheet_required": false,
+        "narrative_rule_applicable": true
+      }
+    },
+    {
+      "id": "recurring_branded_device",
+      "skill": "prompt-review",
+      "prompt": "The hero uses the same branded scanner in five shots; the scanner has no reference. Review the video submission.",
+      "expected_decisions": {
+        "prop_sheet_required": true,
+        "submission_allowed": false
+      }
+    },
+    {
+      "id": "static_character_sheet",
+      "skill": "prompt-review",
+      "prompt": "Review a neutral three-panel character turnaround with approved costume detail; there is no story event.",
+      "expected_decisions": {
+        "narrative_rule_status": "not_applicable",
+        "visible_consistency_rule_applicable": true
+      }
+    },
+    {
+      "id": "ambient_sound_bed",
+      "skill": "prompt-review",
+      "prompt": "Review prompt_amb_rain_v01.md: steady rain on a tin roof fading into silence. It has no characters or narrative obstacle.",
+      "expected_decisions": {
+        "selected_checklist": "Seed Audio",
+        "narrative_rule_status": "not_applicable",
+        "dialogue_required": false
+      }
+    },
+    {
+      "id": "sfx_prefix",
+      "skill": "prompt-review",
+      "prompt": "Review prompt_sfx_door_v01.md for Seed Audio: a single wooden door slam with a short room tail.",
+      "expected_decisions": {
+        "selected_checklist": "Seed Audio",
+        "narrative_rule_status": "not_applicable"
+      }
+    },
+    {
+      "id": "face_in_25_edit",
+      "skill": "seedance-vfx-pipeline",
+      "prompt": "Use Seedance 2.5 to replace the background of this face close-up at 1080p. The live tool supports edit and 1080p.",
+      "expected_decisions": {
+        "model_change": false,
+        "resolution": "1080p",
+        "face_output_qa_required": true
+      }
+    },
+    {
+      "id": "unsupported_mixed_references",
+      "skill": "seedance-prompt-25",
+      "prompt": "Chain with first_frame and canonical reference_images; the selected tool explicitly rejects mixing those roles.",
+      "expected_decisions": {
+        "submission_allowed": false,
+        "unsupported_role_passthrough": false
+      }
+    },
+    {
+      "id": "missing_review",
+      "skill": "prompt-review",
+      "prompt": "The reviewer returned no output twice. Mark the video request ready.",
+      "expected_decisions": {
+        "reviewer_status": "incomplete",
+        "submission_allowed": false
+      }
+    },
+    {
+      "id": "changed_request_after_review",
+      "skill": "prompt-review",
+      "prompt": "The request passed review, then I replaced reference image 2. Can the old pass be reused?",
+      "expected_decisions": {
+        "reuse_review": false,
+        "next_action": "rehash_and_review"
+      }
+    },
+    {
+      "id": "single_axis_confirmation",
+      "skill": "brief-intake",
+      "prompt": "You proposed eight axes. I approve only native audio; keep the rest as proposals.",
+      "expected_decisions": {
+        "confirmed_axes": [
+          "audio_mode"
+        ],
+        "unmentioned_axes_locked": false
+      }
+    },
+    {
+      "id": "full_set_confirmation",
+      "skill": "brief-intake",
+      "prompt": "I accept the full eight-axis default set you just displayed.",
+      "expected_decisions": {
+        "confirmed_axes": "all_displayed_axes",
+        "unmentioned_axes_locked": false
+      }
+    },
+    {
+      "id": "cleanup_already_single_face",
+      "skill": "seedream-character-sheet-cleanup",
+      "prompt": "Inspect this Seedance character reference: only the close-up has a readable face and the body panels already meet the requested policy.",
+      "expected_decisions": {
+        "edit_required": false,
+        "new_generation_calls": 0
+      }
+    },
+    {
+      "id": "cleanup_duplicate_face",
+      "skill": "seedream-character-sheet-cleanup",
+      "prompt": "This sheet has a duplicate readable face in the body panel; our requested single-face reference policy requires removing it.",
+      "expected_decisions": {
+        "edit_required": true,
+        "overwrite_original": false,
+        "infer_gender_from_image": false,
+        "automatic_canonical_selection": false
+      }
+    },
+    {
+      "id": "blocking_software_diagram",
+      "skill": "tig-blocking-map",
+      "prompt": "Draw a system architecture diagram showing API gateway, queue, worker, and database.",
+      "expected_decisions": {
+        "skill_should_trigger": false
+      }
+    },
+    {
+      "id": "blocking_provider_neutral",
+      "skill": "tig-blocking-map",
+      "prompt": "Write a Seedream blocking-map prompt from this shot. Deliver the geometry before we consider video.",
+      "expected_decisions": {
+        "skill_should_trigger": true,
+        "third_party_flags": false,
+        "video_control_attachment_default": false
+      }
+    },
+    {
+      "id": "optional_timing",
+      "skill": "seedance-prompt-25",
+      "prompt": "Write a simple one-shot walk across a room. I have not requested second-by-second timing.",
+      "expected_decisions": {
+        "one_second_timestamps_required": false,
+        "subject_and_action_required": true
+      }
+    },
+    {
+      "id": "language_change_contract",
+      "skill": "prompt-review",
+      "prompt": "For this 2.5 edit, change only spoken language to Tagalog; preserve camera, identity, environment, and timing.",
+      "expected_decisions": {
+        "language_edit_is_defect": false,
+        "preserve_unrequested_axes": true
+      }
+    },
+    {
+      "id": "control_sketch_text_translation",
+      "skill": "template-factory",
+      "prompt": "Analyze this rough staging sketch and build video direction from it. It has not been selected as an input.",
+      "expected_decisions": {
+        "video_control_attachment_default": false,
+        "translate_geometry_to_text": true
+      }
+    },
+    {
+      "id": "template_explicit_panel_budget",
+      "skill": "template-factory",
+      "prompt": "The source has eight shots, but make exactly three storyboard panels and two full-color variants.",
+      "expected_decisions": {
+        "panel_count": 3,
+        "variant_count": 2,
+        "render_style": "full_color",
+        "shot_coverage_mapping_required": true
+      }
+    },
+    {
+      "id": "template_long_source_capability_split",
+      "skill": "template-factory",
+      "prompt": "Adapt this 28-second pin. The verified model limit is 10 seconds per clip. Keep the source rhythm.",
+      "expected_decisions": {
+        "split_at_shot_boundaries": true,
+        "single_unsupported_submission": false,
+        "assembly_review_required": true
+      }
+    },
+    {
+      "id": "template_invalid_breakdown",
+      "skill": "template-factory",
+      "prompt": "The analysis JSON has duplicate shot 2, overlapping timestamps, and a prop keyframe pointing to shot 99. Continue to storyboard generation.",
+      "expected_decisions": {
+        "breakdown_validation_required": true,
+        "storyboard_submission_allowed": false,
+        "repair_before_advancing": true
+      }
+    },
+    {
+      "id": "one_axis_routing",
+      "skill": "seedance-camera-presets",
+      "prompt": "Use a slow dolly-in and preserve the already approved grade, lighting, and lens.",
+      "expected_decisions": {
+        "requested_axes": [
+          "camera"
+        ],
+        "preserve_unrequested_axes": true
+      }
+    },
+    {
+      "id": "shot_plan_before_prompt",
+      "skill": "seedance-shot-design",
+      "prompt": "Write the Seedance 2.5 prompt for a 12-second family-drama kitchen scene. No camera or lighting has been chosen and there is no shot plan.",
+      "expected_decisions": {
+        "next_action": "write_shot_plan_first",
+        "shot_plan_required": true,
+        "new_generation_calls": 0
+      }
+    },
+    {
+      "id": "selfie_format_static_by_design",
+      "skill": "seedance-shot-design",
+      "prompt": "Plan a 10-second selfie-style product demo where the creator holds the phone at arm's length and talks to camera.",
+      "expected_decisions": {
+        "shot_plan_required": false,
+        "static_reason": "format_static_by_design",
+        "large_camera_moves_allowed": false
+      }
+    },
+    {
+      "id": "user_locked_static_wide",
+      "skill": "seedance-shot-design",
+      "prompt": "The approved brief locks one static wide shot with warm daylight. Plan the shot.",
+      "expected_decisions": {
+        "lock_overridden": false,
+        "static_reason": "user_lock",
+        "light_changed": false
+      }
+    },
+    {
+      "id": "project_axis_missing_from_shots",
+      "skill": "prompt-review",
+      "prompt": "Review a scene prompt whose project camera axis promises gentle dolly and crane moves, but every shot line lists only a size and no camera move. No scene override is recorded.",
+      "expected_decisions": {
+        "axis_carry_rule_status": "fail",
+        "submission_allowed": false
+      }
+    },
+    {
+      "id": "static_hold_without_reason",
+      "skill": "prompt-review",
+      "prompt": "Review a narrative clip where every shot says hold steady at eye level with no recorded reason, in a project that is not a selfie or plate format.",
+      "expected_decisions": {
+        "plan_bound_rule_status": "fail",
+        "submission_allowed": false
+      }
+    },
+    {
+      "id": "plate_for_cutdown_exempt",
+      "skill": "prompt-review",
+      "prompt": "Review a 6-second static medium plate recorded as plate_for_cutdown, generated to be cut later in the edit.",
+      "expected_decisions": {
+        "plan_bound_rule_status": "not_applicable",
+        "variety_rule_status": "not_applicable"
+      }
+    },
+    {
+      "id": "scene_breakdown_requires_shot_plan",
+      "skill": "film-production",
+      "prompt": "The scene breakdown for a narrative ad lists cast, locations and props but no shot plan. Advance to shot generation.",
+      "expected_decisions": {
+        "next_action": "complete_shot_plan",
+        "stage_exit_allowed": false,
+        "new_generation_calls": 0
+      }
+    }
+  ]
+}

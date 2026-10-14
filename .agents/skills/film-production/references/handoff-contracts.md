@@ -1,0 +1,68 @@
+# Cross-Modality Handoff Contracts
+
+Before each handoff, recheck `project.md` approval mode and the source decision,
+review, artifact, and upstream hashes. Run `studio_project.py sync`, then
+complete the source stage with `studio_project.py stage <project> complete
+<stage-id>` and start the destination stage. These steps apply in
+`approve_for_me` and `ask_for_approval`. The receiving stage reads its inputs
+from the synchronized Studio project and owning manifests rather than
+reconstructing state from chat. A pre-Studio canvas project updates its canvas
+stage entries, regenerates `index.html` and runs the canvas freshness check
+instead.
+
+## Canon to storyboard
+
+Pass selected element paths, roles, approval states, hashes, and stable prompt
+tokens. If an element is not approved, keep the dependent board in `draft` or
+`review` and make video handoff ineligible.
+
+## Storyboard to video
+
+Treat elements as identity sources and storyboard panels as derivative
+composition anchors. Require a mode-authorized panel selection backed by a
+passing review and current source hashes, and choose exactly one supported
+image mode: I2V, FLF2V, R2V, or T2V. Never
+promote a multi-panel contact sheet as a clean video keyframe.
+
+## Static graphics to motion or video
+
+Pass the selected raster path, editable source path, render-record path, output
+hash, dimensions, and background/alpha intent. Use a solid-background derivative
+only when the selected video mode benefits from a model reference. Keep exact
+captions, taglines, prices, CTAs, end cards, and transparent overlays out of
+generated footage and composite them with the selected motion/video tool. Never
+substitute a white-matted file for a transparent delivery asset.
+
+## Audio to video (when user requests lip-synced dialogue)
+
+Use the exact same dialogue text in both prompts. Verify audio duration does not
+exceed video duration, map dialogue to observed audio timing, pass the file as
+`reference_audio`, and record its path and hash in the shot manifest. Skip this
+handoff when the user has not requested lip-synced audio.
+
+## Shot to assembly
+
+Accept only mode-authorized approved takes. Pass local paths, hashes, actual
+duration, resolution, frame rate, audio properties, intended order, transition
+notes, and known defects. Do not treat `succeeded` as creative approval.
+
+## Draft to final generation
+
+Pass the selected 480p draft paths and hashes, passing review and selection
+records, exact prompt snapshot, ordered approved reference hashes, requested
+audio behavior and delivery resolution. For multi-shot work, include the
+reviewed draft assembly and picture/audio decisions. Record any user override
+or verified operation constraint. Register and review the final request as a
+new operation, then inspect and select its output before updating placed takes.
+Native Draft/promotion requires current capability evidence; a fresh generation
+may change picture, timing and audio even with the same prompt and references.
+
+## Dependency invalidation
+
+When a selected element, audio file, storyboard anchor, shot plan, confirmed project axis, or exact prompt changes,
+identify every dependent artifact. Return affected downstream artifacts to
+`review`; preserve their files, prompts, task IDs, hashes, and rejection history.
+Run `studio_project.py sync` and `stage <project> reopen <stage-id>` in the same
+stage change so the visible dependency state cannot lag behind the manifests
+(a pre-Studio canvas project updates its statuses and regenerates `index.html`). Preserve earlier decisions while returning
+affected artifacts to `review`.

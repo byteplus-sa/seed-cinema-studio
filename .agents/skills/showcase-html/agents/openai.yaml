@@ -1,0 +1,3 @@
+interface:
+  display_name: "Showcase HTML"
+  short_description: "Keep a synchronized HTML canvas through every production stage"

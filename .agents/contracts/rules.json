@@ -1,0 +1,336 @@
+{
+  "schema_version": 1,
+  "rules": [
+    {
+      "id": "approval.explicit_choice",
+      "severity": "error",
+      "applies_to": [
+        "preflight"
+      ],
+      "owner_path": ".agents/contracts/production-policy.md",
+      "summary": "Generation inputs match explicit manifest selections.",
+      "exceptions": []
+    },
+    {
+      "id": "references.current_hashes",
+      "severity": "error",
+      "applies_to": [
+        "preflight"
+      ],
+      "owner_path": ".agents/contracts/production-policy.md",
+      "summary": "Current reference content matches the recorded hash.",
+      "exceptions": []
+    },
+    {
+      "id": "references.ordered_bindings",
+      "severity": "error",
+      "applies_to": [
+        "preflight"
+      ],
+      "owner_path": ".agents/contracts/production-policy.md",
+      "summary": "Ordered roles and prompt bindings agree.",
+      "exceptions": []
+    },
+    {
+      "id": "references.control_only",
+      "severity": "error",
+      "applies_to": [
+        "preflight"
+      ],
+      "owner_path": ".agents/contracts/production-policy.md",
+      "summary": "Control-only references stay outside generation requests.",
+      "exceptions": []
+    },
+    {
+      "id": "submission.reconcile_unknown",
+      "severity": "error",
+      "applies_to": [
+        "preflight"
+      ],
+      "owner_path": ".agents/contracts/production-policy.md",
+      "summary": "Unknown or existing submissions reconcile rather than resubmit.",
+      "exceptions": []
+    },
+    {
+      "id": "model.supported_mode",
+      "severity": "error",
+      "applies_to": [
+        "preflight"
+      ],
+      "owner_path": ".agents/contracts/production-policy.md",
+      "summary": "Selected parameters and reference mode have current capability evidence.",
+      "exceptions": []
+    },
+    {
+      "id": "narrative.observable_event",
+      "severity": "error",
+      "applies_to": [
+        "narrative_video"
+      ],
+      "owner_path": ".agents/contracts/production-policy.md",
+      "summary": "Narrative action has an observable event and end state.",
+      "exceptions": []
+    },
+    {
+      "id": "shot.plan_bound",
+      "severity": "error",
+      "applies_to": [
+        "narrative_video"
+      ],
+      "owner_path": ".agents/contracts/production-policy.md",
+      "summary": "A narrative, ad, micro-drama, music-video or showcase shot carries a recorded shot plan with duration, size, angle, camera move, lens intent and a named light source with its key side, or a recorded static reason.",
+      "exceptions": [
+        "User lock, static-by-design format (the `ugc`, `ugc-how-to`, `ugc-unboxing`, `product-review` and `ugc-virtual-try-on` modes, named UGC presets with a locked camera block, talking-head, avatar and news takes, frame-break), explicit per-shot camera plan from another skill (a pin plan; a music-video genre lock is vocabulary, not an exemption), plate for cutdown, source-preserving edit, extension continuation, or no video shot record the exemption instead."
+      ]
+    },
+    {
+      "id": "shot.variety",
+      "severity": "error",
+      "applies_to": [
+        "narrative_video"
+      ],
+      "owner_path": ".agents/skills/seedance-shot-design/SKILL.md",
+      "summary": "Adjacent shots in a cutting clip differ in at least two of size family, angle class, camera move and key side; each scene has a non-eye-level angle, a motivated move at its energy level and uneven shot lengths, or a recorded reason.",
+      "exceptions": [
+        "A single continuous take records its camera path and light progression instead of neighbor contrast.",
+        "A shot plan derived from another skill's camera plan treats these checks as advisory."
+      ]
+    },
+    {
+      "id": "shot.axis_carry",
+      "severity": "error",
+      "applies_to": [
+        "narrative_video"
+      ],
+      "owner_path": ".agents/contracts/production-policy.md",
+      "summary": "A confirmed project camera, lens, lighting, pacing or energy axis recorded in directorial_axes or the locked block appears in the shot prompt, or the scene records an override with its reason.",
+      "exceptions": []
+    },
+    {
+      "id": "asset.visible_consistency",
+      "severity": "error",
+      "applies_to": [
+        "static_image",
+        "narrative_video"
+      ],
+      "owner_path": ".agents/contracts/production-policy.md",
+      "summary": "Visible design follows approved or requested descriptors.",
+      "exceptions": []
+    },
+    {
+      "id": "static.deterministic_route",
+      "severity": "error",
+      "applies_to": [
+        "static_image"
+      ],
+      "owner_path": ".agents/contracts/routing.md",
+      "summary": "Exact static copy and geometry use the deterministic graphics route rather than generative image synthesis.",
+      "exceptions": []
+    },
+    {
+      "id": "static.deterministic_provenance",
+      "severity": "error",
+      "applies_to": [
+        "static_image",
+        "stage_exit"
+      ],
+      "owner_path": ".agents/skills/html-graphic-render/SKILL.md",
+      "summary": "A deterministic raster has a schema-valid render record bound to its source, inputs, renderer, copy, dimensions, alpha intent, and output hash.",
+      "exceptions": []
+    },
+    {
+      "id": "static.transparent_alpha",
+      "severity": "error",
+      "applies_to": [
+        "static_image"
+      ],
+      "owner_path": ".agents/contracts/element-identification.md",
+      "summary": "A transparent delivery asset contains real alpha and is distinct from any solid-background model reference.",
+      "exceptions": []
+    },
+    {
+      "id": "revision.declared_delta",
+      "severity": "error",
+      "applies_to": [
+        "editing"
+      ],
+      "owner_path": ".agents/contracts/production-policy.md",
+      "summary": "Changes stay within may_change and preserve declared locks.",
+      "exceptions": []
+    },
+    {
+      "id": "review.complete_evidence",
+      "severity": "error",
+      "applies_to": [
+        "preflight"
+      ],
+      "owner_path": ".agents/contracts/production-policy.md",
+      "summary": "All applicable checks have complete request-bound evidence.",
+      "exceptions": []
+    },
+    {
+      "id": "canvas.stage_current",
+      "severity": "error",
+      "applies_to": [
+        "stage_exit"
+      ],
+      "owner_path": ".agents/contracts/production-policy.md",
+      "summary": "A pre-Studio canvas project's production canvas declares the stage being completed and exposes its required evidence.",
+      "exceptions": []
+    },
+    {
+      "id": "canvas.snapshot_current",
+      "severity": "error",
+      "applies_to": [
+        "stage_exit"
+      ],
+      "owner_path": ".agents/contracts/production-policy.md",
+      "summary": "A pre-Studio canvas project's generated HTML matches the current canvas manifest and all referenced local sources.",
+      "exceptions": []
+    },
+    {
+      "id": "studio.project_synced",
+      "severity": "error",
+      "applies_to": [
+        "stage_exit"
+      ],
+      "owner_path": ".agents/contracts/production-policy.md",
+      "summary": "A Studio project exists and `studio_project.py stage complete` finds no blocking `status` issue (asset, take, frame or selection drift) from `scene-breakdown` on; a pending selection also blocks `assembly-review` and `delivery`.",
+      "exceptions": []
+    },
+    {
+      "id": "studio.check_clean",
+      "severity": "error",
+      "applies_to": [
+        "stage_exit"
+      ],
+      "owner_path": ".agents/contracts/production-policy.md",
+      "summary": "For `shot-generation`, `assembly-review` and `delivery`, the pinned `hyperframes check` passes and every shot has a placed take; `delivery` also requires the newest `studio_project.py render` record at a delivery-level quality (drafts and manual records are ignored) to match its file, the current Studio tree and the placed takes.",
+      "exceptions": []
+    },
+    {
+      "id": "studio.stage_locked",
+      "severity": "error",
+      "applies_to": [
+        "stage_exit"
+      ],
+      "owner_path": ".agents/contracts/production-policy.md",
+      "summary": "`assembly-review` needs a picture lock (and an audio lock unless audio-preparation was skipped) and `delivery` needs a final_master lock on the delivery render; each is a hash-bound decision authorized by the agent under approve_for_me or by the user's chat words, and goes stale if its files change.",
+      "exceptions": []
+    },
+    {
+      "id": "swap.residual_original",
+      "severity": "error",
+      "applies_to": [
+        "editing"
+      ],
+      "owner_path": ".agents/skills/seedance-object-swap/SKILL.md",
+      "summary": "An object swap identifies the original by observable descriptors and fully replaces it in every frame with only the target visible.",
+      "exceptions": []
+    },
+    {
+      "id": "swap.timeline_inheritance",
+      "severity": "error",
+      "applies_to": [
+        "editing"
+      ],
+      "owner_path": ".agents/skills/seedance-object-swap/SKILL.md",
+      "summary": "An object swap states the target count and inherits every appearance, motion, occlusion, exit, and timing of the original.",
+      "exceptions": []
+    },
+    {
+      "id": "recast.motion_authority",
+      "severity": "error",
+      "applies_to": [
+        "recast"
+      ],
+      "owner_path": ".agents/skills/prompt-review/references/review-checklists.md",
+      "summary": "A recast motion source supplies motion, camera, framing, cuts, and timing only; appearance comes from the bound references.",
+      "exceptions": []
+    },
+    {
+      "id": "recast.subject_disposition",
+      "severity": "error",
+      "applies_to": [
+        "recast"
+      ],
+      "owner_path": ".agents/skills/prompt-review/references/review-checklists.md",
+      "summary": "Every visible source subject is mapped, removed, or kept as a background extra, with no unresolved ambiguity.",
+      "exceptions": []
+    },
+    {
+      "id": "recast.mapping_unambiguous",
+      "severity": "error",
+      "applies_to": [
+        "recast"
+      ],
+      "owner_path": ".agents/skills/prompt-review/references/review-checklists.md",
+      "summary": "Each mapped subject is identified by observable descriptors and bound to exactly one reference.",
+      "exceptions": []
+    },
+    {
+      "id": "recast.guards",
+      "severity": "error",
+      "applies_to": [
+        "recast"
+      ],
+      "owner_path": ".agents/skills/prompt-review/references/review-checklists.md",
+      "summary": "A recast states per-cut person counts and keeps source accessories and extra people out of the rebuilt cast.",
+      "exceptions": []
+    },
+    {
+      "id": "recast.audio_route",
+      "severity": "error",
+      "applies_to": [
+        "recast"
+      ],
+      "owner_path": ".agents/skills/prompt-review/references/review-checklists.md",
+      "summary": "A recast states one audio route and lip-sync expectations that agree with it.",
+      "exceptions": []
+    },
+    {
+      "id": "v2v.muted_source",
+      "severity": "error",
+      "applies_to": [
+        "editing",
+        "recast"
+      ],
+      "owner_path": ".agents/contracts/video-to-video-inputs.md",
+      "summary": "A video-to-video request binds the recorded muted source master with generate_audio false and adds sound in post.",
+      "exceptions": [
+        "A recorded, user-requested native-audio exception for a named take."
+      ]
+    },
+    {
+      "id": "v2v.virtual_portrait_identity",
+      "severity": "error",
+      "applies_to": [
+        "editing",
+        "recast"
+      ],
+      "owner_path": ".agents/contracts/video-to-video-inputs.md",
+      "summary": "Every person or character identity reference is a Virtual Portrait asset registered from an approved invented design.",
+      "exceptions": []
+    },
+    {
+      "id": "restyle.content_preserved",
+      "severity": "error",
+      "applies_to": [
+        "editing"
+      ],
+      "owner_path": ".agents/skills/seedance-restyle/SKILL.md",
+      "summary": "A restyle keeps the source subjects, layout, actions, camera, cuts and timing and changes only the rendering medium.",
+      "exceptions": []
+    },
+    {
+      "id": "restyle.style_reference_only",
+      "severity": "error",
+      "applies_to": [
+        "editing"
+      ],
+      "owner_path": ".agents/skills/seedance-restyle/SKILL.md",
+      "summary": "A restyle style reference supplies only medium, palette, line, texture and light quality, never subjects or layout.",
+      "exceptions": []
+    }
+  ]
+}
