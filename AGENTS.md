@@ -10,7 +10,7 @@ episodes, 9:16).
 The skills, contracts, scripts and tests under `.agents/` and `tests/` are copies
 from `byteplus-sa/ark-director`. Treat this repo as the home of the micro-drama
 workflow; sync shared fixes from upstream deliberately rather than editing copies in
-passing. Seed Audio 1.5 early-access skills are intentionally not included.
+passing. Seed Audio 1.5 early-access skills are intentionally not included (also left out: Blender, ad and UGC formats, VFX and effects skills, and the Lark showcase skill).
 
 Edit skills only under `.agents/skills/<name>/`. `.claude/skills/<name>`,
 `.claude/catalog`, `.claude/contracts` and `.claude/scripts` are relative symlinks

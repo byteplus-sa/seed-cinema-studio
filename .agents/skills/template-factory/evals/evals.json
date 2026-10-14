@@ -1,0 +1,83 @@
+{
+  "skill_name": "template-factory",
+  "evals": [
+    {
+      "id": 1,
+      "prompt": "Reverse-engineer pins/01.mp4 into a three-panel monochrome storyboard and a silent Seedance video. Use exactly three panels even if the analysis finds more shots.",
+      "expected_output": "A validated VideoBreakdown v1.1 with per-beat motion from the initial visual analysis call, an explicit three-panel coverage plan, three storyboard candidates by default, and a reviewed video request that translates control-board composition into text without attaching the sketch by default.",
+      "files": [],
+      "assertions": [
+        "The full breakdown passes structural and semantic validation before downstream generation.",
+        "The initial breakdown call returns motion details for every beat without a separate source-motion call.",
+        "The explicit three-panel budget is honored and every source shot maps to a panel or documented combined beat.",
+        "The monochrome sketch remains control_only and is omitted from video inputs unless the user explicitly promotes it.",
+        "The storyboard and Seedance prompts pass prompt-review before submission.",
+        "The audio-preparation stage is explicitly skipped with the user's no-audio decision."
+      ]
+    },
+    {
+      "id": 2,
+      "prompt": "Our generated take looks too static compared with the reference. Diagnose it shot by shot and prepare a corrected take without changing the approved shot timing.",
+      "expected_output": "A hash-bound generated-take comparison motion review keyed by shot_index, with observed evidence separated from uncertainty and prompt fixes, followed by playback-based comparison and request review. Source motion comes from the initial VideoBreakdown v1.1 call.",
+      "files": [],
+      "assertions": [
+        "The comparison review references the SHA-256 of the approved combined breakdown.",
+        "Each comparison shot appears exactly once and aligns by shot_index rather than array position without overwriting source motion fields.",
+        "Approved shot boundaries remain unchanged; a proposed timing change creates a new revision and invalidates affected review.",
+        "Low or medium confidence observations include explicit uncertainty.",
+        "Playback QA compares motion direction, intensity, action progression, camera movement, transitions, and opening and ending state."
+      ]
+    },
+    {
+      "id": 3,
+      "prompt": "The template has storyboard.review=false. Recommend the strongest sketch and continue to video.",
+      "expected_output": "A recommendation recorded separately from selection, with video submission paused until the user explicitly selects eligible inputs.",
+      "files": [],
+      "assertions": [
+        "The strongest candidate is stored only as recommended_variant.",
+        "Neither selected_variant nor approved is written automatically.",
+        "Disabling the review UI does not authorize sketch conditioning or video submission."
+      ]
+    },
+    {
+      "id": 4,
+      "prompt": "Reuse the psychedelic neon cosmic template for a new sports-shoe campaign in 9:16. Keep the template's motion and editing grammar but replace the subject, environments, palette, and music.",
+      "expected_output": "A template adaptation that validates the recipe, preserves locked grammar, resolves new project canon, and applies declared ratio and audio adaptation rules.",
+      "files": [],
+      "assertions": [
+        "The reusable template validates against template-schema.json.",
+        "Locked composition, motion, transition, and rhythm rules remain identifiable in the adaptation.",
+        "Replacement subject, environment, palette, and audio are recorded as run-specific inputs requiring current approval.",
+        "The 9:16 result is recomposed around the locked grammar instead of mechanically cropped."
+      ]
+    },
+    {
+      "id": 5,
+      "prompt": "Turn this 28-second reference into the same-paced template. The live model only supports 10-second clips and two image references. Generate two storyboard variants in a limited palette.",
+      "expected_output": "A capability-backed multi-clip plan split at shot boundaries, with the requested storyboard count and style, explicit reference prioritization, assembly review, and delivery evidence.",
+      "files": [],
+      "assertions": [
+        "Current capability evidence is recorded before request parameters and bindings are frozen.",
+        "The sequence splits at shot boundaries into supported natural-duration clips and records assembly work.",
+        "Exactly two limited-palette storyboard variants are planned; a seed differs only when supported.",
+        "No request exceeds the live two-reference limit.",
+        "Every production stage is completed before delivery; only storyboard-visual-plan and audio-preparation may be skipped, with a recorded reason."
+      ]
+    },
+    {
+      "id": 6,
+      "prompt": "Analyze this reference ad's soundtrack as well as its picture. Map music, voice, effects, silence, and the final audio tail to visual beats, then keep the rhythm as a reusable recipe with replacement music.",
+      "expected_output": "A source-hash-bound timestamped audio analysis with evidence and confidence per event, and audio grammar separated from source recordings and words.",
+      "files": [],
+      "assertions": [
+        "The pin audio stream is probed and the full soundtrack is listened to before audio content is described.",
+        "Auditory review records a verified audio-capable model response or human listening note; a dry run, waveform, or player launch alone is not listening evidence.",
+        "A cue that crosses a cut may map to both visual beats; an audio tail beyond picture duration remains within audio duration.",
+        "A missing audio stream is distinguished from an unavailable or undecodable stream.",
+        "Measurements alone do not identify music, speech, instruments, or effects.",
+        "The audio analysis validates against the current pin and frozen breakdown hashes.",
+        "The reusable recipe contains general sound grammar and replacement slots without source recording, lyric, or tagline content."
+      ]
+    }
+  ]
+}
