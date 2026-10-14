@@ -978,7 +978,7 @@ def render_target_lock(root: Path, output: Path, record: Path) -> Iterator[None]
                 [path_key(root), target_key], separators=(",", ":")
             ).encode("utf-8")
             lock = Path(tempfile.gettempdir()) / (
-                f"ark-director-html-render-{hashlib.sha256(identity).hexdigest()}.lock"
+                f"seed-microdrama-studio-html-render-{hashlib.sha256(identity).hexdigest()}.lock"
             )
             if lock.is_symlink():
                 raise ValueError("Render target lock must not be a symlink")

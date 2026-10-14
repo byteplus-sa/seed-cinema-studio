@@ -92,14 +92,11 @@ between modalities.
 | General image generation or edit | `seedream-prompt` or `seedream-edit` |
 | Storyboard and visual continuity | `seedream-storyboard` |
 | Seed Audio prompt | `seed-audio-prompt` |
-| Narrative audio commercial | `seed-audio-commercial` |
 | Per-shot coverage, camera, lens intent and light for a scene | `seedance-shot-design` |
 | Seedance 2.5 video prompt | `seedance-prompt-25` |
 | Spoken dialogue in any language | `seedance-prompt-25-dialogue` with `seedance-prompt-25` |
-| Filipino or Taglish video dialogue | `seedance-prompt-25-filipino` with `seedance-prompt-25` |
+| Dialogue in a language with an installed market dialogue pack (for example Filipino) | the pack, such as `seedance-prompt-25-filipino`, with `seedance-prompt-25` |
 | Seedance 2.0 video prompt | `seedance-prompt-20` |
-| Footage-driven VFX prompt | `seedance-vfx-prompt` |
-| End-to-end Seedance 2.0 VFX shot | `seedance-vfx-pipeline` |
 | Model submission, polling, or artifact access | `ark-mcp` |
 | Animated exact graphics or timed overlays | appropriate HyperFrames skill |
 | Assembly, media transforms, captions, or final video composition | appropriate HyperFrames or FFmpeg skill; the result is placed in Studio and rendered with `studio_project.py render` |

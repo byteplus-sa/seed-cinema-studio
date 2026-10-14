@@ -1115,9 +1115,15 @@ Create an asynchronous Seedance 2.5 video generation task.
 Workspace video drafts explicitly set `resolution: "480p"`; after passing
 review and selection, final requests use the recorded delivery target. Preserve
 explicit user overrides and record verified operation constraints. A 480p
-resolution does not imply provider-native Draft/promotion support: verify the
-live schema and model/operation before using any such fields. Register and
-review every final request independently, then inspect the final output.
+resolution is not itself a Draft. For a native Draft, set `draft: true` (480p
+only) and record the returned task ID as the draft ID; to render the approved Draft
+as the final, send only `draft_task_id` (plus optional `resolution`, `watermark`,
+`return_last_frame`, `execution_expires_after`, `priority`, `safety_identifier`).
+The Draft must have succeeded and be at most 7 days old, and the final is billed
+independently at final resolution. Prompt, references, duration, ratio and
+`generate_audio` must be omitted from the final. See the workspace draft and
+promotion contract (`.agents/contracts/draft-promotion.md`). Register and review
+every final request independently, then inspect the final output.
 
 | Parameter | Type | Required | Description |
 |---|---|---|---|
@@ -1142,6 +1148,16 @@ Returns `Seedance25CreateTaskOutput` with `task_id`, `status="queued"`, and `rec
 > **Audio-only input:** Unlike Seedance 2.0, 2.5 supports audio as the sole
 > media input — a single BGM, voice, or sound-effect track can drive visual
 > pacing, beat matching, and lip-sync without any image or video reference.
+
+**Example — native Draft, then final:**
+
+```json
+{"prompt": "...", "resolution": "480p", "ratio": "9:16", "duration": 15, "generate_audio": true, "draft": true}
+```
+
+```json
+{"draft_task_id": "<task_id of the succeeded Draft>", "watermark": false}
+```
 
 **Example — 30s 480p draft with native audio:**
 

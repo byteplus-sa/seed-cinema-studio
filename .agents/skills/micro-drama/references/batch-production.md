@@ -1,7 +1,8 @@
 # Batch Production
 
 Read [the entrypoint](../SKILL.md). Use this reference when producing several
-episodes or dramas at once.
+independent episodes or dramas at once. For a connected series with shared
+canon, use [series production](series-production.md).
 
 ## Ownership
 
@@ -35,8 +36,8 @@ episodes or dramas at once.
   with FFmpeg outside any delivery gate. For pre-Studio canvas projects, build the
   portfolio page and full-episode showreel with the showcase-html `portfolio.py`
   tool: `portfolio.py <out_dir> <project>... --showreel`. It
-  reads each episode's final-master lock, adds a WebVTT subtitle track and a
-  canvas link per card, and joins the locked masters back to back with hard
+  reads each episode's final-master lock, adds one WebVTT subtitle track per language
+  (named `<master-stem>.<language-code>.srt`) and a canvas link per card, and joins the locked masters back to back with hard
   cuts (each episode already opens on its title and closes on its card),
   gain-matched to one loudness target with a limiter. It records input hashes,
   gains and start times, and refuses a showreel while any episode is unlocked.

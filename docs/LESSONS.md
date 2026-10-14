@@ -30,6 +30,9 @@ Source: "Dalawang Anak ng Don", 11 episodes, about 15 minutes, produced October 
 
 ## Tooling
 
+- Record every Seedance draft task ID the moment it is acknowledged (`draft_ledger.py record`). A Draft can be
+  rendered at 1080p for 7 days after it is made; after that the shot must be regenerated and can change.
+
 - `studio_project.py sync` appends new frames at the end of the timeline. To insert a clip in story order,
   delete `index.html`, `STORYBOARD.md`, `compositions/*.html` and `assets/s*_t01_*.mp4`, then
   `sync --take SHOT=FILE`. `place` only swaps takes within 0.25 s of the frame length.
@@ -39,6 +42,9 @@ Source: "Dalawang Anak ng Don", 11 episodes, about 15 minutes, produced October 
   web form by the agent; the owner selects the file and the agent fills captions and saves the draft.
 
 ## Delivery checklist
+
+Platform steps below come from the first series' platform; use the platform the
+user names.
 
 1. Studio status and check clean, every shot placed with a recorded selection.
 2. Export one file per episode (1080x1920, H.264, AAC) from the placed takes.

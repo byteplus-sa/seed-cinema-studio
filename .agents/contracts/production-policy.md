@@ -75,14 +75,14 @@ stage again does not move the current stage backwards.
 
 | Stage | Requires |
 | --- | --- |
-| `brief-development` | A `project.md` whose `approval_mode` is valid. |
+| `brief-development` | A `project.md` whose `approval_mode` is valid. An optional `market` or `episode` block, if present, must be well-formed; neither is required. |
 | `scene-breakdown` through `audio-preparation` | A Studio project with no blocking `status` issue. |
 | `shot-generation` | The above, a placed take for every shot, and a passing `check`. |
 | `assembly-review` | The `shot-generation` requirements, no pending selection, a `picture` lock, and an `audio` lock unless `audio-preparation` was skipped. |
 | `delivery` | The `assembly-review` requirements, and the newest render record that is `produced_by: "render"` at a delivery-level quality (drafts and manual records are ignored) still matches its file hash, was rendered from the Studio tree as it is now (`index.html`, `hyperframes.json`, every file in `compositions/` and `assets/`), and its frames equal the placed takes; plus a `final_master` lock on that same render. |
 
 Final files. `render` is the only authority for final files. Post work made
-elsewhere (FFmpeg assembly, `render_short.py`, loudness passes) is placed in
+elsewhere (FFmpeg assembly, loudness passes) is placed in
 Studio as a clip or overlay and rendered. Use `record-render` only to register a
 render that does not gate delivery. Every shot's frame stays on the
 timeline: a pre-assembled master cannot stand in for its shots, and titles,
@@ -260,11 +260,13 @@ final takes only within the authorized scope and budget at the recorded delivery
 target; do not assume 1080p is always required. A requested 480p delivery can use
 reviewed 480p takes after delivery QA.
 
-A 480p output is not automatically a provider-native Draft task. Use native
-Draft/promotion only after verifying the current tool/model/operation supports
-it and its constraints. Otherwise final-resolution generation is a new paid
-request using the selected prompt and approved inputs; it can change the
-picture, timing or audio. Every final request has its own prepared registry
+A 480p output is not automatically a provider-native Draft task. Seedance 2.5
+through `ark-mcp` supports native Draft (`draft: true`) and promotion
+(`draft_task_id`); follow the [draft and promotion contract](draft-promotion.md),
+record every draft task ID in `drafts.json` with `draft_ledger.py`, and verify the
+current tool schema once per project. Where native promotion is unavailable or the
+Draft has expired, final-resolution generation is a new paid request using the
+selected prompt and approved inputs; it can change the picture, timing or audio. Every final request has its own prepared registry
 entry and complete hash-bound request review, including changed parameters and
 references, even when prompt text is unchanged. Inspect and select the final
 output again before replacing draft takes in Studio and rendering the master.

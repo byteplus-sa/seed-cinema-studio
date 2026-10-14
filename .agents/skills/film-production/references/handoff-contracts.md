@@ -54,7 +54,8 @@ audio behavior and delivery resolution. For multi-shot work, include the
 reviewed draft assembly and picture/audio decisions. Record any user override
 or verified operation constraint. Register and review the final request as a
 new operation, then inspect and select its output before updating placed takes.
-Native Draft/promotion requires current capability evidence; a fresh generation
+Native Draft/promotion follows the draft and promotion contract and requires
+current capability evidence plus a recorded draft task ID; a fresh generation
 may change picture, timing and audio even with the same prompt and references.
 
 ## Dependency invalidation

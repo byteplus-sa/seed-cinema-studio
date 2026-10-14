@@ -75,8 +75,10 @@ mode selection and caller responsibilities.
   target. Explicit user instructions override the default; record verified
   operation constraints when 480p is unsupported.
 - Keep resolution in request parameters, separate from prompt text and Studio
-  canvas dimensions. A 480p request does not imply native Draft/promotion support;
-  verify that capability before using it. Final requests and outputs need fresh
+  canvas dimensions. A 480p request is not itself a native Draft: use `draft: true` and later
+  `draft_task_id` as described in the workspace draft and promotion contract
+  (`.agents/contracts/draft-promotion.md`), recording the draft task ID, and verify
+  the live tool schema first. Final requests and outputs need fresh
   request review and QA under the workspace production policy.
 - Video generation is billed per successful task completion.
 - Confirm current billing rules on the [Pricing page](https://docs.byteplus.com/en/docs/ModelArk/1544106).

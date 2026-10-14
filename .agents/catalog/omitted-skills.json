@@ -1,0 +1,28 @@
+{
+  "schema_version": 1,
+  "omitted": [
+    "audio-dubbing",
+    "audio-split",
+    "blender-to-seedance",
+    "ffmpeg-scene-transitions",
+    "ffmpeg-side-by-side-comparison",
+    "lark-showcase-aigc",
+    "render_short.py",
+    "seed-audio-commercial",
+    "seedance-ai-avatar",
+    "seedance-animation-styles",
+    "seedance-avatar-news",
+    "seedance-effects-studio",
+    "seedance-frame-break",
+    "seedance-graybox-world",
+    "seedance-motion-design",
+    "seedance-music-video",
+    "seedance-restoration",
+    "seedance-vfx-pipeline",
+    "seedance-vfx-prompt",
+    "seedream-handcrafted-3d",
+    "source-subject-map",
+    "ugc-ad-modes",
+    "ugc-motion-presets"
+  ]
+}

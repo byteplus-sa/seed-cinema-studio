@@ -154,23 +154,16 @@ Retain the low hum of the pottery wheel, the friction of clay, and subtle indoor
 
 ### Stylized animation medium
 
-When the user requests claymation, felt, wood puppets, toy miniatures, vintage
-cel/rubber-hose animation, painterly 2D, handcrafted 3D, silicone creatures,
-wax crayon, or another medium whose material behavior must persist through
-motion, compose with the `seedance-animation-styles` skill, which owns the
-medium, construction, deformation, craft-imperfection, and still-anchor
-contract; this skill remains the authority for the full six-part prompt,
-reference roles, scene staging, timestamps, audio syntax, and generation
-limitations.
+For claymation, felt, puppets, vintage cel, painterly 2D, handcrafted 3D or another
+medium whose material behavior must persist through motion, name the medium and its
+material behavior in the style and constraints parts of the six-part prompt and
+anchor it with a still reference.
 
 ### Music-video treatment
 
-When the prompt's timing, energy, and structure must follow a song — music
-video, lyric video, visualizer, or performer-driven clip — compose with the
-`seedance-music-video` skill, which owns the format selection, song-section
-map, beat/cut-density contract, audio-first lip-sync contract, and per-genre
-style lock; this skill remains the authority for the six-part formula, reference
-roles, audio bracket syntax, timestamps, and generation limitations.
+When timing, energy and structure must follow a song, state the section map and cut
+density in the timeline part of the prompt and give the song as an audio reference
+only when the selected tool supports that role.
 
 ## Parameter auto-lock rules
 

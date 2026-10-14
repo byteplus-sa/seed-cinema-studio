@@ -38,8 +38,11 @@ user asks otherwise.
 
 ## Procedure
 
-1. **Pin the market.** Record country or region, dialogue language and
-   register, audience, and platform. Follow
+1. **Use the market if given.** The user decides it and may give none; never
+   default to a market or infer one. When details are given, record the optional
+   market card (country or region, dialogue language and register, audience,
+   platform, cast appearance, content limits) as defined in the `micro-drama`
+   market card. Follow
    [market adaptation](references/market-adaptation.md) to ground names,
    settings, honorifics, wardrobe, taboos and the proof object. Ask a focused
    question when the market is unstated and the choice changes the story.
@@ -69,8 +72,9 @@ user asks otherwise.
   syntax for Seedance belong to `seedance-prompt-25-dialogue` (or a market
   partner) and `seedance-prompt-25`. Production belongs to an orchestrator such
   as `micro-drama`.
-- Conflict stays non-injurious: a slap is a sharp contact or a cut on contact,
-  never blood or injury detail. No minors in peril, no sexual content.
+- Conflict follows the market card's content limits; with none stated, stay
+  non-injurious (a sharp contact or a cut on contact, never blood or injury
+  detail). No minors in peril, no sexual content.
 - Formats are genre conventions. Do not copy a named show's characters, plots
   or lines.
 - Market claims about what performs go stale. Recheck current platform

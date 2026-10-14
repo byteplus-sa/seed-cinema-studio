@@ -22,6 +22,7 @@ from urllib.parse import quote
 from validate_request import (
     contained_path,
     parse_frontmatter,
+    project_market_card_problems,
     project_mode_snapshot,
     schema_findings,
 )
@@ -1524,6 +1525,7 @@ def stage_gate(
     if stage_id == "brief-development":
         try:
             project_mode_snapshot(project)
+            failures.extend(project_market_card_problems(project))
         except (ValueError, TypeError, OSError) as error:
             failures.append(f"project.md is not a valid brief record: {error}")
         return failures, evidence

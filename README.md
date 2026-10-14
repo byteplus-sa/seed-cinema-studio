@@ -2,7 +2,7 @@
 
 Skills, contracts and tooling for making vertical micro-dramas with BytePlus Seedream, Seedance and Seed Audio. It supports any market, language and genre (romance, hidden heir, revenge, family conflict, thriller, horror, comedy, historical and more). The story-to-delivery pipeline was proven on the Filipino micro-drama series "Dalawang Anak ng Don": brief, cast and location canon, blocking maps, Seedance 2.5 shot prompts, review, a HyperFrames Studio timeline, and per-episode export for TikTok.
 
-Status: bootstrap. The skills, contracts, scripts and tests are copied from `byteplus-sa/ark-director`; the next step is to fold in the lessons from the first series (see [docs/LESSONS.md](docs/LESSONS.md)).
+Status: the skills, contracts, scripts and tests started as copies from `byteplus-sa/ark-director` and now carry the lessons from the first series (see [docs/LESSONS.md](docs/LESSONS.md)). The target market is always chosen by the user (an optional market card in the `micro-drama` skill); no market is built in or assumed.
 
 ## Markets and languages
 
@@ -51,6 +51,8 @@ Copied from `byteplus-sa/ark-director`; edit them only under `.agents/skills/`.
 | **hyperframes-studio** | Working with a person in HyperFrames Studio — when a message asks for a change at all, how a new film is planned and built, and timeline layout conventions with safe zones; the final gate runs through studio_project.py check. |
 | **media-review** | Emergency OS-player fallback when the required HTML/browser review surface is unavailable. |
 | **microdrama-story-formats** | Write micro-drama stories and episode briefs for any market, language or genre: proven formats, light casts, culturally grounded settings, locked dialogue and subtitle translations. |
+| **microdrama-localize** | Orchestrates localizing a delivered episode to another language: register-preserving translation, subtitles, route choice (subtitles only, line-scoped re-voice, full regenerate), and approval, reconciliation and QA gates. |
+| **microdrama-subtitles** | Writes per-language SRT/WebVTT sidecars from locked dialogue and measured timing, with CJK and right-to-left safe wrapping, reading-speed and cue-length limits, and episode offsets. |
 | **micro-drama** | Produce vertical micro-drama episodes end to end for any market: hook, reveal and cliffhanger clips with text-free storyboard conditioning, dialogue-accuracy QA, loudness-matched delivery and a full-episode showreel. |
 | **prompt-review** | Review and fix BytePlus Seedance, Seed Audio, and Seedream prompts against the repo's best practices inline by default; use a sub-agent only when explicitly requested for a project or specific generation. |
 | **seed-audio-prompt** | Write structured Seed Audio 1.0 prompts for full-soundscape audio generation including dialogue, music, SFX, and ambience. |

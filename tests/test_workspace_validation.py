@@ -25,6 +25,36 @@ class WorkspaceValidationTests(unittest.TestCase):
             "---\nname: example\ndescription: A useful example.\n---\n# Example\n"
         )
 
+    def test_reference_to_omitted_skill_is_reported_outside_excluded_skills(self):
+        catalog_dir = self.root / ".agents/catalog"
+        catalog_dir.mkdir(parents=True)
+        (catalog_dir / "omitted-skills.json").write_text(
+            json.dumps({"schema_version": 1, "omitted": ["audio-dubbing"]})
+        )
+        (self.skill.parent / "notes.md").write_text("Use `audio-dubbing` for dubs.\n")
+        findings = validation.omitted_skill_findings(
+            self.root, {"example": {"kind": "leaf"}}
+        )
+        self.assertEqual([item.rule_id for item in findings], ["references.omitted_skill"])
+        self.assertEqual(findings[0].line, 1)
+
+    def test_omitted_skill_check_skips_vendored_skills_and_absent_manifest(self):
+        (self.skill.parent / "notes.md").write_text("Use `audio-dubbing`.\n")
+        self.assertEqual(
+            validation.omitted_skill_findings(self.root, {"example": {"kind": "leaf"}}), []
+        )
+        catalog_dir = self.root / ".agents/catalog"
+        catalog_dir.mkdir(parents=True)
+        (catalog_dir / "omitted-skills.json").write_text(
+            json.dumps({"schema_version": 1, "omitted": ["audio-dubbing"]})
+        )
+        self.assertEqual(
+            validation.omitted_skill_findings(
+                self.root, {"example": {"kind": "vendored"}}
+            ),
+            [],
+        )
+
     def test_valid_metadata_and_name(self):
         self.assertEqual(validation.validate_skill(self.skill)[1], [])
 

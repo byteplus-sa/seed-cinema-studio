@@ -205,7 +205,8 @@ assembly and record picture/audio decisions before generating final takes.
 Each final request is separately registered and reviewed against its complete
 request hash; each final output needs fresh playback, audio and creative QA and
 a mode-authorized selection before it replaces the draft in Studio. A 480p
-output alone does not establish native Draft/promotion support.
+output alone is not a native Draft; follow the draft and promotion contract and
+record the draft task ID so the approved Draft can be rendered later.
 The `shot-generation` stage records every take, exact prompt, ordered element
 bindings, metadata, inspection result and selection state. When a style/grammar
 reference pin (or other watchable reference video) exists, that pin and each

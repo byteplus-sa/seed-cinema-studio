@@ -3,7 +3,7 @@
 This contract covers identity references, source footage, muted submission and
 post audio for Seedance video-to-video work: Motion Transfer
 (`seedance-motion-recast`), Object Swap (`seedance-object-swap`), Restyle
-(`seedance-restyle`) and the shot runner (`seedance-vfx-pipeline`).
+(`seedance-restyle`) and the Seedance VFX shot runner (not included in this workspace).
 
 - [Identity references: Virtual Portrait assets](#identity-references-virtual-portrait-assets)
 - [Source footage](#source-footage)
@@ -122,7 +122,7 @@ manifest.
 | **Original** | Timing is preserved and the source sound stays | Mux the saved source audio |
 | **New** | The brief asks for new music, SFX, ambience or voice | Generate with Seed Audio or use an approved library track, then mux |
 | **Mixed** | Keep one layer (usually dialogue) and replace the rest | Separate the saved audio with the VOD voice/background tool, mix the kept stem with the new stem |
-| **Re-voiced** | New words or a new voice over the same picture | Post voice overlay through `audio-dubbing`; lip-sync work follows the [audio-video alignment contract](audio-video-alignment.md) and is opt-in |
+| **Re-voiced** | New words or a new voice over the same picture | Post voice overlay with `ffmpeg` and `seed-audio-prompt`; lip-sync work follows the [audio-video alignment contract](audio-video-alignment.md) and is opt-in |
 
 Mux to the picture length:
 

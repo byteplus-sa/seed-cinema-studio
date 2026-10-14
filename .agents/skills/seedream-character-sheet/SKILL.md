@@ -107,7 +107,7 @@ Subject:
 Always include:
 - an inline binding for each supplied reference in the section it controls
 - age
-- ethnicity / cultural identity when relevant
+- ethnicity / cultural identity, from the user's brief or market card; never assumed
 - 2–4 stable facial traits
 - hair and headwear
 - costume
@@ -147,8 +147,8 @@ Write each sheet against the rest of the cast, not alone. Before submitting a
 sheet for a recurring cast, compare it with the approved sheets and make every
 character differ in at least three of: hair silhouette (length and style), garment
 silhouette (neckline, sleeve, hem, apron or cardigan), dominant color, and
-complexion. Spread complexions across the cast (fair, light-tan, morena, brown)
-and vary age cues. Appeal is a design requirement: describe observable beauty
+complexion. Spread complexions across the cast within the range natural to the market card's
+`cast_appearance` (no built-in default range) and vary age cues. Appeal is a design requirement: describe observable beauty
 (face shape, eyes, lashes, skin texture, hair) for every character, and keep older
 characters warm and graceful, never haggard.
 

@@ -47,6 +47,29 @@
         "Reconciles in-flight operations instead of resubmitting.",
         "Uses short polling calls rather than long blocking waits."
       ]
+    },
+    {
+      "id": 5,
+      "prompt": "Make a micro-drama series for me.",
+      "expected_output": "Proceeds from the brief without assuming a market, asking only if a missing detail changes the result.",
+      "files": [],
+      "expectations": [
+        "Does not default to any country, language, names, skin tones or settings.",
+        "Treats the market card as optional and records market details only if the user gives them.",
+        "Asks a focused question only when a missing detail would materially change the result."
+      ]
+    },
+    {
+      "id": 6,
+      "prompt": "Produce a 16:9, 90-second sci-fi micro-drama episode in Swahili for an East African audience.",
+      "expected_output": "Uses the user's market and format instead of the 9:16 / 45-60 s defaults, and flags Swahili as outside the native dialogue list.",
+      "files": [],
+      "expectations": [
+        "Overrides the default aspect, duration and scene split with the user's values.",
+        "Records Swahili as outside the native list and records a dialogue route.",
+        "Takes names, settings and wardrobe from the user's market, not from any example.",
+        "Marks unverified cultural or language details for a native speaker."
+      ]
     }
   ]
 }

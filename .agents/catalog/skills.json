@@ -163,10 +163,28 @@
       "upstream_hash": null,
       "overlay_notes": null
     },
+    "microdrama-localize": {
+      "kind": "orchestrator",
+      "description": "Orchestrator that localizes an already delivered micro-drama episode to another language or market without changing its picture, timing or locked canon. Sequences translation of the locked lines with each speaker pair's register preserved, subtitle sidecars, and one chosen route for the new spoken language: subtitles only, a line-scoped Seed Audio re-voice that keeps the source soundtrack, or a full regenerate, selected after the native dialogue-language check. Owns approval, registry reconciliation and QA gates: speech-to-text diff against the locked translation, an honest lip-sync verdict, and cultural review flagged unverified until a native speaker confirms. Use for adding a language or market to a delivered episode or series. Do not use for a first-time episode, a story rewrite, or a single subtitle file; use micro-drama or microdrama-subtitles.",
+      "readme_summary": "Orchestrates localizing a delivered episode to another language: register-preserving translation, subtitles, route choice (subtitles only, line-scoped re-voice, full regenerate), and approval, reconciliation and QA gates.",
+      "dependencies": [],
+      "source_revision": "workspace",
+      "upstream_hash": null,
+      "overlay_notes": null
+    },
     "microdrama-story-formats": {
       "kind": "leaf",
       "description": "Develop micro-drama stories for any market, language or genre: pick a proven format (billionaire or CEO romance, hidden heir or identity reveal, revenge and rebirth, in-law or family conflict, mafia or alpha, switched at birth, campus, thriller, horror, comedy, historical or fantasy, true-to-life sacrifice), then write a locked episode brief with a three-beat hook, turn and cliffhanger, a light cast, culturally grounded settings, props and wardrobe, dialogue in the target language, and subtitle translations. Use for micro-drama concepts, loglines, episode briefs, series bibles or dialogue passes in any language, including concept-only or prompt-only work, and as the fallback story writer when no market pack exists. This leaf writes story material only; it does not generate media. Pair it with micro-drama for production and seedance-prompt-25-dialogue for spoken-delivery direction.",
       "readme_summary": "Write micro-drama stories and episode briefs for any market, language or genre: proven formats, light casts, culturally grounded settings, locked dialogue and subtitle translations.",
+      "dependencies": [],
+      "source_revision": "workspace",
+      "upstream_hash": null,
+      "overlay_notes": null
+    },
+    "microdrama-subtitles": {
+      "kind": "leaf",
+      "description": "Generate per-language subtitle sidecars (SRT, optionally WebVTT) named <master-stem>.<language-code>.srt from a micro-drama episode's locked dialogue and measured timing. Subtitle text follows the locked words, never the heard words, and is never burned into generated video. Wraps by grapheme cluster so CJK, Indic, Thai-with-breaks and right-to-left scripts are not split inside words, enforces characters per line, reading speed and cue duration, splits overlong lines, resolves overlaps, and shifts times by the clip's start on the master timeline. Use for any episode, language or market, after dialogue QA and before or alongside delivery. This independent leaf writes sidecar files only; it does not translate, generate media, render the master or call a provider.",
+      "readme_summary": "Writes per-language SRT/WebVTT sidecars from locked dialogue and measured timing, with CJK and right-to-left safe wrapping, reading-speed and cue-length limits, and episode offsets.",
       "dependencies": [],
       "source_revision": "workspace",
       "upstream_hash": null,
@@ -228,7 +246,7 @@
     },
     "seedance-motion-recast": {
       "kind": "leaf",
-      "description": "Write Seedance 2.5 Motion Transfer (recast) prompts that keep a source clip's body motion, pose sequence, screen positions, camera path, framing changes, cuts and timing while rebuilding cast, wardrobe, product, location and style from locked reference images. Covers the motion-only authority split, an explicit mapping or disposition for every visible source subject, bleed and extra-people guards, Virtual Portrait asset:// identity references, a muted source master with audio added in post, named look presets, and a 480p key-beat probe ladder. Consumes a subject_map.json when available or inspects the source itself. Use to recast performers, localize a take for another market, or rebuild its world around the same performance. Not for replacing one element while preserving source pixels (seedance-object-swap), redrawing the same cast in a new medium (seedance-restyle), other edits (seedance-vfx-prompt), new T2V/I2V shots, or task submission; the caller owns the generation lifecycle.",
+      "description": "Write Seedance 2.5 Motion Transfer (recast) prompts that keep a source clip's body motion, pose sequence, screen positions, camera path, framing changes, cuts and timing while rebuilding cast, wardrobe, product, location and style from locked reference images. Covers the motion-only authority split, an explicit mapping or disposition for every visible source subject, bleed and extra-people guards, Virtual Portrait asset:// identity references, a muted source master with audio added in post, named look presets, and a 480p key-beat probe ladder. Consumes a subject_map.json when available or inspects the source itself. Use to recast performers, localize a take for another market, or rebuild its world around the same performance. Not for replacing one element while preserving source pixels (seedance-object-swap), redrawing the same cast in a new medium (seedance-restyle), other edits (not covered here), new T2V/I2V shots, or task submission; the caller owns the generation lifecycle.",
       "readme_summary": "Write Seedance 2.5 Motion Transfer prompts that keep a clip's motion, camera and cuts while rebuilding cast, wardrobe, product, location and style from locked references, with per-subject dispositions, Virtual Portrait identities, a muted source with post audio and a 480p probe ladder.",
       "dependencies": [],
       "source_revision": "workspace",
@@ -295,7 +313,7 @@
       "source_revision": "workspace",
       "upstream_hash": null,
       "overlay_notes": null,
-      "description": "Write Seedance 2.5 Restyle prompts that redraw an entire existing clip in a new visual style (2D cel anime, watercolor, claymation, needle felt, toy miniature, stylized 3D, pixel art, woodblock, film noir and 20+ more, or a custom style reference image) while keeping its performance, subject positions, motion, camera path, cuts and timing. Covers the style catalog, the style-only reference role, medium-matched Virtual Portrait identity anchors, an environment-image recipe that restyles the background while keeping the same place, edit and reference routes, a muted source master with audio added in post, a 480p test ladder, and restyle QA. Use to turn live action into animation, change the medium of an animated clip, or match a house style. Not for replacing the cast or world (seedance-motion-recast), swapping one element (seedance-object-swap), grading or relighting the original look (seedance-vfx-prompt), or task submission.",
+      "description": "Write Seedance 2.5 Restyle prompts that redraw an entire existing clip in a new visual style (2D cel anime, watercolor, claymation, needle felt, toy miniature, stylized 3D, pixel art, woodblock, film noir and 20+ more, or a custom style reference image) while keeping its performance, subject positions, motion, camera path, cuts and timing. Covers the style catalog, the style-only reference role, medium-matched Virtual Portrait identity anchors, an environment-image recipe that restyles the background while keeping the same place, edit and reference routes, a muted source master with audio added in post, a 480p test ladder, and restyle QA. Use to turn live action into animation, change the medium of an animated clip, or match a house style. Not for replacing the cast or world (seedance-motion-recast), swapping one element (seedance-object-swap), grading or relighting the original look (not covered here), or task submission.",
       "readme_summary": "Write Seedance 2.5 Restyle prompts that redraw a whole clip in one of 24 visual styles or a custom style reference while keeping its content, motion, camera and cuts, with medium-matched Virtual Portrait anchors, an environment-image recipe that keeps the same place and restyles the background too, a muted source with post audio and a 480p probe ladder."
     },
     "seedance-shot-design": {

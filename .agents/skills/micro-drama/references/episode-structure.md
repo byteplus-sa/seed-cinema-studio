@@ -5,6 +5,9 @@ checking an episode brief, or when no market writer skill supplies one.
 
 ## Format
 
+Defaults apply only when the user states no preference; the market card's
+`episode` block overrides every value below.
+
 - 9:16 vertical, 45–60 s delivered, three scene clips of about 15 / 20 / 15 s.
 - Cast of at most three recurring characters per episode; incidental extras are
   described in scene direction, not canonized.
@@ -16,15 +19,16 @@ checking an episode brief, or when no market writer skill supplies one.
 
 | Beat | Delivered time | Purpose | Must be visible |
 | --- | --- | --- | --- |
-| Cold open / hook | 0–3 s | Start mid-conflict: an accusation, a thrown object, a raised hand, a shocking line | The wronged character and the aggressor in one readable frame |
+| Cold open / hook | 0–3 s | Start mid-conflict: an accusation, a thrown object, a shocking line, a ringing phone, a locked door | The wronged character and the aggressor in one readable frame |
 | Setup | 3–15 s | Who is wronged, what they want, what the status gap is | Status markers: wardrobe, posture, setting |
-| Turn | 15–35 s | The confrontation or reveal: a slap, a document, a mark, a stranger at the door | Physical proof in a clean insert or close-up |
+| Turn | 15–35 s | The confrontation or reveal: a document, a mark, a message, a stranger at the door | Physical proof in a clean insert or close-up |
 | Reaction | 35–45 s | Power shifts; the audience's sympathy is confirmed | Held reaction close-ups |
 | Cliffhanger | last 5–10 s | A new threat or reversal that reopens the question | A final held close-up of the character who has just learned it |
 
-A physical confrontation such as a slap must stay non-injurious: a clean
-contact or a cut on contact, a head turn, and a held silence. Avoid blood,
-injury detail and weapons.
+Physical conflict follows the market card's `content_limits`. When it states
+none, stay non-injurious: a clean contact or a cut on contact, a head turn, and
+a held silence, without blood, injury detail or weapons. Horror, thriller and
+action may set other limits in the card.
 
 ## Cliffhanger patterns
 
@@ -44,7 +48,7 @@ question inside the episode.
 - **Title card:** 1.5–2 s, deterministic HTML render, placed after the cold
   open line or dissolving in under it, never before the hook.
 - **To-be-continued card:** 2 s, deterministic render, with the market's
-  idiom in the dialogue language (for example "To be continued...", "ABANGAN..."), optional one-line teaser question.
+  idiom from the market card's `card_idiom`, in the dialogue language, optional one-line teaser question.
 - Cards carry the only on-screen text. Subtitles are a sidecar file.
 
 ## Episode brief fields

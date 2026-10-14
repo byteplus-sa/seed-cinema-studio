@@ -57,6 +57,25 @@ class PortfolioTests(unittest.TestCase):
         self.assertIn('00:00:00.900', (out / 'alpha.en.vtt').read_text())
         self.assertIsNone(manifest['projects'][1]['master'])
 
+    def test_every_subtitle_language_gets_its_own_track(self):
+        root = self.project('gamma')
+        assembly = root / 'assembly'
+        (assembly / 'gamma_master_v01.sw.srt').write_text('1\n00:00:00,000 --> 00:00:00,500\nHabari.\n')
+        (assembly / 'gamma_master_v01.srt').write_text('1\n00:00:00,000 --> 00:00:00,500\nHi.\n')
+        showcase = json.loads((root / 'showcase.json').read_text())
+        sources = showcase['canvas']['stages'][0]['sources']
+        sources += [{'path': 'assembly/gamma_master_v01.sw.srt', 'kind': 'data'},
+                    {'path': 'assembly/gamma_master_v01.srt', 'kind': 'data'}]
+        (root / 'showcase.json').write_text(json.dumps(showcase))
+        out = self.base / 'hub_langs'
+        portfolio.build(out, [root], 'Hub', 'One story', False, -16.0, 0.79)
+        page = (out / 'index.html').read_text()
+        self.assertIn('srclang="sw" label="Swahili" src="gamma.sw.vtt"', page)
+        self.assertIn('srclang="en" label="English" src="gamma.en.vtt"', page)
+        self.assertIn('label="und" src="gamma.und.vtt"', page)
+        self.assertNotIn('srclang="und"', page)
+        self.assertTrue((out / 'gamma.sw.vtt').read_text().startswith('WEBVTT'))
+
     def test_showreel_requires_every_final_lock(self):
         projects = [self.project('alpha'), self.project('beta', locked=False)]
         with self.assertRaisesRegex(ValueError, 'missing: beta'):

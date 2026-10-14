@@ -125,7 +125,7 @@ Use this section to prevent visual drift:
 
 Examples:
 - "Early 18th-century Golden Age of Piracy, Caribbean maritime realism, lantern-and-candle era."
-- "Late-1990s Manila urban realism, analog signage, no smartphones."
+- "Late-1990s port-city urban realism, analog signage, no smartphones."
 - "Near-future Asian megacity, grounded cyberpunk, practical infrastructure not fantasy magic."
 
 ## 5. Set dressing and objects

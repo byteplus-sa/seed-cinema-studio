@@ -44,8 +44,8 @@ grid view.
 - A project starts, resumes, changes stage, produces an artifact, or reaches a
   review/approval checkpoint.
 
-Do **not** use for Lark/Feishu documents — that is `lark-showcase-aigc`. For
-composing the side-by-side/grid video itself, use `ffmpeg-side-by-side-comparison`.
+Do **not** use for Lark/Feishu documents. For composing the side-by-side/grid
+video itself, use `ffmpeg`.
 The production canvas is required for project workflows. `media-review` is only
 an unavailable-browser or explicitly requested OS-player fallback and never
 satisfies a production stage checkpoint.
@@ -129,7 +129,7 @@ uv run python .agents/skills/showcase-html/scripts/generate_showcase.py \
      selectable variant on a new production canvas.
    See [references/schema.md](references/schema.md#variant-selection-in-browser-lock-of-a-chosen-version).
 
-3. **(Optional) Compose the combined view.** Use `ffmpeg-side-by-side-comparison`
+3. **(Optional) Compose the combined view.** Use `ffmpeg`
    to build a grid/side-by-side MP4, then reference it in a `panel` section.
 
 4. **Generate and open** (review-only, no selection write-back):
@@ -328,7 +328,7 @@ table convention.
 ### Combined view (panel)
 
 A single full-width media panel for the combined grid / side-by-side MP4 with a
-caption. The grid itself is built by `ffmpeg-side-by-side-comparison`.
+caption. The grid itself is built by `ffmpeg`.
 
 ### Video take comparison (takes)
 
@@ -381,7 +381,7 @@ clean factorization closest to a landscape ratio:
 - 4 clips → 2×2 = 16:9 (2560×1440).
 - 2 clips → 1×2 side-by-side = 32:9, or 2×1 vertical = 8:9.
 
-See `ffmpeg-side-by-side-comparison` for the exact `hstack`/`vstack`/`xstack`
+See `ffmpeg` for the exact `hstack`/`vstack`/`xstack`
 filter graph and the PIL label fallback when `drawtext` is unavailable.
 
 ## Self-check

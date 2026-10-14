@@ -103,5 +103,5 @@ ambience, and visuals from @Video 1.
 ```
 
 For the full language-swap pattern (English ⇄ Chinese/Japanese, re-lip-sync with
-visuals locked), see the "Language swap / audio edit (re-lip-sync)" subsection
-of `seedance-vfx-prompt`.
+visuals locked), treat it as a video edit that keeps the picture and replaces the audio, and
+follow the [video-to-video inputs contract](../../../contracts/video-to-video-inputs.md).

@@ -16,3 +16,6 @@ __pycache__/
 
 .artifacts/
 *.log
+node_modules/
+dist/
+build/

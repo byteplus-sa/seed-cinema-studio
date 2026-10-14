@@ -13,7 +13,7 @@ description: >-
   action into animation, change the medium of an animated clip, or match a
   house style. Not for replacing the cast or world (seedance-motion-recast),
   swapping one element (seedance-object-swap), grading or relighting the
-  original look (seedance-vfx-prompt), or task submission.
+  original look (not covered here), or task submission.
 ---
 
 # Seedance Restyle
@@ -29,7 +29,7 @@ changes.
 | Same shot in a new visual medium | this skill | Content, layout, identity cues, motion, camera, cuts, timing |
 | New cast or world doing the same performance | `seedance-motion-recast` | Motion, camera and timing only |
 | One element replaced | `seedance-object-swap` | Every pixel outside the element |
-| Grade, relight, weather or effects on the original look | `seedance-vfx-prompt` | The photographed medium |
+| Grade, relight, weather or effects on the original look | a Seedance VFX workflow (not included here) | The photographed medium |
 
 When the style should also change who appears (for example, the restyled
 figures should not depict the source people), map them to Virtual Portrait
@@ -149,7 +149,7 @@ Start a new case (another style, camera move, people count or resolution) with a
 8. **QA and audio.** Run [restyle QA](references/restyle-qa.md), then mux the
    post-audio route.
 
-Medium recipes in `seedance-animation-styles` and look presets in
+Look presets in
 `seedance-motion-recast` share vocabulary with this catalog; they are
 composition hints, and this leaf does not load sibling skills.
 

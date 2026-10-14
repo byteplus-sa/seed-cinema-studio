@@ -17,8 +17,9 @@ description: >-
 
 # Micro-Drama
 
-Produce one or more vertical micro-drama episodes. Each episode is a complete,
-reviewable 45–60 s unit built from three Seedance scene clips. This skill owns
+Produce one or more vertical micro-drama episodes for any market, language and
+genre the user chooses. Unless the user specifies another format, each episode
+is a complete, reviewable 45–60 s unit built from three Seedance scene clips. This skill owns
 the episode format and its production sequencing. Market story craft, such as
 tropes, dialogue register and cultural signifiers, belongs to a market writer
 skill. Stage, approval, Studio and submission rules come from `AGENTS.md` and
@@ -26,7 +27,8 @@ the production contracts; this skill does not relax them.
 
 ## Inputs and outputs
 
-Input: a market or audience, a premise or formula, the episode count, and any
+Input: optionally a market card (user-defined, free-form; see
+[market card](references/market-card.md); never assume one), a premise or formula, the episode count, and any
 locked dialogue, cast, budget or approval mode. When a market writer skill
 exists for the audience, obtain a locked episode brief from it first; for any
 other market or language use `microdrama-story-formats`. Otherwise draft the
@@ -34,8 +36,8 @@ brief with the fields in [episode structure](references/episode-structure.md).
 Any language, genre and market is in scope.
 
 Output per episode: a project under `projects/<slug>/` with all eight production
-stages closed, a final master (1080×1920 H.264/AAC), an English subtitle
-sidecar, locks, and an honest defect list. For a batch, also a portfolio page
+stages closed, a final master (1080×1920 H.264/AAC unless the market card sets another
+aspect), a subtitle sidecar per language in the card (named `<master-stem>.<language-code>.srt`), locks, and an honest defect list. For a batch, also a portfolio page
 and an optional full-episode showreel.
 
 ## Workflow
@@ -66,7 +68,11 @@ and an optional full-episode showreel.
    [production recipe](references/production-recipe.md). Run `prompt-review`
    inline by default; use a sub-agent only when the user explicitly requests
    sub-agent prompt review for the project or specific generation. Register the
-   operation, submit the three clips in parallel, and QA each take.
+   operation, submit the three clips in parallel as native 480p drafts
+   (`draft: true`), record each draft task ID with `draft_ledger.py`, and QA each
+   take. Promote approved drafts to the final resolution with `draft_task_id`
+   within 7 days, as the [draft and promotion contract](../../contracts/draft-promotion.md)
+   describes, and inspect each final before it replaces the draft in Studio.
 7. **Assembly.** In Studio, place the cold open first, then the title card, the
    three clips with short dissolves, and the to-be-continued card. Add a subtitle sidecar and
    normalize loudness. Picture and audio locks come from real playback and
@@ -76,9 +82,11 @@ and an optional full-episode showreel.
    loudness work is placed in Studio as a clip or overlay and rendered, not
    delivered directly (pre-Studio canvas: `--check --stage delivery`).
 
-For a batch of episodes, follow [batch production](references/batch-production.md):
-one agent per episode with exclusive project ownership, on-disk checkpoints,
-and a single integrating manager.
+For a batch of independent episodes, follow
+[batch production](references/batch-production.md): one agent per episode with
+exclusive project ownership, on-disk checkpoints, and a single integrating
+manager. For a connected series with shared canon, follow
+[series production](references/series-production.md).
 
 ## Non-negotiables
 
@@ -100,7 +108,10 @@ and a single integrating manager.
 | --- | --- |
 | Beat timing, hooks, reveals, cliffhangers, cards, brief fields | [Episode structure](references/episode-structure.md) |
 | Clip plan, prompt clauses, QA gates, retakes, budget, assembly | [Production recipe](references/production-recipe.md) |
-| Several episodes in parallel, checkpoints, portfolio, showreel | [Batch production](references/batch-production.md) |
+| Several independent episodes in parallel, checkpoints, portfolio, showreel | [Batch production](references/batch-production.md) |
+| Connected series: shared canon, continuity ledger, season order | [Series production](references/series-production.md) |
+| Optional target market, language, platform and episode format | [Market card](references/market-card.md) |
+| Confirming a platform's current delivery specs before export or posting | [Platform specs](references/platform-specs.md) |
 
 Workspace contracts: [production policy](../../contracts/production-policy.md),
 [element identification](../../contracts/element-identification.md),

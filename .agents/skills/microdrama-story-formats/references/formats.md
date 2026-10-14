@@ -1,6 +1,7 @@
 # Formats
 
-Read [the entrypoint](../SKILL.md). Each format lists its engine, a
+Read [the entrypoint](../SKILL.md). This table is a menu, not a limit: the user
+may pick any format, combine several, or define their own. Each format lists its engine, a
 three-scene shape, and the kind of physical proof that makes the turn read on a
 phone screen. Pick by audience first, then by what one location and two or
 three characters can stage. Local flavor comes from
@@ -20,6 +21,7 @@ three characters can stage. Local flavor comes from
 | Horror and folk supernatural | Home, elders' warnings, night | A ritual ignored → a sleepwalker or reflection wrong → a tell only the audience sees | A shadow, a mirror, an offering |
 | Comedy and mistaken identity | Two people confused for others | Public mix-up → escalating cover story → the real person walks in | Wrong name tag, swapped bag |
 | Historical and fantasy | Court, clan or kingdom intrigue | Banquet accusation → an artifact proves innocence → a larger plot is hinted | Seal, jade token, sleeve-hidden letter |
+| Custom | User-defined engine in any genre (sci-fi, faith, sports, educational, and more) | Define hook, turn and cliffhanger with the user | One object or mark that one close-up can show |
 | True-to-life sacrifice | Poverty, illness, migration, injustice | A small daily struggle → the sacrifice is revealed → the cost lands | Receipt, hospital bill, packed bag |
 
 ## Choosing for AI production
@@ -35,5 +37,5 @@ three characters can stage. Local flavor comes from
 ## Source basis
 
 Format names are genre conventions drawn from public reporting on vertical
-drama platforms and from the Filipino market pack's research. Recheck current
+drama platforms. Recheck current
 performance for the target market before making market claims.

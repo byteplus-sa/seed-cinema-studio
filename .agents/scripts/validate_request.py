@@ -111,6 +111,48 @@ def parse_frontmatter(text: str) -> dict[str, Any]:
     return metadata
 
 
+MARKET_LIST_FIELDS = ("subtitle_languages", "cultural_constraints", "content_limits", "unverified")
+EPISODE_NUMBER_FIELDS = ("count", "duration_s", "max_recurring_cast")
+
+
+def market_card_problems(metadata: dict[str, Any]) -> list[str]:
+    market = metadata.get("market")
+    episode = metadata.get("episode")
+    problems: list[str] = []
+    if market is not None:
+        if not isinstance(market, dict):
+            problems.append("market must be a mapping")
+        else:
+            languages = market.get("dialogue_languages")
+            if languages is not None:
+                entries = languages if isinstance(languages, list) else [None]
+                if not all(isinstance(entry, dict) and entry.get("language") for entry in entries):
+                    problems.append("market.dialogue_languages must list entries with a language")
+            for field in MARKET_LIST_FIELDS:
+                if market.get(field) is not None and not isinstance(market[field], list):
+                    problems.append(f"market.{field} must be a list")
+    if episode is not None:
+        if not isinstance(episode, dict):
+            problems.append("episode must be a mapping")
+        else:
+            for field in EPISODE_NUMBER_FIELDS:
+                value = episode.get(field)
+                if value is not None and (
+                    isinstance(value, bool) or not isinstance(value, int | float) or value <= 0
+                ):
+                    problems.append(f"episode.{field} must be a positive number")
+            aspect = episode.get("aspect")
+            if aspect is not None and not re.fullmatch(r"\d+:\d+", str(aspect)):
+                problems.append("episode.aspect must look like 9:16")
+    return problems
+
+
+def project_market_card_problems(root: Path) -> list[str]:
+    text = contained_path(root, "project.md").read_text()
+    metadata = parse_frontmatter(text) if text.startswith("---") else {}
+    return market_card_problems(metadata)
+
+
 def frontmatter(root: Path, relative: str) -> dict[str, Any]:
     return parse_frontmatter(contained_path(root, relative).read_text())
 

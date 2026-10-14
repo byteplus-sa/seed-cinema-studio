@@ -1,6 +1,6 @@
 {
   "$schema": "https://json-schema.org/draft/2020-12/schema",
-  "$id": "https://ark-director.local/schemas/deterministic-render-record.schema.json",
+  "$id": "https://seed-microdrama-studio.local/schemas/deterministic-render-record.schema.json",
   "title": "Deterministic HTML Render Record",
   "type": "object",
   "additionalProperties": false,

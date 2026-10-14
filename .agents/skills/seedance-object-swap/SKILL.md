@@ -28,7 +28,7 @@ reference images define only the target's appearance.
 | Replace one character, outfit, product, prop, object or the location | this skill | Every pixel outside the swapped element |
 | New cast and world doing the same performance | `seedance-motion-recast` | Motion, camera and timing only |
 | Same shot redrawn in a new visual medium | `seedance-restyle` | Content, layout, motion and camera; the look changes |
-| Added creature, effect, weather, relight, or a background rebuild that relights the subjects | `seedance-vfx-prompt` | Everything except the edit |
+| Added creature, effect, weather, relight, or a background rebuild that relights the subjects | a Seedance VFX workflow (not included here) | Everything except the edit |
 
 Swap one element class per request. Two unrelated changes run as two sequential
 swaps with inspection between them. When most of the frame changes, the job is
@@ -118,9 +118,8 @@ Resolve the live tool schema and model ID before writing parameters.
    then mux the post-audio route and check sync.
 
 The canonical 2.5 edit blocks and face-protection lines come from
-`seedance-prompt-25` and `seedance-vfx-prompt`; a source subject map comes from
-`source-subject-map`. These are composition hints; this leaf does not load
-sibling skills.
+`seedance-prompt-25`; keep a source subject map in the project notes. These are
+composition hints; this leaf does not load sibling skills.
 
 ## Submission boundary and failure behavior
 

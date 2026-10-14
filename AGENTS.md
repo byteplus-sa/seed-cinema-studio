@@ -36,6 +36,14 @@ production edits. Ask for missing information that materially changes the result
 continue reversible work whose requirements are clear. Never revert, overwrite or
 clean up work you did not create. Never commit or push unless asked.
 
+## Legacy canvas
+
+New projects use HyperFrames Studio only. The `showcase-html` skill and the `canvas.*`
+rules are kept for projects that already have a `showcase.json` and because
+`studio_project.py` reuses its `selection_service`. Do not start a canvas project, and
+do not remove these files without first refactoring `studio_project.py`, the canvas
+tests and the contracts together.
+
 ## Operational contracts
 
 Load only the contract relevant to the current stage:
@@ -47,6 +55,7 @@ Load only the contract relevant to the current stage:
 | Canon, props, screens and control references | [Element identification](.agents/contracts/element-identification.md) |
 | File prefixes and numbering | [Asset naming](.agents/contracts/asset-naming.md) |
 | Requested dialogue synchronization and assembly | [Audio-video alignment](.agents/contracts/audio-video-alignment.md) |
+| Seedance 480p drafts, draft task IDs and later promotion | [Draft and promotion](.agents/contracts/draft-promotion.md) |
 | Video-to-video inputs | [Video-to-video inputs](.agents/contracts/video-to-video-inputs.md) |
 | Shot plan, camera, lens, lighting, acting and other axes | [Directorial axes](.agents/contracts/seedance-reference.md) |
 | Lessons from the first series | [Lessons](docs/LESSONS.md) |
@@ -61,9 +70,12 @@ schemas live in `.agents/contracts/schemas/`.
   `studio/assets/` as `LOCKED_<element>_<vNN>.<ext>`.
 - Canon first: approve recurring characters, locations and story-critical props
   before dependent shot generation. Elements define identity.
-- Draft first: Seedance 2.5 shots start as 480p drafts; review and select before any
-  final-resolution generation. A final request is a new paid request with its own
-  review; it can change picture, timing and audio.
+- Draft first: Seedance 2.5 shots start as native 480p drafts (`draft: true`); review
+  and select before any final-resolution generation. Record each draft task ID in
+  `drafts.json` (`draft_ledger.py`) so the approved draft can be promoted to the
+  final with `draft_task_id` within 7 days (see the draft and promotion contract).
+  A final is a new paid request with its own review, and its output is inspected
+  before it replaces the draft take.
 - Persist every prepared operation in `task_ids.json` before submission
   (`prepare_request.py --register`); never submit the same paid generation twice or
   through two transports. A prepared but never submitted operation is closed
@@ -82,7 +94,7 @@ schemas live in `.agents/contracts/schemas/`.
 
 - Market-neutral: names, settings, wardrobe and dialogue come from the project's
   market card, never from the reference series.
-- One episode is Hook, Turn, Cliffhanger, about 65 to 110 s. Plan the shot list with
+- One episode is Hook, Turn, Cliffhanger; length, aspect and scene split come from the market card (default 45 to 60 s, three scenes). Plan the shot list with
   duration, size, angle, move, lens intent and a named light source per shot.
 - Blocking: crowd and multi-person scenes bind a position map (`tig-blocking-map`)
   as the last `reference_image`. Video extension and first-frame are not available
@@ -100,7 +112,7 @@ schemas live in `.agents/contracts/schemas/`.
 
 ## Local production state
 
-`projects/<series>/` is the durable local source of truth and is not committed
+`projects/<series>/` is the durable local source of truth (one project per connected series; see the micro-drama series-production reference) and is not committed
 (`/projects` is ignored). Use lowercase kebab-case ids, scene ids with two digits and
 shot ids with three digits in steps of ten. Keep a short `handoff.md` in each project.
 

@@ -16,9 +16,7 @@ they are prompt-composition only and never call the API themselves.
 | Scene structure & dramaturgy | `tig-scene-engine` | Five-element engine (Goal, Obstacle, Tactic, Reversal, Value Shift); bespoke definitions — do not substitute textbook craft |
 | Staging / blocking | `tig-blocking-map` | Color-coded outline schematic for character disposition; geometry only, no style bleed |
 | Pacing / rhythm | `seedance-pacing-presets` | Speed ramps and montage pacing; second-level timestamps are opt-in and not frame-accurate |
-| Animation medium & handcrafted style | `seedance-animation-styles` | Material-first Seedance prompts for clay, felt, wood puppets, toys, vintage cel, painterly 2D, crafted 3D, silicone, crayon, and custom media |
-| Music video | `seedance-music-video` | Song-first Seedance prompts: format (performance/narrative/conceptual/lyric/visualizer/hybrid), song-section map, beat/cut-density contract, audio-first lip-sync, and a per-genre style lock |
-| Original music / vocal master, audio-first track | `seed-audio-prompt`, `seed-audio-commercial` | Seed Audio prompt structure (T2A/TA2A) and commercial full-soundscape composition for an original music or vocal master |
+| Original music / vocal master, audio-first track | `seed-audio-prompt` | Seed Audio prompt structure (T2A/TA2A) for an original music or vocal master |
 | Storyboard, full multi-scene production | `seedream-storyboard`, `film-production` | Storyboard continuity boards and end-to-end production orchestration across scenes |
 
 ## Composition rules
@@ -43,9 +41,6 @@ scene, and 1–2 camera moves per shot. Record the plan and the chosen canonical
 phrases in `shot.md` alongside the prompt snapshot.
 
 Load `seedance-lighting-presets` / `color-grade-palettes` alongside
-`seedream-prompt` when generating matching element sheets. Use
-`seedance-animation-styles` when writing a Seedance prompt whose animation
-medium, surface behavior, motion cadence, and handmade imperfections must stay
-coherent throughout the video. Use `seedance-music-video` when the prompt's
-timing, energy, and visual structure must follow the music (music video, lyric
-video, visualizer, performance clip) rather than a spoken story.
+`seedream-prompt` when generating matching element sheets. For animation
+media or music-driven timing, describe the medium or section map inside the
+`seedance-prompt-25` prompt.

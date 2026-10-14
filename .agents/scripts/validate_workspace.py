@@ -182,6 +182,41 @@ def read_inventory(root: Path, inventory: Path | None) -> set[str]:
     return set(output.decode().strip("\x00").split("\x00"))
 
 
+OMITTED_SCAN_EXCLUDED_SKILLS = {"prompt-review"}
+
+
+def omitted_skill_findings(
+    root: Path, catalog: dict[str, Any]
+) -> list[Finding]:
+    omitted_path = root / ".agents/catalog/omitted-skills.json"
+    if not omitted_path.is_file():
+        return []
+    omitted = json.loads(omitted_path.read_text())["omitted"]
+    pattern = re.compile(
+        r"(?<![\w-])(" + "|".join(re.escape(name) for name in omitted) + r")(?![\w-])"
+    )
+    documents = list((root / ".agents/contracts").glob("*.md"))
+    for skill_dir in sorted((root / ".agents/skills").iterdir()):
+        kind = catalog.get(skill_dir.name, {}).get("kind")
+        if kind == "vendored" or skill_dir.name in OMITTED_SCAN_EXCLUDED_SKILLS:
+            continue
+        documents.extend(skill_dir.rglob("*.md"))
+    findings: list[Finding] = []
+    for document in documents:
+        for number, line in enumerate(document.read_text().splitlines(), 1):
+            match = pattern.search(line)
+            if match:
+                findings.append(
+                    Finding(
+                        "references.omitted_skill",
+                        str(document),
+                        f"References {match.group(1)}, which is not included in this workspace",
+                        number,
+                    )
+                )
+    return findings
+
+
 def validate_workspace(
     root: Path, portable_files: set[str]
 ) -> tuple[dict[str, int], list[Finding]]:
@@ -294,6 +329,7 @@ def validate_workspace(
         *(root / ".agents/skills").rglob("*.md"),
     ]
     findings.extend(validate_links(root, documents, portable_files))
+    findings.extend(omitted_skill_findings(root, catalog))
     for schema_path in (root / ".agents/contracts/schemas").glob("*.json"):
         try:
             Draft202012Validator.check_schema(json.loads(schema_path.read_text()))

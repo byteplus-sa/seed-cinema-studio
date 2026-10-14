@@ -13,7 +13,7 @@ description: >-
   another market, or rebuild its world around the same performance. Not for
   replacing one element while preserving source pixels (seedance-object-swap),
   redrawing the same cast in a new medium (seedance-restyle), other edits
-  (seedance-vfx-prompt), new T2V/I2V shots, or task submission; the caller
+  (not covered here), new T2V/I2V shots, or task submission; the caller
   owns the generation lifecycle.
 ---
 
@@ -31,7 +31,7 @@ new cast, wardrobe, products, location and style.
 | Rebuild cast, world and look around the same performance | this skill | Discarded; only motion and timing survive |
 | Replace one character, outfit, product, prop or location | `seedance-object-swap` | Preserved outside the swapped element |
 | Redraw the same cast and place in a new medium | `seedance-restyle` | Content kept; rendering replaced |
-| Add effects, weather or relight | `seedance-vfx-prompt` | Preserved outside the edit scope |
+| Add effects, weather or relight | a Seedance VFX workflow (not included here) | Preserved outside the edit scope |
 
 If the user wants to keep the original people, faces or location and change
 only one thing, route to Object Swap. If they want the same people in a new
@@ -146,9 +146,9 @@ parameters; do not assume a `seed` parameter exists.
    route, and run the lip-sync checks when someone speaks on screen.
 
 Load only the references the request needs. A stylized medium such as
-claymation or toy miniature may also use the `seedance-animation-styles`
-recipes by name; the six-part formula and reference syntax stay with
-`seedance-prompt-25`. A shared subject map comes from `source-subject-map`.
+claymation or toy miniature is described in the prompt; the six-part formula and
+reference syntax stay with `seedance-prompt-25`. Keep a shared subject map in the
+project notes.
 These are composition hints; this leaf does not load sibling skills.
 
 ## Submission boundary and failure behavior

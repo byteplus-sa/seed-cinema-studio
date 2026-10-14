@@ -26,7 +26,7 @@ For every take:
 
 1. Decode the output and probe duration, fps, resolution and audio streams.
 2. Build a side-by-side of source and output (the
-   `ffmpeg-side-by-side-comparison` skill does this) and play it in full.
+   `ffmpeg` skill does this) and play it in full.
 3. Extract keyframes at each source cut and at each key beat, and compare them
    with the references.
 4. Count people in every cut.

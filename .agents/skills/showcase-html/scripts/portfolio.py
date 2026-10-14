@@ -52,7 +52,7 @@ def project_entry(project: Path) -> dict[str, Any]:
         "logline": str(meta.get("logline") or ""),
         "canvas": project / "index.html",
         "master": None,
-        "subtitles": None,
+        "subtitles": [],
     }
     showcase = json.loads((project / "showcase.json").read_text())
     stages = {stage["id"]: stage for stage in showcase.get("canvas", {}).get("stages", [])}
@@ -67,10 +67,30 @@ def project_entry(project: Path) -> dict[str, Any]:
     entry["master_sha256"] = lock["artifact_sha256"]
     srts = [s["path"] for s in delivery.get("sources", []) if str(s.get("path", "")).endswith(".srt")]
     stem = master.stem
-    srts.sort(key=lambda path: (not Path(path).name.startswith(stem), path))
-    if srts:
-        entry["subtitles"] = inside(project, srts[0])
+    srts = sorted(path for path in srts if Path(path).name.startswith(stem))
+    entry["subtitles"] = [
+        {"path": inside(project, path), "language": subtitle_language(path)} for path in srts
+    ]
     return entry
+
+
+LANGUAGE_LABELS = {
+    "ar": "Arabic", "de": "German", "en": "English", "es": "Spanish", "fr": "French",
+    "hi": "Hindi", "id": "Indonesian", "ja": "Japanese", "ko": "Korean", "ms": "Malay",
+    "pt": "Portuguese", "sw": "Swahili", "th": "Thai", "tl": "Filipino", "vi": "Vietnamese",
+    "zh": "Chinese",
+}
+
+
+def subtitle_language(path: str) -> str:
+    parts = Path(path).name.split(".")
+    if len(parts) >= 3 and re.fullmatch(r"[A-Za-z]{2,3}(?:-[A-Za-z0-9]{2,8})*", parts[-2]):
+        return parts[-2]
+    return "und"
+
+
+def subtitle_label(language: str) -> str:
+    return LANGUAGE_LABELS.get(language.split("-")[0].lower(), language)
 
 
 def duration(path: Path) -> float:
@@ -179,10 +199,13 @@ def build(out_dir: Path, projects: list[Path], title: str, subtitle: str, showre
             subprocess.run(["ffmpeg", "-v", "error", "-y", "-ss", str(min(6.0, duration(entry["master"]) / 2)),
                             "-i", str(entry["master"]), "-frames:v", "1", "-vf", "scale=540:-1", str(poster)], check=True)
             track = ""
-            if entry["subtitles"] is not None:
-                vtt = out_dir / f"{entry['slug']}.en.vtt"
-                srt_to_vtt(entry["subtitles"], vtt)
-                track = f'<track kind="subtitles" srclang="en" label="English" src="{vtt.name}">'
+            for caption in entry["subtitles"]:
+                language = caption["language"]
+                vtt = out_dir / f"{entry['slug']}.{language}.vtt"
+                srt_to_vtt(caption["path"], vtt)
+                srclang = "" if language == "und" else f' srclang="{html.escape(language)}"'
+                track += (f'<track kind="subtitles"{srclang} '
+                          f'label="{html.escape(subtitle_label(language))}" src="{vtt.name}">')
             source = os.path.relpath(entry["master"], out_dir)
             media = (f'<video controls preload="metadata" playsinline poster="{poster.name}">'
                      f'<source src="{html.escape(source)}" type="video/mp4">{track}</video>')

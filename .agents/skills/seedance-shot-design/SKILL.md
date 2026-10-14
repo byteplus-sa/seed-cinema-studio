@@ -29,7 +29,7 @@ skill.
 | Resolve focal length, aperture or depth of field | `seedance-lens-presets` |
 | Resolve a named light setup into recipes and phrases | `seedance-lighting-presets` |
 | Speed ramps and montage rhythm | `seedance-pacing-presets` |
-| When cuts land on a song (cut timing, beat contract) | `seedance-music-video` owns the timing; this skill plans what each shot is |
+| When cuts land on a song (cut timing, beat contract) | the song owns the timing; this skill plans what each shot is |
 | Character geometry and blocking | `tig-blocking-map` |
 | Dramatic structure of the scene | `tig-scene-engine` |
 | Six-part formula, per-shot prompt block, references, audio syntax | `seedance-prompt-25` |

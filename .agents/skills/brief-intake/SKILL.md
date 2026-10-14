@@ -34,6 +34,7 @@ Read the supplied brief and existing confirmed decisions first. Extract:
 | Intended reaction | What should the viewer feel, understand, remember, or do? |
 | Central visual idea | What specific event, contrast, image, or recurring action carries that reaction? |
 | Story/product truth | Which supplied facts, characters, relationships, and claims must remain accurate? |
+| Target market (optional) | Country or region, dialogue language and variety, subtitle languages, platform and audience; user-defined and free-form, never assumed (see the `micro-drama` market card) |
 | Constraints | Runtime, format, available references, budget posture, delivery needs, forbidden changes |
 | Tone/genre references | What useful quality is being borrowed, and which convention should be avoided? |
 | Confirmed decisions | Which axes and identities are already accepted? |
@@ -99,8 +100,8 @@ a format that is static by design), not a neutral default.
 | Grade | Support tone and reference fidelity; retain accepted palette | `color-grade-palettes` |
 | Pacing | Give the action enough time; stillness, repetition, contrast, and escalation are choices | `seedance-pacing-presets` |
 | Staging | Define geography only when action or relationships depend on it | `tig-blocking-map` |
-| Medium | Preserve requested medium; propose only when the idea benefits from that choice | `seedance-animation-styles` |
-| Audio | Honor silent/native/soundtrack requests; separate lip-sync audio remains opt-in | `seed-audio-prompt` / `seed-audio-commercial` |
+| Medium | Preserve requested medium; propose only when the idea benefits from that choice | `seedance-prompt-25` |
+| Audio | Honor silent/native/soundtrack requests; separate lip-sync audio remains opt-in | `seed-audio-prompt` |
 
 These hints do not require loading sibling skills. Never require acting for a
 product-only still, a camera move for an audio brief, or a speed ramp because a

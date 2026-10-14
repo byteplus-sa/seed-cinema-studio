@@ -391,6 +391,16 @@
       "owner_path": ".agents/skills/seedance-restyle/SKILL.md",
       "summary": "A restyle style reference supplies only medium, palette, line, texture and light quality, never subjects or layout.",
       "exceptions": []
+    },
+    {
+      "id": "market.card_shape",
+      "severity": "error",
+      "applies_to": [
+        "stage_exit"
+      ],
+      "owner_path": ".agents/contracts/production-policy.md",
+      "summary": "An optional market or episode block in project.md is well-formed when present.",
+      "exceptions": []
     }
   ]
 }

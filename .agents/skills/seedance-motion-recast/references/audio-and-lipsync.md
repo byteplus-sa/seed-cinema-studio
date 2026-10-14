@@ -32,7 +32,7 @@ named take; record that exception and review it as a separate request.
 | **Original** | The recast keeps the source music, dialogue or ambience | Saved source audio | New mouths follow the source mouth motion |
 | **New** | The brief asks for new music, SFX, ambience or voice | Seed Audio or an approved library track | No on-screen speech, or a re-voiced line |
 | **Mixed** | Keep the source dialogue, replace the bed (or the reverse) | Separated stems plus new audio | Kept dialogue follows the source mouth motion |
-| **Re-voiced** | New words, language or voice | Post voice overlay through `audio-dubbing` | Check sync; lip-sync work is opt-in |
+| **Re-voiced** | New words, language or voice | Post voice overlay with `ffmpeg` and `seed-audio-prompt` | Check sync; lip-sync work is opt-in |
 
 Voice rules:
 

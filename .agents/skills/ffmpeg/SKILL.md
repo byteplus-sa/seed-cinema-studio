@@ -9,8 +9,8 @@ FFmpeg is the essential tool for video/audio processing. This skill covers singl
 
 ## Routing
 
-- Multi-clip **chronological** assembly / crossfade → `ffmpeg-scene-transitions`
-- Simultaneous A/B or grid comparison → `ffmpeg-side-by-side-comparison`
+- Multi-clip **chronological** assembly / crossfade → this skill (concat and `xfade`)
+- Simultaneous A/B or grid comparison → this skill (`hstack`, `vstack`, `xstack`)
 - Single-clip operations (trim, resize, convert, fade in/out) → this skill
 
 ## Quick Reference

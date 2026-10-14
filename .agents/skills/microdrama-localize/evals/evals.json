@@ -1,0 +1,53 @@
+{
+  "skill_name": "microdrama-localize",
+  "evals": [
+    {
+      "id": 1,
+      "prompt": "Episode 2 is delivered with locked dialogue in its source language. Localize it to Portuguese for a new audience; we have a small budget.",
+      "expected_output": "Picks the cheapest route that fits, keeps picture and canon unchanged, and produces a translation sheet and subtitles.",
+      "files": [],
+      "expectations": [
+        "Offers subtitles only as the default low-cost route and states what each other route would change.",
+        "Produces a translation sheet that keeps the source text untouched and records register per speaker pair.",
+        "Generates subtitle sidecars from the locked target text with the <master-stem>.<language-code>.srt name.",
+        "Does not edit the source master, locked canon or source-language lines."
+      ]
+    },
+    {
+      "id": 2,
+      "prompt": "Add a Hindi voice track to the delivered episode, keep the music and sound effects, and tell me honestly about lip sync.",
+      "expected_output": "Runs the language check, chooses a line-scoped re-voice that keeps the source soundtrack, and reports an approximate lip-sync verdict.",
+      "files": [],
+      "expectations": [
+        "Checks the native-language list and records a route for an unlisted language instead of promising correct pronunciation.",
+        "Keeps the source soundtrack by sending the original video with audio rather than rebuilding it from dialogue alone, or says the tool binding is unverified.",
+        "Reports lip sync as approximate because mouths still match the source language.",
+        "Requires a speech-to-text diff, a listening pass and a native-speaker review flagged unverified."
+      ]
+    },
+    {
+      "id": 3,
+      "prompt": "A timeout happened while submitting the Spanish regenerate for clip 2. Just run it again.",
+      "expected_output": "Refuses blind resubmission and reconciles from the registry first.",
+      "files": [],
+      "expectations": [
+        "Checks task_ids.json for the registered operation and any acknowledged task id before anything else.",
+        "Resumes or adopts the existing provider task rather than submitting a second paid generation.",
+        "Treats an unknown acceptance as a held case needing an explicit, scoped retry decision with cost.",
+        "Does not use a second transport."
+      ]
+    },
+    {
+      "id": 4,
+      "prompt": "Localize the series to Arabic. The translator is not available, so mark the dialect and slang as checked and ship it.",
+      "expected_output": "Keeps cultural review unverified and does not ship it as checked.",
+      "files": [],
+      "expectations": [
+        "Does not mark any item native_checked without a native speaker's confirmation in the user's words.",
+        "Lists dialect, slang and cultural items as unverified for the user.",
+        "Handles right-to-left subtitles and asks for them to be viewed in a real player.",
+        "Offers to deliver as a draft with the unverified list rather than refusing the whole task."
+      ]
+    }
+  ]
+}

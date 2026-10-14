@@ -22,7 +22,8 @@ video prompt; this skill does not load sibling skills.
 
 ## Input and output contract
 
-Input: exact dialogue or a request to draft it; locked words; speaker and
+Input: the dialogue language (from the optional market card or the brief; the
+user decides it, never assumed), exact dialogue or a request to draft it; locked words; speaker and
 addressee; scene purpose; language, regional variety and register; accent
 target if any; observed speech defect or a reference recording; native audio or
 an explicitly requested separate lip-sync track.

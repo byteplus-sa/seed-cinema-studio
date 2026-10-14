@@ -1,0 +1,54 @@
+{
+  "skill_name": "seedream-location-asset",
+  "evals": [
+    {
+      "id": 1,
+      "prompt": "Write the Seedream prompt for a reusable location asset: the kitchen of a small family-run noodle shop in a coastal Japanese town, late 1990s, steam and early morning light. No people. Prompt only.",
+      "expected_output": "A T2I location prompt with Location, Era and world rules, Set dressing and objects, Style, Lighting and atmosphere, Composition and lens and Constraints sections, with no characters and no modern intrusions.",
+      "files": [],
+      "expectations": [
+        "Task is Text-to-Image because no reference images are supplied.",
+        "Starts with the place: interior, function of the space and architectural character, before mood or lens.",
+        "Era and world rules anchor the late 1990s and the coastal setting and exclude modern objects.",
+        "Set dressing lists one to three hero set pieces and practical objects that imply use, so the space reads as lived in.",
+        "Lighting names a practical or window key source, the time of day and the steam or haze.",
+        "Negative constraints include no characters, no modern props, no text overlays and no watermarks."
+      ]
+    },
+    {
+      "id": 2,
+      "prompt": "Image 1 is the approved wide still of our lighthouse keeper's cottage. Write a prompt for the same cottage at dusk with rain, closer on the kitchen table.",
+      "expected_output": "An I2I reference-preserving iteration with @Image 1 as the highest-priority location identity and the new time of day, weather and framing changed.",
+      "files": [],
+      "expectations": [
+        "Task is Image-to-Image and the approved still is @Image 1, treated as the highest-priority identity reference.",
+        "Binds @Image 1 again in the instruction it controls (architecture, layout and materials) rather than only listing it.",
+        "States the changes as dusk, rain and a closer table framing, and keeps the architecture and dressing consistent with the reference.",
+        "Specifies the dusk light with a named practical source rather than a generic mood word."
+      ]
+    },
+    {
+      "id": 3,
+      "prompt": "Write a prompt for the grand staircase in the lobby of an old hotel in a Mediterranean port city. It should be a sweeping spiral stair that climbs forever, with a few guests walking down it.",
+      "expected_output": "Writes a builder-style stair description as one defined flight, names the spiral as a forbidden failure after the positive description, and keeps the asset free of people.",
+      "files": [],
+      "expectations": [
+        "Describes the stair geometry like a builder: direction of ascent relative to the camera, tread count, where the flight ends, and one handrail only on the open side.",
+        "Describes one defined flight with a landing instead of a spiral, and lists no spiral or winding staircase as a forbidden failure only after the positive description.",
+        "Keeps the reusable location asset free of characters and moves the guests to the shot prompt.",
+        "Sets a camera height that shows the treads and does not ask for every upper step to be a lit surface."
+      ]
+    },
+    {
+      "id": 4,
+      "prompt": "Create a character sheet for the innkeeper who runs this tavern, plus the tavern itself as a location sheet.",
+      "expected_output": "Handles only the location part with this skill and routes the character sheet to seedream-character-sheet.",
+      "files": [],
+      "expectations": [
+        "Writes the tavern as a location asset and does not write a character sheet inside the location prompt.",
+        "Names seedream-character-sheet as the skill for the innkeeper.",
+        "Keeps the location prompt free of characters, with the negative constraint no characters."
+      ]
+    }
+  ]
+}

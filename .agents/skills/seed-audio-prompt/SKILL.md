@@ -105,6 +105,5 @@ Generation mode and request limits belong in request metadata or validation, not
 
 ## Related skills
 
-- `seed-audio-commercial` — dramatic, story-driven audio commercials
-- `audio-dubbing` — dubbing pipeline with voice cloning (TA2A)
-- `audio-split` — reference audio segmentation for ≤30s clips
+- `seedance-prompt-25-dialogue` — spoken-dialogue direction and word-scoped repairs
+- `ffmpeg` — splitting reference audio into clips of 30 s or less

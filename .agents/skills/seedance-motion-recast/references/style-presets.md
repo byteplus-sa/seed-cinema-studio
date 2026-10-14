@@ -17,10 +17,8 @@ preset's look. A photoreal sheet under a clay preset leaks photoreal skin, so
 build or select elements in the target medium first.
 
 For medium-driven looks (claymation, toy miniature, handcrafted 3D, painterly
-2D), the `seedance-animation-styles` skill has matching recipes by name:
-`plasticine-claymation`, `toy-miniature`, `stylized-handcrafted-3d` and
-`painterly-2d`. Borrow its material-motion vocabulary when composing; it is a
-composition hint, not a required load.
+2D), describe the medium's material and motion behavior directly in the prompt
+(for example plasticine, toy miniature, handcrafted 3D, painterly 2D).
 
 | Preset | Changes | Keeps |
 | --- | --- | --- |

@@ -239,8 +239,7 @@ instructions alone.
 2. **Do not provide character sheet references for people on the phone screen.**
    Providing a character sheet for someone visible only through a video call
    causes the model to render them as a static image — they don't move or
-   talk. Instead, describe the person in text: "a young man (warm
-   brown skin, short textured black hair, friendly smile, plain t-shirt)
+   talk. Instead, describe the person in text: "a young man (<skin tone and hair from the character canon>, friendly smile, plain t-shirt)
    talking and moving naturally."
 
 3. **Use a Camera and Blocking section.** When a scene alternates between

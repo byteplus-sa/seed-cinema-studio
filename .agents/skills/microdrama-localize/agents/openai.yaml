@@ -1,0 +1,4 @@
+interface:
+  display_name: "Microdrama Localize"
+  short_description: "Localize a delivered micro-drama episode to another language"
+  default_prompt: "Use $microdrama-localize to localize this delivered episode to another language."

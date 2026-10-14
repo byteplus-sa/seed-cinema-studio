@@ -110,4 +110,4 @@ open _review_sheet.png
   copies into a labeled grid for viewing.
 - Clean up any throwaway `_review_*.png` sheets after the user has decided
   (CLAYGO), unless the user wants to keep them.
-- For video before/after comparison clips, compose with `ffmpeg-side-by-side-comparison`.
+- Build before/after comparison clips with the `ffmpeg` skill (stack or grid filters).

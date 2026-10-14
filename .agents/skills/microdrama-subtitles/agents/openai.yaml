@@ -1,0 +1,4 @@
+interface:
+  display_name: "Microdrama Subtitles"
+  short_description: "Write per-language SRT/WebVTT sidecars from locked dialogue"
+  default_prompt: "Use $microdrama-subtitles to write subtitle sidecars for this episode master."

@@ -1,0 +1,53 @@
+{
+  "skill_name": "microdrama-subtitles",
+  "evals": [
+    {
+      "id": 1,
+      "prompt": "The episode master is ep03_master_v02.mp4 and the takes passed dialogue QA. Build English and Spanish subtitle sidecars from the locked lines. The second clip starts at 17.4 s on the Studio timeline.",
+      "expected_output": "Names the sidecars correctly, applies the clip offset and keeps subtitles out of the video.",
+      "files": [],
+      "expectations": [
+        "Names the files ep03_master_v02.en.srt and ep03_master_v02.es.srt.",
+        "Uses the locked dialogue text, with transcript output used only for timing.",
+        "Sets the second clip's offset to 17.4 s from the Studio start, not from planned durations.",
+        "Delivers a sidecar and does not burn subtitles into generated video."
+      ]
+    },
+    {
+      "id": 2,
+      "prompt": "Make Mandarin subtitles for a 9:16 episode. One line is long and has commas and a full stop.",
+      "expected_output": "Wraps by character with narrow lines and keeps punctuation off line starts.",
+      "files": [],
+      "expectations": [
+        "Uses a narrow line width for Chinese, around 16 characters, and at most two lines.",
+        "Breaks between characters without a line starting on closing punctuation.",
+        "Splits an overlong line into several cues with time shared by text length.",
+        "Uses the zh code in the filename."
+      ]
+    },
+    {
+      "id": 3,
+      "prompt": "Add Arabic subtitles. One speaker line also contains a short Latin-script phrase. How do you make sure the lines display correctly?",
+      "expected_output": "Handles right-to-left wrapping and flags the mixed-direction check as unverified until seen in a player.",
+      "files": [],
+      "expectations": [
+        "Wraps at spaces only and never inside a word or combining-mark cluster.",
+        "Adds a leading right-to-left mark to each line.",
+        "Treats mixed-direction display as unverified until viewed in a real player.",
+        "Names the sidecar with the ar language code."
+      ]
+    },
+    {
+      "id": 4,
+      "prompt": "The French line is missing from the dialogue file but I need the fr sidecar today, and the actor said a different word in take 2 so match the subtitle to what was said.",
+      "expected_output": "Refuses to invent text and refuses to follow the heard word.",
+      "files": [],
+      "expectations": [
+        "Reports the missing fr text for the named line instead of generating a partial file.",
+        "Asks for locked or approved French text rather than machine-guessing it silently.",
+        "Keeps the locked word in the subtitle and records the spoken difference as a take defect.",
+        "Does not edit the sidecar to match the heard word."
+      ]
+    }
+  ]
+}

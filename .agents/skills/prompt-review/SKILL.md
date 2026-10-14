@@ -111,7 +111,8 @@ hashes. If the request was written but not registered, rewrite it with
 the new `request_sha256`; never reuse the old review. A review written after a
 submission must say so, and is used only to adopt that submitted job.
 
-The "Checklist source" column is a provenance label only — this skill never loads
+Source labels may name skills that are not installed in this workspace; each
+checklist is self-contained. The "Checklist source" column is a provenance label only — this skill never loads
 a sibling; the applicable checklist is always read from this skill's own bundled
 `references/review-checklists.md`.
 
