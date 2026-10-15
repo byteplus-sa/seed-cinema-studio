@@ -58,7 +58,6 @@ Load only the contract relevant to the current stage:
 | Seedance 480p drafts, draft task IDs and later promotion | [Draft and promotion](.agents/contracts/draft-promotion.md) |
 | Video-to-video inputs | [Video-to-video inputs](.agents/contracts/video-to-video-inputs.md) |
 | Shot plan, camera, lens, lighting, acting and other axes | [Directorial axes](.agents/contracts/seedance-reference.md) |
-| Lessons from the first series | [Lessons](docs/LESSONS.md) |
 
 Rule IDs live in `.agents/contracts/rules.json`; request, registry and review
 schemas live in `.agents/contracts/schemas/`.
