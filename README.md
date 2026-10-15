@@ -2,7 +2,7 @@
 
 Skills, contracts and tooling for making vertical micro-dramas with BytePlus Seedream, Seedance and Seed Audio. It supports any market, language and genre (romance, hidden heir, revenge, family conflict, thriller, horror, comedy, historical and more). The story-to-delivery pipeline was proven end to end on a first series for the Filipino market (the reference market pack): brief, cast and location canon, blocking maps, Seedance 2.5 shot prompts, review, a HyperFrames Studio timeline, and per-episode export for TikTok.
 
-Status: the skills, contracts, scripts and tests started as copies from `byteplus-sa/ark-director` and now carry the lessons from the first series. The target market is always chosen by the user (an optional market card in the `micro-drama` skill); no market is built in or assumed.
+Status: the skills, contracts, scripts and tests carry the lessons from the first series. The target market is always chosen by the user (an optional market card in the `micro-drama` skill); no market is built in or assumed.
 
 ## Markets and languages
 
@@ -28,7 +28,7 @@ Seedance 2.5 speaks Chinese, English, Spanish, Indonesian, Malay, Thai, Arabic, 
 
 ## Skills
 
-Copied from `byteplus-sa/ark-director`; edit them only under `.agents/skills/`.
+Edit skills only under `.agents/skills/`.
 
 | Skill | Summary |
 |---|---|

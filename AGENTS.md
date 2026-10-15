@@ -16,12 +16,9 @@ for the Filipino market, which remains the reference market pack.
 - New market: follow [docs/ADD_A_MARKET.md](docs/ADD_A_MARKET.md). Do not assume
   Filipino names, settings, honorifics or Taglish in a project for another market.
 
-## Origin
+## Scope of this repo
 
-The skills, contracts, scripts and tests under `.agents/` and `tests/` are copies
-from `byteplus-sa/ark-director`. Treat this repo as the home of the micro-drama
-workflow; sync shared fixes from upstream deliberately rather than editing copies in
-passing. Seed Audio 1.5 early-access skills are intentionally not included (also left out: Blender, ad and UGC formats, VFX and effects skills, and the Lark showcase skill).
+This repo is the home of the micro-drama workflow. Seed Audio 1.5 early-access skills are intentionally not included (also left out: Blender, ad and UGC formats, VFX and effects skills, and the Lark showcase skill).
 
 Edit skills only under `.agents/skills/<name>/`. `.claude/skills/<name>`,
 `.claude/catalog`, `.claude/contracts` and `.claude/scripts` are relative symlinks
