@@ -29,8 +29,7 @@ promise exact geometry, exposure, aberration, or bokeh.
 
 The following references informed the earlier authoring bank; they do not establish current tool capabilities:
 
-- [Seedance 2.5 Prompt Guide (Lark)](https://bytedance.larkoffice.com/docx/A88jd0B47oAd8zxWp5ycZFMfnxh) and
-  [Seedance 2.5 Prompt Guide (ModelArk)](https://docs.byteplus.com/en/docs/ModelArk/2607689) —
+- [Seedance 2.5 Prompt Guide (ModelArk)](https://docs.byteplus.com/en/docs/ModelArk/2607689) —
   retained camera-language references for pairing numeric cues with visible intent.
 - [Seedream 4.0-4.5 Prompt Guide](https://docs.byteplus.com/en/docs/ModelArk/1829186) — official ModelArk prompt guide. The film-stock and lens-character vocabulary used here (e.g. "shot on 35mm prime lens", "widescreen anamorphic look") follows the `seedream-prompt` skill's *Avoiding the AI look* guidance, which derives from the official Seedream manual and tutorial.
 

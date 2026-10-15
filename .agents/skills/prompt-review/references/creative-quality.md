@@ -57,7 +57,7 @@ preservation; run it through the same `pack` and `summarize` commands.
 
 Include short briefs, awkward constraints and unconventional choices:
 soft shadowless product photography, a quiet repeated chorus, a masked wide-shot
-performance, locked literary Tagalog dialogue, a product with no numerical
+performance, locked literary-register dialogue, a product with no numerical
 claims, and a single requested edit. Pair close-up/wide or supported/unsupported
 claim cases to check whether decisions change for the right reason.
 

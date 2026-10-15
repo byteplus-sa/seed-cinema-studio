@@ -17,7 +17,7 @@
       "source": "./local",
       "sourceType": "local",
       "skillPath": ".agents/skills/color-grade-palettes/SKILL.md",
-      "computedHash": "c1a38f6f68be0d8ab26777a5e27f923e8d59503dff9955ed5111f37e7f1effc6"
+      "computedHash": "a1959b5fc40fb98d6a8b03f722ab98febf282e83df38c7f2ffbbdf1053d521cc"
     },
     "ffmpeg": {
       "source": "digitalsamba/claude-code-video-toolkit",
@@ -131,13 +131,13 @@
       "source": "./local",
       "sourceType": "local",
       "skillPath": ".agents/skills/prompt-review/SKILL.md",
-      "computedHash": "2f919953da87b2135013d92138267a73b9b22176a118f7cc910f7cb3681573f5"
+      "computedHash": "9ce10ba2d259965b1a9aa073d09fdaacd2d68f2c33a48b1ecdccbf7650702038"
     },
     "seed-audio-prompt": {
       "source": "./local",
       "sourceType": "local",
       "skillPath": ".agents/skills/seed-audio-prompt/SKILL.md",
-      "computedHash": "ac96b93370c7c20f0cbb4aa1377698dd32ef90491bebd0e597d526d20e4efdbd"
+      "computedHash": "67a93162db43d90ab1f91368610a23f9f7accac710863bba1c027b99a520d140"
     },
     "seedance-acting-console": {
       "source": "./local",
@@ -149,19 +149,19 @@
       "source": "./local",
       "sourceType": "local",
       "skillPath": ".agents/skills/seedance-camera-presets/SKILL.md",
-      "computedHash": "571f327ede8ce1c85efd3b525675b58e923a9a907cd3891f85b51a5a4a936877"
+      "computedHash": "6f82b3b317d8232bc7b5be80900b74814d7944508da1ccc63bb738aefef662ee"
     },
     "seedance-lens-presets": {
       "source": "./local",
       "sourceType": "local",
       "skillPath": ".agents/skills/seedance-lens-presets/SKILL.md",
-      "computedHash": "53755e38be250d057d3cbf7e0c7517d46a432fdb1ba527f979a24005344191f2"
+      "computedHash": "277b2211c27023cf44ffbd71482984c69e0da43cfdfd6cb7194f9969ee9e2682"
     },
     "seedance-lighting-presets": {
       "source": "./local",
       "sourceType": "local",
       "skillPath": ".agents/skills/seedance-lighting-presets/SKILL.md",
-      "computedHash": "48f1ede89946975db8706542f12b37164807742cb5f15b05a29d99a598a968f9"
+      "computedHash": "74e046beb5215445a1632def43137d3ff948dd1b2c4903f30bff1d0fed4d4f44"
     },
     "seedance-motion-recast": {
       "source": "./local",
@@ -179,7 +179,7 @@
       "source": "./local",
       "sourceType": "local",
       "skillPath": ".agents/skills/seedance-pacing-presets/SKILL.md",
-      "computedHash": "6c09c8d2e7fcd85f04fde98f17e52f956a5ae2bf206cad2b71b5995e9db7bd8a"
+      "computedHash": "da373d4de3d1f07d8e7fca3b6d80c4cb8c0db3c5b8fd40e57e19160d70fa202b"
     },
     "seedance-prompt-20": {
       "source": "./local",
@@ -191,7 +191,7 @@
       "source": "./local",
       "sourceType": "local",
       "skillPath": ".agents/skills/seedance-prompt-25/SKILL.md",
-      "computedHash": "658ab61ef75c28745276d785e9d2befca7d8b658e6d236b4a2145d4d08c2313c"
+      "computedHash": "34211e70fe5dc55a7434b522e81c8e6813c0f10e1ac6031853b83927d7fa4803"
     },
     "seedance-prompt-25-dialogue": {
       "source": "./local",

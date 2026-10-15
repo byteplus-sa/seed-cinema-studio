@@ -5,7 +5,7 @@ description: >-
   with sub-agent review only when the user explicitly requests it for a project
   or specific generation. Use explicit model, operation, change contract, and
   request hash. Return rule findings and complete or incomplete status; fix and re-review
-  changed prompts before generation. Use for video, VFX, multilingual dialogue (including Filipino),
+  changed prompts before generation. Use for video, VFX, multilingual dialogue (any language, with market packs),
   image/character/location/prop/UI/card/storyboard prompts, music, SFX, or ambience.
   Trigger when asked to review, QA, validate, or lint prompts, or before submitting
   newly authored generation prompts. Exclude manifest-only edits, generated-media
@@ -87,7 +87,7 @@ Use explicit input first; filenames below are fallback hints, not authority:
 | Seedance 2.5 restyle | explicit model + restyle operation | Seedance 2.5 restyle section + `seedance-restyle` |
 | Seedance VFX (video-to-video edit, legacy path) | `prompt_sNN_shNNN_tNN_vNN.md` | `seedance-vfx-prompt` |
 | Seedance multilingual dialogue | `prompt_sNN_shNNN_tNN_vNN.md` | `seedance-prompt-25` + `seedance-prompt-25-dialogue` |
-| Seedance Filipino dialogue | `prompt_sNN_shNNN_tNN_vNN.md` | `seedance-prompt-25` + `seedance-prompt-25-filipino` |
+| Seedance market-pack dialogue | `prompt_sNN_shNNN_tNN_vNN.md` | `seedance-prompt-25` + `seedance-prompt-25-dialogue` + the installed market pack |
 | Seed Audio (dialogue/music/SFX/ambience) | `prompt_dlg_*`, `prompt_mus_*`, `prompt_sfx_*`, `prompt_amb_*`, `prompt_mix_*` | `seed-audio-prompt` |
 | Seedream image generation | `prompt_concept_*`, `prompt_sNN_kf*` | `seedream-prompt` |
 | Seedream character sheet | `prompt_char_*` | `seedream-character-sheet` |

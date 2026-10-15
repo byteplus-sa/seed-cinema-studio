@@ -3,9 +3,8 @@
 Workspace for producing vertical micro-drama series on BytePlus Seedream, Seedance
 and Seed Audio, from brief to per-episode delivery. It supports any market,
 language and genre: romance, hidden-heir, revenge, family, thriller, horror,
-comedy, historical and more. The workflow was proven on a first series, "Dalawang
-Anak ng Don" (Filipino teleserye, 11 episodes, 9:16), which remains the reference
-market pack.
+comedy, historical and more. The workflow was proven end to end on a first series
+for the Filipino market, which remains the reference market pack.
 
 ## Markets and languages
 

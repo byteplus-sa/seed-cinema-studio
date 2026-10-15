@@ -11,15 +11,9 @@ BIASED_TERMS = re.compile(
     re.IGNORECASE,
 )
 ALLOWED_FILES = {
-    SKILLS / "seedance-prompt-25" / "references" / "audio-performance-camera.md",
-    SKILLS / "seedance-prompt-25" / "references" / "parameter-reference.md",
-    SKILLS / "seedance-prompt-25-dialogue" / "references" / "language-support.md",
     SKILLS / "seedance-prompt-25-dialogue" / "references" / "market-pack-template.md",
     SKILLS / "microdrama-story-formats" / "references" / "market-adaptation.md",
     SKILLS / "film-production" / "SKILL.md",
-    SKILLS / "prompt-review" / "SKILL.md",
-    SKILLS / "prompt-review" / "references" / "review-checklists.md",
-    SKILLS / "prompt-review" / "references" / "creative-quality.md",
     SKILLS / "micro-drama" / "SKILL.md",
     SKILLS / "showcase-html" / "scripts" / "portfolio.py",
     SKILLS / "seedream-prompt" / "references" / "image-generation.md",

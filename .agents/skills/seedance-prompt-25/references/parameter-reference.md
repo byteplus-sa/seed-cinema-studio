@@ -94,7 +94,7 @@ Fall back to `seedance-prompt-20` and the 2.0 model (`dreamina-seedance-2-0-2601
 ### Languages
 - 10+ languages supported natively: Chinese, English, Spanish, Indonesian, Malay, Thai, Arabic, Portuguese, Vietnamese, Japanese, Korean.
 - For non-Chinese dialogue, use the dialogue language reinforcement formula.
-- For any dialogue language, compose with the partner skill `seedance-prompt-25-dialogue` for the language-support check, register and repair rules. For **Tagalog/Filipino or Taglish** (not in the supported list), also compose with `seedance-prompt-25-filipino` for pronunciation, intonation, and audio-first pipeline guidance.
+- For any dialogue language, compose with the partner skill `seedance-prompt-25-dialogue` for the language-support check, register and repair rules. When an installed market dialogue pack covers a language outside the supported list (for example `seedance-prompt-25-filipino`), also compose with it for pronunciation, intonation, and audio-first pipeline guidance.
 
 ### Consistency rules
 - Lock character sheets, prop sheets, and scene sheets with Seedream before spending video credits.
