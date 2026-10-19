@@ -6,7 +6,7 @@
   "cases": [
     {
       "id": "audio_unknown_without_id",
-      "skill": "seed-audio-commercial",
+      "skill": "ark-mcp",
       "prompt": "The audio generation call timed out without a provider ID. The prepared request is saved. Continue.",
       "expected_decisions": {
         "next_action": "reconcile",
@@ -16,8 +16,8 @@
     },
     {
       "id": "audio_known_poll_timeout",
-      "skill": "seed-audio-commercial",
-      "prompt": "The provider returned task-17, then polling timed out. Finish the existing commercial.",
+      "skill": "ark-mcp",
+      "prompt": "The provider returned task-17, then polling timed out. Finish the existing soundscape.",
       "expected_decisions": {
         "next_action": "poll_existing",
         "provider_task_id": "task-17",
@@ -26,8 +26,8 @@
     },
     {
       "id": "audio_download_failure",
-      "skill": "seed-audio-commercial",
-      "prompt": "Task-17 succeeded, but the download failed. Get the commercial locally.",
+      "skill": "ark-mcp",
+      "prompt": "Task-17 succeeded, but the download failed. Get the soundscape locally.",
       "expected_decisions": {
         "next_action": "download_existing",
         "new_generation_calls": 0
@@ -101,8 +101,8 @@
     },
     {
       "id": "face_in_25_edit",
-      "skill": "seedance-vfx-pipeline",
-      "prompt": "Use Seedance 2.5 to replace the background of this face close-up at 1080p. The live tool supports edit and 1080p.",
+      "skill": "seedance-object-swap",
+      "prompt": "Use Seedance 2.5 to replace the background of this authorized Virtual Portrait face close-up at 1080p. The live tool supports edit and 1080p. Preserve the face and camera.",
       "expected_decisions": {
         "model_change": false,
         "resolution": "1080p",
@@ -328,6 +328,56 @@
         "next_action": "complete_shot_plan",
         "stage_exit_allowed": false,
         "new_generation_calls": 0
+      }
+    },
+    {
+      "id": "draft_promotion_unselected",
+      "skill": "ark-mcp",
+      "prompt": "A completed native 480p draft has review_status approved in the registry, but this mode-aware Studio project has no hash-bound selection decision. Register its final promotion.",
+      "expected_decisions": {
+        "submission_allowed": false,
+        "selection_evidence_required": true,
+        "new_generation_calls": 0
+      }
+    },
+    {
+      "id": "storyboard_video_reference",
+      "skill": "prompt-review",
+      "prompt": "Use the selected six-panel scene board as a Seedance video reference alongside the character sheets.",
+      "expected_decisions": {
+        "storyboard_attachment_allowed": false,
+        "use_canonical_element_references": true,
+        "translate_staging_to_text": true
+      }
+    },
+    {
+      "id": "animatic_missing_output",
+      "skill": "scene-board-sheet",
+      "prompt": "The recorded animatic output is missing, but the panels and plan are unchanged. Report whether the scene review artifacts are current.",
+      "expected_decisions": {
+        "animatic_current": false,
+        "rebuild_animatic_required": true,
+        "panel_regeneration_required": false
+      }
+    },
+    {
+      "id": "localized_source_preserved",
+      "skill": "microdrama-localize",
+      "prompt": "Create subtitles for a new language on this locked episode without changing its spoken track or source master.",
+      "expected_decisions": {
+        "route": "subtitles_only",
+        "overwrite_source_master": false,
+        "new_generation_calls": 0
+      }
+    },
+    {
+      "id": "episode_plan_overrides_default",
+      "skill": "micro-drama",
+      "prompt": "The approved episode plan has four scenes lasting 12, 14, 10 and 9 seconds, with hard cuts. Preserve it while planning production.",
+      "expected_decisions": {
+        "scene_count": 4,
+        "force_three_scenes": false,
+        "force_dissolves": false
       }
     }
   ]

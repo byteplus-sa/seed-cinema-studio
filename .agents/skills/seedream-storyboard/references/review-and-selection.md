@@ -12,8 +12,8 @@ Evaluate every individual panel. For multi-panel separate-images boards, also
 evaluate the ordered contact sheet. For multi-panel single-image grid boards,
 evaluate the whole grid image for both per-panel quality and cross-panel flow.
 For a one-panel board, compare its three variants side by side; a comparison
-sheet is a review artifact, not another storyboard panel and not the canonical
-video input.
+sheet is a review artifact, not another storyboard panel and never a video
+input.
 
 | Dimension | Review question |
 |---|---|
@@ -29,6 +29,7 @@ video input.
 | Element fidelity | Do character faces, body types, wardrobe silhouettes, location geometry, and prop forms match the canonical Element sheets — even in sketch mode? |
 | Render style | Is the sketch style consistent across all panels? If sketch mode, is it monochrome with no unintended color? If full color, is the palette stable? |
 | Reproducibility | Are prompt, references, model, parameters, files, and status recorded? |
+| Video handoff | Does the handoff carry staging as prompt text and list only element references to bind, with `bind_board: false`? |
 
 Reject or repair:
 
@@ -43,6 +44,12 @@ Reject or repair:
 - a local correction that breaks previously approved areas;
 - in grid mode: panels out of reading order, illegible panel content, missing or
   misaligned dividers, panel numbers bleeding into image content.
+
+Send each failed panel to the edit-first repair path in
+[Editing Failed Panels](editing-failed-panels.md). A failed panel never sends the
+whole board back to generation. For a scene board, also review the scene as a
+sequence (eyelines, screen direction, light and prop continuity, rhythm) after the
+panels pass.
 
 ### 13. Present variants and capture selection
 

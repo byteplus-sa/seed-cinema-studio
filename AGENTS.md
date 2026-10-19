@@ -79,6 +79,9 @@ schemas live in `.agents/contracts/schemas/`.
   and MAJOR findings. Changed inputs invalidate review.
 - Do not bake captions, taglines or overlay text into generated video; add text in
   post with FFmpeg or HyperFrames.
+- Storyboards are planning and review artifacts. Never bind panels, grids, sheets or
+  animatics as Seedance references; translate staging into prompt text and bind
+  canonical elements. Seedream panel repairs may use the panel as an edit source.
 - Real-person likeness and voice inputs go through authorized Advanced Creation
   Rights assets (`seedance-virtual-portrait`), never by disguising the input.
 - Provider success sets `review`, not `approved`. Selections are hash-bound decisions
@@ -123,8 +126,8 @@ use subprocess argument arrays, confine project paths including symlinks.
 uv sync --locked
 uv run python .agents/scripts/validate_workspace.py --offline
 uv run python -m unittest discover -s tests -v
-uv run ruff check .agents/scripts tests
-uv run mypy .agents/scripts
+uv run ruff check .agents/scripts tests .agents/skills/scene-board-sheet/scripts
+uv run mypy .agents/scripts .agents/skills/scene-board-sheet/scripts
 git diff --check
 ```
 

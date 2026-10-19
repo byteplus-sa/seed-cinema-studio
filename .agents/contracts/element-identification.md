@@ -27,6 +27,20 @@ real brands and products (see below).
 
 Held/operated canonical props remain separate from the character sheet. Reference only assets actually used by the shot; preserve exact canonical identity descriptors where applicable. Record unresolved required assets and defer their dependent generation.
 
+## Emotional function
+
+A story-critical prop, set piece or location may also carry an emotional job:
+what the audience must feel when they see it. Record it as an optional
+`emotional_function` in the element manifest and let it drive the design: fit,
+scale, height, weight, texture, age and pattern. For example, a box sized so a
+hand fits it tightly and reads as trapped, a high-backed chair that makes its
+sitter read as a chess piece, or a room whose walls feel close because of a
+near-black palette and one central ring on the floor. The field is a design
+brief, not an identity descriptor: it never replaces the canonical identity
+descriptors and never by itself makes an incidental object pass the prop
+threshold. Branded and acquired assets keep their real design; their emotional
+job is carried by framing and light instead.
+
 ## Brand, logo, and product acquisition
 
 When the brief authorizes a real brand, logo, packshot, or labeled product:
@@ -116,4 +130,4 @@ elements.
 
 ## Reference eligibility
 
-Elements define persistent identity/design. Approved derivative panels define composition and continuity, with recorded source hashes. Changed source hashes invalidate a panel's previous eligibility. Analysis sketches, blocking maps, and rough control boards remain analysis-only by default; translate their movement into text. An explicitly requested supported grid-conditioning mode needs a separately selected composition reference and documented role, never inferred approval of a control image.
+Elements define persistent identity/design. Approved derivative panels define composition and continuity, which is written into prompt text; each records its source hashes, and a changed source hash makes the panel stale. Analysis sketches, blocking maps, and rough control boards remain analysis-only by default; translate their movement into text. Storyboard grids, panels and panel crops are never bound as Seedance references, because panel numbers and the sketch look leak into the video; bind element references and write the staging in prompt text. A keyframe used as a first or last frame is a separate full-colour frame built from element references, with its own selection and source hashes.

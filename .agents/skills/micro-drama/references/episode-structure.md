@@ -5,8 +5,8 @@ checking an episode brief, or when no market writer skill supplies one.
 
 ## Format
 
-Defaults apply only when the user states no preference; the market card's
-`episode` block overrides every value below.
+Defaults apply only when the user states no preference; the market card
+overrides aspect, runtime and scene split.
 
 - 9:16 vertical, 45–60 s delivered, three scene clips of about 15 / 20 / 15 s.
 - Cast of at most three recurring characters per episode; incidental extras are
@@ -14,6 +14,12 @@ Defaults apply only when the user states no preference; the market card's
 - One or two locations. One location per scene keeps geography stable.
 - Dialogue carries the plot. Aim for 3–5 short lines per clip; a clip with more
   than about 12 spoken seconds rushes delivery and invites word errors.
+- Word budget: about 2.2 spoken words per second of the time the lines can
+  occupy, remembering that speech starts 0.5–1.5 s after its cue. A 15 s clip
+  carries roughly 20–25 words; the last line ends at least 0.4 s before the
+  clip ends.
+- The hook line uses plain, common words that speech-to-text transcribes
+  cleanly, spoken at normal volume.
 
 ## Beat template
 
@@ -61,7 +67,8 @@ A market writer skill or the author supplies:
 4. Locations: layout, light, time of day, geography-critical landmarks.
 5. Props that pass the threshold: story-critical or identity-critical only.
 6. Three scenes, each with duration, action beats, exact locked dialogue in
-   `{braces}` with speaker, the turn or proof beat, and the final visible state.
+   `{braces}` with speaker, the spoken word count, the turn or proof beat, and
+   the final visible state.
 7. Subtitle translations for any non-English words.
-8. Content limits: fictional characters only, no real brands, no legible
-   signage, non-injurious conflict.
+8. Content limits: fictional characters only, no real brands, plain unlettered
+   surfaces instead of signage, non-injurious conflict.

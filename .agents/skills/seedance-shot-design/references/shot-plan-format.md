@@ -6,6 +6,7 @@ for the procedure and the variety rules.
 - [Where the plan lives](#where-the-plan-lives)
 - [The plan record](#the-plan-record)
 - [Field rules](#field-rules)
+- [Sequences in a long spot](#sequences-in-a-long-spot)
 - [Carrying the plan into the prompt](#carrying-the-plan-into-the-prompt)
 
 ## Where the plan lives
@@ -51,6 +52,8 @@ shot_plan:
       duration_s: 3.0
       job: establish
       size: wide
+      framing: three-shot
+      featured: [mother, aunt, boy]
       angle: high
       angle_reason: show the whole room and where each person will stand
       move: slow crane down from ceiling height to table height, left to right
@@ -62,10 +65,13 @@ shot_plan:
       duration_s: 2.5
       job: reveal
       size: medium close-up
+      framing: single
+      featured: [mother]
       angle: eye level
       move: slow push-in on the door handle, ending on her hand as the door opens
       move_reason: moves the viewer to the point of contact
       lens_intent: shallow depth of field; hand sharp, doorway soft
+      depth_layers: {foreground: the door's edge, subject: her hand on the handle, background: the hall beyond the doorway}
       light: {source: window, key_side: camera-left, quality: same sun, her face half in shade}
       contrast_with_previous: size family, angle class and move change; the light is unchanged on purpose
     - id: s02_sh010_c
@@ -73,19 +79,24 @@ shot_plan:
       turn: true
       job: emphasize
       size: close-up
+      framing: single
+      featured: [boy]
       angle: low
       angle_reason: the boy's sudden appearance at adult hip height gets presence
       move: static hold, no movement
       static_reason: contrast_hold
       lens_intent: the boy's face sharp against a soft doorway
+      wow: true
       light: {source: door, key_side: behind the subject, quality: contre-jour halo on his hair with the face kept readable by window fill}
       contrast_with_previous: size family, angle class, move and key side all change
     - id: s02_sh010_d
       duration_s: 3.0
       job: release
       size: medium
+      framing: two-shot
+      featured: [mother, boy]
       angle: eye level
-      move: slow drift right, ending on her smile
+      move: slow drift right, ending on her smile with the boy at her side
       move_reason: releases the tension by sliding to the mother's reaction
       lens_intent: natural depth, mother sharp
       light: {source: window, key_side: camera-left, quality: soft sun with a warm rim from the open door}
@@ -100,22 +111,76 @@ shot_plan:
 | `energy` | restrained, standard or kinetic |
 | `axis_carry` | Where each confirmed project axis appears (camera, lens, lighting, pacing, energy), or the scene override and its reason |
 | `sources` | Every light source the scene uses, with a fixed world position and the event that switches it on |
+| `cues` | Optional, per source. Each cue has `at_s` (scene time), `change` (`on`, `off`, `dim` or `flicker`), `trigger` (the visible or story event) and, when it lands inside a shot, that shot's `id`. A shot's `light` describes the state at its start and names any cue inside it |
 | `duration_s` | Shot length in seconds; lengths are uneven and the turn differs from its neighbors |
 | `turn` | `true` on exactly one shot |
 | `job` | One of establish, reveal, emphasize, connect, escalate, hold, release |
 | `size` | Extreme wide, wide, medium, medium close-up, close-up, extreme close-up or insert |
-| `angle` | Eye level, over-the-shoulder, low, high, overhead or first-person |
+| `framing` | Single, dirty single, two-shot, three-shot, group, over-the-shoulder, over-the-hip, point of view or insert, per [framing](framing.md). Required in a scene with two or more characters |
+| `featured` | The subjects the shot is about, with screen sides when it matters; empty for an insert or an unpeopled point of view |
+| `composition` | Optional. Balanced or deliberately unbalanced (isolation, tension), with the reason when unbalanced |
+| `angle` | Eye level, over-the-shoulder, low, high, overhead or first-person. A dirty single, over-the-shoulder or over-the-hip framing records over-the-shoulder, and a point-of-view framing records first-person |
 | `angle_reason` | Required for any angle other than eye level |
 | `move` | The primary move with subject, start and end, or `static hold` |
 | `move_reason` | What the move reveals or emphasizes |
 | `static_reason` | Required with a static hold; a value from the entrypoint table |
-| `lens_intent` | A visible result (sharp plane, soft background, compression), never a number alone |
+| `lens_intent` | A visible result (sharp plane, soft background, compression), never a number alone. A focus pull away from a face is marked `post` rather than prompted |
+| `depth_layers` | Recommended at standard and kinetic energy. A named foreground, the subject and a named background, each a visible thing in the declared location |
+| `wow` | `true` on one shot per clip: the image the clip is remembered for. It may be the turn |
 | `light` | A declared `source`, the `key_side` relative to the lens, and the quality and contrast |
 | `contrast_with_previous` | Which of size family, angle class, move and key side change; `n/a` for the first shot |
+| `blocking_change`, `axis_crossed`, `state_change`, `sub_beats` | Optional. Facts the scene board reads to mark a shot key and to pick its panel states: `blocking_change: true` when positions change inside the shot, `axis_crossed: true` when the 180 degree axis is crossed or restated, `state_change` as a list of prop, wardrobe or location changes, and `sub_beats` as the named beats an L3 board draws |
+| `transition_in`, `dialogue`, `sound_cue`, `screen_direction`, `continuity_carry`, `elements` | Optional. Copied onto the scene board's annotation strip and panel prompts; leave them out when the shot has nothing to say |
+
+A cue that lands inside a shot is written once on the source and named on the
+shot's `light` line:
+
+```yaml
+sources:
+  - id: corridor-lamps
+    position: ceiling lamps along both sides of the corridor, behind the subject
+    switched_on_by: always on
+    cues:
+      - {at_s: 6.5, change: off, trigger: a power cut, shot: s01_sh030}
+shots:
+  - id: s01_sh030
+    light: {source: corridor-lamps, key_side: behind the subject, quality: dim rim
+      that goes out at about 2 s into the shot, leaving his face just above black}
+```
+
+The lighting preset skill words the cue for the prompt. The plan's job is to
+give every cue a time, a change and a trigger; an untimed "partway through" switch lands
+at an unplanned moment.
 
 A plan with `energy`, `sources`, a `turn`, uneven `duration_s` values and a
 `contrast_with_previous` for every shot after the first is complete enough for
 review.
+
+## Sequences in a long spot
+
+A spot planned under the cinematic sequence bar records its sequences above the
+shots, and each sequence becomes one generated clip:
+
+```yaml
+sequences:
+  - id: seq-01
+    clip: s01_sh010
+    duration_s: 5.0
+    job: hook
+    shots: [s01_sh010_a, s01_sh010_b]
+    wow: s01_sh010_b
+  - id: seq-02
+    clip: s01_sh020
+    duration_s: 4.5
+    job: escalate
+    shots: [s01_sh020_a, s01_sh020_b, s01_sh020_c]
+    wow: s01_sh020_c
+```
+
+Each sequence has 2-3 shots, one action per shot and one `wow` shot. Lengths
+vary from sequence to sequence like shot lengths do. The joins between
+sequences are cuts made in assembly, so a sequence may end on a held frame that
+the edit trims.
 
 ## Carrying the plan into the prompt
 

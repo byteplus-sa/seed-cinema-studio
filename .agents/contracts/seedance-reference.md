@@ -17,7 +17,10 @@ they are prompt-composition only and never call the API themselves.
 | Staging / blocking | `tig-blocking-map` | Color-coded outline schematic for character disposition; geometry only, no style bleed |
 | Pacing / rhythm | `seedance-pacing-presets` | Speed ramps and montage pacing; second-level timestamps are opt-in and not frame-accurate |
 | Original music / vocal master, audio-first track | `seed-audio-prompt` | Seed Audio prompt structure (T2A/TA2A) for an original music or vocal master |
-| Storyboard, full multi-scene production | `seedream-storyboard`, `film-production` | Storyboard continuity boards and end-to-end production orchestration across scenes |
+| Production design: sets, props and locations with an emotional function | `seedream-location-asset`, `seedream-prop-asset` | The element manifest's optional `emotional_function` (see element identification) turns a feeling into visible design: fit, scale, height, pattern, age; a counterpoint location states a world rule |
+| Editorial structure: intercut, ellipsis, inserts | `seedance-pacing-presets`, `seedance-shot-design` | Blink cuts, intercuts and vision flashes are assembly-only cuts: each side is generated at a natural length and cut in post; the scene's shot plan records them. A defocus that leaves the subject soft is also a post effect |
+| Sonic motif and voice treatment | `seed-audio-prompt` | A recurring sound for a power or ordeal (layered voice, abrasive drone, solo vocal) with one curve keyed to the scene's beats |
+| Storyboard, full multi-scene production | `seedream-storyboard`, `scene-board-sheet`, `film-production` | Boards are planning and review artifacts, never Seedance references (`board.animatic_review_only`): their staging goes into prompt text. Scene boards run at L1, L2 (default) or L3 per scene, repair failed panels by editing, and assemble into a sheet and animatic; `film-production` orchestrates across scenes |
 
 ## Composition rules
 
@@ -28,12 +31,27 @@ skill, or load a preset directly when the user names a concrete axis ("dolly in
 on her face", "teal and orange grade", "Rage at medium intensity", "bullet-time
 slow-mo"). A user-confirmed lock always wins; the plan fills the gaps.
 
+A preset adds control (timing, holds, a named variant), not the effect itself:
+plain wording already produces a light going off or a lunge, and a timed light
+cue on a declared source is honoured closely. Load a preset when the plan or
+the user names that axis; do not stack presets to make a flat clip dynamic.
+Flat video usually comes from a single-setup clip with no camera-move statement
+and soft verbs, so the remedy is a shot plan with one action, a move and a named
+light per shot.
+
 A static camera or an unchanging light is a choice that carries a recorded
 reason (`static_reason`); the allowed values and the exempt formats are in
 `seedance-shot-design`. A confirmed project camera, lens, lighting, pacing or
 energy axis, recorded in `directorial_axes` or the `locked` block, must appear in
 the shot prompts, or the scene records an override with its reason. A
 `proposed`, `defaulted` or `agent_confirmed` choice is not a user lock.
+
+The production design, editorial and sonic motif axes do not live in the shot
+line alone. Production design reaches the element sheets and the prompt's scene
+description, editorial structure reaches the shot plan's assembly cuts and the
+Studio edit, and a sonic motif reaches the Audio block or the separate Seed
+Audio prompt. When one of them is confirmed, the scene records where it is
+carried.
 
 Do not let two skills fight: exactly one grade per clip, one dominant lighting
 direction per shot with the same physical light source across the cuts of a

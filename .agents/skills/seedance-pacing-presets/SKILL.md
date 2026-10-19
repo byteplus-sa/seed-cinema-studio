@@ -3,8 +3,9 @@ name: seedance-pacing-presets
 description: >
   Turn a named pacing or rhythm preset — speed ramp, slow motion, slow-mo,
   bullet time, ramp up, flash in/out, impact moment, montage, montage pacing,
-  cut rhythm, time-lapse, freeze frame, named cuts or transitions, timing,
-  or speed up — into a canonical, timestamped motion,
+  cut rhythm, time-lapse, freeze frame, progressive or partial change (an
+  outfit or material changing part by part), named cuts or transitions,
+  timing, or speed up — into a canonical, timestamped motion,
   cut, and pacing block for the Seedance 2.5 prompt. Use when the user or a
   shot plan asks to direct a scene's rhythm, tempo, or editing energy rather
   than only its content. Bullet time here is the freeze/slow-mo speed ramp; the camera-orbit
@@ -32,14 +33,16 @@ prompt, or into the timestamped lines of a staged prompt.
 **Core constraint:** timestamps are a **time budget, not frame-accurate**.
 Pacing is *directed*, not guaranteed frame-by-frame. An action may land
 slightly before or after the stated boundary, so write beats with margin and
-never promise exact frame sync.
+never promise exact frame sync. Some timed events land closely (a light cue, a
+staged body-part progression), while cuts inside one clip may merge, and shots
+shorter than about 0.8 s are merged or dropped.
 
 ## Source authority
 
 The preset bank is built from the official Seedance 2.5 timestamp and
 speed-ramp grammar. All sources accessed 2026-08-13:
 
-- [BytePlus ModelArk prompt guide](https://docs.byteplus.com/en/docs/ModelArk/2607689) — official prompt guidance
+- [BytePlus ModelArk prompt guide](https://docs.byteplus.com/en/docs/ModelArk/2607689) — official prompt guidance, timestamp syntax (`At Ns`, `0-3 seconds...`) and the bounce-speed-ramp technique
 - [Seedance 2.5 launch blog](https://seed.bytedance.com/en/blog/one-take-creation-flexible-referencing-introducing-seedance-2-5) — official announcement
 
 **The base grammar is defined in `seedance-prompt-25`.** This skill adds the
@@ -83,12 +86,47 @@ of stacking it with a conflicting speed ramp.
 |---|---|---|
 | Time-lapse / timelapse | Compressed event, visible progression, framing, end state | `From <start>s to <end>s, show a time-lapse of <event>: <visible changes> progress rapidly from <initial state> to <final state>, with <subject or landmark> consistently framed.` |
 | Freeze frame | Exact visible pose, hold window, resume or cut | `At <N>s, freeze the entire picture on <subject's visible pose>; hold that same still image until <M>s, then <resume the action / cut to the next shot>.` |
+| Progressive change | The part that changes first, timed stages by body part or region, a slowed crossing, unbroken motion | See [Progressive change](#progressive-change) |
 
 A freeze frame holds the entire picture, including camera and background.
 Bullet time instead allows camera motion around near-frozen action. Time-lapse
 must show an event progressing through time; a fast camera move alone is not
 time-lapse. A long real-world interval is story content; output duration remains
 a generation parameter outside the prompt.
+
+### Progressive change
+
+Use when something changes part by part rather than all at once: an outfit
+that changes only on the part of the body that has crossed a line (a pole, a
+doorway, a shadow edge), a surface that freezes or rusts from one end, a
+material that spreads across an object. This section is the one home for the
+technique; other skills point here.
+
+1. Slow the movement so the crossing takes about 1.5 s (a slow walk past the
+   line, not a stride).
+2. Write the stages by timestamp and body part or region, about 0.4 s apart:
+   the leading edge first, then a quarter, half, three quarters, then fully
+   changed.
+3. Keep the motion and the place continuous, and rule out transition effects
+   that the model otherwise adds.
+
+```
+At <T1>s, <subject>'s <leading hand and leading foot> have crossed <the line> and already show <new state>; the rest is still <old state>.
+At <T2>s, the front quarter of <subject>, past <the line>, shows <new state>.
+At <T3>s, about half of <subject> shows <new state>, <the line> passing through <the torso / the middle>.
+At <T4>s, only <subject>'s rear quarter is still <old state>.
+At <T5>s, <subject> fully shows <new state>.
+The change appears only on the parts that have crossed <the line>; there is no glow, flash, sparkle, dissolve or particle effect. <Subject>'s position, stride and direction continue unbroken.
+```
+
+Staged wording works best in a locked-off, pure reference-to-video clip.
+Wordings that name only the boundary tend to fail: "swap at the line" can give
+a hard cut with a pose jump, "changes in place at the instant" a glowing
+top-to-bottom morph or an instant whole-body swap, "the line is the boundary
+between the looks" a cut, and a wipe along the line alone a cut. Generate it
+as reference-to-video from the element references: an image-edited first frame
+re-composes the scene and moves the subject and the line. This is a
+hypothesis, not a guarantee; check a 480p draft.
 
 ### Named cuts and transitions
 
@@ -98,6 +136,14 @@ It supplies prompt-only boundary templates and audio relationships. Choose one
 picture transition per boundary; an audio J-cut or L-cut may accompany it.
 These are directed visual/audio targets, not frame-accurate editing controls.
 
+### Assembly-only cuts
+
+A blink cut (a lost moment), an intercut between two places, or a vision
+flash needs cuts shorter than one clip can hold. Plan them with
+[Assembly-only cuts](references/assembly-cuts.md): each side is generated as
+its own clip at a natural length, and the cut is made in post. Never ask a
+single prompt for these cuts.
+
 ### Montage pacing
 
 For multi-shot scenes, pick one cut rhythm. Each row gives the intent and a
@@ -106,7 +152,7 @@ Edge cases.
 
 | Pacing | Intent | Canonical block template |
 |---|---|---|
-| Chaotic | Fast, hard cuts; high-energy sequence | `Cut fast and hard: rapid-fire shots of <A>, <B>, <C>, and <D>, each under a second or two, strobing between them with jagged, high-energy rhythm.` |
+| Chaotic | Fast, hard cuts; high-energy sequence | `Cut fast and hard: rapid-fire shots of <A>, <B>, <C>, and <D>, each about one to two seconds, with a jagged, high-energy rhythm.` Shots shorter than about 0.8 s merge inside one clip; make faster strobing as an assembly cut. |
 | Dynamic | Rhythmic medium cuts; momentum | `Cut on the beat: quick medium shots alternating between <A> and <B>, each 2-3 seconds, building momentum toward <climax>.` |
 | Calm | Slow, even pacing; held shots | `Cut slowly and evenly: hold each of <A>, <B>, and <C> for several seconds with gentle, unhurried transitions and no jump cuts.` |
 | Single Shot | No cuts; one continuous take | `No cuts: one continuous, unbroken shot that follows <subject> through <spaces and events in order> at an even pace from start to finish.` |
@@ -119,8 +165,9 @@ Fill these knobs when composing a pacing block. At least one of `ramp`, `pacing`
 | Parameter | Meaning | Rules |
 |---|---|---|
 | `ramp` | Speed ramp from the bank | Optional when another pacing knob is set. Pick exactly one per stage: Linear, Auto, Slow Motion, Bullet Time, Flash In, Flash Out, Impact, Ramp Up, Ramp Down. |
-| `time_treatment` | Time-lapse or Freeze Frame | One per stage; specify visible progression or held pose and the end state. |
+| `time_treatment` | Time-lapse, Freeze Frame or Progressive Change | One per stage; specify visible progression, held pose or timed body-part stages, and the end state. |
 | `transition` | Named picture cut/transition or audio bridge | Use the same-skill reference; identify outgoing/incoming shots and the boundary time. J-cut/L-cut also name the sound source and overlap window. |
+| `assembly_cut` | Blink Cut, Intercut or Vision Flash | Planned outside the prompt block in the same-skill assembly reference, so it does not count toward the required pacing knobs; generate each side as its own clip, never in one prompt. |
 | `pacing` | Montage cut rhythm from the bank | Required for multi-shot scenes; one per prompt: Chaotic, Dynamic, Calm, Single Shot. |
 | `beat` | What lands on the beat (optional) | The action, moment, or object that must land at the timestamp. Name it explicitly so the model can place it. |
 | `duration` | Total clip length in seconds | Right-size to the scene's natural length, **4-30s** for 2.5. Do not pad to 30s. Pass to the generation interface, not the prompt. |
@@ -153,17 +200,18 @@ flash-out ending:**
 ```
 @Image 1 defines Maya's appearance, hairstyle, and clothing. Do not use the background of the image.
 Maya sprints down the rain-slick alley at night and slams a delivery crate against the wall to stop a pursuer.
-The visuals feature a cold, desaturated grade with neon rim light.
-Use a handheld follow shot at full speed, then a tight static close-up on the impact.
-At 4 seconds, Maya's impact hits in a single sharp impact beat — the crate smacks the wall, dust bursts — then the frame holds for half a beat.
-5-9 seconds, the action drops into slow motion; debris floats in deliberate slow-motion detail while Maya straightens up until the dust settles.
-9-12 seconds, the motion flashes out: the camera whips back to a wide shot and the action decelerates sharply into stillness.
+The visuals feature a cyan neon sign high on the wall frame-left as a hard rim on Maya, wet asphalt throwing the color back up, rain streaking through the light.
+0-4 seconds, a handheld follow shot at full speed tracks Maya from behind at waist height as she closes on the wall.
+At 4 seconds, the camera snaps to a tight static close-up as the crate smacks the wall in a single sharp impact beat, dust bursting, then the frame holds for half a beat.
+5-9 seconds, the action drops into slow motion; debris floats in deliberate slow-motion detail while Maya straightens up, until the dust settles.
+9-12 seconds, the motion flashes out: the camera pulls back fast to a wide shot and the action decelerates sharply into stillness, Maya standing frame-right.
 Audio: <the crate smacks hard against the wall> on the impact, then the alley falls quiet except for rain.
 ```
 
 This block names the ramp (Impact, then Slow Motion, then Flash Out), names the
-beat that lands (the crate impact), gives each ramp a timestamp and an end
-state, and stays within a natural 12-second duration. It composes with
+beat that lands (the crate impact), gives each stage a timestamp, a camera
+statement and an end state, lights it from a named source rather than a grade,
+and stays within a natural 12-second duration. It composes with
 `seedance-prompt-25` scene staging for multi-stage scenes, with
 `seedance-camera-presets` for the camera treatment, and with
 `film-production` / `seedream-storyboard` when the scene needs an approved shot
@@ -185,7 +233,9 @@ list before generation.
   Reserve them for a genuine single continuous take or audio-driven long
   dialogue where seamless motion across scene boundaries matters more than
   per-scene iteration. Otherwise right-size each scene to its natural
-  duration.
+  duration. A 30 s spot packed into one pass with nine or more beats tends to read as
+  stock footage; the shot-design skill's cinematic
+  sequence bar plans it as about 5 s clips of 2-3 shots cut together.
 - **Per-scene natural duration 4-30s — do not pad.** Set `duration` to the
   length the scene actually needs (7s for a single beat, 12s for a short
   dialogue exchange, 20s for a multi-stage action). 30s is the ceiling, not the
@@ -196,8 +246,7 @@ list before generation.
   `seed-audio-prompt` to generate the Seed Audio track first, then align pacing
   timestamps to the actual audio timing.
 - **Generation parameters stay in the API.** Duration, resolution, aspect
-  ratio, and watermark never go in the prompt. Keep `watermark: false` by
-  default.
+  ratio, and watermark never go in the prompt.
 - **One ramp, one pacing.** Do not stack multiple speed ramps or montage
   pacings in the same block; if the scene changes rhythm several times, split it
   into stages or separate takes.
@@ -220,6 +269,9 @@ Before a pacing block is submitted as part of a Seedance 2.5 prompt, verify:
    the prompt text.
 9. Picture transitions define outgoing/incoming shots; audio bridges define
    the sound source, overlap window, and end state, and do not promise exact sync.
+10. No shot inside one clip is shorter than about 0.8 s; faster cuts are
+    assembly cuts. A progressive change is written as timed stages by body
+    part or region, with the motion continuing unbroken.
 
-A pacing block that passes all nine checks is ready to be composed into the
+A pacing block that passes all ten checks is ready to be composed into the
 full prompt by `seedance-prompt-25`.

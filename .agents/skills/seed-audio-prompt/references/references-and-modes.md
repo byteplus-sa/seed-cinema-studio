@@ -8,13 +8,13 @@ mode selection and caller responsibilities.
 
 ### Input references
 
-The API contract is the request's `references[]` array. For each supplied audio reference, add one `references[]` entry and identify its intended role. When the prompting guide's inline conventions are useful, map those entries sequentially to `@Audio1`, `@Audio2`, and `@Audio3` (no space or underscore) and describe each role for the model and human reader.
+The API contract is the request's `references[]` array. For each supplied audio reference, add one `references[]` entry and identify its intended role. When the prompting guidance's inline conventions are useful, map those entries sequentially to `@Audio1`, `@Audio2`, and `@Audio3` (no space or underscore) and describe each role for the model and human reader.
 
 ```text
 Input references
-@Audio1: Female protagonist voice timbre — Lux
-@Audio2: Male antagonist voice timbre — Sylas
-@Audio3: Male heroic voice timbre — Garen
+@Audio1: Female protagonist voice timbre — Lira
+@Audio2: Male antagonist voice timbre — Voss
+@Audio3: Male heroic voice timbre — Brann
 ```
 
 Rules for references:

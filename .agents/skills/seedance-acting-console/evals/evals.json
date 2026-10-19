@@ -100,6 +100,43 @@
         "Gives a playable interpersonal task and readable physical consequences.",
         "Does not add speech or force facial microexpressions."
       ]
+    },
+    {
+      "id": 9,
+      "prompt": "Outside a closed door, a mother hears her son being tested inside. She starts in quiet panic and slowly forces herself back under control while reciting a calming litany. Medium close-up, no other dialogue.",
+      "expected_output": "A suppression arc that runs from visible panic toward control through a playable tactic and ends on one residual cue the framing can show.",
+      "files": [],
+      "expectations": [
+        "The arc moves toward control, not from a hidden feeling to a visible one.",
+        "The control comes from a playable tactic (breathing, pressing the palms, the litany) rather than an emotion label.",
+        "It ends on one residual cue that is readable at medium close-up.",
+        "It uses no degree adjectives such as very or extremely."
+      ]
+    },
+    {
+      "id": 10,
+      "prompt": "A veiled elder whose fine mesh veil leaves only her eyes visible suddenly lunges like a snake to hold a needle at a young man's neck. Keep the veil.",
+      "expected_output": "The snake image turned into observable cues with one burst and still holds, while the veil stays on and the eyes carry the threat.",
+      "files": [],
+      "expectations": [
+        "The animal image is translated into observable body cues and the word snake is not left alone as the direction.",
+        "There is exactly one burst action, with a still hold before it and a still hold after it.",
+        "The veil is kept and the eyes stay readable through it; no lip or nostril expression is required.",
+        "Wardrobe or identity is restated after the burst so it does not drift."
+      ]
+    },
+    {
+      "id": 11,
+      "prompt": "Write the acting block for a 5-second medium shot: a nurse facing the camera hides a syringe behind her back with her left hand while she tells the patient {Nothing to worry about, it is just a quick check.}",
+      "expected_output": "An acting block whose hand cue names anatomy and frame side, whose tactic is directed at the patient, and whose line is checked against the shot length with room for the late start of speech.",
+      "files": [],
+      "expectations": [
+        "The hiding hand is named by anatomy and frame side together, such as 'her left hand, frame-right'.",
+        "The tactic is a verb directed at the patient, not an emotion adjective.",
+        "The output checks that the ten-word line needs about words / 2.2 + 1 s and flags that 5 s leaves little room, proposing a longer shot or a shorter line.",
+        "The line ends at least 0.4 s before the clip ends in the proposed timing.",
+        "The cues are readable in a medium shot."
+      ]
     }
   ]
 }

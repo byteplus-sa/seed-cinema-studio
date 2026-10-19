@@ -21,7 +21,7 @@
     },
     "color-grade-palettes": {
       "kind": "leaf",
-      "description": "Map a named color grade palette or film look into a canonical grade sentence for the Seedance 2.5 Visual Style slot or the Seedream Style: section, with an optional matching FFmpeg filter graph for cross-shot matching. Use this skill for color grading, palette selection, look and grade choices, teal and orange, bleach bypass, film looks, LUT-style grades, and cinematic grades. The prompt grade is the source of truth; FFmpeg is only for matching in the mix step. Golden hour here means the warm grade palette; for golden-hour physical lighting (sun position and light), use seedance-lighting-presets.",
+      "description": "Default to no grade: keep original Seedance colours in assembly. When a colour palette or film look is requested, map it to a canonical grade sentence for the Seedance 2.5 Visual Style slot or the Seedream Style: section, and/or a high-bit-depth-safe FFmpeg post look (limited-range BT.709 decode, dithered 8-bit output) applied to the untouched master. Use for colour grading, palette selection, look and grade choices, teal and orange, bleach bypass, film stocks, VHS or camcorder looks, LUT-style grades, and cinematic grades. Golden hour here means the warm grade palette; for golden-hour physical lighting (sun position and light), use seedance-lighting-presets.",
       "readme_summary": "Maps a named color grade palette or film look (teal & orange, bleach bypass, golden hour warm grade, etc.) into a canonical grade sentence for the Seedance Visual Style slot or the Seedream `Style:` section, with an optional matching FFmpeg filter graph for cross-shot matching.",
       "dependencies": [],
       "source_revision": "workspace",
@@ -156,8 +156,8 @@
     },
     "micro-drama": {
       "kind": "orchestrator",
-      "description": "Produce vertical short-form micro-drama episodes end to end for any market: a hook in the first seconds, a mid-episode reveal or confrontation, and a close-up cliffhanger, delivered as 9:16 episodes with a to-be-continued card. Orchestrates a market story writer when one exists (for example filipino-micro-drama) or the market-neutral microdrama-story-formats, then canon sheets, text-free storyboard conditioning, Seedance 2.5 scene clips with native dialogue, dialogue-accuracy QA, assembly, loudness-matched delivery, and an optional full-episode showreel, all in a HyperFrames Studio project. Use for micro-dramas, vertical dramas, ReelShort/DramaBox-style series, TikTok drama episodes, or batches of several independent episodes produced in parallel. Do not use for a single prompt, a non-episodic ad, a music video, or long-form film; use film-production for general multi-scene work.",
-      "readme_summary": "Produce vertical micro-drama episodes end to end for any market: hook, reveal and cliffhanger clips with text-free storyboard conditioning, dialogue-accuracy QA, loudness-matched delivery and a full-episode showreel.",
+      "description": "Produce vertical short-form micro-drama episodes end to end for any market: a hook in the first seconds, a mid-episode reveal or confrontation, and a close-up cliffhanger, delivered as 9:16 episodes with a to-be-continued card. Orchestrates a market story writer when one exists (for example filipino-micro-drama) or the market-neutral microdrama-story-formats, then canon sheets, planning-only storyboards, Seedance 2.5 scene clips with native dialogue, dialogue-accuracy QA, assembly, loudness-matched delivery, and an optional full-episode showreel, all in a HyperFrames Studio project. Use for micro-dramas, vertical dramas, ReelShort/DramaBox-style series, TikTok drama episodes, or batches of several independent episodes produced in parallel. Do not use for a single prompt, a non-episodic ad, a music video, or long-form film; use film-production for general multi-scene work.",
+      "readme_summary": "Produce vertical micro-drama episodes for any market with planning-only scene boards, draft-first clips, dialogue QA, multilingual subtitles and Studio delivery.",
       "dependencies": [],
       "source_revision": "workspace",
       "upstream_hash": null,
@@ -219,8 +219,8 @@
     },
     "seedance-camera-presets": {
       "kind": "leaf",
-      "description": "Turn a named camera move or preset \u2014 dolly, pan, tilt, orbit, crane, jib, tracking, handheld, FPV, aerial, bullet time, dolly zoom, crash zoom, whip pan, optical zoom, Dutch angle, one-take, or static \u2014 into a canonical, drop-in Camera block for the Seedance 2.5 six-part prompt formula. Use when the user asks for a camera preset, camera movement style, or a shot's camera treatment, and when a shot plan names a move to word. Bullet time here is the camera-orbit technique (freeze + orbit); speed-ramp and slow-mo timing belong to seedance-pacing-presets. One-take here is the pass-through camera path; single-shot no-cuts pacing belongs to seedance-pacing-presets. Lens and focal-length optics belong to seedance-lens-presets.",
-      "readme_summary": "Compose prompt-only camera moves and framing, including optical zoom, Dutch angle, dolly, orbit, FPV, rack focus and whip pan.",
+      "description": "Turn a named camera move or preset \u2014 dolly, pan, tilt, orbit, crane, jib, tracking, handheld, FPV, aerial, bullet time, dolly zoom, crash zoom, whip pan, optical zoom, Dutch angle, one-take, or static \u2014 or a shot framing (single, two-shot, over-the-shoulder, over-the-hip, point of view, insert) \u2014 into a canonical, drop-in Camera block for the Seedance 2.5 six-part prompt formula. Use when the user asks for a camera preset, camera movement style, shot framing, or a shot's camera treatment, and when a shot plan names a move or framing to word. Bullet time here is the camera-orbit technique (freeze + orbit); speed-ramp and slow-mo timing belong to seedance-pacing-presets. One-take here is the pass-through camera path; single-shot no-cuts pacing belongs to seedance-pacing-presets. Lens and focal-length optics belong to seedance-lens-presets.",
+      "readme_summary": "Compose prompt-only camera moves and framing, including optical zoom, Dutch angle, dolly, orbit, FPV, whip pan, and single, two-shot, over-the-shoulder, point-of-view and insert framing.",
       "dependencies": [],
       "source_revision": "workspace",
       "upstream_hash": null,
@@ -228,8 +228,8 @@
     },
     "seedance-lens-presets": {
       "kind": "leaf",
-      "description": "Turns a lens, focal length, aperture, or sensor request into a canonical visible-result phrase for Seedance 2.5 prompts or the Seedream style. Trigger words: lens, focal length, 35mm, 50mm, 85mm, wide angle, telephoto, anamorphic, fisheye, macro, aperture, f-stop, f/1.4, depth of field, bokeh, shallow DOF, deep focus, or a lens intent from a shot plan. Keep optical look separate from supported output parameters; preserve the selected model and send unresolved resolution needs to the caller rather than switching models automatically.",
-      "readme_summary": "Translates a lens, focal length, aperture, or sensor request into a canonical visible-result phrase for Seedance prompts or Seedream style. Covers 35mm, 50mm, 85mm, wide angle, telephoto, anamorphic, fisheye, macro, f-stop, depth of field, bokeh.",
+      "description": "Turns a lens, focal length, aperture, focus or sensor request into a canonical visible-result phrase for Seedance 2.5 prompts or the Seedream style. Trigger words: lens, focal length, 35mm, 50mm, 85mm, wide angle, telephoto, anamorphic, fisheye, macro, aperture, f-stop, f/1.4, depth of field, bokeh, shallow DOF, deep focus, rack focus, focus pull, or a lens intent from a shot plan. Keep optical look separate from supported output parameters; preserve the selected model and send unresolved resolution needs to the caller rather than switching models automatically.",
+      "readme_summary": "Translates a lens, focal length, aperture, focus or sensor request into a canonical visible-result phrase for Seedance prompts or Seedream style, and routes unreliable focus pulls and tape looks to post.",
       "dependencies": [],
       "source_revision": "workspace",
       "upstream_hash": null,
@@ -237,8 +237,8 @@
     },
     "seedance-lighting-presets": {
       "kind": "leaf",
-      "description": "Translate a named lighting setup into a canonical Seedream `Lighting:` recipe and a matching Seedance visual-style lighting phrase, so the same lighting intent works for images (elements, storyboards) and video. Use when the user or a shot plan asks for lighting, light, rim light, backlight, golden hour, soft or hard light, three-point, Rembrandt, practical lights, silhouette, contre-jour, or key light direction. Golden hour here means the physical lighting (sun position and light); for a golden-hour color grade, use color-grade-palettes.",
-      "readme_summary": "Translates a named lighting setup (rim light, backlight, golden hour, soft/hard light, three-point, Rembrandt, practical lights, silhouette, contre-jour) into a canonical Seedream `Lighting:` recipe and a matching Seedance visual-style lighting phrase. Ensures the same lighting intent works for both images and video.",
+      "description": "Translate a named lighting setup into a canonical Seedream `Lighting:` recipe and a matching Seedance visual-style lighting phrase, so the same lighting intent works for images (elements, storyboards) and video, and word timed light cues inside a shot (a lamp clicking off, a flicker). Use when the user or a shot plan asks for lighting, light, rim light, backlight, golden hour, night or moonlight, soft or hard light, three-point, Rembrandt, practical lights, silhouette, contre-jour, key light direction, or a light change. Golden hour here means the physical lighting (sun position and light); for a golden-hour color grade, use color-grade-palettes.",
+      "readme_summary": "Translates a named lighting setup (rim light, backlight, golden hour, night and moonlight, soft/hard light, three-point, Rembrandt, practicals, silhouette, contre-jour) into a Seedream `Lighting:` recipe and a matching Seedance phrase, and words timed light cues inside a shot.",
       "dependencies": [],
       "source_revision": "workspace",
       "upstream_hash": null,
@@ -264,8 +264,8 @@
     },
     "seedance-pacing-presets": {
       "kind": "leaf",
-      "description": "Turn a named pacing or rhythm preset \u2014 speed ramp, slow motion, slow-mo, bullet time, ramp up, flash in/out, impact moment, montage, montage pacing, cut rhythm, time-lapse, freeze frame, named cuts or transitions, timing, or speed up \u2014 into a canonical, timestamped motion, cut, and pacing block for the Seedance 2.5 prompt. Use when the user or a shot plan asks to direct a scene's rhythm, tempo, or editing energy rather than only its content. Bullet time here is the freeze/slow-mo speed ramp; the camera-orbit technique belongs to seedance-camera-presets. Single Shot here is no-cuts pacing; the one-take pass-through camera path belongs to seedance-camera-presets.",
-      "readme_summary": "Compose prompt-only rhythm, time-lapse, freeze frame and named picture/audio transitions, including match cuts, dissolves, wipes and J/L cuts.",
+      "description": "Turn a named pacing or rhythm preset \u2014 speed ramp, slow motion, slow-mo, bullet time, ramp up, flash in/out, impact moment, montage, montage pacing, cut rhythm, time-lapse, freeze frame, progressive or partial change (an outfit or material changing part by part), named cuts or transitions, timing, or speed up \u2014 into a canonical, timestamped motion, cut, and pacing block for the Seedance 2.5 prompt. Use when the user or a shot plan asks to direct a scene's rhythm, tempo, or editing energy rather than only its content. Bullet time here is the freeze/slow-mo speed ramp; the camera-orbit technique belongs to seedance-camera-presets. Single Shot here is no-cuts pacing; the one-take pass-through camera path belongs to seedance-camera-presets.",
+      "readme_summary": "Compose prompt-only rhythm, speed ramps, time-lapse, freeze frame, progressive part-by-part changes and named picture/audio transitions, including match cuts, dissolves, wipes and J/L cuts.",
       "dependencies": [],
       "source_revision": "workspace",
       "upstream_hash": null,
@@ -273,7 +273,7 @@
     },
     "seedance-prompt-20": {
       "kind": "leaf",
-      "description": "Write and revise production-grade Seedance 2.0 video prompts with reference-role classification, subject definitions, spatial continuity, shot sequencing, camera direction, native audio, and constraints. Use this skill for Seedance 2.0 prompts, shot lists, chase or action blocking, scene geography, reference-driven video, and corrections to generated motion or continuity. For Seedance 2.5 prompts, compose with seedance-prompt-25 instead.",
+      "description": "Write and revise Seedance 2.0 video prompts, the legacy model used for 4K output and the Fast/Mini speed variants: asset preparation within the 2.0 reference limits, Define subject definitions, task-type declaration, shot-by-shot sequencing with inline reference binding, spatial continuity for chase or action blocking, native audio, and inline constraints. Use for Seedance 2.0 prompts, shot lists, 4K or Fast/Mini requests, and corrections to 2.0 generations. For Seedance 2.5 prompts, use seedance-prompt-25 instead.",
       "readme_summary": "Legacy Seedance 2.0 prompt skill. Use when you need 4K output (unsupported by 2.5), Fast/Mini speed variants, or lower cost per generation. Provides reference-role classification, subject definitions, spatial continuity, shot sequencing, and native audio direction.",
       "dependencies": [],
       "source_revision": "workspace",
@@ -282,8 +282,8 @@
     },
     "seedance-prompt-25": {
       "kind": "leaf",
-      "description": "Write production-grade Seedance 2.5 video prompts with the flexible six-part formula, 50-material multimodal referencing, variable-duration scene staging (4-30s), timestamp pacing, structured video editing (subject replacement, background replacement, audio editing), forward and backward video extension, keyframe sequences, storyboard grids, coarse and fine blockout references, one-click video, seamless transitions, audio bracket syntax, dialogue language reinforcement, emotional direction, and camera language. Use this skill for Seedance 2.5 prompts, multi-reference asset orchestration, scene staging, video editing, extension, and corrections to generated motion or continuity. For legacy Seedance 2.0 prompts, use seedance-prompt-20 instead. For 4K output through legacy 2.0 or Fast/Mini speed variants, also use `seedance-prompt-20`; whitelist-only 2.5 Premium (4K) uses this skill.",
-      "readme_summary": "Write production-grade Seedance 2.5 video prompts with the flexible six-part formula, 50-material multimodal referencing, variable-duration scene staging (4-30s), timestamp pacing, structured video editing (subject replacement, background replacement, audio editing), forward and backward video extension, keyframe sequences, storyboard grids,.",
+      "description": "Write production-grade Seedance 2.5 video prompts with the flexible six-part formula, per-shot camera, lens and light lines, 50-material multimodal referencing, variable-duration scene staging (4-30s), timestamp pacing and dialogue timing, structured video editing (subject replacement, background replacement, audio editing), forward and backward video extension, keyframe sequences, coarse and fine blockout references, one-click video, seamless transitions, audio bracket syntax, dialogue language reinforcement, emotional direction, camera language, and draft-first request packaging. Use this skill for Seedance 2.5 prompts, multi-reference asset orchestration, scene staging, video editing, extension, and corrections to generated motion or continuity. For legacy Seedance 2.0 prompts, 4K output through 2.0, or the Fast/Mini speed variants, use seedance-prompt-20; whitelist-only 2.5 Premium (4K) uses this skill.",
+      "readme_summary": "Write Seedance 2.5 prompts from shot plans and canonical elements, with native 480p drafts, approved promotion, language-aware dialogue and planning-only storyboards.",
       "dependencies": [],
       "source_revision": "workspace",
       "upstream_hash": null,
@@ -300,7 +300,7 @@
     },
     "seedance-prompt-25-filipino": {
       "kind": "leaf",
-      "description": "Write or revise Filipino, Tagalog, and Taglish dialogue direction for Seedance. Preserve approved exact words, speaker identity, meaning, and register. Use native audio by default; separate Seed Audio lip-sync is opt-in. Diagnose a specific pronunciation or delivery issue before proposing targeted annotation or an agreed vocabulary change. Treat pronunciation directions as hypotheses requiring listening review. Use for Filipino video prompts, natural dialogue, pronunciation, intonation, and code-switching; this independent prompt-only leaf returns a dialogue layer and does not submit generation tasks.",
+      "description": "Write or revise Filipino, Tagalog, and Taglish dialogue direction for Seedance. Preserve approved exact words, speaker identity, meaning, and register; draft new lines as English-dominant Taglish with simple Tagalog unless the brief sets another register, and treat \"English with a Filipino accent\" as an accent note rather than code-switching. Use native audio by default; separate Seed Audio lip-sync is opt-in. Diagnose a specific pronunciation or delivery issue before proposing targeted annotation or an agreed vocabulary change. Treat pronunciation directions as hypotheses requiring listening review. Use for Filipino video prompts, natural dialogue, pronunciation, intonation, and code-switching; this independent prompt-only leaf returns a dialogue layer and does not submit generation tasks.",
       "readme_summary": "Write Filipino and Taglish dialogue direction while preserving exact words and register; use evidence-based pronunciation hypotheses and opt-in separate lip-sync audio.",
       "dependencies": [],
       "source_revision": "workspace",
@@ -318,8 +318,8 @@
     },
     "seedance-shot-design": {
       "kind": "leaf",
-      "description": "Design the shot plan for a Seedance scene before any prompt is written: shot count and duration, the job of each shot, size, angle, camera move, lens intent, named light sources and key side, the contrast between neighboring shots, and a variety check (V1-V9) at a chosen energy level (restrained, standard, kinetic). Use for narrative, ad, micro-drama, music-video and showcase clips when camera and light are not already locked, when a scene reads flat or static, or when the user asks for a shot list, coverage, or more dynamic camera work and lighting. Returns a shot plan record and the per-shot facts a Seedance 2.5 prompt carries. Not for static assets, source-preserving edits (object swap, restyle, recast), or task submission.",
-      "readme_summary": "Plan per-shot coverage for Seedance scenes: shot count and jobs, size, angle, camera move, lens intent and light per shot, with variety rules and an energy level.",
+      "description": "Design the shot plan for a Seedance scene before any prompt is written: shot count and duration, the job of each shot, size, framing (single, two-shot, group, over-the-shoulder, over-the-hip, point of view, insert), angle, camera move, lens intent, named light sources and key side, the contrast between neighboring shots, and a variety check (V1-V10) at a chosen energy level (restrained, standard, kinetic). Use for narrative, ad, micro-drama, music-video and showcase clips when camera and light are not already locked, when a scene reads flat or static, or when the user asks for a shot list, coverage, shot framing, or more dynamic camera work and lighting. Returns a shot plan record and the per-shot facts a Seedance 2.5 prompt carries. Not for static assets, source-preserving edits (object swap, restyle, recast), or task submission.",
+      "readme_summary": "Plan per-shot coverage for Seedance scenes: shot count and jobs, size, framing, angle, camera move, lens intent and light per shot, with variety rules and an energy level.",
       "dependencies": [],
       "source_revision": "workspace",
       "upstream_hash": null,
@@ -372,7 +372,7 @@
     },
     "seedream-location-asset": {
       "kind": "leaf",
-      "description": "Write structured Seedream prompts for cinematic location assets and reusable environment sheets. Invoke when the user asks to create a location, interior, exterior, set reference, or establishing still with Seedream.",
+      "description": "Write structured Seedream prompts for cinematic location assets, reusable environment sheets, day and night lighting-state locks, and same-place environment plates for video restyles. Invoke when the user asks to create a location, interior, exterior, set reference, night version of a location, or establishing still with Seedream.",
       "readme_summary": "Writes structured Seedream prompts for cinematic location assets and reusable environment sheets. Use for creating locations, interiors, exteriors, set references, or establishing stills.",
       "dependencies": [],
       "source_revision": "workspace",
@@ -399,8 +399,8 @@
     },
     "seedream-storyboard": {
       "kind": "leaf",
-      "description": "Create, revise, and optionally generate production-ready cinematic storyboards\u2014from one hero panel with alternatives to a multi-panel continuity sequence\u2014with BytePlus Seedream. Supports two delivery modes \u2014 single-image grid (one image containing all panels, default) and separate images (one image per panel). Use whenever the user asks for storyboards, shot boards, continuity boards, storyboard frames, visual sequences, previsualization, scene panels, or image planning for film, advertising, animation, games, or AI video.",
-      "readme_summary": "Create, revise, and optionally generate production-ready cinematic storyboards\u2014from one hero panel with alternatives to a multi-panel continuity sequence\u2014with BytePlus Seedream.",
+      "description": "Create, revise, and optionally generate production-ready cinematic storyboards\u2014from one hero panel with alternatives to a multi-panel continuity sequence\u2014with BytePlus Seedream. Supports two delivery modes \u2014 single-image grid (one image containing all panels, default) and separate images (one image per panel). Boards are planning and review artifacts, never Seedance references. Use whenever the user asks for storyboards, shot boards, continuity boards, storyboard frames, visual sequences, previsualization, scene panels, or image planning for film, advertising, animation, games, or AI video.",
+      "readme_summary": "Create, revise, and optionally generate production-ready cinematic storyboards\u2014from one hero panel with alternatives to a multi-panel continuity sequence\u2014with BytePlus Seedream. Boards are planning and review artifacts, never Seedance references.",
       "dependencies": [],
       "source_revision": "workspace",
       "upstream_hash": null,
@@ -417,7 +417,7 @@
     },
     "template-factory": {
       "kind": "orchestrator",
-      "description": "Reverse-engineer a reference video (\"pin\") into reproducible AIGC output. Orchestrates pin intake (prefer a public HTTPS URL seed_understand can watch; download and media_upload only when unusable), video and audio breakdown, per-beat motion analysis, keyframes, dynamic sketch storyboard, optional element sheets (Seedream for invented identity; web/user download-first for authorized real brands/logos/products; deterministic HTML-entrypoint graphics for exact posters, cards, screens, product layouts, and overlays), and a Seedance 2.5 video \u2014 generation-bound prompts through prompt-review; reviewed in a HyperFrames Studio project. Explicit orchestrator composing ark-mcp (including seed_audio_understand), seedream-storyboard, seedance-prompt-25, prompt-review, html-graphic-render, hyperframes, and ffmpeg; never calls the Ark REST API. Use to replicate style/composition/grammar, build a reusable template, or turn a cited brand ad, Pinterest pin, or other reference video into elements and video.",
+      "description": "Reverse-engineer a reference video (\"pin\") into reproducible AIGC output. Orchestrates pin intake (prefer a public HTTPS URL seed_understand can watch; download and media_upload only when unusable), video and audio breakdown, per-beat motion analysis, keyframes, a planning-only sketch storyboard, optional element sheets (Seedream for invented identity; web/user download-first for authorized real brands/logos/products; deterministic HTML-entrypoint graphics for exact posters, cards, screens, product layouts, and overlays), and a Seedance 2.5 video \u2014 generation-bound prompts through prompt-review; reviewed in a HyperFrames Studio project. Explicit orchestrator composing ark-mcp (including seed_audio_understand), seedream-storyboard, seedance-prompt-25, prompt-review, html-graphic-render, hyperframes, and ffmpeg; never calls the Ark REST API. Use to replicate style/composition/grammar, build a reusable template, or turn a cited brand ad, Pinterest pin, or other reference video into elements and video.",
       "readme_summary": "Reverse-engineer a reference video and soundtrack into a timed visual and audio recipe, with reviewable assets and shot takes reviewed in a synchronized Studio project.",
       "dependencies": [],
       "source_revision": "workspace",
@@ -426,7 +426,7 @@
     },
     "tig-blocking-map": {
       "kind": "leaf",
-      "description": "Tigran's project-agnostic method for giving Seedance character DISPOSITION via a color-coded outline schematic \u2014 a \"staging reference\" (blocking map). Use WHENEVER a user attaches a frame/still and asks for a blocking map / staging reference, whenever a video prompt needs precise multi-character staging (who is where, facing which way), whenever characters jump seats or swap places between shot sizes, or when these terms clearly refer to cinematic staging. Do not trigger for generic software diagrams, architecture, charts, or maps. Figures are ALWAYS bound to letters A, B, C, D... in PROMPT TEXT ONLY \u2014 no letters are drawn on the map. The map is GEOMETRY ONLY \u2014 it must never bleed style, colors, wardrobe, or location into the shot.",
+      "description": "Project-agnostic method for giving Seedance character DISPOSITION via a color-coded outline schematic \u2014 a \"staging reference\" (blocking map). Use WHENEVER a user attaches a frame/still and asks for a blocking map / staging reference, whenever a video prompt needs precise multi-character staging (who is where, facing which way), whenever characters jump seats or swap places between shot sizes, when a clip with people must continue but Seedance cannot extend it, or when these terms clearly refer to cinematic staging. Do not trigger for generic software diagrams, architecture, charts, or maps. Figures are ALWAYS bound to letters A, B, C, D... in PROMPT TEXT ONLY \u2014 no letters are drawn on the map. The map is GEOMETRY ONLY \u2014 it must never bleed style, colors, wardrobe, or location into the shot.",
       "readme_summary": "Tigran's project-agnostic method for giving Seedance character DISPOSITION via a color-coded outline schematic \u2014 a \"staging reference\" (blocking map).",
       "dependencies": [],
       "source_revision": "workspace",
@@ -435,8 +435,17 @@
     },
     "tig-scene-engine": {
       "kind": "leaf",
-      "description": "Write and audit screenplay scenes and sequences using a five-element dramatic engine \u2014 Goal, Obstacle, Tactic, Reversal, Value Shift \u2014 with very specific custom definitions (see the body; these are NOT textbook definitions and must be applied exactly as written). Use whenever the user wants to write a new scene, draft scene options, develop a sequence, OR audit/test/diagnose an existing scene, sequence, outline, or full script for structural strength. Trigger on phrases like \"write this scene,\" \"give me an option for,\" \"audit my scene,\" \"test this against goal/obstacle/tactic/reversal/value shift,\" \"is this scene working,\" \"what's weak here,\" \"check my sequence,\" or when a screenplay/scene is pasted or a .docx/.pdf/Fountain/FD script is given for structural feedback. Also use proactively when the user is working on dramatic structure for thriller or psychological drama. Default to this skill for any scene-craft work rather than improvising generic story advice.",
+      "description": "Write and audit screenplay scenes and sequences using a five-element dramatic engine \u2014 Goal, Obstacle, Tactic, Reversal, Value Shift \u2014 with very specific custom definitions (see the body; these are NOT textbook definitions and must be applied exactly as written). Use whenever the user wants to write a new scene, draft scene options, develop a sequence, OR audit/test/diagnose an existing scene, sequence, outline, or full script for structural strength. Trigger on phrases like \"write this scene,\" \"give me an option for,\" \"audit my scene,\" \"test this against goal/obstacle/tactic/reversal/value shift,\" \"is this scene working,\" \"what's weak here,\" \"check my sequence,\" or when a screenplay/scene is pasted or a .docx/.pdf/Fountain/FD script is given for structural feedback. Also use proactively when the user is working on dramatic structure. Default to this skill for any scene-craft work rather than improvising generic story advice.",
       "readme_summary": "Writes and audits screenplay scenes and sequences using a five-element dramatic engine \u2014 Goal, Obstacle, Tactic, Reversal, Value Shift \u2014 with custom definitions. Use to write new scenes, draft options, develop sequences, or audit/test/diagnose existing scenes for structural strength. Default scene-craft skill for thriller and psychological drama.",
+      "dependencies": [],
+      "source_revision": "workspace",
+      "upstream_hash": null,
+      "overlay_notes": null
+    },
+    "scene-board-sheet": {
+      "kind": "leaf",
+      "description": "Assemble and time a scene's storyboard from existing sketch panels. Derives the scene board record from the shot plan at a per-scene level (L1, L2 or L3, L2 by default), validates it, registers generated and edited panel files with lineage, plans panel-only repairs so only failed panels are edited, and builds annotated sheet pages, a floor-plan overview, a timed animatic and a static review page. Use for scene-based storyboards that must be granular and detailed, scene board review sheets, animatics, stale-board checks after a shot plan or panel change, and repair planning for failed panels. Planning and assembly only: it never generates images or produces a Seedance reference, and the only approval it records is a panel's scope as the input of a repair edit.",
+      "readme_summary": "Derive a scene's storyboard record from its shot plan at L1, L2 (default) or L3, register generated and edited panels, plan panel-only repairs, and build annotated sheets, an animatic and a static review page.",
       "dependencies": [],
       "source_revision": "workspace",
       "upstream_hash": null,

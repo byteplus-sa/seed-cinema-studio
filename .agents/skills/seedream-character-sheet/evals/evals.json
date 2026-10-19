@@ -3,53 +3,28 @@
   "evals": [
     {
       "id": 1,
-      "prompt": "Write the Seedream prompt for a character sheet of Marta Lindqvist, a 58-year-old Swedish ferry captain with a weathered oval face, pale grey eyes, a strong jaw and short silver hair under a navy wool cap. She wears a navy peacoat with brass buttons, a grey roll-neck sweater and black rubber boots. Prompt only, no generation.",
-      "expected_output": "A T2I three-panel prompt (back full-body, front full-body, face close-up) on a plain gray background with neutral even lighting, the canonical neutral-expression phrase, the cap and boots in the outfit, and no held items.",
+      "prompt": "Write character-sheet prompts for a family of four for a drama series: the grandmother in her seventies, the mother, the teenage son and the youngest daughter. The grandmother always wears a woven shawl over her shoulders and has long grey hair to her waist. The son wears sunglasses only in the beach episode. Make the cast appealing and likeable. Prompts only.",
+      "expected_output": "Four three-panel sheet prompts that read as one appealing cast with a spread of complexions, the shawl kept in the grandmother's outfit with her hair stated as falling over it, and the sunglasses routed to a prop sheet.",
       "files": [],
       "expectations": [
-        "Task is Text-to-Image because no reference images are supplied, and the References section is omitted.",
-        "Composition states three panels only, in the order back full-body, front full-body, face close-up, with the same person in all panels.",
-        "Contains the canonical phrase: Relaxed neutral expression in all panels: mouth relaxed and closed, eyes looking straight into camera, no smile, no frown, no raised brows, no emotion.",
-        "Setting is a plain gray studio background and Lighting is soft, even, neutral studio light with no scene mood.",
-        "The navy cap and boots appear as part of the outfit, and the age, hair and 2-4 stable facial traits are carried over from the brief.",
-        "Negative constraints include no extra panels, no props in hands, no held objects and no text overlays."
+        "Each prompt uses the back full-body, front full-body, face close-up layout with plain gray background, neutral even light, and the canonical neutral-expression phrase.",
+        "Each character has observable appeal traits, and the grandmother is warm and soft-featured rather than haggard.",
+        "The cast shows a natural range of complexions named in plain words instead of one shared tone, and the four differ in at least three of hair, garment silhouette, dominant color, complexion, and age cues.",
+        "The grandmother's prompt states her waist-length grey hair falling over the shawl in the back and front panels.",
+        "The son's sunglasses are excluded from his sheet and routed to a separate prop sheet as a scene-variant wearable.",
+        "Garments without canonical graphics are described as plain fabric with no visible label or print.",
+        "The prompts set ratio and resolution through the size parameter rather than prompt words."
       ]
     },
     {
       "id": 2,
-      "prompt": "Make a character sheet for Daniel, a young courier. Image 1 is a photo of the actor's face I want as identity, image 2 is a green delivery jacket I want as wardrobe. Give him a leather satchel over his shoulder and a phone in his hand, because he is always shown using it.",
-      "expected_output": "An I2I prompt that binds @Image 1 to identity and @Image 2 to wardrobe, keeps the jacket in the outfit, and excludes the satchel and phone from the sheet with a pointer to seedream-prop-asset.",
+      "prompt": "Make a character sheet of the detective holding her badge and her phone, lit with the blue neon of the alley where she works.",
+      "expected_output": "A sheet prompt with empty hands and neutral studio light, with the badge and phone routed to prop handling and the neon kept for shot prompts.",
       "files": [],
       "expectations": [
-        "Task is Image-to-Image because reference images guide identity and wardrobe.",
-        "Lists both references in a References section and binds each again in the section it controls (identity and facial traits from @Image 1, wardrobe from @Image 2).",
-        "Keeps the sheet free of held and carried items: the phone and satchel are excluded and the hands are empty.",
-        "Points to seedream-prop-asset for the satchel and phone as separate prop references instead of drawing them on the sheet.",
-        "Keeps the plain gray background, neutral lighting and neutral expression defaults."
-      ]
-    },
-    {
-      "id": 3,
-      "prompt": "Write a character sheet prompt for Aiko in a moody red-lit nightclub setting, with a dramatic neon glow on her face and a big smile, in a five-view turnaround with profile and three-quarter angles.",
-      "expected_output": "Keeps the identity-sheet defaults and explains the departures: neutral even lighting on a gray background and a neutral expression, with the five-view layout handled as an explicit request.",
-      "files": [],
-      "expectations": [
-        "Does not put scene mood, neon light or a color cast into the sheet lighting; the sheet stays neutral even studio light and the scene look is left to the shot prompt.",
-        "Does not put a smile or other emotion in the sheet; it uses the relaxed neutral expression phrase.",
-        "Treats the five-view turnaround as an explicit request for more angles and says that the default is three panels, rather than silently keeping or silently dropping the request.",
-        "Does not add a nightclub background to the sheet unless the user explicitly asks for a stylized sheet background."
-      ]
-    },
-    {
-      "id": 4,
-      "prompt": "Write the character sheet prompt for Tomas, the main character of my series. I have not decided his background yet. He is 35, tall, with a square face, short dark hair and a beard.",
-      "expected_output": "Does not assume ethnicity or a complexion range; asks the user or marks cultural identity as unspecified and proceeds with the stated traits only.",
-      "files": [],
-      "expectations": [
-        "Takes ethnicity and cultural identity only from the brief or market card and does not assume one from the name.",
-        "Asks a focused question about cultural identity and complexion, or leaves it unspecified and flags it, instead of inventing a value.",
-        "Still carries age 35, square face, short dark hair and beard into the Subject section.",
-        "Does not import a default complexion range; any skin-tone spread across a cast stays within the range the market card's cast_appearance gives."
+        "The output keeps the badge and phone out of the sheet and points to prop references or shot-prompt descriptions.",
+        "The output keeps neutral, even studio lighting and explains that each shot prompt owns its own motivated light.",
+        "The output does not generate an image or claim one exists."
       ]
     }
   ]

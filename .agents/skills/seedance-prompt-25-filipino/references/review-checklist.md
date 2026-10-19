@@ -10,9 +10,17 @@ Use as an additional checklist alongside the Seedance 2.5 checklist in
 2. **Smallest relevant repair.** Separate wording, delivery, pronunciation and
    timing problems. Change vocabulary only when authorized and appropriate to
    the speaker, relationship, region and period; literary language is valid.
-3. **Register grounded.** Do not impose modern Manila Taglish, contractions,
-   honorifics or a fixed sentence length on every speaker. Preserve intentional
-   code-switching and politeness.
+3. **Register grounded (`dialogue.filipino_register`).** Approved lines keep
+   their register, code-switching and politeness. Newly drafted lines with no
+   register in the brief default to English-dominant Taglish with simple,
+   common Tagalog (po, opo, sige, tara, ingat, salamat); dense or deep Tagalog
+   in a new draft is MINOR unless the brief or character calls for it. Do not
+   impose contractions, honorifics or a fixed sentence length on every speaker.
+3a. **Accent is not code-switching (`dialogue.filipino_register`).** "English
+   with a Filipino accent" keeps every spoken word English inside the braces
+   and puts the accent in a delivery note outside them. Inserting Tagalog
+   words to make an accent request "sound Filipino" is MAJOR. The accent is
+   verified by a listener, not by ASR or an audio-understanding model.
 
 ### Pronunciation and delivery evidence
 
@@ -22,10 +30,12 @@ Use as an additional checklist alongside the Seedance 2.5 checklist in
 5. **No universal phonology recipe.** Do not force a default stress, flat contour,
    consonant substitution or one regional accent across Filipino speakers.
 6. **Notes separate from speech.** Preserve exact spoken text inside braces.
-   Annotation or phonetic respelling inside dialogue requires explicit scope.
+   Annotation or phonetic respelling inside dialogue requires explicit scope,
+   and is labeled a hypothesis: respelling can add syllables.
 7. **Cues serve intent.** Use concise, observable delivery rather than a dictionary
-   or a prescribed pitch sequence. Verify actual pronunciation by listening;
-   ASR text alone does not establish stress, intonation or speaker identity.
+   or a prescribed pitch sequence. `speech_to_text` is the authority for the
+   words; stress, intonation, accent and speaker identity need a listener
+   (preferably native). A model summary of the audio is not evidence.
 
 ### Separate audio, only when requested
 

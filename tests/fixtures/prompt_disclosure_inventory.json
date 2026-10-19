@@ -4,9 +4,9 @@
     {
       "skill": "seedance-prompt-25",
       "before_lines": 1336,
-      "after_lines": 228,
+      "after_lines": 302,
       "before_bytes": 62913,
-      "entry_bytes": 13035,
+      "entry_bytes": 16685,
       "references": [
         ".agents/skills/seedance-prompt-25/references/audio-performance-camera.md",
         ".agents/skills/seedance-prompt-25/references/keyframes-storyboards-blockouts.md",
@@ -29,16 +29,16 @@
           ".agents/skills/seedance-prompt-25/SKILL.md",
           ".agents/skills/seedance-prompt-25/references/scene-action.md"
         ],
-        "loaded_bytes": 19797,
+        "loaded_bytes": 26260,
         "measurement": "Exact file bytes for a declared loading path, not measured agent tokens or behavior."
       }
     },
     {
       "skill": "seedance-prompt-25-filipino",
       "before_lines": 1128,
-      "after_lines": 112,
+      "after_lines": 135,
       "before_bytes": 54248,
-      "entry_bytes": 6218,
+      "entry_bytes": 7576,
       "references": [
         ".agents/skills/seedance-prompt-25-filipino/references/audio-first.md",
         ".agents/skills/seedance-prompt-25-filipino/references/delivery-and-register.md",
@@ -59,43 +59,16 @@
           ".agents/skills/seedance-prompt-25-filipino/references/native-audio.md",
           ".agents/skills/seedance-prompt-25-filipino/references/phonetics.md"
         ],
-        "loaded_bytes": 12061,
-        "measurement": "Exact file bytes for a declared loading path, not measured agent tokens or behavior."
-      }
-    },
-    {
-      "skill": "seedance-vfx-prompt",
-      "before_lines": 1044,
-      "after_lines": 207,
-      "before_bytes": 51833,
-      "entry_bytes": 11143,
-      "references": [
-        ".agents/skills/seedance-vfx-prompt/references/compact-legacy.md",
-        ".agents/skills/seedance-vfx-prompt/references/fidelity-and-continuity.md",
-        ".agents/skills/seedance-vfx-prompt/references/integration-and-timing.md",
-        ".agents/skills/seedance-vfx-prompt/references/legacy-source-and-change.md",
-        ".agents/skills/seedance-vfx-prompt/references/legacy-vfx-levels.md",
-        ".agents/skills/seedance-vfx-prompt/references/seedance-25-edit.md"
-      ],
-      "retained_section_count": 6,
-      "extracted_section_count": 21,
-      "baseline_note": "Entry size before progressive disclosure, after immediate reliability corrections. Byte count is not model token usage.",
-      "representative_path": {
-        "scenario": "Default 2.5 background edit",
-        "files": [
-          ".agents/skills/seedance-vfx-prompt/SKILL.md",
-          ".agents/skills/seedance-vfx-prompt/references/seedance-25-edit.md"
-        ],
-        "loaded_bytes": 18950,
+        "loaded_bytes": 14573,
         "measurement": "Exact file bytes for a declared loading path, not measured agent tokens or behavior."
       }
     },
     {
       "skill": "seedream-prompt",
       "before_lines": 689,
-      "after_lines": 101,
+      "after_lines": 130,
       "before_bytes": 31538,
-      "entry_bytes": 6062,
+      "entry_bytes": 7787,
       "references": [
         ".agents/skills/seedream-prompt/references/image-editing.md",
         ".agents/skills/seedream-prompt/references/image-generation.md",
@@ -112,16 +85,16 @@
           ".agents/skills/seedream-prompt/SKILL.md",
           ".agents/skills/seedream-prompt/references/image-generation.md"
         ],
-        "loaded_bytes": 16047,
+        "loaded_bytes": 17534,
         "measurement": "Exact file bytes for a declared loading path, not measured agent tokens or behavior."
       }
     },
     {
       "skill": "seedream-storyboard",
       "before_lines": 963,
-      "after_lines": 227,
+      "after_lines": 244,
       "before_bytes": 41972,
-      "entry_bytes": 13421,
+      "entry_bytes": 14519,
       "references": [
         ".agents/skills/seedream-storyboard/references/context-and-preflight.md",
         ".agents/skills/seedream-storyboard/references/editing-failed-panels.md",
@@ -139,16 +112,16 @@
           ".agents/skills/seedream-storyboard/references/context-and-preflight.md",
           ".agents/skills/seedream-storyboard/references/panel-and-grid-prompts.md"
         ],
-        "loaded_bytes": 34043,
+        "loaded_bytes": 35812,
         "measurement": "Exact file bytes for a declared loading path, not measured agent tokens or behavior."
       }
     },
     {
       "skill": "seed-audio-prompt",
       "before_lines": 524,
-      "after_lines": 108,
+      "after_lines": 131,
       "before_bytes": 31755,
-      "entry_bytes": 7315,
+      "entry_bytes": 8700,
       "references": [
         ".agents/skills/seed-audio-prompt/references/api-reference.md",
         ".agents/skills/seed-audio-prompt/references/dialogue-and-voices.md",
@@ -167,82 +140,99 @@
           ".agents/skills/seed-audio-prompt/references/references-and-modes.md",
           ".agents/skills/seed-audio-prompt/references/soundscape-arrangement.md"
         ],
-        "loaded_bytes": 17334,
+        "loaded_bytes": 22591,
         "measurement": "Exact file bytes for a declared loading path, not measured agent tokens or behavior."
       }
     },
     {
-      "skill": "seed-audio-commercial",
-      "before_lines": 487,
-      "after_lines": 317,
-      "before_bytes": 21653,
-      "entry_bytes": 14488,
+      "skill": "ark-mcp",
       "references": [
-        ".agents/skills/seed-audio-commercial/references/commercial-sound-patterns.md",
-        ".agents/skills/seed-audio-commercial/references/worked-examples.md"
+        ".agents/skills/ark-mcp/references/3d.md",
+        ".agents/skills/ark-mcp/references/assets-and-rights.md",
+        ".agents/skills/ark-mcp/references/audio.md",
+        ".agents/skills/ark-mcp/references/background-job-output.md",
+        ".agents/skills/ark-mcp/references/object-storage.md",
+        ".agents/skills/ark-mcp/references/seedance-tasks.md",
+        ".agents/skills/ark-mcp/references/seedance.md",
+        ".agents/skills/ark-mcp/references/seedream.md",
+        ".agents/skills/ark-mcp/references/server-config.md",
+        ".agents/skills/ark-mcp/references/troubleshooting.md",
+        ".agents/skills/ark-mcp/references/understanding-and-stt.md",
+        ".agents/skills/ark-mcp/references/vod-mediakit.md"
       ],
-      "retained_section_count": 6,
-      "extracted_section_count": 6,
-      "baseline_note": "Entry size before progressive disclosure, after immediate reliability corrections. Byte count is not model token usage.",
       "representative_path": {
-        "scenario": "Basic commercial lifecycle, no specialized pattern",
+        "scenario": "Focused capability or checklist loading",
         "files": [
-          ".agents/skills/seed-audio-commercial/SKILL.md"
+          ".agents/skills/ark-mcp/SKILL.md",
+          ".agents/skills/ark-mcp/references/3d.md"
         ],
-        "loaded_bytes": 14488,
-        "measurement": "Exact file bytes for a declared loading path, not measured agent tokens or behavior."
-      }
+        "measurement": "Exact current file bytes for a declared loading path, not measured agent tokens or behavior.",
+        "loaded_bytes": 22096
+      },
+      "after_lines": 287,
+      "entry_bytes": 16185
     },
     {
-      "skill": "seedance-music-video",
-      "before_lines": 510,
-      "after_lines": 437,
-      "before_bytes": 23387,
-      "entry_bytes": 21468,
+      "skill": "prompt-review",
       "references": [
-        ".agents/skills/seedance-music-video/references/music-repairs.md",
-        ".agents/skills/seedance-music-video/references/music-video-recipes.md",
-        ".agents/skills/seedance-music-video/references/output-templates.md",
-        ".agents/skills/seedance-music-video/references/specialized-formats.md"
+        ".agents/skills/prompt-review/references/checklist-audio-dialogue.md",
+        ".agents/skills/prompt-review/references/checklist-music-ugc.md",
+        ".agents/skills/prompt-review/references/checklist-seedance-25.md",
+        ".agents/skills/prompt-review/references/checklist-seedance-edits.md",
+        ".agents/skills/prompt-review/references/checklist-seedance-legacy.md",
+        ".agents/skills/prompt-review/references/checklist-seedream-elements.md",
+        ".agents/skills/prompt-review/references/checklist-seedream.md"
       ],
-      "retained_section_count": 8,
-      "extracted_section_count": 3,
-      "baseline_note": "Entry size before progressive disclosure, after immediate reliability corrections. Byte count is not model token usage.",
       "representative_path": {
-        "scenario": "Song and beat direction, no output-template expansion",
+        "scenario": "Focused capability or checklist loading",
         "files": [
-          ".agents/skills/seedance-music-video/SKILL.md"
+          ".agents/skills/prompt-review/SKILL.md",
+          ".agents/skills/prompt-review/references/checklist-audio-dialogue.md"
         ],
-        "loaded_bytes": 21468,
-        "measurement": "Exact file bytes for a declared loading path, not measured agent tokens or behavior."
-      }
+        "measurement": "Exact current file bytes for a declared loading path, not measured agent tokens or behavior.",
+        "loaded_bytes": 33161
+      },
+      "after_lines": 492,
+      "entry_bytes": 24512
     },
     {
-      "skill": "seedance-vfx-pipeline",
-      "before_lines": 512,
-      "after_lines": 245,
-      "before_bytes": 22126,
-      "entry_bytes": 14203,
+      "skill": "seedream-location-asset",
       "references": [
-        ".agents/skills/seedance-vfx-pipeline/references/delivery-and-manifest.md",
-        ".agents/skills/seedance-vfx-pipeline/references/recast-and-variants.md",
-        ".agents/skills/seedance-vfx-pipeline/references/shot-chaining.md",
-        ".agents/skills/seedance-vfx-pipeline/references/submission.md"
+        ".agents/skills/seedream-location-asset/references/complex-architecture.md",
+        ".agents/skills/seedream-location-asset/references/worked-examples.md"
       ],
-      "retained_section_count": 9,
-      "extracted_section_count": 7,
-      "baseline_note": "Entry size before progressive disclosure, after immediate reliability corrections. Byte count is not model token usage.",
       "representative_path": {
-        "scenario": "Submit and deliver VFX edit",
+        "scenario": "Focused capability or checklist loading",
         "files": [
-          ".agents/skills/seedance-vfx-pipeline/SKILL.md",
-          ".agents/skills/seedance-vfx-pipeline/references/submission.md",
-          ".agents/skills/seedance-vfx-pipeline/references/delivery-and-manifest.md"
+          ".agents/skills/seedream-location-asset/SKILL.md",
+          ".agents/skills/seedream-location-asset/references/complex-architecture.md"
         ],
-        "loaded_bytes": 24323,
-        "measurement": "Exact file bytes for a declared loading path, not measured agent tokens or behavior."
-      }
+        "measurement": "Exact current file bytes for a declared loading path, not measured agent tokens or behavior.",
+        "loaded_bytes": 12176
+      },
+      "after_lines": 224,
+      "entry_bytes": 10360
+    },
+    {
+      "skill": "seedream-prop-asset",
+      "references": [
+        ".agents/skills/seedream-prop-asset/references/body-continuity-marks.md",
+        ".agents/skills/seedream-prop-asset/references/prop-qa.md",
+        ".agents/skills/seedream-prop-asset/references/view-layouts.md",
+        ".agents/skills/seedream-prop-asset/references/worked-examples.md"
+      ],
+      "representative_path": {
+        "scenario": "Focused capability or checklist loading",
+        "files": [
+          ".agents/skills/seedream-prop-asset/SKILL.md",
+          ".agents/skills/seedream-prop-asset/references/body-continuity-marks.md"
+        ],
+        "measurement": "Exact current file bytes for a declared loading path, not measured agent tokens or behavior.",
+        "loaded_bytes": 24777
+      },
+      "after_lines": 466,
+      "entry_bytes": 24025
     }
   ],
-  "measurement_revision": "2026-09-08 creative-quality update; original before counts retained, current paths remeasured as file bytes, not agent tokens"
+  "measurement_revision": "2026-10-19 installed workspace scope; historical before counts retained where available; current paths measured as file bytes, not agent tokens"
 }

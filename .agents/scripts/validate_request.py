@@ -14,6 +14,33 @@ from ruamel.yaml import YAML
 from ruamel.yaml.error import YAMLError
 
 SCHEMA_ROOT = Path(__file__).resolve().parents[1] / "contracts/schemas"
+BOARD_DIRECTORY = re.compile(r"(?:^|/)scenes/scene-\d{2}/board/", re.IGNORECASE)
+BOARD_FILE = re.compile(
+    r"^s\d{2}_(?:"
+    r"sh\d{3}_p\d{3}_t\d{2}_v\d{2}\.(?:png|jpe?g|webp)"
+    r"|sh\d{3}_board_t\d{2}_v\d{2}\.(?:png|jpe?g|webp)"
+    r"|sheet_pg\d{2}_v\d{2}\.[a-z0-9]+"
+    r"|overview_v\d{2}\.[a-z0-9]+"
+    r"|animatic_v\d{2}\.[a-z0-9]+"
+    r")$",
+    re.IGNORECASE,
+)
+BOARD_EXEMPT_MODEL = re.compile(r"(?:^|-)seedream(?:-|$)")
+SEEDANCE_25_MODEL = re.compile(r"(?:^|-)seedance-2-5(?:-|$)")
+
+
+def is_board_artifact(path: str) -> bool:
+    normalized = path.replace("\\", "/")
+    return bool(
+        BOARD_DIRECTORY.search(normalized)
+        or BOARD_FILE.match(normalized.rsplit("/", 1)[-1])
+    )
+
+
+def board_guard_applies(model: str, allow_board_references: bool) -> bool:
+    name = model.lower()
+    exempt = bool(BOARD_EXEMPT_MODEL.search(name)) and "seedance" not in name
+    return not allow_board_references and not exempt
 
 
 @dataclass(frozen=True)
@@ -547,14 +574,106 @@ def legacy_approval_findings(root: Path, ref: dict[str, Any]) -> list[Finding]:
     return findings
 
 
+def board_finding(path: str) -> Finding:
+    return Finding(
+        "board.animatic_review_only",
+        "Storyboard panels, boards, sheets, overviews and animatics are planning artifacts, never generation inputs",
+        path,
+    )
+
+
+def is_draft_promotion(params: Any) -> bool:
+    task_id = params.get("draft_task_id") if isinstance(params, dict) else None
+    return isinstance(task_id, str) and bool(task_id.strip())
+
+
+def draft_selected(
+    root: Path, draft: dict[str, Any], *, require_decision: bool = False
+) -> bool:
+    if draft["review_status"] == "approved" and not require_decision:
+        project = root / "project.md"
+        project_text = (
+            contained_path(root, "project.md").read_text()
+            if project.exists() or project.is_symlink()
+            else ""
+        )
+        metadata = parse_frontmatter(project_text) if project_text.startswith("---") else {}
+        if "approval_mode" not in metadata:
+            return True
+    output = draft.get("extensions", {}).get("expected_output")
+    for path in sorted((root / "decisions").glob("*.json")):
+        try:
+            decision = json.loads(
+                contained_path(root, f"decisions/{path.name}").read_text()
+            )
+        except (ValueError, OSError, UnicodeError):
+            continue
+        if (
+            isinstance(decision, dict)
+            and decision.get("decision_type") == "variant_selection"
+            and decision.get("subject_path") == output
+            and not decision_findings(root, decision, require_current_project=True)
+        ):
+            return True
+    return False
+
+
+def draft_promotion_findings(root: Path, request: dict[str, Any]) -> list[Finding]:
+    task_id = request["params"]["draft_task_id"]
+    try:
+        registry = json.loads(contained_path(root, "task_ids.json").read_text())
+        if schema_findings(registry, "task-registry.schema.json"):
+            raise ValueError("Task registry is invalid")
+        draft = next(
+            (task for task in registry["tasks"] if task["provider_task_id"] == task_id),
+            None,
+        )
+        if draft is None:
+            message = f"draft_task_id {task_id} names no registered operation"
+        elif not (
+            SEEDANCE_25_MODEL.search(draft["model"].lower())
+            and draft["model"] == request["model"]
+            and draft["params"].get("draft") is True
+            and draft["params"].get("resolution") == "480p"
+        ):
+            message = f"{draft['operation_id']} is not a 480p draft of this model"
+        elif (
+            draft["submission_status"] != "terminal"
+            or draft["provider_status"] != "succeeded"
+        ):
+            message = f"{draft['operation_id']} is not a successfully completed draft"
+        elif not draft_selected(
+            root,
+            draft,
+            require_decision=request["schema_version"] == 2 or draft["schema_version"] == 2,
+        ):
+            message = f"{draft['operation_id']} has no approved review or selection"
+        elif draft["prompt_sha256"] != request["prompt_sha256"]:
+            message = f"Prompt differs from the prompt of {draft['operation_id']}"
+        else:
+            return []
+    except (ValueError, TypeError, OSError, UnicodeError, YAMLError) as error:
+        message = f"Cannot verify the draft: {error}"
+    return [Finding("seedance.draft_promotion_source", message, "task_ids.json")]
+
+
 def reference_findings(
-    root: Path, references: list[dict[str, Any]], prompt: str, schema_version: int = 1
+    root: Path,
+    references: list[dict[str, Any]],
+    prompt: str,
+    schema_version: int = 1,
+    *,
+    model: str = "",
+    allow_board_references: bool = False,
+    inherits_inputs: bool = False,
 ) -> list[Finding]:
     findings: list[Finding] = []
+    guard_boards = board_guard_applies(model, allow_board_references)
     counters = {"Image": 0, "Video": 0, "Audio": 0}
     expected_bindings: list[str] = []
     for ref in references:
         path = ref["path"]
+        board_flagged = guard_boards and is_board_artifact(path)
         if ref.get("control_only"):
             findings.append(
                 Finding(
@@ -566,8 +685,16 @@ def reference_findings(
         try:
             target = contained_path(root, path)
         except ValueError as error:
+            if board_flagged:
+                findings.append(board_finding(path))
             findings.append(Finding("path.containment", str(error), path))
             continue
+        if not board_flagged and guard_boards:
+            board_flagged = is_board_artifact(
+                target.relative_to(root.resolve()).as_posix()
+            )
+        if board_flagged:
+            findings.append(board_finding(path))
         if hashlib.sha256(target.read_bytes()).hexdigest() != ref["sha256"]:
             findings.append(
                 Finding("references.current_hashes", "Reference content changed", path)
@@ -601,6 +728,8 @@ def reference_findings(
                 )
             )
     actual = set(re.findall(r"@(?:Image|Video|Audio) \d+\b", prompt))
+    if inherits_inputs and not references:
+        return findings
     if actual != set(expected_bindings):
         findings.append(
             Finding(
@@ -693,7 +822,9 @@ def capability_findings(request: dict[str, Any], evidence: Any) -> list[Finding]
     return findings
 
 
-def prepared_evidence_findings(project_root: Path, request: Any) -> list[Finding]:
+def prepared_evidence_findings(
+    project_root: Path, request: Any, allow_board_references: bool = False
+) -> list[Finding]:
     findings = schema_findings(request, "generation-request.schema.json")
     if findings:
         return findings
@@ -731,11 +862,20 @@ def prepared_evidence_findings(project_root: Path, request: Any) -> list[Finding
             )
     except (ValueError, TypeError) as error:
         findings.append(Finding("request.current_hash", str(error)))
+    promotion = is_draft_promotion(request["params"])
+    promotion_findings = draft_promotion_findings(root, request) if promotion else []
     findings.extend(
         reference_findings(
-            root, request["references"], prompt_text, request["schema_version"]
+            root,
+            request["references"],
+            prompt_text,
+            request["schema_version"],
+            model=request["model"],
+            allow_board_references=allow_board_references,
+            inherits_inputs=promotion and not promotion_findings,
         )
     )
+    findings.extend(promotion_findings)
     findings.extend(project_mode_findings(root, request))
     if (
         request["submission_status"] != "prepared"
@@ -751,9 +891,12 @@ def prepared_evidence_findings(project_root: Path, request: Any) -> list[Finding
 
 
 def validate_request(
-    project_root: Path, request: Any, capability_evidence: Any
+    project_root: Path,
+    request: Any,
+    capability_evidence: Any,
+    allow_board_references: bool = False,
 ) -> list[Finding]:
-    findings = prepared_evidence_findings(project_root, request)
+    findings = prepared_evidence_findings(project_root, request, allow_board_references)
     if schema_findings(request, "generation-request.schema.json"):
         return findings
     findings.extend(capability_findings(request, capability_evidence))
