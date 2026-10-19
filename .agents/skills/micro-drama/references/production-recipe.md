@@ -93,9 +93,13 @@ fills to the clip end. Budget for it:
 | --- | --- |
 | Technical | ffprobe: 480p draft or market-card delivery target (1080×1920 by default), video-stream duration, audio stream |
 | Picture | Frames about every 1 s plus top-left corner crops, viewed directly: identity, wardrobe, geography, anatomy, baked-in text or digits, black side bars |
-| Dialogue | Speech-to-text diff against locked lines: every word, correct speaker, order, and the tail after the last word |
-| Temporal | `seed_understand` on the uploaded take: motion plausibility, unnatural head or body turns, duplicated props |
-| Listening | `seed_audio_understand` on an audio extract under 25 MB as a flag for leaked score or stings; the model mislabels music, so a flagged or contested track needs a human listen, and accent verdicts need a native listener |
+| Dialogue | Word-timed speech-to-text diff against locked lines: every word, correct speaker, order, and the tail after the last word; listen to disputed words because ASR can be wrong |
+| Temporal | Actual playback covering the full take when native video tools are available; otherwise supported video analysis such as `seed_understand` on an uploaded take. Check motion plausibility, unnatural head or body turns, duplicated props and visible lip sync; frame samples alone are insufficient |
+| Listening | Listen through the full soundtrack when native audio tools are available. `seed_audio_understand` on an audio extract under 25 MB can flag leaked score or stings but can mislabel music; flagged or contested audio needs direct listening, and accent verdicts need a native listener |
+
+Honor explicitly requested provider analysis. Record what each inspection covered;
+unavailable temporal, dialogue or listening checks remain unresolved and cannot
+be promoted to a passing take from frame samples or a summary.
 
 Hard-gate failures: identity swap, wrong speaker, missing or wrong word in a
 locked line, baked-in text, broken anatomy, impossible motion, wrong location,

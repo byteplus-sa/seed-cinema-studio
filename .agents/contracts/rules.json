@@ -458,7 +458,7 @@
         "preflight"
       ],
       "owner_path": ".agents/contracts/production-policy.md",
-      "summary": "A request carrying draft_task_id names a registered 480p Seedance 2.5 draft of the same model and prompt, approved in the registry or by a passing variant-selection decision for its expected output.",
+      "summary": "A request carrying draft_task_id names a successfully completed registered 480p Seedance 2.5 draft of the same model and prompt. Version-2 or mode-aware projects require a current hash-bound selection of its expected output; legacy version-1 projects without an approval mode may retain registry approval.",
       "exceptions": []
     },
     {

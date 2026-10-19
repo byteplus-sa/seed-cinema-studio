@@ -107,7 +107,7 @@
       "source": "./local",
       "sourceType": "local",
       "skillPath": ".agents/skills/micro-drama/SKILL.md",
-      "computedHash": "d4f80aab48618cc7a6fa511c6cd481590f6fb8e64a332c3dfc6b96a0985f372c"
+      "computedHash": "4e0088b45e98dab10ce5231aa8aef3237300e93d98a57045044ee112c1b3d4d8"
     },
     "microdrama-localize": {
       "source": "./local",

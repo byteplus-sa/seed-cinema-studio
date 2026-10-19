@@ -470,6 +470,29 @@ def plan_board_status(plan: dict[str, Any]) -> str:
     return "ready" if plan.get("status") == "ready" else "draft"
 
 
+def light_source_hashes(plan: dict[str, Any]) -> dict[str, str]:
+    return {
+        str(source["id"]): sha256_json(source)
+        for source in plan.get("sources") or []
+        if isinstance(source, dict) and source.get("id")
+    }
+
+
+def light_source_changed(
+    panel: dict[str, Any],
+    previous: dict[str, str] | None,
+    current: dict[str, str],
+    plan_changed: bool,
+) -> bool:
+    light = panel.get("light")
+    source = light.get("source") if isinstance(light, dict) else light
+    if not isinstance(source, str):
+        return False
+    if previous is None:
+        return plan_changed and bool(source)
+    return previous.get(source) != current.get(source)
+
+
 def initial_board(
     source: SceneSource,
     level: str,
@@ -488,6 +511,7 @@ def initial_board(
         "aspect_ratio": aspect,
         "bind_to_seedance": False,
         "shot_plan_sha256": source.plan_sha256,
+        "light_sources_sha256": light_source_hashes(source.plan),
     }
     if overrides:
         board["overrides"] = [
@@ -570,6 +594,9 @@ def rebase_plan(root: Path, scene: str) -> dict[str, Any]:
         for item in board.get("overrides", [])
     }
     derived = derive_panels(source, board["level"], overrides)
+    current_sources = light_source_hashes(source.plan)
+    prior_sources = board.get("light_sources_sha256")
+    plan_changed = board["shot_plan_sha256"] != source.plan_sha256
     previous = {panel["id"]: panel for panel in board["panels"]}
     carried_ids: set[str] = set()
     changed: list[str] = []
@@ -584,6 +611,9 @@ def rebase_plan(root: Path, scene: str) -> dict[str, Any]:
         differs = any(
             old.get(name) != panel.get(name) for name in PLAN_AGREEMENT_FIELDS
         )
+        differs = differs or light_source_changed(
+            panel, prior_sources, current_sources, plan_changed
+        )
         if differs and panel.get("file"):
             panel["status"] = "needs_edit"
             panel.pop("decision", None)
@@ -595,6 +625,7 @@ def rebase_plan(root: Path, scene: str) -> dict[str, Any]:
     ]
     board["panels"] = derived
     board["shot_plan_sha256"] = source.plan_sha256
+    board["light_sources_sha256"] = current_sources
     board["status"] = plan_board_status(source.plan)
     validate_new_board(board)
     write_board(root, scene, board, body)
@@ -1748,13 +1779,21 @@ def animatic_status(
         audio_changed = not audio_file.is_file() or sha256_file(
             audio_file
         ) != record.get("audio_sha256")
-    stale = bool(changed) or audio_changed or plan_stale
+    output = contained(root, record["file"])
+    output_problem = None
+    if not output.is_file():
+        output_problem = "missing"
+    elif sha256_file(output) != record.get("sha256"):
+        output_problem = "changed"
+    stale = bool(changed) or audio_changed or plan_stale or output_problem is not None
     report: dict[str, Any] = {
         "state": "stale" if stale else "current",
         "panels": changed,
     }
     if audio_changed:
         report["audio"] = "changed"
+    if output_problem:
+        report["output"] = output_problem
     if plan_stale:
         report["reason"] = "shot plan changed"
     return report
@@ -2233,7 +2272,7 @@ def build_review_page(root: Path, scene: str) -> dict[str, Any]:
     overview_path = latest_record(
         derived_path(root, scene, "overview"), "*.overview.json"
     )
-    if overview_path:
+    if overview_path and status["overview"]["state"] != "no layout":
         png = contained(root, read_json(overview_path)["png"])
         if png.is_file():
             pieces.append(
@@ -2265,6 +2304,14 @@ def build_review_page(root: Path, scene: str) -> dict[str, Any]:
         pages = ", ".join(str(item["page"]) for item in status["stale_sheet_pages"])
         notes += (
             f'<p class="warn">Stale or unrendered sheet pages: {html.escape(pages)}</p>'
+        )
+    if status["animatic"]["state"] == "stale":
+        notes += (
+            '<p class="warn">Stale animatic: rebuild it before reviewing the current board.</p>'
+        )
+    if status["overview"]["state"] == "stale":
+        notes += (
+            '<p class="warn">Stale overview: rebuild it before reviewing the current layout.</p>'
         )
     number = int(scene.split("-")[1])
     document = (

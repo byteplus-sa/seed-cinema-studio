@@ -112,12 +112,13 @@ does not create a native draft; confirm the live tool supports `draft: true`.
     reports `not_applicable` with that exemption. A missing plan without an
     exemption is MAJOR.
 
-17. **Shot density.** A spot is built from short sequences of 2-3 shots with
-    one action per shot (a 30 s spot as about six 5 s sequences), not one pass
-    of many beats. A 30 s single pass with nine or more beats, or a single-setup
-    clip with no stated camera move, reads as stock footage (MAJOR). About 7
-    shots per clip at most, none shorter than about 0.8 s; shorter cuts merge.
-    Each shot or stage has one primary state change and a clear end state.
+17. **Shot density.** Clip count, shot lengths and scene rhythm follow the
+    confirmed episode format, scene plan, dialogue and budget; do not impose a
+    fixed advertising cadence on micro-drama. Each shot or stage has one primary
+    state change and a clear end state. An overpacked clip that cannot preserve
+    its planned beats or dialogue timing is MAJOR. About 7 shots per clip at
+    most, none shorter than about 0.8 s; shorter cuts merge. A static shot is
+    valid with the recorded reason required by the shot plan.
 
 18. **Neighbor contrast and angle range (`shot.variety`).** Adjacent shots
     differ in at least two of size family, angle class, camera move and key

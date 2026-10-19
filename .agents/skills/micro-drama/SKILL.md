@@ -42,17 +42,20 @@ and an optional full-episode showreel.
 
 ## Workflow
 
-1. **Brief.** Lock logline, formula, a cast of at most three recurring
-   characters, one or two locations, threshold props, and exact dialogue per
+1. **Brief.** Lock logline, formula, recurring cast, locations, threshold props,
+   and exact dialogue per
    scene within the word budget in [episode structure](references/episode-structure.md).
+   Default to at most three recurring characters and one or two locations unless
+   the confirmed episode plan specifies otherwise.
    Record `approval_mode`, format, run budget, the native-dialogue audio route and
    look intent in `project.md`,
    run `brief-intake` with a fast proposal, then run `studio_project.py init <project>` (see the
    [production policy](../../contracts/production-policy.md)) (pre-Studio canvas projects with
    `showcase.json` keep the `showcase-html` canvas).
-2. **Breakdown.** Three scenes: Hook (about 15 s), Turn (about 20 s),
-   Cliffhanger (about 15 s). Each scene is one multi-shot Seedance clip with
-   internal cuts, and each gets a shot plan (size, angle, move and light per
+2. **Breakdown.** Follow the confirmed episode or market-card scene plan.
+   Default to three scenes: Hook (about 15 s), Turn (about 20 s), Cliffhanger
+   (about 15 s). Split scenes into clips as needed for verified model limits and
+   dialogue timing. Each scene gets a shot plan (size, angle, move and light per
    shot) from `seedance-shot-design` at standard energy by default; kinetic is for
    shots without spoken lines. Walk every beat against the element-identification
    contract.
@@ -76,13 +79,16 @@ and an optional full-episode showreel.
    [production recipe](references/production-recipe.md). Run `prompt-review`
    inline by default; use a sub-agent only when the user explicitly requests
    sub-agent prompt review for the project or specific generation. Register the
-   operation, submit the three clips in parallel as native 480p drafts
+   operation for each clip, submit independent planned clips in parallel within
+   the run budget as native 480p drafts
    (`draft: true`), record each draft task ID with `draft_ledger.py`, and QA each
    take. Promote approved drafts to the final resolution with `draft_task_id`
    within 7 days, as the [draft and promotion contract](../../contracts/draft-promotion.md)
    describes, and inspect each final before it replaces the draft in Studio.
-7. **Assembly.** In Studio, place the cold open first, then the title card, the
-   three clips with short dissolves, and the to-be-continued card. Keep original
+7. **Assembly.** In Studio, follow the confirmed episode order and transition
+   plan. The default is a cold open, title card, three scene clips with short
+   dissolves, and a to-be-continued card; a confirmed format overrides these
+   cards, scene count and transitions. Keep original
    colours unless the brief records a look. Fix wrong words with word-scoped audio
    patches. Add a subtitle sidecar per requested language and
    normalize loudness. Picture and audio locks come from real playback and

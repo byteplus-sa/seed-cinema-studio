@@ -46,18 +46,20 @@ must stay ambient or score-led; generate the picture silent and build the bed
 in post. Say in the brief that post beds are laid to the cut and are not
 frame-synced to on-screen action unless SFX are placed by timestamp.
 
-## 3. Cinematic structure for ads and TVCs
+## 3. Cinematic structure from the episode plan
 
-A single long pass carrying nine or more beats reads as stock footage. For a
-cinematic spot:
+Use the project's confirmed episode duration, scene split, energy and budget.
+A market card overrides the default Hook, Turn and Cliffhanger structure; do
+not impose advertising cadence on a dialogue scene.
 
-- Build a 30 s spot as about **six sequences of about 5 s**, each with **2–3
-  shots** and **one action per shot**.
+- Derive clip count and duration from the scene plan and verified model limits.
+  Give each shot **one primary action** and a clear end state. Split an
+  overpacked scene into planned clips rather than compressing its dialogue.
 - Give every shot a lens intent, a camera move, a motivated named light source
   and depth layers (foreground, subject, background), carried from the
   `seedance-shot-design` plan.
-- Give every sequence **one "wow" image**: the frame that would sell the spot
-  as a still.
+- Give each scene **one dramatic payoff image** tied to its Hook, Turn or
+  Cliffhanger function, or the alternative structure recorded in the brief.
 - Use dynamic verbs over soft mood words, and state the camera move for every
   shot. A static shot carries its recorded reason.
 - Keep every planned shot at least about 0.8 s; Seedance merges shorter shots.
@@ -121,8 +123,9 @@ Default assembly does **conform, trim, crop, overlays, end card and mix only**.
 
 Run these checks before a take passes, and use the narrowest fix.
 
-- **Words:** `speech_to_text` on the local file is the authority for spoken
-  words. A model summary is not evidence. Accent and pronunciation verdicts need
+- **Words:** compare a word-timed `speech_to_text` transcript against locked
+  dialogue and listen to disputed words; ASR can be wrong. A model summary is
+  not a transcript. Accent and pronunciation verdicts need
   a native listener; `seed_audio_understand` cannot judge accent and can
   mislabel music.
 - **Speech timing:** lines land 0.5–1.5 s late and later after long pre-line

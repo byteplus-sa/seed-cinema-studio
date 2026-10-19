@@ -58,6 +58,13 @@
       "type": "string",
       "pattern": "^[0-9a-f]{64}$"
     },
+    "light_sources_sha256": {
+      "type": "object",
+      "additionalProperties": {
+        "type": "string",
+        "pattern": "^[0-9a-f]{64}$"
+      }
+    },
     "overrides": {
       "type": "array",
       "items": {

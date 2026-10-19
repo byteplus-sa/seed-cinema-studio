@@ -538,6 +538,8 @@ class RequestValidationTests(unittest.TestCase):
         ]
 
     def select_draft_take(self):
+        if not (self.root / "project.md").exists():
+            (self.root / "project.md").write_text("---\napproval_mode: approve_for_me\n---\n")
         (self.root / "draft.mp4").write_bytes(b"fixture draft video")
         review = {
             "schema_version": 1,
@@ -568,7 +570,7 @@ class RequestValidationTests(unittest.TestCase):
             "selected_sha256": self.hash("draft.mp4"),
             "actor": "agent",
             "approval_mode": "approve_for_me",
-            "project_sha256": "0" * 64,
+            "project_sha256": self.hash("project.md"),
             "result": "approved",
             "review_path": "draft_review.json",
             "review_sha256": self.hash("draft_review.json"),
@@ -623,6 +625,98 @@ class RequestValidationTests(unittest.TestCase):
     def test_promotion_of_draft_selected_by_decision_passes(self):
         self.promote(review_status="review")
         self.select_draft_take()
+        self.assertEqual(self.findings(), [])
+
+    def test_promotion_requires_successful_terminal_draft(self):
+        cases = [
+            {"submission_status": status}
+            for status in ["prepared", "submitting", "submission_unknown", "acknowledged"]
+        ] + [
+            {"provider_status": status}
+            for status in [None, "queued", "running", "failed", "cancelled", "expired"]
+        ]
+        for changes in cases:
+            with self.subTest(changes=changes):
+                self.promote(**changes)
+                self.assertTrue(self.promotion_findings())
+                self.assertTrue(self.ordered_binding_findings())
+
+    def test_v2_draft_approved_status_requires_current_selection(self):
+        self.prepare_v2()
+        self.promote()
+        self.assertTrue(self.promotion_findings())
+        self.select_draft_take()
+        self.assertEqual(self.findings(), [])
+
+    def test_v2_promotion_cannot_inherit_legacy_approved_status(self):
+        draft = self.register_draft()
+        self.prepare_v2()
+        self.promote()
+        (self.root / "task_ids.json").write_text(
+            json.dumps({"schema_version": 1, "tasks": [draft]})
+        )
+        self.assertTrue(self.promotion_findings())
+        self.select_draft_take()
+        self.assertEqual(self.findings(), [])
+
+    def test_shot_selection_approves_registered_take_with_distinct_asset_id(self):
+        self.promote(review_status="review", asset_id="s01_sh010_t01_v01")
+        self.select_draft_take()
+        path = self.root / "decisions/draft-choice.json"
+        decision = json.loads(path.read_text())
+        decision["asset_id"] = "s01_sh010"
+        path.write_text(json.dumps(decision))
+        self.assertEqual(self.findings(), [])
+
+    def test_legacy_approved_status_cannot_bypass_configured_project_mode(self):
+        for mode in ["approve_for_me", "ask_for_approval"]:
+            with self.subTest(mode=mode):
+                (self.root / "project.md").write_text(
+                    f"---\napproval_mode: {mode}\n---\n"
+                )
+                self.promote()
+                self.assertTrue(self.promotion_findings())
+
+    def test_legacy_approved_status_remains_valid_without_configured_project_mode(self):
+        (self.root / "project.md").write_text("# Legacy project\n")
+        self.promote()
+        self.assertEqual(self.findings(), [])
+
+    def test_legacy_draft_with_user_selection_respects_current_approval_mode(self):
+        (self.root / "project.md").write_text(
+            "---\napproval_mode: ask_for_approval\n---\n"
+        )
+        self.promote()
+        self.select_draft_take()
+        path = self.root / "decisions/draft-choice.json"
+        decision = json.loads(path.read_text())
+        decision.update(
+            actor="user",
+            approval_mode="ask_for_approval",
+            authorization={"source": "local_ui", "evidence": "Selected in Studio"},
+        )
+        path.write_text(json.dumps(decision))
+        self.assertEqual(self.findings(), [])
+
+    def test_legacy_promotion_with_invalid_project_metadata_reports_finding(self):
+        for metadata in ["---\ninvalid: [\n---\n", "---\n- invalid\n---\n"]:
+            with self.subTest(metadata=metadata):
+                (self.root / "project.md").write_text(metadata)
+                self.promote()
+                self.assertTrue(self.promotion_findings())
+
+    def test_promotion_rejects_selection_after_project_changes(self):
+        self.promote(review_status="review")
+        self.select_draft_take()
+        (self.root / "project.md").write_text(
+            "---\napproval_mode: ask_for_approval\n---\n"
+        )
+        self.assertTrue(self.promotion_findings())
+
+    def test_promotion_ignores_malformed_unrelated_decision(self):
+        self.promote(review_status="review")
+        self.select_draft_take()
+        (self.root / "decisions/aaa-unrelated.json").write_text("not json")
         self.assertEqual(self.findings(), [])
 
     def test_promotion_of_unknown_draft_id_is_refused(self):

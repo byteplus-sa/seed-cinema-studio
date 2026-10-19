@@ -307,6 +307,86 @@ class PanelApprovalIntegrityTests(BoardTestCase):
                 self.assertEqual(panel["status"], "needs_edit")
                 self.assertNotIn("decision", panel)
 
+    def test_referenced_source_changes_invalidate_only_affected_panels(self) -> None:
+        scene = self.root / "scenes/scene-02/scene.md"
+        original = scene.read_text()
+        original_board = self.board()
+        for old, new in (
+            ("south-east", "north-west"),
+            ("always on", "switched off"),
+            ("change: dim", "change: bright"),
+        ):
+            with self.subTest(change=new):
+                scene.write_text(original)
+                self.rewrite(original_board)
+                self.approve()
+                scene.write_text(original.replace(old, new))
+                result = MODULE.rebase_plan(self.root, "scene-02")
+                self.assertIn(self.panel_id, result["needs_edit"])
+                self.assertEqual(self.board()["panels"][0]["status"], "needs_edit")
+                self.assertNotIn("decision", self.board()["panels"][0])
+
+    def test_unreferenced_source_changes_preserve_panel_approval(self) -> None:
+        scene = self.root / "scenes/scene-02/scene.md"
+        scene.write_text(
+            scene.read_text().replace(
+                "  sources:\n", "  sources:\n    - {id: lamp, position: ceiling}\n"
+            )
+        )
+        MODULE.rebase_plan(self.root, "scene-02")
+        self.approve()
+        scene.write_text(scene.read_text().replace("position: ceiling", "position: floor"))
+        self.assertEqual(MODULE.rebase_plan(self.root, "scene-02")["needs_edit"], [])
+        self.assertEqual(self.board()["panels"][0]["status"], "approved")
+
+    def test_source_rebase_keeps_approvals_for_other_referenced_sources(self) -> None:
+        scene = self.root / "scenes/scene-02/scene.md"
+        scene.write_text(
+            scene.read_text().replace(
+                "  sources:\n", "  sources:\n    - {id: lamp, position: ceiling}\n"
+            ).replace(
+                "light: {source: sun, key_side: behind}",
+                "light: {source: lamp, key_side: behind}",
+            )
+        )
+        MODULE.rebase_plan(self.root, "scene-02")
+        self.approve()
+        other_id = next(
+            panel["id"] for panel in self.board()["panels"]
+            if panel["shot"] == "s02_sh020_a"
+        )
+        MODULE.mark_panel(self.root, "scene-02", other_id, "review", None)
+        decision = self.write_decision(other_id, "lamp_decision.json")
+        MODULE.mark_panel(self.root, "scene-02", other_id, "approved", decision)
+        scene.write_text(scene.read_text().replace("south-east", "north-west"))
+        result = MODULE.rebase_plan(self.root, "scene-02")
+        self.assertIn(self.panel_id, result["needs_edit"])
+        self.assertNotIn(other_id, result["needs_edit"])
+        other = next(panel for panel in self.board()["panels"] if panel["id"] == other_id)
+        self.assertEqual(other["status"], "approved")
+        self.assertIn("decision", other)
+
+    def test_legacy_board_with_unchanged_plan_keeps_approval_and_gains_snapshot(self) -> None:
+        self.approve()
+        board = self.board()
+        board.pop("light_sources_sha256", None)
+        self.rewrite(board)
+        self.assertEqual(MODULE.rebase_plan(self.root, "scene-02")["needs_edit"], [])
+        self.assertEqual(self.board()["panels"][0]["status"], "approved")
+        self.assertIn("sun", self.board()["light_sources_sha256"])
+
+    def test_legacy_board_with_changed_plan_requires_referenced_light_review(self) -> None:
+        self.approve()
+        board = self.board()
+        board.pop("light_sources_sha256", None)
+        lineage = board["panels"][0]["versions"]
+        self.rewrite(board)
+        scene = self.root / "scenes/scene-02/scene.md"
+        scene.write_text(scene.read_text().replace("south-east", "north-west"))
+        result = MODULE.rebase_plan(self.root, "scene-02")
+        self.assertIn(self.panel_id, result["needs_edit"])
+        self.assertEqual(self.board()["panels"][0]["versions"], lineage)
+
     def test_sound_and_editorial_metadata_rebase_keeps_valid_panel_approval(self) -> None:
         self.approve()
         scene = self.root / "scenes/scene-02/scene.md"
@@ -1091,6 +1171,32 @@ class OverviewTests(BoardTestCase):
             MODULE.status_report(self.root, "scene-02")["overview"]["state"], "stale"
         )
 
+    def test_review_page_labels_stale_overview(self) -> None:
+        self.init()
+        board = self.board()
+        board["layout"] = {"room": {"width": 8, "depth": 6, "unit": "m"}}
+        self.rewrite(board)
+        result = MODULE.build_overview(self.root, "scene-02")
+        write_png(self.root / result["png"], 90)
+        board["layout"]["room"]["width"] = 9
+        self.rewrite(board)
+        result = MODULE.build_review_page(self.root, "scene-02")
+        self.assertIn("Stale overview", (self.root / result["page"]).read_text())
+
+    def test_review_page_omits_overview_after_layout_is_removed(self) -> None:
+        self.init()
+        board = self.board()
+        board["layout"] = {"room": {"width": 8, "depth": 6, "unit": "m"}}
+        self.rewrite(board)
+        result = MODULE.build_overview(self.root, "scene-02")
+        image = self.root / result["png"]
+        write_png(image, 90)
+        board.pop("layout")
+        self.rewrite(board)
+        page = MODULE.build_review_page(self.root, "scene-02")
+        self.assertNotIn("<h2>Overview</h2>", (self.root / page["page"]).read_text())
+        self.assertTrue(image.is_file())
+
     def test_invalid_layout_is_a_schema_finding(self) -> None:
         self.init("L2")
         board = self.board()
@@ -1117,6 +1223,31 @@ class AnimaticTests(BoardTestCase):
         clock = stamp.split("time=")[1].split()[0]
         hours, minutes, secs = clock.split(":")
         return int(hours) * 3600 + int(minutes) * 60 + float(secs)
+
+    def test_missing_or_modified_animatic_output_is_stale(self) -> None:
+        result = MODULE.build_animatic(self.root, "scene-02", "640x360", None)
+        output = self.root / result["file"]
+        original = output.read_bytes()
+        for replacement in (None, b"corrupt output"):
+            with self.subTest(replacement=replacement):
+                output.write_bytes(original)
+                if replacement is None:
+                    output.unlink()
+                else:
+                    output.write_bytes(replacement)
+                report = MODULE.status_report(self.root, "scene-02")["animatic"]
+                self.assertEqual(report["state"], "stale")
+                self.assertIn("output", report)
+
+    def test_review_page_labels_stale_animatic_after_panel_change(self) -> None:
+        MODULE.build_animatic(self.root, "scene-02", "640x360", None)
+        board = self.board()
+        board["panels"][0]["duration_s"] += 0.5
+        self.rewrite(board)
+        result = MODULE.build_review_page(self.root, "scene-02")
+        page = (self.root / result["page"]).read_text()
+        self.assertIn("Stale animatic", page)
+        self.assertIn("<video", page)
 
     def test_animatic_duration_equals_the_sum_of_panel_durations(self) -> None:
         result = MODULE.build_animatic(self.root, "scene-02", "640x360", None)

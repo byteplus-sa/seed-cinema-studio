@@ -2,7 +2,7 @@
 
 ## Stage evidence and authorization
 
-Draft brief and scene breakdown can identify assets before canon exists. Before dependent production generation, require the appropriate approved recurring/critical elements and declared reference roles. Canon may be created by static sheet generation, deterministic HTML-entrypoint rendering, **or** by acquiring and approving real brand/product/logo assets; prompt-only authoring may deliver a draft without generating or downloading assets. When the brief borrows visual or motion grammar from a cited brand ad or other footage, obtain watchable media first (a `seed_understand`-usable public HTTPS URL, or a local download plus upload when that link is unusable); do not treat scripts or article text as the reference.
+Draft brief and scene breakdown can identify assets before canon exists. Before dependent production generation, require the appropriate approved recurring/critical elements and declared reference roles. Canon may be created by static sheet generation, deterministic HTML-entrypoint rendering, **or** by acquiring and approving real brand/product/logo assets; prompt-only authoring may deliver a draft without generating or downloading assets. When the brief borrows visual or motion grammar from cited footage, obtain actual watchable media first. Inspect it with native video tools when available; if those tools cannot cover the required temporal or audio criteria, use a supported analysis route. Provider analysis through `seed_understand` needs a usable HTTPS video URL, or a local download followed by upload. Honor explicitly requested provider analysis and the declared `template-factory` workflow. Scripts, transcripts, article text and frame samples alone do not establish motion grammar.
 
 The normal flow is brief → draft breakdown → required canon → optional storyboard → optional requested lip-sync audio → shot generation → review → assembly → delivery. Entry and exit evidence live in film-production's stage/handoff contracts. Stage completion cannot be inferred from filenames.
 
@@ -254,9 +254,12 @@ suitable supported resolution; do not switch models solely to force a draft.
 Inspect draft playback and audio, motion, continuity and the shot plan. Record a
 passing, hash-bound draft selection under the project's approval mode before
 final-resolution generation. A promotion by `draft_task_id` must name a
-registered 480p Seedance 2.5 draft of the same model and prompt whose registry
-review is `approved` or whose expected output has a passing variant-selection
-decision (`seedance.draft_promotion_source`). For multi-shot projects, review
+registered 480p Seedance 2.5 draft of the same model and prompt that completed
+successfully. Version-2 requests and projects with a configured approval mode
+require a passing, hash-bound variant-selection decision for the expected output,
+valid under the current project and approval mode. A legacy version-1 project
+without an approval mode may retain its registry `approved` status
+(`seedance.draft_promotion_source`). For multi-shot projects, review
 the draft assembly and record the picture/audio decisions before generating
 final takes. Preserve all draft files, prompt snapshots, references, task IDs
 and decisions. Generate final takes only within the authorized scope and budget
@@ -279,7 +282,7 @@ Generate scenes at natural duration, then chain supported frame modes or assembl
 
 Use the lowest suitable cost/resolution within the requested behavior. For **Seedream (or other generative) image** selection sets, default to three samples. Sampling variations keep prompt, references, model and effective parameters identical except supported stochastic seed differences. Creative alternatives change only explicitly requested variables with distinct provenance. Explicit requested count wins. Watermark false is the default only for tools that support that parameter. Acquired web/user brand assets are not sampling variants; promote one download as the selected file unless the user asks to compare multiple acquired sources. Deterministic graphics produce one render per versioned source/specification and never inherit the three-sample default.
 
-Record estimated cost separately from confirmed billing and provider usage. Do not infer billed cost or creative correctness from successful task status. Verify decode, actual streams/duration, opening/transitions/ending, and audible sound arc. Contact sheets support but do not replace playback and listening. Preserve high-quality masters and separately named review proxies.
+Record estimated cost separately from confirmed billing and provider usage. Do not infer billed cost or creative correctness from successful task status. Verify decode, actual streams/duration, opening/transitions/ending, and audible sound arc. Use native playback and listening tools when available and capable of covering the required criteria; otherwise use supported analysis tools and record their coverage and limits. Provider analysis is required when explicitly requested or specified by the active workflow. Contact sheets and model summaries support but do not replace temporal and listening review; unavailable checks remain unresolved. Preserve high-quality masters and separately named review proxies.
 
 ### Delivery look defaults
 

@@ -13,7 +13,13 @@ or shorten the prompt to dodge a client timeout.
 |---|---|
 | OCR, scene or motion analysis, video review, visual reasoning sub-agent | `seed_understand` |
 | Summary, translation, speaker or emotion notes, Q&A about what is heard | `seed_audio_understand` |
-| Exact words with word-level timestamps and speakers | `speech_to_text` (the authority for words) |
+| Word-timed transcript and speaker labels for locked-dialogue comparison | `speech_to_text`; listen to disputed words because ASR can be wrong |
+
+Use native playback and listening for media inspection when available and
+sufficient for the required criteria. Use these provider tools when native
+coverage is insufficient, the active workflow requires them, or the user
+explicitly requests them. Record coverage and unresolved checks; a transcript
+or model summary alone does not establish temporal correctness or lip sync.
 
 `seed_audio_understand` cannot judge accent or pronunciation reliably and can
 mislabel music; accent verdicts need a native listener.

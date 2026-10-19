@@ -587,19 +587,32 @@ def is_draft_promotion(params: Any) -> bool:
     return isinstance(task_id, str) and bool(task_id.strip())
 
 
-def draft_selected(root: Path, draft: dict[str, Any]) -> bool:
-    if draft["review_status"] == "approved":
-        return True
+def draft_selected(
+    root: Path, draft: dict[str, Any], *, require_decision: bool = False
+) -> bool:
+    if draft["review_status"] == "approved" and not require_decision:
+        project = root / "project.md"
+        project_text = (
+            contained_path(root, "project.md").read_text()
+            if project.exists() or project.is_symlink()
+            else ""
+        )
+        metadata = parse_frontmatter(project_text) if project_text.startswith("---") else {}
+        if "approval_mode" not in metadata:
+            return True
     output = draft.get("extensions", {}).get("expected_output")
     for path in sorted((root / "decisions").glob("*.json")):
-        decision = json.loads(
-            contained_path(root, f"decisions/{path.name}").read_text()
-        )
+        try:
+            decision = json.loads(
+                contained_path(root, f"decisions/{path.name}").read_text()
+            )
+        except (ValueError, OSError, UnicodeError):
+            continue
         if (
             isinstance(decision, dict)
             and decision.get("decision_type") == "variant_selection"
             and decision.get("subject_path") == output
-            and not decision_findings(root, decision)
+            and not decision_findings(root, decision, require_current_project=True)
         ):
             return True
     return False
@@ -624,13 +637,22 @@ def draft_promotion_findings(root: Path, request: dict[str, Any]) -> list[Findin
             and draft["params"].get("resolution") == "480p"
         ):
             message = f"{draft['operation_id']} is not a 480p draft of this model"
-        elif not draft_selected(root, draft):
+        elif (
+            draft["submission_status"] != "terminal"
+            or draft["provider_status"] != "succeeded"
+        ):
+            message = f"{draft['operation_id']} is not a successfully completed draft"
+        elif not draft_selected(
+            root,
+            draft,
+            require_decision=request["schema_version"] == 2 or draft["schema_version"] == 2,
+        ):
             message = f"{draft['operation_id']} has no approved review or selection"
         elif draft["prompt_sha256"] != request["prompt_sha256"]:
             message = f"Prompt differs from the prompt of {draft['operation_id']}"
         else:
             return []
-    except (ValueError, OSError, UnicodeError, json.JSONDecodeError) as error:
+    except (ValueError, TypeError, OSError, UnicodeError, YAMLError) as error:
         message = f"Cannot verify the draft: {error}"
     return [Finding("seedance.draft_promotion_source", message, "task_ids.json")]
 

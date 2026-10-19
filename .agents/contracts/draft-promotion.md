@@ -16,7 +16,7 @@ result as capability evidence.
 
 | Step | Request | Result |
 | --- | --- | --- |
-| 1. Draft | `draft: true`; `resolution` omitted or `"480p"`; prompt, references, duration, ratio, `generate_audio` as for a normal request | A 480p preview, billed as a normal 480p video. Its provider `task_id` is the **draft ID** |
+| 1. Draft | `draft: true`; explicit `resolution: "480p"`; prompt, references, duration, ratio, `generate_audio` as for a normal request | A 480p preview, billed as a normal 480p video. Its provider `task_id` is the **draft ID** |
 | 2. Final | `draft_task_id: "<draft ID>"` only, plus optional `resolution`, `return_last_frame`, `watermark`, `execution_expires_after`, `priority`, `safety_identifier` | The approved Draft rendered at the family's final resolution (1080p for Seedance 2.5; 4k for Seedance 2.5 Premium), billed independently |
 
 - `draft` and `draft_task_id` are mutually exclusive.
@@ -50,8 +50,11 @@ result as capability evidence.
 
 ## Promoting a Draft
 
-1. Confirm the Draft is `approved`, within 7 days, and its take is the one placed
-   in Studio.
+1. Confirm the registered native 480p Draft completed successfully, has a
+   passing review and a selection authorized by the current approval mode, is
+   `approved` in the draft ledger, is within 7 days, and its take is the one
+   placed in Studio. A provider task ID or an unverified `approved` flag alone
+   is insufficient.
 2. Prepare a new operation for the final: params `draft_task_id`, `resolution`
    (final resolution) and the settings to repeat (`watermark: false` unless the
    user wants it). Put the Draft operation ID, draft task ID and Draft request hash

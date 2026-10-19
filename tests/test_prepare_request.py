@@ -214,6 +214,12 @@ class PrepareRequestTests(unittest.TestCase):
         self.assertEqual(code, 1, result)
         self.assertIn("seedance.draft_promotion_source", self.promotion_rules(result))
 
+    def test_draft_promotion_of_failed_source_is_refused(self) -> None:
+        self.register_draft(provider_status="failed")
+        code, result = self.run_cli(self.promotion_argv())
+        self.assertEqual(code, 1, result)
+        self.assertIn("seedance.draft_promotion_source", self.promotion_rules(result))
+
     def test_explicit_curl_transport_is_recorded_in_request(self) -> None:
         code, result = self.run_cli(self.argv("--transport", "curl"))
         self.assertEqual(code, 0, result)
