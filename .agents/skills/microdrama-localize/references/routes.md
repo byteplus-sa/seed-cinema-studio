@@ -49,8 +49,11 @@ replace only the spoken lines.
    render a new master version. Muted-source and post-audio rules follow
    [video-to-video inputs](../../../contracts/video-to-video-inputs.md).
 4. Fix wrong words one at a time with a word-scoped patch, never a second full
-   re-voice. Reject a splice that needs more than about 10 percent pitch or
-   tempo change.
+   re-voice. About 10 percent pitch or tempo adjustment is an advisory review
+   flag, not a universal gate. Compare the actual speaker's local pitch,
+   timbre, prosody and timing, then listen across the splice and full line.
+   Smaller changes can also sound wrong; missing listening evidence stays
+   unresolved rather than passing on measurements alone.
 5. Loudness-match to the delivery target in the
    [audio-video alignment](../../../contracts/audio-video-alignment.md)
    contract.

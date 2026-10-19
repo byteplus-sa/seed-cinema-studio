@@ -3,6 +3,10 @@
 Read [the entrypoint](../SKILL.md). Write the bible before any episode brief
 for a connected series of 6-10 episodes.
 
+Preserve an existing confirmed bible or script instead of rewriting it to this
+formula. Adapt the ladder columns and season question to the selected format;
+resolved endings and custom pacing need no invented cliffhanger.
+
 ## Template
 
 ```text
@@ -37,8 +41,9 @@ Fictional cast, no real brands or legible signage, non-injurious conflict.
 
 ## Rules
 
-- Each episode ends on a question the next episode answers within its first
-  five seconds.
+- For the default cliffhanger formula, propose a question that the next
+  episode addresses promptly. Confirmed scripts and custom timing override
+  this convention; do not impose a five-second answer deadline.
 - Escalate stakes by reveal, not by spectacle.
 - Every location has one dedicated reference plate before production; every
   continuity-critical object has its own prop plate.

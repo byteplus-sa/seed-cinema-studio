@@ -5,8 +5,10 @@ checking an episode brief, or when no market writer skill supplies one.
 
 ## Format
 
-Defaults apply only when the user states no preference; the market card
-overrides aspect, runtime and scene split.
+Defaults apply only when the user states no preference. The confirmed script,
+custom format or market card overrides aspect, runtime, scene split, casting,
+dialogue, ending and cards throughout this reference. Adapt the brief fields
+to those choices; do not invent a cliffhanger or dialogue for a wordless script.
 
 - 9:16 vertical, 45–60 s delivered, three scene clips of about 15 / 20 / 15 s.
 - Cast of at most three recurring characters per episode; incidental extras are

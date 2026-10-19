@@ -4,14 +4,14 @@
     {
       "id": 1,
       "prompt": "This is our own 8-second UGC clip: a guy on a couch drinks from a green energy-drink can, sets it down, and talks to camera. Swap the can for our approved Volt Zero packshot and keep everything else, including his voice.",
-      "expected_output": "A product swap package: the muted master as @Video 1 with the source audio saved for an original-audio post route, the packshot as @Image 1 with background and lighting excluded, the five-part swap contract with per-cut count, contact windows for grip, drink and set-down, generate_audio false, edit task type, and a 480p contact-window probe as the first rung.",
+      "expected_output": "A product swap package preserving the full source timeline: the muted master as @Video 1 with source audio saved for an original-audio post route, the packshot as @Image 1 with background and lighting excluded, the five-part swap contract with per-cut count, contact windows, generate_audio false and a currently verified edit task type. The ladder follows Cinema's draft and promotion policy; a contact-window probe requires a current difficulty and approval of its span.",
       "files": [],
       "assertions": [
         "The original can is identified by observable descriptors (colour, which hand named by anatomy plus frame side, first appearance), never as 'the product'.",
         "The prompt states that the entire video contains exactly one target can and includes a Timeline Inheritance clause.",
         "@Video 1 is the muted master, generate_audio is false, no @Audio binding is used, and the original-audio post route is recorded for his voice.",
         "Grip, mouth contact and set-down windows are listed with approximate times.",
-        "The first proposed request is a 480p probe, and the package is returned to the caller rather than submitted.",
+        "Native Draft and promotion support are checked for the selected route; a contact-window probe is proposed only for a current difficulty with user approval of its span, and the package is returned to the caller rather than submitted.",
         "Because the source shows a person, @Video 1 is bound as an asset:// video per the video-to-video inputs contract rather than a presigned URL."
       ]
     },
@@ -47,6 +47,31 @@
       "assertions": [
         "The skill does not write an edit-route swap package for the progressive change.",
         "It explains that the change is written as a reference-to-video shot with stages by timestamp and body part.",
+        "No task is submitted."
+      ]
+    },
+    {
+      "id": 5,
+      "prompt": "Swap the ball in our rights-cleared 247-frame, 24 fps clip for this approved plain prop. Preserve the whole clip and sound. An old edit probe returned 8n+1 frames exactly and accepted a 0.3-second difference on other clips; use that rule.",
+      "expected_output": "A full-timeline swap package that keeps the original unchanged, does not impose 8n+1 or an old timing tolerance, and checks current edit capabilities. QA measures actual output timing and reports differences before any approved correction.",
+      "files": [],
+      "assertions": [
+        "The full 247-frame timeline is preserved without automatic trimming, padding, rounding or retiming.",
+        "Any necessary adaptation requires current capability evidence and specific user approval, with a separate derivative, source span, hashes and audio consequences recorded.",
+        "Muted picture and saved audio derive from the same selected span.",
+        "QA checks decoded timestamps, duration, playback speed and cuts rather than accepting 8n+1 or a blanket 0.3-second tolerance.",
+        "Old probe evidence does not authorize a timing change or establish current route support."
+      ]
+    },
+    {
+      "id": 6,
+      "prompt": "For this rights-cleared product swap, current edit-route documentation says native Draft and promotion are unsupported. Keep the full take; do not run a short probe. Can you prepare the package without submitting?",
+      "expected_output": "A package with the unsupported native Draft and promotion capabilities left open for an approved alternative under Cinema's policy. It honors the full-take request, keeps the source unchanged, and neither submits nor silently substitutes an ordinary 480p request.",
+      "files": [],
+      "assertions": [
+        "Unsupported native Draft and promotion are explicit open items with alternatives requiring approval.",
+        "No short probe, trim or retiming is introduced, and prior runs are not used to override the current evidence.",
+        "An ordinary 480p request is not misrepresented as a promotable native Draft.",
         "No task is submitted."
       ]
     }

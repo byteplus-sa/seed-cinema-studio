@@ -1,18 +1,6 @@
 ---
 name: microdrama-story-formats
-description: >-
-  Develop micro-drama stories for any market, language or genre: pick a proven
-  format (billionaire or CEO romance, hidden heir or identity reveal, revenge
-  and rebirth, in-law or family conflict, mafia or alpha, switched at birth,
-  campus, thriller, horror, comedy, historical or fantasy, true-to-life
-  sacrifice), then write a locked episode brief with a three-beat hook, turn
-  and cliffhanger, a light cast, culturally grounded settings, props and
-  wardrobe, dialogue in the target language, and subtitle translations. Use for
-  micro-drama concepts, loglines, episode briefs, series bibles or dialogue
-  passes in any language, including concept-only or prompt-only work, and as
-  the fallback story writer when no market pack exists. This leaf writes story
-  material only; it does not generate media. Pair it with micro-drama for
-  production and seedance-prompt-25-dialogue for spoken-delivery direction.
+description: Write micro-drama concepts, briefs, bibles and dialogue for any market. Use for explicit micro-drama story work, including custom formats; preserve confirmed scripts over formulas. Does not generate media.
 ---
 
 # Micro-Drama Story Formats
@@ -22,6 +10,16 @@ platforms and reads as authentic to its audience. The output is a locked
 episode brief, or a set of briefs for a series or batch. Any production
 orchestrator can consume it. A market pack, such as `filipino-micro-drama`,
 adds deeper local craft; this skill is the market-neutral writer.
+
+## Format authority
+
+Use this skill only for explicit micro-drama story work, not as a generic
+narrative fallback. A confirmed script, custom format and approved timing
+override every formula below and in the reference templates. Hook/Turn/Cliffhanger,
+small cast, physical proof and close-up endings are optional starting points,
+not requirements for a supplied story. Preserve wordless passages, resolved
+endings and other approved choices. Adapt template labels or mark formula-only
+fields not applicable; do not rewrite locked material to fill them.
 
 ## Inputs and outputs
 
@@ -49,10 +47,12 @@ user asks otherwise.
 2. **Plan a series first.** For 6-10 connected episodes, write the bible with
    [the series bible template](references/series-bible.md) before any episode
    brief.
-3. **Choose the format.** Use [formats](references/formats.md). Match it to the
-   audience and to what can be staged with at most three recurring characters
-   and one or two locations.
-4. **Build the beats.** Hook in the first 3 s, then the setup, a turn or reveal
+3. **Choose the format.** Preserve the confirmed custom or library format.
+   When none is selected, offer [formats](references/formats.md) as a menu.
+   A small cast and one or two locations are production suggestions, not
+   reasons to remove approved characters or scenes.
+4. **Build the beats.** Follow the confirmed script and timing. For an
+   unstructured brief that adopts the default formula, propose a hook in the first 3 s, then the setup, a turn or reveal
    with physical proof, and a cliffhanger held on a close-up. Keep each scene
    to 3-5 short lines.
 5. **Write the dialogue in the target language.** Keep every story-critical
@@ -63,8 +63,9 @@ user asks otherwise.
 6. **Dress the world.** Everything is fictional: no real brands, no legible
    signage, no celebrity likeness. Use local signifiers from the market
    adaptation notes.
-7. **Lock the brief.** State the format, the logline and the cliffhanger
-   question in one line each.
+7. **Present the brief for approval.** State the selected format, logline and
+   ending intention (a cliffhanger question only when applicable). A draft
+   becomes locked only through the existing approval process.
 
 ## Boundaries
 

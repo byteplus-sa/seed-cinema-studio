@@ -1,10 +1,19 @@
-# Series Production
+# Series Production (Legacy Only)
 
-Read [the entrypoint](../SKILL.md). Use this reference for a connected series
-whose episodes share cast, locations and story, as opposed to independent
-episodes (see [batch production](batch-production.md)).
+Read [the entrypoint](../SKILL.md). This single-Studio layout is retained only
+for existing connected series without an active `production.json`, whose
+episodes share cast, locations and story. It is not the default layout for new
+manifest-backed work or a migration recipe.
 
-## One project or many
+When `production.json` exists, its ordered unit/scene membership and selected
+unit are authoritative: use `units/<unit>/studio/` and `--unit ID` for unit
+operations. Multiple units require explicit selection before editing; invalid
+manifests fail closed rather than falling back to this legacy layout.
+Candidate validation never authorizes activation or migration. Shared canon
+remains production-scoped under the
+[production policy](../../../contracts/production-policy.md).
+
+## Legacy layout
 
 | Situation | Layout |
 | --- | --- |
@@ -60,8 +69,11 @@ stage exit, so a replacement agent can resume.
 
 ## Studio notes
 
-- `sync` appends new frames at the end of the timeline. To insert a clip in story
-  order, rebuild in shot-id order (see the repository lessons document).
+- `sync` appends new frames at the end of the timeline; it does not apply edit
+  order. Never rebuild the edit in shot-id order. Preserve manual order, trims
+  and transitions, and reconcile additions or retiming explicitly in the
+  selected Studio. `editorial.py export/check/reconcile` snapshots the actual
+  edit without applying order; follow the existing review and lock gates.
 - A cited timestamp is recomputed from Studio start times; every cut or new clip
   shifts all later times.
 - Keep `handoff.md` current: stage, selected variants, operations in flight with

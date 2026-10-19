@@ -7,7 +7,7 @@
       "expected_output": "Three briefs in Indonesian with different formats, grounded in Indonesian settings and address forms.",
       "files": [],
       "expectations": [
-        "Uses three different formats from the format library.",
+        "Uses three different formats, from the library or clearly proposed custom formats.",
         "Writes dialogue in Indonesian inside braces with English subtitles.",
         "Uses locally appropriate names, address terms and settings rather than generic ones.",
         "Keeps at most three recurring characters and one or two locations per episode.",
@@ -45,6 +45,18 @@
       "expectations": [
         "Does not reproduce named characters, plot or lines from the series.",
         "Offers an original episode in the same format and register."
+      ]
+    },
+    {
+      "id": 5,
+      "prompt": "Convert my confirmed custom micro-drama script to a brief without rewriting it. It is 80 seconds, four scenes, four adult cast members, no dialogue or proof object, and a resolved final wide shot. Keep the approved timings and do not add a cliffhanger or cards.",
+      "expected_output": "A source-preserving brief with custom scene fields, the approved cast and timing, and an explicitly resolved ending.",
+      "files": [],
+      "expectations": [
+        "Keeps four scenes, four cast members and the 80-second timing instead of forcing the default formula.",
+        "Does not invent dialogue, a proof object, a hook deadline, a final close-up, a cliffhanger or cards.",
+        "Marks formula-only fields not applicable or adapts their labels to the confirmed custom structure.",
+        "Preserves source wording and treats any optional rewrite as a separate unapproved proposal."
       ]
     }
   ]

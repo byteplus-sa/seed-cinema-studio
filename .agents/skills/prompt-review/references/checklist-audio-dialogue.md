@@ -21,8 +21,10 @@ spoken dialogue in a language other than English or in more than one language.
    rewriting.
 3. **Register grounded.** Formality, honorifics, regional variety and
    code-switching match the speakers and relationship; one voice is not forced
-   on every character. Apply register defaults only from the applicable market
-   pack, such as `seedance-prompt-25-filipino`, when the brief leaves them open.
+   on every character. Preserve the requested language and locked text. Ask
+   when a missing register or code-switch preference materially affects a draft;
+   an installed market pack does not select a mix. Dense passages in any
+   language are not a defect by themselves.
 
 ### Delivery and evidence
 
@@ -44,8 +46,9 @@ spoken dialogue in a language other than English or in more than one language.
 
 8. **Word-scoped.** A repair targets the wrong word (cue retake or splice); a
    whole-clip re-voice needs explicit user scope.
-9. **Splice limits.** A proposed splice stays within roughly 10 percent tempo
-   and pitch of the original and is verified by listening.
+9. **Splice quality.** Set tolerances from the current voice and delivery, then
+   verify identity, pronunciation, rhythm and continuity by listening. No
+   fixed percentage from a previous production establishes acceptance.
 10. **Audio binding evidenced.** An explicitly requested lip-sync track preserves
     approved words; the inspected audio path/hash, actual duration and original
     timestamps stay separate from proposed prompt timing. Confirm tool support
@@ -55,12 +58,12 @@ spoken dialogue in a language other than English or in more than one language.
 
 ## Seedance market-pack dialogue
 
-Source skill: the installed market dialogue pack for the scene's language (for
+Source skill: the explicitly selected market dialogue pack for the scene's language (for
 example `references/review-checklist.md` inside the pack's own skill folder)
 
 Use the pack's own checklist as an additional checklist alongside Seedance 2.5
-when the scene contains dialogue in a language the pack covers. When no pack is
-installed, apply the Seedance 2.5 dialogue items and
+when selected for a requested or confirmed market and a language it covers.
+When no pack is selected, apply the Seedance 2.5 dialogue items and
 `seedance-prompt-25-dialogue`.
 
 ---

@@ -3,7 +3,7 @@
   "evals": [
     {
       "id": 1,
-      "prompt": "Audit this excerpt only: Mina must hand in the signed form before closing. A glass door separates her from the clerk. The clerk turns the key; Mina hurries forward. The excerpt ends here. We do not know where she stood or whether the clerk saw her. Preserve these facts.",
+      "prompt": "Use the five-element engine to audit this excerpt only: Mina must hand in the signed form before closing. A glass door separates her from the clerk. The clerk turns the key; Mina hurries forward. The excerpt ends here. We do not know where she stood or whether the clerk saw her. Preserve these facts.",
       "expected_output": "Separate established deadline and barrier from missing position, visibility and resolution; offer only a bounded hypothetical staging repair.",
       "files": [],
       "expectations": [
@@ -29,7 +29,7 @@
     },
     {
       "id": 3,
-      "prompt": "A full resolved sequence is supplied: Jo tries the east archive door, discovers it locked, then tries it again identically, learns nothing, and leaves defeated. Her goal was to collect the only signed original before a deadline. Nobody else appears and there is no reveal. Audit the weakest causal links without adding a villain.",
+      "prompt": "Use the five-element engine to audit this full resolved sequence: Jo tries the east archive door, discovers it locked, then tries it again identically, learns nothing, and leaves defeated. Her goal was to collect the only signed original before a deadline. Nobody else appears and there is no reveal. Audit the weakest causal links without adding a villain.",
       "expected_output": "Flag the information-free repetition and absent reversal in the supplied resolved sequence; separate these defects from hypothetical repairs.",
       "files": [],
       "expectations": [
@@ -42,7 +42,7 @@
     },
     {
       "id": 4,
-      "prompt": "In an excerpt, a courier picks the blue box, which he has been told contains the document. Later pages reveal the label was swapped. Audit whether picking blue was stupid. You do not have the later reveal scene or sequence ending.",
+      "prompt": "Use the five-element engine: in an excerpt, a courier picks the blue box, which he has been told contains the document. Later pages reveal the label was swapped. Audit whether picking blue was stupid. You do not have the later reveal scene or sequence ending.",
       "expected_output": "Evaluate the tactic using knowledge available at selection, and mark later agency/reversal/value judgments incomplete.",
       "files": [],
       "expectations": [
@@ -59,10 +59,33 @@
       "expected_output": "A shot breakdown that keeps the engine beats visible, and a clear answer that extension of a clip with people is rejected without asset:// assets, with the blocking-map continuation route instead.",
       "files": [],
       "expectations": [
-        "Maps each tactic, the locked drawer (returned information), the reveal (hidden agency) and Lena's reaction to visible shots with action and intent.",
+        "Keeps the search, locked drawer, brother holding the key and Lena's reaction visible without inventing hidden agency or a value shift unsupported by the supplied scene.",
         "States that Seedance rejects extending a clip showing realistic people unless each person is an asset:// asset, and proposes new generations staged from the previous last frame with tig-blocking-map text geometry and the same element references.",
-        "Gives the reaction carrying the value shift a held close shot of at least about 1 s and keeps shots above about 0.8 s.",
+        "Derives coverage and reaction timing from the approved scene, allowing multiple beats in a held shot and no fixed shots-per-generation cadence.",
         "Does not change the audited beats or invent new motives while converting to shots."
+      ]
+    },
+    {
+      "id": 6,
+      "prompt": "Audit an approved observational scene against its intended rhythm, not the five-element engine: a woman folds laundry in one silent 40-second held shot. There is deliberately no obstacle, reveal or changed audience verdict. Preserve the shot and ending.",
+      "expected_output": "Names the selected observational framework and assesses the supplied intention without inventing engine defects or mandatory cuts.",
+      "files": [],
+      "expectations": [
+        "States the selected framework explicitly and treats the five-element engine as unselected, not a universal gate.",
+        "Does not fail the scene for lacking a goal, obstacle, reversal or value shift.",
+        "Preserves the silent held shot and approved ending without imposing one beat per shot.",
+        "Keeps missing playback evidence unresolved rather than claiming that the intended rhythm has been verified."
+      ]
+    },
+    {
+      "id": 7,
+      "prompt": "Is my scene working? I have not picked a structural framework and have not supplied the pages yet.",
+      "expected_output": "Asks for the scene and intended framework or proposes the five-element engine for confirmation without auditing absent evidence.",
+      "files": [],
+      "expectations": [
+        "Does not silently select the engine as a universal definition of a working scene.",
+        "Requests the missing pages and intended criteria before a structural verdict.",
+        "Does not fabricate beats, defects or approval."
       ]
     }
   ]

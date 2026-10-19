@@ -121,8 +121,12 @@ and the per-shot facts the Seedance 2.5 prompt carries.
    side at a natural length and trim in post (see the pacing preset skill's
    assembly-only cuts). Make lengths uneven and give the turn shot a length unlike its
    neighbors. One shot across a long clip needs a recorded one-take or
-   `static_reason`. A spoken line needs a shot at least words / 2.2 + 1 s long,
-   because speech typically starts 0.5-1.5 s into a shot. End the last line at least 0.4 s before the clip ends, and plan no
+   `static_reason`. Size dialogue shots from measured delivery or a
+   native-language-informed read with pauses. About 2.2 words/s is an English
+   estimate, not a universal gate. Allow for onset (initially 0.5-1.5 s) and
+   a final tail (initially at least 0.4 s), then verify actual delivery.
+   Without evidence, timing is provisional. Preserve language and locked text;
+   propose retiming or splitting before authorized rewrites. Plan no
    more than two visible state changes in the clip's last 3 s. For a spot of
    about 15 s or more, apply the cinematic sequence bar above.
 5. **Declare the scene's light sources** with world positions, the event that
@@ -156,7 +160,7 @@ and the per-shot facts the Seedance 2.5 prompt carries.
 | --- | --- |
 | V1 Neighbor contrast | Adjacent shots differ in at least two of: size family (wide, medium, close), angle class (eye level, over-the-shoulder, low, high, overhead, first-person) with a recorded reason (extreme wide and wide count as wide; medium and medium close-up as medium; close-up, extreme close-up and insert as close), camera move (moving versus held, or a different type or direction), and key side from the same declared source or a motivated new source. A step within a family, "slightly low", and a reworded light phrase with no new position do not count. |
 | V2 Angle range | At least one shot per scene is not plain eye level (low, high, overhead, first-person or over-the-shoulder) unless a lock or `static_reason` says otherwise. |
-| V3 Motion present | Moving shots (a quiet drift or push counts, on spoken shots too) cover a third of all shots at restrained and half at standard; at kinetic every shot without speech moves, except one `contrast_hold` (lip-synced vocals count as speech). Every clip has at least one motivated move. Each held shot has a `static_reason`; a scene has at most one `performance_hold` and one `contrast_hold`, and in a scene of four or more shots any one reason on more than a third of its shots is a defect. |
+| V3 Motivated motion or stillness | Derive motion from the confirmed script, medium and directing intent. Motion ratios are optional planning aids, not quotas. A whole clip or scene may remain held with a recorded rationale; repeated stillness is valid when intentional. Do not insert a move, cut or light change merely to satisfy a count. |
 | V4 Light named | Every shot names a declared source and a key side. "Cinematic lighting" and "soft fill" without a source and a side are not light facts. |
 | V5 Turn emphasized | The shot flagged as the turn has the largest contrast with its neighbors, and its length differs from theirs. |
 | V6 Move budget | One primary move per shot and at most one secondary, each with a subject, a start and an end. The clip-level cap is the shot ceiling in step 4, not a move count. |

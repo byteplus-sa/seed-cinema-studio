@@ -40,8 +40,11 @@ only, not a listening pass.
    missing tool.
 6. Return cue decisions, delivery measurements if actually available,
    defects and execution handoffs. Request word-scoped repairs for isolated
-   wrong words; retain correct speech and room tone. Reject repair proposals
-   needing more than about ten percent pitch or tempo change.
+   wrong words; retain correct speech and room tone. Treat about ten percent
+   pitch or tempo adjustment as an advisory review flag, not a universal gate.
+   Compare the actual speaker's local pitch, timbre, prosody and timing and
+   listen across the splice and full line. Smaller changes can also sound
+   wrong; measurements alone never establish repair quality.
 
 ```bash
 uv run python .agents/scripts/production_post.py sound projects/<slug> \
