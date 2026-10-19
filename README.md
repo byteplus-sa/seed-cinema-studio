@@ -140,10 +140,10 @@ Edit skills only under `.agents/skills/`.
 | **subtitle-sidecars** | Write multilingual SRT/WebVTT from locked text and measured timing using the retained shared subtitle engine. |
 | **production-localize** | Localize delivered films, shorts and episodes through explicit routes with source preservation and honest language and lip-sync QA. |
 | **ark-mcp** | Uses the Ark multimodal MCP server for image, video, audio and 3D workflows, durable artifacts, and Advanced Creation Rights face/voice assets with existing authorization reuse and privacy rejection triage. |
-| **brief-intake** | Shape intent-led briefs and treatments; hand off brand-ad / footage inspiration for watchable-media analysis; preserve confirmed decisions. |
+| **brief-intake** | Shape intent-led briefs; hand off footage for native-first, capability-checked analysis while preserving confirmed decisions. |
 | **color-grade-palettes** | Maps a named color grade palette or film look (teal & orange, bleach bypass, golden hour warm grade, etc.) into a canonical grade sentence for the Seedance Visual Style slot or the Seedream `Style:` section, with an optional matching FFmpeg filter graph for cross-shot matching. |
 | **ffmpeg** | Video and audio processing with FFmpeg. Use for format conversion, resizing, compression, audio extraction, and preparing assets for editing and assembly. Covers converting GIF to MP4, resizing video, extracting audio, compressing files, and any media transformation task. |
-| **filipino-micro-drama** | Write Filipino-market micro-drama stories: proven Pinoy formulas, locked episode briefs with English-dominant Taglish dialogue, honorifics, authentic settings and subtitle translations. |
+| **filipino-micro-drama** | Opt-in Filipino-market micro-drama stories and episode briefs with genre formulas and cultural context, preserving approved words and requested language, register, code-switching and subtitle choices. Story material only. |
 | **film-production** | General narrative orchestrator for cinematic shorts, films, shows and custom production, with scoped Studio edits and preserved legacy workflows. |
 | **html-graphic-render** | Author and render exact-size static posters, cards, product grids, UI, and transparent overlays from one project-local HTML entrypoint with CSS/SVG dependencies, exact-copy checks, and schema-valid provenance. |
 | **hyperframes** | HyperFrames entry point with local narrative routing to film-production, preserved micro-drama workflows, and composition/editing domains; no workflow installation. |
@@ -156,7 +156,7 @@ Edit skills only under `.agents/skills/`.
 | **hyperframes-registry** | Search, install, and wire hosted registry blocks and components into compositions before hand-building named visuals. |
 | **hyperframes-studio** | Working with a person in HyperFrames Studio — when a message asks for a change at all, how a new film is planned and built, and timeline layout conventions with safe zones; the final gate runs through studio_project.py check. |
 | **media-review** | Emergency OS-player fallback when the required HTML/browser review surface is unavailable. |
-| **microdrama-story-formats** | Write micro-drama stories and episode briefs for any market, language or genre: proven formats, light casts, culturally grounded settings, locked dialogue and subtitle translations. |
+| **microdrama-story-formats** | Offer micro-drama story formats for the requested market and language; preserve custom structures, confirmed scripts and subtitle choices. |
 | **microdrama-localize** | Orchestrates localizing a delivered episode to another language: register-preserving translation, subtitles, route choice (subtitles only, line-scoped re-voice, full regenerate), and approval, reconciliation and QA gates. |
 | **microdrama-subtitles** | Writes per-language SRT/WebVTT sidecars from locked dialogue and measured timing, with CJK and right-to-left safe wrapping, reading-speed and cue-length limits, and episode offsets. |
 | **micro-drama** | Produce vertical micro-drama episodes for any market with planning-only scene boards, draft-first clips, dialogue QA, multilingual subtitles and Studio delivery. |
@@ -173,7 +173,7 @@ Edit skills only under `.agents/skills/`.
 | **seedance-prompt-20** | Legacy Seedance 2.0 prompt skill. Use when you need 4K output (unsupported by 2.5), Fast/Mini speed variants, or lower cost per generation. Provides reference-role classification, subject definitions, spatial continuity, shot sequencing, and native audio direction. |
 | **seedance-prompt-25** | Write Seedance 2.5 prompts from shot plans and canonical elements, with native 480p drafts, approved promotion, language-aware dialogue and planning-only storyboards. |
 | **seedance-prompt-25-dialogue** | Direct spoken dialogue for Seedance in any language: native-language check, register and accent, code-switching, and word-scoped repairs. |
-| **seedance-prompt-25-filipino** | Write Filipino and Taglish dialogue direction while preserving exact words and register; use evidence-based pronunciation hypotheses and opt-in separate lip-sync audio. |
+| **seedance-prompt-25-filipino** | Opt-in Filipino dialogue support preserving approved words and requested language, register, code-switching and subtitle choices; separate accent notes, listening-based pronunciation review and opt-in separate lip-sync audio. |
 | **seedance-restyle** | Write Seedance 2.5 Restyle prompts that redraw a whole clip in one of 24 visual styles or a custom style reference while keeping its content, motion, camera and cuts, with medium-matched Virtual Portrait anchors, an environment-image recipe that keeps the same place and restyles the background too, a muted source with post audio and a 480p probe ladder. |
 | **seedance-shot-design** | Plan per-shot coverage for Seedance scenes: shot count and jobs, size, framing, angle, camera move, lens intent and light per shot, with variety rules and an energy level. |
 | **seedance-virtual-portrait** | Prepares authorized face and voice references for Seedance Advanced Creation Rights, reuses completed onboarding and active assets without repeating verification, binds asset:// references, and resolves Seedance privacy and guardrail flags on real-person inputs through the registered asset route. |
@@ -186,9 +186,9 @@ Edit skills only under `.agents/skills/`.
 | **seedream-prop-asset** | Writes structured Seedream prompts for prop and product identity sheets after the prop threshold and acquisition-first check. Shows front and back views by default, adding a side view when the user asks or the object needs it. Use for held, recurring, story-critical, or scene-variant objects that Seedance must reproduce. |
 | **seedream-storyboard** | Create, revise, and optionally generate production-ready cinematic storyboards—from one hero panel with alternatives to a multi-panel continuity sequence—with BytePlus Seedream. Boards are planning and review artifacts, never Seedance references. |
 | **showcase-html** | Maintain the HTML production canvas of pre-Studio canvas projects and build ad-hoc comparison pages (optional for Studio projects). |
-| **template-factory** | Reverse-engineer a reference video and soundtrack into a timed visual and audio recipe, with reviewable assets and shot takes reviewed in a synchronized Studio project. |
+| **template-factory** | Native-first narrative reference recipes with permitted tool fallbacks; preserve selected units, script-led format and draft-ledger contracts. |
 | **tig-blocking-map** | Tigran's project-agnostic method for giving Seedance character DISPOSITION via a color-coded outline schematic — a "staging reference" (blocking map). |
-| **tig-scene-engine** | Writes and audits screenplay scenes and sequences using a five-element dramatic engine — Goal, Obstacle, Tactic, Reversal, Value Shift — with custom definitions. Use to write new scenes, draft options, develop sequences, or audit/test/diagnose existing scenes for structural strength. Default scene-craft skill for thriller and psychological drama. |
+| **tig-scene-engine** | Apply the five-element dramatic engine when selected, preserving supplied scripts, alternative narrative structures and intended shot duration. |
 
 ## Setup
 

@@ -109,7 +109,7 @@ between modalities.
 | Production need | Primary skill |
 | --- | --- |
 | Brief intake, directorial defaults, audio route, look intent | `brief-intake` |
-| Brand-ad / reference-video inspiration | `template-factory` for reverse-engineering; `ark-mcp` (`seed_understand`) for lighter analysis |
+| Narrative reference-video inspiration | `template-factory` for native-first reverse-engineering; native/local inspection and timing evidence for lighter analysis, with permitted MCP fallbacks when needed. Preserve the selected unit, supplied script, quiet holds and confirmed format |
 | Explicit micro-drama format | `micro-drama` (with a market writer such as `filipino-micro-drama`) |
 | General premise, treatment, outline or script-led scene list | `story-development`; preserve supplied writing and compose `tig-scene-engine` separately for scene craft |
 | Shared bible, mutable state and character knowledge | `series-continuity`; scoped audits without changing canon |

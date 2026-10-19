@@ -23,7 +23,7 @@
       "source": "./local",
       "sourceType": "local",
       "skillPath": ".agents/skills/sound-post/SKILL.md",
-      "computedHash": "6b5428b48f08ab188cf5197ccdadf380baaecc99e4bcd1aabe31f4ccb0cdb31b"
+      "computedHash": "6bdbcf1b4ce7cf8eeb3c3f92414ef8dbbcc077737907f14947d0a92fe1849503"
     },
     "subtitle-sidecars": {
       "source": "./local",
@@ -47,7 +47,7 @@
       "source": "./local",
       "sourceType": "local",
       "skillPath": ".agents/skills/brief-intake/SKILL.md",
-      "computedHash": "9debc8f7853b6d74d383fb2bffae016ee51a96c0d261a9138ca460117ca1cc6a"
+      "computedHash": "3a0750906ba5abfed9f99f9795973d39b306ed80a82cbab75f00c0c89536ec23"
     },
     "color-grade-palettes": {
       "source": "./local",
@@ -65,13 +65,13 @@
       "source": "./local",
       "sourceType": "local",
       "skillPath": ".agents/skills/filipino-micro-drama/SKILL.md",
-      "computedHash": "9a17a89e878c290391f818646aeb8dee0fda9bdb1aaf4708bad2d31528e41260"
+      "computedHash": "fe4594705d017c23406768b682059badb52d5a2e24eee2911cb3faef0e25f840"
     },
     "film-production": {
       "source": "./local",
       "sourceType": "local",
       "skillPath": ".agents/skills/film-production/SKILL.md",
-      "computedHash": "c097f9f921fbb59025747901141cc1e72e6821c3f3150ccbc3c8f9c1028f0fb8"
+      "computedHash": "73a7c62567d2b34f0b33c589982f093995558f609e5c2c266cf345978ea5d58e"
     },
     "html-graphic-render": {
       "source": "./local",
@@ -143,7 +143,7 @@
       "source": "./local",
       "sourceType": "local",
       "skillPath": ".agents/skills/micro-drama/SKILL.md",
-      "computedHash": "4e0088b45e98dab10ce5231aa8aef3237300e93d98a57045044ee112c1b3d4d8"
+      "computedHash": "75dbfe43cbd93e1f4138e78ffbc8935422b2f22df33b29b8796c5c1cc773ac3b"
     },
     "microdrama-localize": {
       "source": "./local",
@@ -155,7 +155,7 @@
       "source": "./local",
       "sourceType": "local",
       "skillPath": ".agents/skills/microdrama-story-formats/SKILL.md",
-      "computedHash": "0ad3a1474c28d7a91d22328258e1ce40f81b93473704cfd96718fc0b9e45a155"
+      "computedHash": "bc330f04d17e57309528ca3facef337bf27d4291c7fa6bce1171fa71d058abb9"
     },
     "microdrama-subtitles": {
       "source": "./local",
@@ -179,7 +179,7 @@
       "source": "./local",
       "sourceType": "local",
       "skillPath": ".agents/skills/seedance-acting-console/SKILL.md",
-      "computedHash": "f40694a34e8a3d5cec1bc49dc04bc629ee31df2a930fc11448312800cddbef7a"
+      "computedHash": "669ad9b6e21d2d1925afdc7b22bdf1fc413561709527a8b765dfc09a14c3d3f3"
     },
     "seedance-camera-presets": {
       "source": "./local",
@@ -209,7 +209,7 @@
       "source": "./local",
       "sourceType": "local",
       "skillPath": ".agents/skills/seedance-object-swap/SKILL.md",
-      "computedHash": "d09471c7cb3148a0f5baa0f76c3dbf8c0019a412db3b8453abdbac5369432da1"
+      "computedHash": "f3bd4cf04d8e23c86403d2a27aae6654c11da0c5b7ea87b9c2ef4c04f37f0664"
     },
     "seedance-pacing-presets": {
       "source": "./local",
@@ -239,19 +239,19 @@
       "source": "./local",
       "sourceType": "local",
       "skillPath": ".agents/skills/seedance-prompt-25-filipino/SKILL.md",
-      "computedHash": "ebfc6b800d59f7bae5c3251183ecc8619b2ce8b6a64f0b2385f5b8b21308142e"
+      "computedHash": "b6e5f2fb3c5994e7ac20f729dc625cf5a2ca26c87f8eaed540e75849cabcdf8b"
     },
     "seedance-restyle": {
       "source": "./local",
       "sourceType": "local",
       "skillPath": ".agents/skills/seedance-restyle/SKILL.md",
-      "computedHash": "715cb81930dd19fb51278bc6aff80034c65dafc2ef028ee048f9a3b0ce380cbc"
+      "computedHash": "b3889f63bfa9a2cbb7c258d24b0e36ac8ae03570873b2c75b35fee82b58723ec"
     },
     "seedance-shot-design": {
       "source": "./local",
       "sourceType": "local",
       "skillPath": ".agents/skills/seedance-shot-design/SKILL.md",
-      "computedHash": "18d125502a2124abeebb7a301f8cf63f496c44bb0db6649f7958096ed4c0a858"
+      "computedHash": "1c7ba322bf3c21c1d46180dc26ed314bf854148980906929cda73f1e60ecd9dd"
     },
     "seedance-virtual-portrait": {
       "source": "./local",
@@ -311,25 +311,25 @@
       "source": "./local",
       "sourceType": "local",
       "skillPath": ".agents/skills/showcase-html/SKILL.md",
-      "computedHash": "9abc4f67142ab8e98c8cafe4497730fd425df5a313a6ee8bb3e417dca13926ba"
+      "computedHash": "a4b19d91ae785d8320a9f569e3844296a41ca402971e8f01dc17322cb5ea633d"
     },
     "template-factory": {
       "source": "./local",
       "sourceType": "local",
       "skillPath": ".agents/skills/template-factory/SKILL.md",
-      "computedHash": "30d7c4add379e7b39e378d6abefa3dd89f9937bd5601b75958540dbe0057ef3b"
+      "computedHash": "0acba063e4b6e2c34f6597ceb38866322834250e5a8bb882ed7fb1bfef3085e2"
     },
     "tig-blocking-map": {
       "source": "./local",
       "sourceType": "local",
       "skillPath": ".agents/skills/tig-blocking-map/SKILL.md",
-      "computedHash": "45ca5670cf042c036a73e16ab0cac33e868e157bd9141ec213a0d929f507c858"
+      "computedHash": "9d0c851528111f313e3f101ff702e7dc2903457ac28c610bf6f12fe08f339a6a"
     },
     "tig-scene-engine": {
       "source": "./local",
       "sourceType": "local",
       "skillPath": ".agents/skills/tig-scene-engine/SKILL.md",
-      "computedHash": "08a717776a6174e98460c62288f829ac95757991ccafef748fb1af794028a252"
+      "computedHash": "40bf7e29f60646c6e329feb489fca3e641cd92365daf8f521becac474b7f8ed1"
     },
     "scene-board-sheet": {
       "source": "./local",

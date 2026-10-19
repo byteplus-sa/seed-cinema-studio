@@ -1,7 +1,8 @@
 # Repairs
 
-Read [the entrypoint](../SKILL.md). These rules come from the first
-production series; they apply to every language.
+Read [the entrypoint](../SKILL.md). Derive repair decisions from the actual
+voice, approved delivery and listening evidence for this take. A prior
+production's outcomes are not universal acceptance criteria.
 
 ## Order of response
 
@@ -21,16 +22,22 @@ production series; they apply to every language.
 ## Word-scoped splice limits
 
 - Replace only the wrong word. Keep the original voice for everything else.
-- Reject a splice whose tempo or pitch differs from the original by more than
-  about 10 percent; four such splices were heard as voice changes.
-- Check pitch (f0) continuity at the splice points and listen at normal speed.
+- Compare local pitch (f0), timbre, prosody, tempo and loudness around the
+  replacement against the actual speaker, not a universal numeric threshold.
+  Numeric differences help locate a possible mismatch but neither certify nor
+  reject a splice on their own.
+- Listen at normal speed both across the splice and in the full line; check
+  intelligibility, speaker identity and room-tone continuity. Record the
+  measurements, heard result and limits. Unavailable listening remains
+  unresolved, not passed.
 - Never replace a whole line or clip with a re-voiced version unless the user
   asked for it.
 
 ## Speech-timing traps
 
-- A line that ends in the last second of a clip is often clipped. Leave a tail
-  of silence or ambience after the last word.
+- Measure the last word's actual end and the intended pause or ambience tail.
+  Check playback for truncation; do not impose a fixed tail duration on every
+  language or performance.
 - Keep the source soundtrack when re-voicing: send the original video with its
   audio and ask the model to fix the words; take the full audio back.
 

@@ -26,6 +26,12 @@ Add the face-protection line whenever a face stays visible:
 `Real human skin with pores and catchlights — never waxy, smoothed, or warped.`
 For a stylized source, describe its own surface quality instead.
 
+Keep the original and full timeline unchanged. Verify current route constraints
+before setting duration or preparing media; no automatic 8n+1 trim, whole-second
+rounding, padding or retiming. An adaptation requires current capability evidence
+and specific user approval, with its source span, derivative hashes and audio
+consequences recorded. Muted picture and saved audio use the same selected span.
+
 ## Product swap
 
 ```text
@@ -262,6 +268,11 @@ and catchlights — never waxy, smoothed, or warped.
 Silent output. Sound is added in post.
 ```
 
-Submit with `omni_reference_task_type: edit`, `@Video 1` first and `@Image 1`
-second, `generate_audio: false`, at 480p for the first test. After QA, mux the saved
-source audio so the set-down sound lands at 0:05.
+Return the package to the caller with the currently verified
+`omni_reference_task_type: edit`, `@Video 1` first and `@Image 1` second,
+`generate_audio: false`, and the rung required by Cinema's draft and promotion
+policy. Verify native Draft and promotion support; an unsupported capability
+stays open for an approved alternative, not a silent ordinary-480p substitute.
+A contact-window probe is optional for a current difficulty and requires
+approval of its span. After QA measures timing against the selected source
+span, mux saved audio and check that the set-down sound aligns with the picture.

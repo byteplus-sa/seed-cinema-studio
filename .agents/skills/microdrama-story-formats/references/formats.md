@@ -7,6 +7,10 @@ phone screen. Pick by audience first, then by what one location and two or
 three characters can stage. Local flavor comes from
 [market adaptation](market-adaptation.md), not from the format.
 
+Confirmed scripts and custom formats override these suggested shapes. Do not
+add a proof object, cliffhanger, cast limit or timed hook solely to fit the
+table. Keep the approved scene count, pacing and ending.
+
 | Format | Engine | Hook → Turn → Cliffhanger | Proof on screen |
 | --- | --- | --- | --- |
 | Billionaire or CEO romance | Power gap, contract or secret identity | Collision in a status space → a humiliating offer or fake-relationship deal → she already knew who he was | Contract envelope, ring, a name card |
@@ -21,7 +25,7 @@ three characters can stage. Local flavor comes from
 | Horror and folk supernatural | Home, elders' warnings, night | A ritual ignored → a sleepwalker or reflection wrong → a tell only the audience sees | A shadow, a mirror, an offering |
 | Comedy and mistaken identity | Two people confused for others | Public mix-up → escalating cover story → the real person walks in | Wrong name tag, swapped bag |
 | Historical and fantasy | Court, clan or kingdom intrigue | Banquet accusation → an artifact proves innocence → a larger plot is hinted | Seal, jade token, sleeve-hidden letter |
-| Custom | User-defined engine in any genre (sci-fi, faith, sports, educational, and more) | Define hook, turn and cliffhanger with the user | One object or mark that one close-up can show |
+| Custom | User-defined structure in any genre (sci-fi, faith, sports, educational, and more) | Follow the confirmed script's beats and ending | Only what the approved story needs; no required proof object |
 | True-to-life sacrifice | Poverty, illness, migration, injustice | A small daily struggle → the sacrifice is revealed → the cost lands | Receipt, hospital bill, packed bag |
 
 ## Choosing for AI production

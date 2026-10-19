@@ -2,7 +2,9 @@
 
 Read [the entrypoint](../SKILL.md). Use this reference when producing several
 independent episodes or dramas at once. For a connected series with shared
-canon, use [series production](series-production.md).
+canon, the active manifest's unit selection is authoritative. Use
+[series production](series-production.md) only for an existing legacy series
+without a manifest.
 
 ## Ownership
 

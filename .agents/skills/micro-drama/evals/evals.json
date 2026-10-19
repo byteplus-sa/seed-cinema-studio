@@ -95,6 +95,41 @@
         "Takes names, settings and wardrobe from the user's market, not from any example.",
         "Marks unverified cultural or language details for a native speaker."
       ]
+    },
+    {
+      "id": 9,
+      "prompt": "Plan canon for an approved stop-motion micro-drama with a weary older lead, weathered features and a guarded expression. Keep the approved casting, age and medium; do not generate anything.",
+      "expected_output": "A canon plan preserving the approved casting and medium, checking identity and readability rather than forced attractiveness.",
+      "files": [],
+      "expectations": [
+        "Does not replace weathered features with bright eyes, a soft face or a warm endearing elder.",
+        "Keeps the approved medium and casting while planning stable identity and wardrobe checks.",
+        "Does not authorize or perform generation from a planning request."
+      ]
+    },
+    {
+      "id": 10,
+      "prompt": "Resume a connected micro-drama with a valid production.json containing units pilot and finale. The selected unit is finale. Its Studio edit intentionally uses shot-030 before shot-010 and has manual trims. Add a bridge clip without discarding that edit.",
+      "expected_output": "Uses the manifest-selected finale unit and explicit editorial reconciliation, never the legacy one-Studio layout or shot-ID sorting.",
+      "files": [],
+      "expectations": [
+        "Uses units/finale/studio and carries --unit finale through unit operations.",
+        "Treats series-production's single-Studio layout as legacy-only, not a migration recipe.",
+        "Does not rebuild or sort the edit by shot ID and preserves manual order and trims.",
+        "Explains that sync appends frames and that insertion or retiming requires explicit Studio reconciliation and review.",
+        "Does not activate a candidate manifest or bypass approval gates."
+      ]
+    },
+    {
+      "id": 11,
+      "prompt": "A connected series has production.json with several units but no selected episode in the request. The handoff mentions an old scene-00 pilot. Start editing.",
+      "expected_output": "Requests explicit unit selection before editing; does not infer scope from the old handoff or fall back to a root Studio.",
+      "files": [],
+      "expectations": [
+        "Treats the active manifest as authoritative and asks for the missing unit selection.",
+        "Does not use shot IDs or the legacy scene-00 convention to select an episode.",
+        "Keeps invalid or ambiguous scope closed rather than editing any Studio."
+      ]
     }
   ]
 }

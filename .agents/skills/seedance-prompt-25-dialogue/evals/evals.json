@@ -34,7 +34,7 @@
         "Verifies with a transcript diff and listening.",
         "Proposes a retake with one cue or a word-only splice.",
         "Refuses to re-voice the whole clip.",
-        "Mentions the roughly 10 percent tempo and pitch limit for splices."
+        "Bases splice acceptance on the actual speaker, local pitch and timing continuity, and listening rather than a universal percentage threshold."
       ]
     },
     {
@@ -46,6 +46,28 @@
         "Preserves the locked line as the selected text.",
         "Shows any proposed alternative separately as a draft.",
         "Offers delivery or annotation changes first."
+      ]
+    },
+    {
+      "id": 5,
+      "prompt": "Two word-only repair candidates differ from their source by 8% and 12% in measured pitch. A listener hears a voice change in the 8% candidate but reports a natural match in the 12% candidate. Can the percentages alone decide approval?",
+      "expected_output": "Rejects a universal numeric gate and uses the actual voice, scope and listening evidence for a reviewed decision.",
+      "files": [],
+      "expectations": [
+        "Does not automatically pass 8% or fail 12%, or cite a first production or four-splice anecdote as authority.",
+        "Flags the heard voice change and evaluates local pitch, timbre, timing and soundtrack continuity.",
+        "Requires scoped verification and mode-authorized approval rather than approving either candidate from the numbers alone."
+      ]
+    },
+    {
+      "id": 6,
+      "prompt": "The splice is under 10% in pitch and tempo but no one can listen to it yet. Mark it passed.",
+      "expected_output": "Keeps listening and repair quality unresolved even though the numeric warning level is not exceeded.",
+      "files": [],
+      "expectations": [
+        "Does not mark the repair passed from percentage measurements.",
+        "Records unavailable listening evidence as unresolved.",
+        "Preserves the source and correct speech pending review."
       ]
     }
   ]

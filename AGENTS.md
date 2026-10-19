@@ -32,23 +32,30 @@ genre, medium, audience, language and delivery are independent choices.
 - For forwarding commands, put scope before the project:
   `studio_project.py hf --unit ID PROJECT preview --no-open --json` and
   `studio_project.py record-render --unit ID PROJECT FILE ...`.
-- Micro-drama has prior production evidence; synthetic technical render tests
-  are not creative-pilot approval or a fully verified release. Feature-length
-  readiness requires measured trials. Alternate cuts remain deferred; automated
-  validation does not establish creative proof. The active technical pilot uses
-  labeled synthetic decision fixtures for strict gate coverage, not genuine
-  creative approvals.
+- Synthetic technical render tests are not creative-pilot approval or a fully
+  verified release. Feature-length readiness requires measured trials on the
+  requested production's actual inputs. Alternate cuts remain deferred; automated
+  validation does not establish creative proof, and synthetic decision fixtures
+  never transfer approval to a user's project.
 
 ## Markets and languages
 
 - Micro-drama story only: use `microdrama-story-formats` for any market. A market
-  pack (for example `filipino-micro-drama`) replaces it when one exists for the
-  audience. These are not mandatory formats for general narrative development.
+  pack (for example `filipino-micro-drama`) supplements it only when explicitly
+  selected for the confirmed audience. These are not mandatory formats for
+  general narrative development.
 - Dialogue: use `seedance-prompt-25-dialogue` for any language. It checks the
   native-language list and routes unsupported languages; a market pack (for
   example `seedance-prompt-25-filipino`) adds language depth.
 - New market: follow [docs/ADD_A_MARKET.md](docs/ADD_A_MARKET.md). Do not assume
   Filipino names, settings, honorifics or Taglish in a project for another market.
+
+Shared skills use current briefs and explicitly selected canon, not prior local
+productions. Keep real local project/client names, personal paths, private links
+and one-run results out of reusable guidance. Clearly label fictional, varied
+examples; never use them as default language, setting, cast or approved assets.
+Missing language or register is a question when material, not permission to
+choose a market pack or change approved dialogue.
 
 ## Scope of this repo
 
@@ -155,15 +162,18 @@ Only for an explicit micro-drama format or an existing micro-drama workflow:
 - Plan each shot with duration, size, angle, move, lens intent and a named light
   source. Preserve quiet held shots and wordless scenes when the brief calls for
   them; record their directing rationale.
-- Blocking: crowd and multi-person scenes bind a position map (`tig-blocking-map`)
-  as the last `reference_image`. Video extension and first-frame are not available
-  for generated people, so keep blocking steady with one shared map and identical
-  atmosphere text across clips.
-- A location plate that shows a door will make Seedance draw that door. Give any other
-  door its own prop plate and keep unwanted doors out of frame.
+- Blocking: use `tig-blocking-map` for planning when needed, preserving the
+  approved medium. Maps are analysis-only by default; translate staging into
+  prompt text and follow the current reference contract and verified tool
+  capabilities. Do not infer a reference role from a prior production.
+- Inspect location plates for unintended visible features. Separate recurring
+  or story-critical props under the element-identification threshold rather
+  than making a prior scene's door arrangement universal.
 - Audio fixes are word-scoped. Replace only the wrong word, match pitch and loudness,
-  cross-fade, and reject a replacement that needs more than about 10 percent pitch or
-  tempo change. Prefer a retake with a pronunciation cue over a stretched splice.
+  cross-fade, and inspect identity, pronunciation, rhythm and splice continuity
+  by listening. Use tolerances measured for the current voice and delivery,
+  not a fixed percentage from another production. Prefer a retake when a splice
+  changes the voice or intended performance.
 - Track continuity of state across episodes: wardrobe, wetness, injuries, locked
   doors and where each character is, with `series-continuity`.
 - Studio rebuild: `sync` appends new frames at the end and `place` refuses a take of

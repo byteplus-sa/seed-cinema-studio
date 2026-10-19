@@ -1,16 +1,19 @@
 # Production Recipe
 
 Read [the entrypoint](../SKILL.md). Use this reference from canon through
-delivery. These are working practices, not provider guarantees.
+delivery. These are working practices, not provider guarantees. Confirmed
+casting, medium, scene structure and timing override creative defaults here;
+approval, rights, review and submission gates remain unchanged.
 
 ## Canon
 
 - Character sheets: three-panel identity sheets on a neutral background with
   full wardrobe and every always-worn item visible in each panel. Reject a
   candidate whose accessories move between wrists or panels.
-- Design every character to be appealing on a phone screen: bright eyes, soft
-  readable faces, and elders who look warm and endearing rather than haggard.
-  Villains read through wardrobe, posture and expression, not ugliness.
+- Preserve the brief's approved age, features, expression and medium, including
+  weary or weathered characters. Check identity and readability at delivery
+  size; do not require bright eyes, soft faces or warm, endearing elders.
+  Character morality does not prescribe attractiveness.
 - Spread a natural range of complexions and hair silhouettes across the cast
   instead of one shared tone, so each character is distinct at thumbnail size.
 - Location plates: empty establishing views that fix the landmarks the story
@@ -118,9 +121,11 @@ another shot) are recorded, not retaken.
 - **Dialogue fixes are word-scoped.** Patch only the wrong word windows; never
   re-dub a whole clip. Transcribe with word times, splice pitch- and
   loudness-matched replacements with short fades, and prove that samples
-  outside each window are unchanged. Measure the speaker's pitch first: a replacement whose
-  pitch differs from the speaker by more than about 10% sounds like another voice, and a mild
-  mispronunciation can be the better choice.
+  outside each window are unchanged. Measure the actual speaker's local pitch
+  and timing, then listen for timbre, prosody and continuity. About 10% pitch
+  or tempo adjustment is an advisory review flag, not a universal pass/fail
+  gate; smaller changes can also sound wrong. Unavailable listening remains
+  unresolved, and retaining a known defect requires a recorded decision.
 - When a model re-voices words, send the original clip with its audio, name
   the words to fix, take the full audio back, match the original loudness and
   mux it over the untouched picture. Never send dialogue alone: the score,
@@ -161,7 +166,7 @@ present one as the other. Seedream stills are minor by comparison.
 
 ## Assembly
 
-- Order: cold open (the first line of scene 1), title card, the rest of the
+- Default order, only when adopted by the brief: cold open (the first line of scene 1), title card, the rest of the
   scenes with 6-frame dissolves, a 12-frame dissolve into the to-be-continued
   card.
 - No grade unless the brief records a look: keep the original Seedance colours. Decode HEVC finals as

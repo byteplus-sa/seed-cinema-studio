@@ -1,7 +1,11 @@
 # Episode Brief
 
-Read [the entrypoint](../SKILL.md). Fill every field; a production
-orchestrator treats the dialogue as locked wording.
+Read [the entrypoint](../SKILL.md). This template illustrates the default
+formula, not a mandatory shape. For a confirmed script or custom format,
+replace S1/S2/S3 with the approved scenes and timing, retain its cast and
+ending, and mark dialogue or cliffhanger fields not applicable when absent.
+Do not invent story material to fill fields. A production orchestrator treats
+accepted dialogue as locked wording; a new draft is not automatically approved.
 
 ## Template
 

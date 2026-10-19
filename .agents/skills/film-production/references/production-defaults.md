@@ -152,9 +152,11 @@ that sound is intentionally absent.
 - **Word-scoped audio fixes:** patch only the wrong word windows; never re-dub a
   whole track. Transcribe with word times, splice pitch- and loudness-matched
   replacements with short fades, and prove that samples outside each window are
-  identical. Measure the speaker's pitch first: a replacement whose pitch
-  differs from the speaker by more than about 10% is heard as a voice change, and leaving a
-  mild mispronunciation can be the better choice.
+  identical. Measure the actual speaker's local pitch and timing, then listen
+  for timbre, prosody and continuity. About 10% pitch or tempo adjustment is
+  an advisory review flag, not a universal acceptance or rejection threshold.
+  Smaller changes can also sound wrong; unavailable listening remains
+  unresolved. Retaining a known defect requires a recorded decision.
 - **Re-voicing keeps the source soundtrack:** when a model re-voices a clip,
   send the original video with its audio, name the words to fix, take the full
   audio back, normalize to the original loudness and mux it over the untouched

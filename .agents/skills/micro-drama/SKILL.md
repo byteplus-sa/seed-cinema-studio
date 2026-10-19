@@ -25,6 +25,10 @@ tropes, dialogue register and cultural signifiers, belongs to a market writer
 skill. Stage, approval, Studio and submission rules come from `AGENTS.md` and
 the production contracts; this skill does not relax them.
 
+Confirmed scripts and custom episode formats override the creative defaults in
+this skill and its recipes, including hook timing, casting, scene count, ending
+and cards. They do not override approval, rights, review or submission gates.
+
 ## Inputs and outputs
 
 Input: optionally a market card (user-defined, free-form; see
@@ -39,6 +43,13 @@ Output per episode: a project under `projects/<slug>/` with all eight production
 stages closed, a final master (1080×1920 H.264/AAC unless the market card sets another
 aspect), a subtitle sidecar per language in the card (named `<master-stem>.<language-code>.srt`), locks, and an honest defect list. For a batch, also a portfolio page
 and an optional full-episode showreel.
+
+For manifest-backed productions, episodes are the selected units of the existing
+project, not new projects or legacy scene folders. Resolve `production.json`
+first and use `units/<unit>/studio/` with `--unit ID` on unit operations.
+Multiple units require explicit selection before editing; invalid manifests
+fail closed. Without a manifest, retain the existing root Studio layout.
+Candidate validation does not authorize activation or migration.
 
 ## Workflow
 
@@ -60,8 +71,8 @@ and an optional full-episode showreel.
    shots without spoken lines. Walk every beat against the element-identification
    contract.
 3. **Canon.** Character sheets, location plates and threshold props as
-   three-sample Seedream sets. Make the cast visually distinct and appealing
-   within the brief, including a natural range of complexions. Inspect every image
+   three-sample Seedream sets. Preserve the approved casting and medium;
+   make identities visually distinct within those choices. Inspect every image
    and select with hash-bound decisions.
 4. **Storyboard.** Optional planning and review boards bound to selected canon.
    For scene boards use `scene-board-sheet` to derive the L1/L2/L3 panel record
@@ -102,7 +113,9 @@ For a batch of independent episodes, follow
 [batch production](references/batch-production.md): one agent per episode with
 exclusive project ownership, on-disk checkpoints, and a single integrating
 manager. For a connected series with shared canon, follow
-[series production](references/series-production.md).
+the manifest's unit selection and shared canon contracts. The
+[series production](references/series-production.md) single-Studio layout is
+legacy-only for existing series without a manifest.
 
 ## Non-negotiables
 
@@ -110,8 +123,9 @@ manager. For a connected series with shared canon, follow
   post from deterministic sources.
 - Storyboards are planning artifacts only. Bind approved element references and
   any separately approved blocking map; carry board staging in shot prompt text.
-- The hook lands within the first 3 s of the delivered episode. Never let a
-  title card consume the hook window.
+- When the default hook formula is selected, the hook lands within the first
+  3 s and a title card does not consume that window. A confirmed script's
+  opening and timing take precedence.
 - Every spoken line is checked word by word against the locked dialogue with
   speech-to-text before a take can pass. A model's own summary of what was
   said is not sufficient.
@@ -128,7 +142,7 @@ manager. For a connected series with shared canon, follow
 | Beat timing, hooks, reveals, cliffhangers, cards, brief fields | [Episode structure](references/episode-structure.md) |
 | Clip plan, prompt clauses, QA gates, retakes, budget, assembly | [Production recipe](references/production-recipe.md) |
 | Several independent episodes in parallel, checkpoints, portfolio, showreel | [Batch production](references/batch-production.md) |
-| Connected series: shared canon, continuity ledger, season order | [Series production](references/series-production.md) |
+| Legacy connected series without a manifest: shared canon, continuity ledger, season order | [Series production](references/series-production.md) |
 | Series music identity, ambience beds, native audio that ignores a negative | [Music and ambience](references/music-and-ambience.md) |
 | Optional target market, language, platform and episode format | [Market card](references/market-card.md) |
 | Confirming a platform's current delivery specs before export or posting | [Platform specs](references/platform-specs.md) |

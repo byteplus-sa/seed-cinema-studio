@@ -34,17 +34,28 @@ each contact window and cut. Record each item as pass, fail or not applicable.
   halo.
 - **Everything else untouched.** Faces, wardrobe, accessories, other props,
   background, camera, cuts and mouth movement match `@Video 1`.
-- **Technical.** The output decodes cleanly and has no audio stream. An 8n+1
-  frame input returns the same frame count; any other input lands within about
-  0.3 s of the source length. Check the frame edges for black side bars the
-  source did not have.
+- **Technical.** The output decodes cleanly and has no audio stream. Measure
+  decoded timestamps, duration, playback speed and cut boundaries against the
+  full source or specifically approved span. Neither 8n+1 nor a blanket duration
+  tolerance establishes a timing pass. Report mismatches; any trim, padding,
+  rounding or retiming requires current capability evidence, specific user
+  approval and a separate derivative record with source span, hashes and audio
+  consequences. Check for black side bars the source did not have.
+
+Follow Cinema's draft and promotion policy using current route capabilities.
+An unsupported native Draft or promotion capability stays open for an approved
+alternative. A contact-window probe requires a difficulty in the current source
+or result and user approval of its span. Prior runs are not gates.
 
 ## Audio checks after mux
 
 Apply after the post-audio route is muxed, following the
 [video-to-video inputs contract](../../../contracts/video-to-video-inputs.md#post-audio).
 
-- The final duration equals the picture duration; padding or trim is recorded.
+- Measure picture and audio before muxing; do not hide a mismatch with padding
+  or `-shortest`. Any corrective padding, trim or retiming needs specific user
+  approval and a recorded derivative. Muted picture and saved audio derive
+  from the same selected source span.
 - Two or three sync points (set-downs, hits, plosives) land on the picture.
 - On-screen speech stays on the mouths. A visible offset routes to the
   re-voiced route or a new take.

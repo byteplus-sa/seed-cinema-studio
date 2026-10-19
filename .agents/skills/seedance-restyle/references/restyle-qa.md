@@ -28,17 +28,33 @@ Record each item as pass, fail or not applicable.
   surfaces show abstract shapes.
 - **Same place.** The background reads as the source's own place in the new
   medium; no different city, landscape or interior has been substituted.
-- **Technical.** Clean decode, no audio stream. Route A returns the source
-  frame count for an 8n+1 input (otherwise within about 0.3 s); Route B equals
-  the requested whole seconds. Check the frame edges for black side bars the
-  source did not have.
+- **Reference authority.** An environment image is optional. When selected,
+  it supplies same-place surfaces, palette and texture, not geometry, layout,
+  camera parallax or timing. Reject conflicting references and omit absent
+  image roles; words-only requests still cover the whole frame.
+- **Technical.** Clean decode, no audio stream. On both routes, measure decoded
+  timestamps, duration, playback speed and cut boundaries against the full
+  source or specifically approved span. Neither 8n+1 nor whole-second settings
+  guarantee exact timing, and no blanket tolerance establishes a pass. Report
+  mismatches; any trim, padding, rounding or retiming requires current capability
+  evidence, specific user approval and a separate derivative record with source
+  span, hashes and audio consequences. Check for new black side bars.
+
+Follow Cinema's draft and promotion policy using current route capabilities.
+An unsupported native Draft or promotion capability stays open for an approved
+alternative. Propose a short probe only for a current inspected difficulty with
+approval of its span; old probes neither gate a new case nor prove another
+medium's limitations.
 
 ## Audio checks after mux
 
 Apply after the post-audio route is muxed, following the
 [video-to-video inputs contract](../../../contracts/video-to-video-inputs.md#post-audio).
 
-- The final duration equals the picture; padding or trim is recorded.
+- Measure picture and audio before muxing; do not hide a mismatch with padding
+  or `-shortest`. Any corrective padding, trim or retiming needs specific user
+  approval and a recorded derivative. Muted picture and saved audio derive
+  from the same selected source span.
 - Two or three sync points land on the picture.
 - On-screen speech stays on the redrawn mouths. Simplified mouths in drawn
   styles tolerate less precision; a visible offset still routes to the
@@ -50,9 +66,9 @@ Change one variable per retry: wording, style reference, anchor or route.
 
 | Symptom | Likely cause | Repair |
 | --- | --- | --- |
-| Output stays photographic | Route A keeps the source pixels | Try Route B with the same style block |
-| Subject redrawn but street, plant, table and sky stay photographic | No environment image of the same place is bound | Make an empty environment image of the same place in the target medium and use "Replace the scene with ... Refer to @Image 1 for the environment" (Route A), or use Route B with the same image |
-| The scene moved to a different place (city became sea) | The prompt named a new location, or the environment image shows another place | Describe the source's own place in the environment image and the prompt; name no different location unless the user asked for one |
+| Output stays photographic | Medium instructions were not realized in this result | Name the failed surfaces and repair wording or try a currently supported alternative route; do not infer universal route limitations |
+| Subject redrawn but street, plant, table and sky stay photographic | Background medium coverage failed in the current result | Name those surfaces in a scoped wording repair or try a supported route; honor words-only scope. An approved same-place image remains optional, not an automatic generation step |
+| The scene moved to a different place (city became sea), or layout changed | Prompt or selected reference conflicts with source place or geometry | Reject the conflicting reference, restore source authority and use words-only guidance or an approved corrected same-place image |
 | Extra chair, ashtray or cup appears | The environment image holds objects the shot lacks | Name each in the Environment Reference Role as not to be used; remove them from the image |
 | Hair or face colour changes toward a style frame | A style frame carries a different look | Say the source owns identity and keep hair colour in the scope; prefer an environment image to person-bearing frames |
 | Faces stay photographic inside a drawn world | Face protection or photoreal anchor | Remove photoreal wording; use a medium-matched anchor |

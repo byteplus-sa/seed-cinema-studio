@@ -53,8 +53,10 @@ with a verified full-soundtrack video-conditioned tool when available, or
 verified voice/background separation plus scoped new speech and mixing.
 Do not infer a video-to-audio binding from text-to-audio support. Do not
 replace the entire soundtrack with dialogue alone. Initial localization is
-line-scoped; correction of one wrong word is word-scoped. Reject patches
-requiring more than about ten percent pitch or tempo change.
+line-scoped; correction of one wrong word is word-scoped. Inspect pitch, tempo,
+speaker identity and audible continuity against the actual source and intended
+delivery. A fixed percentage from another production neither approves nor
+rejects a patch; unavailable listening leaves it unresolved.
 
 Regenerate uses current canon bindings, the existing production workflow,
 inline prompt review, registered 480p drafts, inspected selections and
