@@ -1,5 +1,60 @@
 {
   "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "description": "Legacy v1 decisions and scoped v2 decisions. Scoped authorization additionally requires current semantic context validation.",
+  "$defs": {
+    "productionContext": {
+      "type": "object",
+      "required": ["context_version", "kind", "effective_sha256"],
+      "properties": {
+        "context_version": {"type": "integer", "const": 1},
+        "kind": {"enum": ["production", "unit"]},
+        "unit_id": {"type": "string", "pattern": "^[a-z0-9]+(?:-[a-z0-9]+)*$(?![\\s\\S])"},
+        "effective_sha256": {"type": "string", "pattern": "^[0-9a-f]{64}$(?![\\s\\S])"}
+      },
+      "additionalProperties": false,
+      "allOf": [{
+        "if": {"properties": {"kind": {"const": "unit"}}, "required": ["kind"]},
+        "then": {"required": ["unit_id"]},
+        "else": {"not": {"required": ["unit_id"]}}
+      }]
+    },
+    "decisionV2": {
+      "type": "object",
+      "required": [
+        "schema_version", "decision_id", "decision_type", "subject_path",
+        "actor", "approval_mode", "project_sha256", "result", "review_path",
+        "review_sha256", "upstream_sha256", "reason", "decided_at", "context"
+      ],
+      "properties": {
+        "schema_version": {"const": 2},
+        "context": {"$ref": "#/$defs/productionContext"},
+        "decision_id": {"$ref": "#/properties/decision_id"},
+        "decision_type": {"$ref": "#/properties/decision_type"},
+        "subject_path": {"$ref": "#/properties/subject_path"},
+        "actor": {"$ref": "#/properties/actor"},
+        "approval_mode": {"$ref": "#/properties/approval_mode"},
+        "project_sha256": {"$ref": "#/properties/project_sha256"},
+        "result": {"$ref": "#/properties/result"},
+        "review_path": {"$ref": "#/properties/review_path"},
+        "review_sha256": {"$ref": "#/properties/review_sha256"},
+        "upstream_sha256": {"$ref": "#/properties/upstream_sha256"},
+        "reason": {"$ref": "#/properties/reason"},
+        "decided_at": {"$ref": "#/properties/decided_at"},
+        "asset_id": {"$ref": "#/properties/asset_id"},
+        "stage_id": {"$ref": "#/properties/stage_id"},
+        "lock_kind": {"$ref": "#/properties/lock_kind"},
+        "selected_variant": {"$ref": "#/properties/selected_variant"},
+        "selected_sha256": {"$ref": "#/properties/selected_sha256"},
+        "subject_sha256": {"$ref": "#/properties/subject_sha256"},
+        "authorization": {"$ref": "#/properties/authorization"}
+      },
+      "additionalProperties": false,
+      "allOf": [
+        {"$ref": "#/allOf/0"}, {"$ref": "#/allOf/1"},
+        {"$ref": "#/allOf/2"}, {"$ref": "#/allOf/3"}
+      ]
+    }
+  },
   "type": "object",
   "required": [
     "schema_version",
@@ -17,7 +72,8 @@
     "decided_at"
   ],
   "properties": {
-    "schema_version": {"const": 1},
+    "schema_version": {"enum": [1, 2]},
+    "context": {"$ref": "#/$defs/productionContext"},
     "decision_id": {"type": "string", "pattern": "^[A-Za-z0-9][A-Za-z0-9_-]*$"},
     "decision_type": {"enum": ["variant_selection", "stage_lock"]},
     "asset_id": {"type": "string", "minLength": 1},
@@ -67,6 +123,11 @@
     {
       "if": {"properties": {"actor": {"const": "agent"}}, "required": ["actor"]},
       "then": {"properties": {"approval_mode": {"const": "approve_for_me"}}}
+    },
+    {
+      "if": {"properties": {"schema_version": {"const": 2}}, "required": ["schema_version"]},
+      "then": {"required": ["context"]},
+      "else": {"not": {"required": ["context"]}}
     }
   ]
 }

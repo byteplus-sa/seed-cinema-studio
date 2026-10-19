@@ -10,12 +10,14 @@ from datetime import UTC, datetime
 from pathlib import Path
 from typing import Any
 
+from budget_report import amount, check_budget
 from operation_store import (
     adopt_submitted_operation,
     prepare_operation,
     read_registry,
     registry_lock,
     require_current_approval_contract,
+    validate_layout,
 )
 from ruamel.yaml.error import YAMLError
 from validate_request import (
@@ -23,8 +25,10 @@ from validate_request import (
     compute_request_hash,
     contained_path,
     frontmatter,
+    operational_context,
     parse_frontmatter,
     prepared_evidence_findings,
+    production_context_module,
     project_mode_snapshot,
     schema_findings,
     validate_request,
@@ -140,10 +144,22 @@ def declares_approval_mode(root: Path) -> bool:
     return text.startswith("---") and "approval_mode" in parse_frontmatter(text)
 
 
-def canvas_finding(root: Path, request: dict[str, Any]) -> Finding | None:
+def canvas_finding(
+    root: Path, request: dict[str, Any], *, unit_id: str | None = None,
+    production_scope: bool = False,
+) -> Finding | None:
     try:
-        require_current_approval_contract(root, request)
+        require_current_approval_contract(
+            root, request, unit_id=unit_id, production_scope=production_scope,
+        )
     except (ValueError, TypeError) as error:
+        if request.get("schema_version") == 3:
+            return Finding(
+                "approval.current_studio",
+                f"{error}. Initialize the selected unit with studio_project.py init "
+                "<project> --unit <unit-id>; shared canon needs an initialized unit Studio.",
+                "context",
+            )
         stage = "<stage-id>"
         try:
             canvas = json.loads((root / "showcase.json").read_text()).get("canvas")
@@ -206,13 +222,28 @@ def model_family(model: str) -> str:
 
 
 def build_request(root: Path, args: argparse.Namespace) -> dict[str, Any]:
+    active = production_context_module().has_production_manifest(root)
+    unit_id = getattr(args, "unit", None)
+    production_scope = getattr(args, "production_scope", False)
+    context = operational_context(root, unit_id=unit_id, production_scope=production_scope) if (
+        active or unit_id is not None or production_scope
+    ) else None
+    if active and args.schema_version not in (None, 3):
+        raise ValueError("Active production requires a version-3 scoped request")
+    if not active and args.schema_version == 3:
+        raise ValueError("Scoped work requires an active production manifest")
     if not ASSET_PATTERN.fullmatch(args.asset):
         raise ValueError("Asset ID must contain only letters, digits, _ and -")
     prompt_file = relative_path(args.prompt)
     prompt_bytes = contained_path(root, prompt_file).read_bytes()
     references = build_references(root, args.ref)
     params = parse_params(args.param)
-    version = args.schema_version or (
+    estimated_cost = getattr(args, "estimated_cost", None)
+    amount(estimated_cost, "Estimated cost")
+    currency = getattr(args, "currency", "USD")
+    if not isinstance(currency, str) or not currency.strip():
+        raise ValueError("Cost currency must be nonempty")
+    version = args.schema_version or (3 if active else
         2 if declares_approval_mode(root) or canvas_contract_version(root) >= 1 else 1
     )
     legacy = parse_legacy(args.ref_legacy)
@@ -222,13 +253,16 @@ def build_request(root: Path, args: argparse.Namespace) -> dict[str, Any]:
     if legacy and version != 2:
         raise ValueError("--ref-legacy applies only to schema version 2 requests")
     mode: dict[str, Any] = {}
-    if version == 2:
+    if version in (2, 3):
         for reference in references:
             reference["approval_evidence"] = decision_evidence(
                 root, reference, legacy.get(reference["path"])
             )
         approval_mode, project_sha256 = project_mode_snapshot(root)
+        if version == 3:
+            project_sha256 = production_context_module().context_project_sha256(root)
         mode = {"approval_mode": approval_mode, "project_sha256": project_sha256}
+    scope = {"context": context.identity()} if version == 3 and context is not None else {}
     operation_id = args.operation_id or "-".join(
         (
             model_family(args.model),
@@ -246,7 +280,8 @@ def build_request(root: Path, args: argparse.Namespace) -> dict[str, Any]:
         "prompt_file": prompt_file,
         "prompt_sha256": hashlib.sha256(prompt_bytes).hexdigest(),
         "request_sha256": compute_request_hash(
-            prompt_bytes, references, args.model, args.operation, params, **mode
+            prompt_bytes, references, args.model, args.operation, params,
+            schema_version=version, **mode, **scope,
         ),
         "references": references,
         "params": params,
@@ -254,9 +289,10 @@ def build_request(root: Path, args: argparse.Namespace) -> dict[str, Any]:
         "provider_task_id": None,
         "provider_status": None,
         "review_status": "not_started",
-        "cost": {"estimated": None, "confirmed": None, "currency": "USD"},
+        "cost": {"estimated": estimated_cost, "confirmed": None, "currency": currency},
         "extensions": {"expected_output": relative_path(args.expected_output)},
         **mode,
+        **scope,
     }
 
 
@@ -265,6 +301,7 @@ def serialize(document: dict[str, Any]) -> str:
 
 
 def write_once(root: Path, relative: str, content: str) -> Path:
+    validate_layout(root)
     path = (root / relative).resolve()
     if not path.is_relative_to(root):
         raise ValueError("Output path escapes the project")
@@ -279,6 +316,7 @@ def write_once(root: Path, relative: str, content: str) -> Path:
 
 
 def release_unregistered_request(root: Path, asset: str, operation_id: str) -> None:
+    validate_layout(root)
     path = (root / f"requests/request_{asset}.json").resolve()
     if not path.is_relative_to(root):
         raise ValueError("Request path escapes the project")
@@ -306,20 +344,26 @@ def run(args: argparse.Namespace) -> tuple[dict[str, Any], list[Finding]]:
     if not root.is_dir():
         raise ValueError("Project directory does not exist")
     request = build_request(root, args)
+    scope = {"unit_id": args.unit, "production_scope": args.production_scope}
     adopting = bool(args.adopt_provider_task_id)
     findings = schema_findings(request, "generation-request.schema.json")
     if not findings:
-        findings = prepared_evidence_findings(root, request, adopting)
+        findings = prepared_evidence_findings(root, request, adopting, **scope)
+    if not findings and not adopting:
+        try:
+            check_budget(root, None, request)
+        except ValueError as error:
+            findings.append(Finding("budget.cap", str(error), "task_ids.json"))
     result: dict[str, Any] = {"request_sha256": request["request_sha256"]}
     review = capabilities = None
     if args.register and not findings:
         review = load_json(root, args.review)
         capabilities = load_json(root, args.capabilities)
-        findings = validate_request(root, request, capabilities, adopting)
+        findings = validate_request(root, request, capabilities, adopting, **scope)
         findings.extend(
             validate_review(review, request["request_sha256"], args.required_rule)
         )
-        canvas = canvas_finding(root, request)
+        canvas = canvas_finding(root, request, **scope)
         if canvas is not None:
             findings.append(canvas)
     if findings or not args.write:
@@ -342,10 +386,11 @@ def run(args: argparse.Namespace) -> tuple[dict[str, Any], list[Finding]]:
                     args.adopt_provider_status
                     or ("completed" if args.adopt_terminal else "submitted"),
                     args.adopt_terminal,
+                    **scope,
                 )
             else:
                 prepare_operation(
-                    root, request, capabilities, review, args.required_rule
+                    root, request, capabilities, review, args.required_rule, **scope,
                 )
         except ValueError as error:
             return result, [Finding("registry.prepare", str(error), "task_ids.json")]
@@ -369,7 +414,12 @@ def parser() -> argparse.ArgumentParser:
         "--transport", choices=("ark-mcp", "arkcli", "curl"), default="ark-mcp"
     )
     parser.add_argument("--operation-id")
-    parser.add_argument("--schema-version", type=int, choices=(1, 2))
+    parser.add_argument("--estimated-cost", type=parse_value, help="Recorded estimate; omitted means unknown")
+    parser.add_argument("--currency", default="USD", help="Cost currency, default USD; no conversion")
+    parser.add_argument("--schema-version", type=int, choices=(1, 2, 3))
+    scope = parser.add_mutually_exclusive_group()
+    scope.add_argument("--unit")
+    scope.add_argument("--production-scope", action="store_true")
     parser.add_argument("--ref-legacy", action="append", default=[])
     parser.add_argument("--write", action="store_true")
     parser.add_argument("--register", action="store_true")

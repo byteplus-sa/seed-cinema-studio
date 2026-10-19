@@ -1,6 +1,42 @@
 {
   "version": 1,
   "skills": {
+    "story-development": {
+      "source": "./local",
+      "sourceType": "local",
+      "skillPath": ".agents/skills/story-development/SKILL.md",
+      "computedHash": "bca7981714bc9f009809ca6704ae358e40f1288ecb2f75b43c76c7e07dc9ddba"
+    },
+    "series-continuity": {
+      "source": "./local",
+      "sourceType": "local",
+      "skillPath": ".agents/skills/series-continuity/SKILL.md",
+      "computedHash": "215ecef60aba85d7f62fe00999f389c0775c4e13afab4f49091f556cc63e0ce4"
+    },
+    "editorial-review": {
+      "source": "./local",
+      "sourceType": "local",
+      "skillPath": ".agents/skills/editorial-review/SKILL.md",
+      "computedHash": "0ae976fc93042e3a6fb4ecda4966293e73dd1bb26a65ee8ae012ac8ddaba4cf6"
+    },
+    "sound-post": {
+      "source": "./local",
+      "sourceType": "local",
+      "skillPath": ".agents/skills/sound-post/SKILL.md",
+      "computedHash": "6b5428b48f08ab188cf5197ccdadf380baaecc99e4bcd1aabe31f4ccb0cdb31b"
+    },
+    "subtitle-sidecars": {
+      "source": "./local",
+      "sourceType": "local",
+      "skillPath": ".agents/skills/subtitle-sidecars/SKILL.md",
+      "computedHash": "57c2bd8ac9a2ff114f4387bb4c6aea33439a47ed12c9b7a0a78d1dfa94e89b0b"
+    },
+    "production-localize": {
+      "source": "./local",
+      "sourceType": "local",
+      "skillPath": ".agents/skills/production-localize/SKILL.md",
+      "computedHash": "a5cd8ca85018168b9c82d80c2f32047705637a5365d5596b7565b6f4fbfbf6e7"
+    },
     "ark-mcp": {
       "source": "./local",
       "sourceType": "local",
@@ -11,7 +47,7 @@
       "source": "./local",
       "sourceType": "local",
       "skillPath": ".agents/skills/brief-intake/SKILL.md",
-      "computedHash": "688fb9004fae3664504b6c369e84a830b1957f34d16b48499df8cc4762d1b327"
+      "computedHash": "9debc8f7853b6d74d383fb2bffae016ee51a96c0d261a9138ca460117ca1cc6a"
     },
     "color-grade-palettes": {
       "source": "./local",
@@ -35,7 +71,7 @@
       "source": "./local",
       "sourceType": "local",
       "skillPath": ".agents/skills/film-production/SKILL.md",
-      "computedHash": "382581229da50fc463c32ede1b59df6f8cd8d0194c043bc6eb2cc80a3e25fd3d"
+      "computedHash": "c097f9f921fbb59025747901141cc1e72e6821c3f3150ccbc3c8f9c1028f0fb8"
     },
     "html-graphic-render": {
       "source": "./local",
@@ -113,7 +149,7 @@
       "source": "./local",
       "sourceType": "local",
       "skillPath": ".agents/skills/microdrama-localize/SKILL.md",
-      "computedHash": "931d302ba61d150598b5a3ad3b07e0410438982a5565b0140c9b801f9912305a"
+      "computedHash": "a8a4e3c956f97ef63dd265c04af9cf52ff0e3ec51c577d2955e24bf5a44b725f"
     },
     "microdrama-story-formats": {
       "source": "./local",
@@ -125,7 +161,7 @@
       "source": "./local",
       "sourceType": "local",
       "skillPath": ".agents/skills/microdrama-subtitles/SKILL.md",
-      "computedHash": "4eb7e803fce10ace6ffc9ff96338759f9ba9052ae733f3e896ef7d2b3aa5ac7b"
+      "computedHash": "bd234669a4d19b50badd446d1e1052ba831f0f080bc18b59fa1d3ab39f10b597"
     },
     "prompt-review": {
       "source": "./local",
@@ -299,7 +335,7 @@
       "source": "./local",
       "sourceType": "local",
       "skillPath": ".agents/skills/scene-board-sheet/SKILL.md",
-      "computedHash": "d7e0b6131b8462ae45b37970ffb27c4c5b5b1d66b0f82278d311ba4bc9676421"
+      "computedHash": "771c03f542e7a11e8b277d4ba1cb6c8ef7ac2f5370cf10f09ad422593aab280b"
     }
   }
 }

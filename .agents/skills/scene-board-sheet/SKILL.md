@@ -42,7 +42,8 @@ Never bind any of them to a Seedance request, in any mode or role
 (`board.animatic_review_only`). `board.md` and every derived record state
 `bind_to_seedance: false`. `check` fails when a prepared request in `task_ids.json`
 references a board file by hash, by a registered panel path, or by a path under
-`scenes/scene-NN/board/`, and reports it as `board.animatic_review_only`. The shared
+`scenes/scene-<digits>/board/` (two or more scene digits), and reports it as
+`board.animatic_review_only`. The shared
 request validator rejects the same files by path (case-insensitive, after resolving
 symlinks) for every model except Seedream, whose edit operation takes the panel as the
 image to edit, and `check` skips Seedream requests for the same reason. A job that is
@@ -84,6 +85,12 @@ the registered panel files.
 
 Output under `scenes/scene-NN/`:
 
+`NN` in the scene directory and `sNN` below mean the scene's exact digit string,
+with at least two ASCII digits, not a two-digit limit: `scene-01` uses `s01`,
+`scene-001` uses `s001`, and `scene-100` uses `s100`. Preserve existing spelling.
+Shot and panel numbers remain exactly three digits; panel derivation counts by
+ten up to `p990` (99 panels per generated clip). Takes and versions stay two digits.
+
 | File | Purpose |
 | --- | --- |
 | `board.md` | The board record: level, reason, one record per panel, optional `layout` |
@@ -102,9 +109,43 @@ rebuilt, never hand-edited, and carry source hashes.
 Run from the repository root. Every command prints JSON; errors exit 2, and `check`
 exits 1 when it finds an error.
 
+Use an explicit scene ID (`scene-01`, `scene-001`, `scene-100`) or its exact
+asset prefix (`s01`, `s001`, `s100`). A numeric shortcut such as `1` resolves an
+existing scene only when its number is unambiguous. If both `scene-01` and
+`scene-001` exist, all numeric shortcuts for that number are rejected; name the
+scene explicitly. An explicit ID never falls back to a differently padded ID.
+
+Phase 3 scene-board integration follows `PLAN_SEED_CINEMA_STUDIO.md`: an active
+`production.json` is validated before resolving scene membership. Every command
+accepts `--unit`; multi-unit productions require it, and a single unit can be
+selected implicitly. A foreign scene, unknown unit, malformed manifest or unsafe
+path fails before writes or renderer invocation. Without an active manifest,
+legacy commands and exact numeric ID spelling remain unchanged. An explicit
+candidate `production.plan.json` is validation-only: it neither activates unit
+commands nor authorizes mutations.
+
 ```bash
-uv run python .agents/skills/scene-board-sheet/scripts/scene_board.py <command> <project> <scene> [options]
+uv run python .agents/skills/scene-board-sheet/scripts/scene_board.py <command> <project> <scene> [--unit ID] [options]
 ```
+
+Scene-specific Python entry points accept keyword-only `unit_id=None`. With no
+unit argument they may infer the scene's unique owner from the validated active
+manifest. `check_final_decision` derives that scene from the exact panel ID.
+Generic writers cannot infer a unit for shared `review/` or `decisions/` paths
+in a multi-unit production; their caller supplies the resolved `unit_id`.
+All paths, references and upstream hashes remain relative to the production root,
+not the unit Studio directory. Board files remain under the original scene paths.
+
+Active-unit approvals require decision schema v2 with the current typed unit
+context and the actual unit brief in `upstream_sha256`. `edit-source` writes this
+evidence and validates it before writing either decision or manifest; final panel
+approval and later `check` revalidate the same scope. Legacy unscoped decisions,
+production-scoped canon decisions and foreign-unit decisions cannot approve a
+unit panel. Both agent and chat decisions require the owning unit's initialized
+Studio (`index.html` and `hyperframes.json`), with no dummy root `studio/`.
+The agent acts only under `approve_for_me`; quoted user authorization works in
+either mode. Legacy layouts retain v1 decisions. Submitted board-reference
+history remains warning-only; prepared board bindings remain errors.
 
 | Command | Does |
 | --- | --- |

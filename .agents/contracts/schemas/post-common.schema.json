@@ -1,0 +1,38 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "urn:seed:post-common",
+  "$defs": {
+    "id": {"type": "string", "pattern": "^[a-z0-9]+(?:-[a-z0-9]+)*$"},
+    "text": {"type": "string", "minLength": 1, "pattern": "\\S"},
+    "time": {"type": "number", "minimum": 0},
+    "duration": {"type": "number", "exclusiveMinimum": 0},
+    "asset": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["path", "sha256"],
+      "properties": {
+        "path": {"type": "string", "minLength": 1},
+        "sha256": {"type": "string", "pattern": "^[a-f0-9]{64}$"}
+      }
+    },
+    "evidence": {
+      "type": "array",
+      "items": {"$ref": "#/$defs/asset"},
+      "uniqueItems": true
+    },
+    "review": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["status", "evidence", "note"],
+      "properties": {
+        "status": {"enum": ["unverified", "pass", "fail", "not_applicable"]},
+        "evidence": {"$ref": "#/$defs/evidence"},
+        "note": {"$ref": "#/$defs/text"}
+      },
+      "allOf": [{
+        "if": {"properties": {"status": {"enum": ["pass", "fail"]}}},
+        "then": {"properties": {"evidence": {"minItems": 1}}}
+      }]
+    }
+  }
+}

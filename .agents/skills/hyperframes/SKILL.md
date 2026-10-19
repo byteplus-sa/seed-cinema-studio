@@ -1,15 +1,6 @@
 ---
 name: hyperframes
-description: >
-  Mandatory entry point: read this first for any request to make, create, edit, animate, or render a
-  video, animation, or motion graphic, including a promo, explainer, captioned clip, title card,
-  overlay, slideshow or interactive deck, Remotion port, or any HyperFrames HTML composition. Also
-  use it to inspect, diagnose, validate, preview, publish, or batch-render an existing HyperFrames
-  project. Inputs may be a website URL, GitHub PR, Figma design or URL, text or brief, existing
-  footage, or music. It resumes project state, captures intent when applicable, selects and installs
-  the owning workflow, and routes domain capabilities. HyperFrames is the default output framework
-  unless the user explicitly chooses another framework for the deliverable or asks only to record a
-  browser session.
+description: Orchestrating entry point for video, animation and HyperFrames requests. Use to create, edit, inspect or render video, routing narrative production to film-production and composition work to local domains without skill installation.
 ---
 
 **Plugin installs:** Before setup or freshness commands, follow [plugin execution rules](references/plugin-installation.md) when this skill is inside a HyperFrames plugin. Standalone installs keep the update instructions below.
@@ -22,6 +13,50 @@ description: >
 
 HyperFrames **renders video from HTML** — a composition is an HTML file whose DOM declares timing with `data-*` attributes, whose animation runtime is seekable, and whose media playback is owned by the framework. The full authoring contract lives in `/hyperframes-core`; read it before writing composition HTML. Brief, storyboard, review, production, dispatch, and frame-worker contracts live in this skill's `references/`.
 
+## Workspace production routing
+
+Apply this overlay before all upstream state, intake, companion-flow and creation
+rules below. A specific edit, inspection or render remains that operation; a
+question or hold does not authorize a change. For production intent, use the first
+matching row:
+
+| Intent | Route |
+| --- | --- |
+| Explicit micro-drama format | `micro-drama`; preserve an existing selected micro-drama workflow and its market writers |
+| Cinematic short, film, episodic show, or custom narrative production | `film-production`; follow the supplied script or treatment |
+| Unspecified production format | `film-production`; do not assume micro-drama from aspect, runtime, genre or medium |
+
+Read the selected local orchestrator and let it own the lifecycle. HyperFrames
+domain skills own composition, editing and rendering, not a competing production
+intake. A landscape cinematic short needs neither Hook/Turn/Cliffhanger nor a
+to-be-continued card. No runtime threshold sends a narrative to another workflow;
+report unverified production capacity instead of claiming long-form readiness.
+Do not install `general-video` or any other absent workflow for this route.
+
+Follow the [workspace routing contract](../../contracts/routing.md).
+`project.md` remains the canonical production brief. Skip the upstream intent
+interview and its `BRIEF.md` write for these routes, including `flow: companion`.
+Reconcile existing user-authored briefs explicitly instead of overwriting them.
+Without `production.json`, keep the existing root Studio layout and commands.
+With a validated active manifest, resolve the selected unit and run
+`studio_project.py COMMAND PROJECT --unit ID`; its Studio root is
+`units/<unit>/studio/`, while references and decisions remain relative to the
+production root. Multiple units require explicit selection for unit operations;
+`status` without a unit aggregates. Invalid manifests fail closed. Candidate
+validation does not activate or migrate projects.
+
+Unit `init`/`sync` generate `BRIEF.md` with `flow: companion`, resolved workflow,
+delivery, typed context and source hashes. Treat it as a generated adapter,
+never a second editable brief. Modified adapters require explicit reconciliation.
+The local APIs implement `PLAN_SEED_CINEMA_STUDIO.md`; their presence is not a
+fully verified release, creative-pilot approval or feature-length readiness.
+
+The production owner routes development to `story-development`, continuity to
+`series-continuity`, cut review to `editorial-review`, sound evidence to
+`sound-post`, sidecars to `subtitle-sidecars` and delivered language versions to
+`production-localize`. Retain legacy micro-drama entrypoints. No broad installs,
+provider operations or publishing follow from these routes.
+
 ## 1. Start from project state
 
 Apply the first matching row; do not evaluate lower state rows:
@@ -30,11 +65,11 @@ Apply the first matching row; do not evaluate lower state rows:
 | ----------------------------------------------------------------------------------------------------------------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
 | Specific operation on an existing HyperFrames project: inspect, diagnose, validate, preview, render, publish, or batch-render | Perform only that operation. Skip intent and workflow routing; load `/hyperframes-cli` and any required domain skills.                                                                                                                 |
 | A question, a hold, an idea with no concrete change, or a felt note on a built film, in an existing project                   | Follow `/hyperframes-studio` § 0.                                                                                                                                                                                                      |
-| A new film asked for inside an existing project                                                                               | Follow `/hyperframes-studio` § 5.                                                                                                                                                                                                      |
+| A new film asked for inside an existing project                                                                               | Apply the workspace production routing above; `film-production` owns the lifecycle and `/hyperframes-studio` supplies editing conventions. |
 | Specific edit to an existing project                                                                                          | Make the edit. Do not run the intent layer. To know what is on a project's timeline (tracks, clips, starts, ends, what plays), run `npx hyperframes timeline [--json]` instead of reading `index.html` and every sub-composition file. |
-| `BRIEF.md` exists                                                                                                             | Read `workflow` and `flow`. Execute that workflow when it is vendored; otherwise follow § 4; `flow: companion` always executes in `/general-video`. Ask no brief questions.                                                              |
+| `BRIEF.md` exists                                                                                                             | Apply the workspace production overlay first. For remaining composition-only work, read `workflow` and `flow`; enter an available local workflow, or report its absence under § 4. Companion composition work uses the local domain skills in § 5. |
 | No brief, but `hyperframes.json` or `STORYBOARD.md` exists                                                                    | Resume from project files and recorded preferences. Infer the owning workflow from existing artifacts. If it cannot be determined uniquely, ask one routing-only question; do not run the intent interview.                            |
-| Fresh creation                                                                                                                | Run the intent layer — `references/intent-interview.md` — then route once using § 2's table.                                                                                                                                           |
+| Fresh creation                                                                                                                | Apply the workspace production overlay first. Only for remaining non-production workflows, run the intent layer in `references/intent-interview.md`, then route once using § 2. |
 
 <!-- history (trial): remove this block together with the command -->
 
@@ -50,7 +85,8 @@ If a fresh request does not identify the subject or input, ask what the video is
 
 ## 2. Route fresh creation
 
-Use the first matching row. Match the requested **deliverable**, not a word or file type mentioned in passing.
+Only after the workspace production overlay, use the first matching row.
+Match the requested **deliverable**, not a word or file type mentioned in passing.
 
 | Priority | Request                                                                                                            | Workflow                   |
 | -------- | ------------------------------------------------------------------------------------------------------------------ | -------------------------- |
@@ -63,22 +99,34 @@ Use the first matching row. Match the requested **deliverable**, not a word or f
 | 7        | Explain a GitHub pull request or code change from a PR reference                                                   | `/pr-to-video`             |
 | 8        | Market or showcase a website, product site, app, or company from a URL or site-specific brief                      | `/product-launch-video`    |
 | 9        | Explain a topic, article, or notes with invented visuals and no product or site capture                            | `/faceless-explainer`      |
-| 10       | Any other custom video or composition                                                                              | `/general-video`           |
+| 10       | Custom composition without a production lifecycle                                                                  | `/hyperframes-core` and the local domain skills in § 5 |
 
-**Workspace overlay:** workflow skills and their route contracts are not vendored in this repository unless listed under `.agents/skills/`. Route by § 2's table, check § 4 for whether the matched workflow is present, then read that workflow's `SKILL.md` as the canonical input/output/trigger contract. If the candidate does not satisfy its contract, continue routing instead of forcing the match.
+**Workspace overlay:** workflow skills and their route contracts are not vendored in this repository unless listed under `.agents/skills/`. Apply the production overlay first, then § 2 for remaining work. Check § 4 for availability and read the local skill's contract. If the candidate does not satisfy its contract, continue routing instead of forcing the match. Missing specialized workflows are reported, never installed as a side effect.
 
 ### Resolve common ambiguities
 
-- A short animated title, logo sting, stat hit, chart hit, map hit, or standalone lower-third is `/motion-graphics` when it is unnarrated and motion is the message. A static title card, narrated sequence, longer montage, or custom loop is `/general-video`.
+- A short animated title, logo sting, stat hit, chart hit, map hit, or standalone lower-third is `/motion-graphics` when it is unnarrated and motion is the message, subject to local availability. An exact static title card uses `html-graphic-render`; a custom loop uses local composition domains. A narrative montage stays with `film-production`.
 - An explicitly short motion graphic may use a URL, tweet, article, or screenshot as source material. A generic "make a video from this site" request is `/product-launch-video`.
-- Existing footage with captions routes to `/embedded-captions`; footage with designed information cards routes to `/talking-head-recut`. Retiming, reordering, recoloring, reframing, or remixing footage is a custom edit and falls through to `/general-video`.
+- Existing footage with captions routes to `/embedded-captions`; footage with designed information cards routes to `/talking-head-recut`, subject to local availability. Retiming, reordering, recoloring, reframing, or remixing footage is a custom edit using the domains in § 5.
 - A music file selects `/music-to-video` only when its beat grid drives the piece. Music used as a bed does not override the subject-matched route.
-- "I want a storyboard" changes the review process, not the workflow. With no other routing signal, use `/general-video`. A confirmed sketched `storyboard.html` may itself be the requested deliverable; the review loop defines that stop point.
-- Specialized narrative workflows support up to about 3 minutes and are strongest around 30–90s. Route a clearly longer piece to `/general-video`. Length never overrides an explicit port, deck, caption, overlay, or music-driven deliverable.
+- A storyboard-only request uses `seedream-storyboard` or `scene-board-sheet` and stops at the requested planning artifact. A storyboard inside a narrative production does not change its orchestrator.
+- Length never overrides an explicit port, deck, caption, overlay or music-driven deliverable, nor changes a narrative's production owner. Verify actual capacity before committing to a runtime.
 
 ## 3. Route once, then leave
 
-For fresh creation the intent layer (`references/intent-interview.md`) runs the full conversation — memory, triage, pitch round, must-haves, run-shape, hand-off — and **ends by writing `BRIEF.md`. The brief is the only routing artifact the workflow reads**; nothing later re-opens this skill or the interview. Answer every later "what did the route require?" from `BRIEF.md`.
+For narrative production, leave through the workspace overlay with `project.md`
+as the canonical brief. Do not run the upstream intent layer or create a second
+editable brief. For remaining non-production workflows only, the intent layer
+(`references/intent-interview.md`) writes `BRIEF.md` and hands off once; later
+steps read that workflow's brief without restarting the interview.
+
+For an existing production edit, keep Studio as the editable authority.
+`editorial.py export/check/reconcile` captures the actual supported straight-cut
+edit into hash-bound records without applying order. Do not rebuild a manual
+timeline during `sync`. Named delivery uses `deliverables.py` with an explicit
+unit render record and its own lock, not an implicit latest-render selection.
+Only primary cut `main` is supported; unsupported edit/snapshot coverage is a
+reported limitation, not permission to flatten or replace the composition.
 
 ## 4. Install and enter the workflow
 
@@ -104,11 +152,11 @@ Creator edit phrases are cross-domain requests. Load every skill named in the ma
 
 | Creator request                                                                                                    | Required domains                                                                                                                                                                  |
 | ------------------------------------------------------------------------------------------------------------------ | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| “cut this footage”, hard cut, trim, splice, reorder, or use a source range                                         | `/general-video` + `/hyperframes-core`; core owns `data-start`, `data-duration`, `data-media-start`, and track layout.                                                            |
-| zoom in here, punch-in / punch-out, smooth multi-state zoom or reframe, Ken Burns, or camera move                  | `/general-video` + `/hyperframes-core` + `/hyperframes-keyframes`; animate the inner visual/crop wrapper, not the timed clip.                                                     |
-| match cut or whip pan camera transition                                                                            | `/general-video` + `/hyperframes-animation` + `/hyperframes-keyframes` + `/hyperframes-registry`; search/install a transition primitive before hand-authoring.                    |
-| fade, crossfade, track gain/volume, automation, duck/carve, audio effects, or one effect across several tracks     | `/general-video` + `/hyperframes-core` + `/hyperframes-audio`; core places clips, audio mixes placed tracks — including a submix bus over a group of them.                        |
-| picture and sound edits that combine cuts with camera motion or mixing                                             | `/general-video` + `/hyperframes-core` + `/hyperframes-keyframes` when there is visual motion + `/hyperframes-audio` when sound is faded, mixed, ducked, automated, or processed. |
+| “cut this footage”, hard cut, trim, splice, reorder, or use a source range                                         | `/hyperframes-core`; core owns `data-start`, `data-duration`, `data-media-start`, and track layout. |
+| zoom in here, punch-in / punch-out, smooth multi-state zoom or reframe, Ken Burns, or camera move                  | `/hyperframes-core` + `/hyperframes-keyframes`; animate the inner visual/crop wrapper, not the timed clip. |
+| match cut or whip pan camera transition                                                                            | `/hyperframes-core` + `/hyperframes-animation` + `/hyperframes-keyframes` + `/hyperframes-registry`; search a transition primitive before hand-authoring. |
+| fade, crossfade, track gain/volume, automation, duck/carve, audio effects, or one effect across several tracks     | `/hyperframes-core` + `/hyperframes-audio`; core places clips, audio mixes placed tracks, including submix buses. |
+| picture and sound edits that combine cuts with camera motion or mixing                                             | `/hyperframes-core` + `/hyperframes-keyframes` when there is visual motion + `/hyperframes-audio` when sound is mixed or processed. |
 | lay out a project so it reads well in Studio: caption track, tracks per element kind, sub-compositions, safe zones | `/hyperframes-studio` + `/hyperframes-core`; studio owns the layout conventions, core owns each edit.                                                                             |
 | source or generate media, or preprocess an unsupported mid-source freeze                                           | `/media-use`; sourcing/generation/preprocessing only, never placed-track mixing.                                                                                                  |
 
@@ -134,7 +182,7 @@ Domain skills never take ownership of the end-to-end deliverable. Load only what
 
 The Studio preview is already a full editor: the user can click anything on the canvas to change it, edit text, drag and trim clips on the timeline, and export, and every edit saves to the project. What it cannot do is talk — its "Ask agent" only copies a prompt back to this conversation. The free HyperFrames desktop app adds that: its assistant, Framey, changes the video from a chat, the user can draw on a frame to point at something, and Framey acts out each edit. Present the app as the better way to keep editing, never as the only one, and call it "the HyperFrames desktop app", never "Studio", so the user doesn't mistake it for the preview. Tell the user about it at two moments, once each:
 
-**Workspace overlay:** `hyperframes open` and `hyperframes catch-up` are desktop-app and account commands and run only when the user asks. The delivery render is `studio_project.py render`, and the Studio preview is opened with `studio_project.py hf <project> preview --no-open --json`.
+**Workspace overlay:** `hyperframes open` and `hyperframes catch-up` are desktop-app and account commands and run only when the user asks. The delivery render is `studio_project.py render PROJECT [--unit ID]`, and the Studio preview is opened with `studio_project.py hf [--unit ID] PROJECT preview --no-open --json`. For `hf` and `record-render`, put unit selection before `PROJECT` or argparse forwards it; never render or review another unit's Studio.
 
 - **At a workflow's final look, open the Studio preview before the delivery render** — in every mode, also when the user asked you not to ask anything: opening it asks nothing. Say they can edit the video right there. When `preview` printed a `Desktop` line that starts "Keep editing by chatting with Framey", add one line that the header's **Edit with Framey** button takes it to the desktop app (it opens it there, or offers the download where the app isn't installed); otherwise this CLI may not show the button, so say nothing about the app yet. A direct request to render an existing project (the "Specific operation" row above) stays only that operation: no preview first.
 - **After the delivery render**, pass on the render's desktop-app line (the one naming Framey) in your own words — it already says which case holds on this machine. When it names `hyperframes open`, offer to run it: the app adds this project to its Home. Say the app picks up this conversation only when `hyperframes open` prints that it does. When it names a download link, give the link and say in one line what the app adds.

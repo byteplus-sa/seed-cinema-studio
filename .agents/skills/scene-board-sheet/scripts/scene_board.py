@@ -16,6 +16,7 @@ import tempfile
 from dataclasses import dataclass
 from datetime import UTC, datetime
 from pathlib import Path
+from types import ModuleType
 from typing import Any
 
 from jsonschema import Draft202012Validator, FormatChecker
@@ -67,8 +68,9 @@ PLAN_AGREEMENT_FIELDS = (
     "screen_direction",
     "continuity_carry",
 )
-PANEL_FILE = re.compile(r"^(s\d{2}_sh\d{3}_p\d{3})_t(\d{2})_v(\d{2})\.png$")
-SHOT_ID = re.compile(r"^(s\d{2}_sh\d{3})(?:_[a-z]+)?$")
+PANEL_FILE = re.compile(r"(s[0-9]{2,}_sh[0-9]{3}_p[0-9]{3})_t([0-9]{2})_v([0-9]{2})\.png\Z")
+SHOT_ID = re.compile(r"(s[0-9]{2,}_sh[0-9]{3})(?:_[a-z]+)?\Z")
+SCENE_ID = re.compile(r"scene-[0-9]{2,}\Z")
 BBOX_PATTERN = re.compile(r"^\d{1,3}(,\d{1,3}){3}$")
 BEAT_NAME = re.compile(r"^[a-z][a-z0-9-]*$")
 FULL_FRAME_BBOX = "0,0,999,999"
@@ -140,6 +142,52 @@ def project_root(value: str | Path) -> Path:
     return root
 
 
+def shared_module(name: str) -> ModuleType:
+    scripts = Path(__file__).resolve().parents[3] / "scripts"
+    if str(scripts) not in sys.path:
+        sys.path.insert(0, str(scripts))
+    return importlib.import_module(name)
+
+
+def resolve_board_context(
+    root: Path, scene: str | None = None, unit_id: str | None = None,
+) -> Any:
+    module = shared_module("production_context")
+    try:
+        if scene is not None:
+            scene_prefix(scene)
+        if module.has_production_manifest(root) and scene is not None and unit_id is None:
+            module.resolve_production_context(root)
+            manifest = read_json(contained(root, "production.json"))
+            owners = [unit["id"] for unit in manifest["units"] if scene in unit["scene_ids"]]
+            if len(owners) != 1:
+                raise BoardError(f"Scene {scene} needs one unambiguous owning unit")
+            unit_id = owners[0]
+        context = module.resolve_context(root, unit_id)
+        if context._candidate_manifest is not None:
+            raise BoardError("Candidate contexts cannot authorize board operations")
+        if not context.legacy and scene is not None and scene not in context.scene_ids:
+            raise BoardError(f"Scene {scene} does not belong to unit {context.unit_id}")
+        return context
+    except (ValueError, TypeError, OSError, RuntimeError, YAMLError) as error:
+        raise BoardError(str(error)) from error
+
+
+def require_write_scope(root: Path, relative: str, unit_id: str | None = None) -> Any:
+    path = contained(root, relative)
+    current = root
+    for part in Path(relative).parts:
+        current = current / part
+        if current.is_symlink():
+            raise BoardError(f"Refusing to write through a symlink: {relative}")
+    parts = path.relative_to(root).parts
+    scene = parts[1] if len(parts) > 1 and parts[0] == "scenes" else None
+    context = resolve_board_context(root, scene, unit_id)
+    if not context.legacy and (not parts or parts[0] not in {"scenes", "review", "decisions"}):
+        raise BoardError("Board writes must stay in scenes, review or decisions")
+    return context
+
+
 def contained(root: Path, relative: str) -> Path:
     if (
         not isinstance(relative, str)
@@ -160,8 +208,8 @@ def relative_to(root: Path, path: Path) -> str:
     return path.resolve().relative_to(root).as_posix()
 
 
-def safe_directory(root: Path, relative: str) -> Path:
-    contained(root, relative)
+def safe_directory(root: Path, relative: str, *, unit_id: str | None = None) -> Path:
+    require_write_scope(root, relative, unit_id)
     current = root
     for part in Path(relative).parts:
         current = current / part
@@ -171,7 +219,10 @@ def safe_directory(root: Path, relative: str) -> Path:
     return contained(root, relative)
 
 
-def write_text_atomic(root: Path, path: Path, text: str) -> None:
+def write_text_atomic(
+    root: Path, path: Path, text: str, *, unit_id: str | None = None,
+) -> None:
+    require_write_scope(root, path.relative_to(root).as_posix(), unit_id)
     target = path.parent.resolve() / path.name
     if root not in target.parents:
         raise BoardError(f"Refusing to write outside the project: {path}")
@@ -186,26 +237,49 @@ def write_text_atomic(root: Path, path: Path, text: str) -> None:
         Path(name).unlink(missing_ok=True)
 
 
-def write_json(root: Path, path: Path, value: Any) -> None:
+def write_json(
+    root: Path, path: Path, value: Any, *, unit_id: str | None = None,
+) -> None:
     write_text_atomic(
         root,
         path,
         json.dumps(value, indent=2, sort_keys=True, ensure_ascii=False) + "\n",
+        unit_id=unit_id,
     )
 
 
-def normalize_scene(value: str) -> str:
-    match = re.fullmatch(r"(?:scene-)?(\d{1,2})", value.strip())
+def normalize_scene(value: str, root: Path | None = None) -> str:
+    match = re.fullmatch(r"(scene-|s)?([0-9]+)", value.strip())
     if not match:
-        raise BoardError(f"Scene must look like scene-02 or 02: {value!r}")
-    return f"scene-{int(match.group(1)):02d}"
+        raise BoardError(f"Scene must look like scene-02, scene-100 or 02: {value!r}")
+    prefix, digits = match.groups()
+    if not prefix and root is not None:
+        directory = contained(root, "scenes")
+        candidates = sorted(
+            path.name for path in directory.iterdir()
+            if SCENE_ID.fullmatch(path.name)
+            and (path.is_dir() or path.is_symlink())
+            and path.name.removeprefix("scene-").lstrip("0") == digits.lstrip("0")
+        ) if directory.is_dir() else []
+        if len(candidates) > 1:
+            raise BoardError(
+                f"Ambiguous numeric scene shortcut {value!r}: {', '.join(candidates)}; "
+                "use an explicit scene ID"
+            )
+        if candidates:
+            contained(root, f"scenes/{candidates[0]}")
+            return candidates[0]
+    return f"scene-{digits.zfill(2)}"
 
 
 def scene_prefix(scene: str) -> str:
-    return f"s{scene.split('-')[1]}"
+    if not SCENE_ID.fullmatch(scene):
+        raise BoardError(f"Invalid scene ID: {scene!r}")
+    return f"s{scene.removeprefix('scene-')}"
 
 
 def scene_dir(root: Path, scene: str) -> Path:
+    scene_prefix(scene)
     return contained(root, f"scenes/{scene}")
 
 
@@ -262,7 +336,9 @@ def load_shot_plan(section: str, scene: str) -> dict[str, Any]:
     for shot in plan["shots"]:
         identifier = str(shot.get("id", "")) if isinstance(shot, dict) else ""
         if not SHOT_ID.match(identifier):
-            raise BoardError(f"Shot id does not match sNN_shNNN[_x]: {shot!r}")
+            raise BoardError(
+                f"Shot id needs s<scene digits>_shNNN[_x] with at least two scene digits: {shot!r}"
+            )
         if not identifier.startswith(scene_prefix(scene) + "_"):
             raise BoardError(f"Shot {identifier} does not belong to {scene}")
         if identifier in seen:
@@ -445,16 +521,37 @@ def board_path(root: Path, scene: str) -> Path:
     return scene_dir(root, scene) / "board.md"
 
 
-def read_board(root: Path, scene: str) -> tuple[dict[str, Any], str]:
+def read_board(
+    root: Path, scene: str, *, unit_id: str | None = None,
+) -> tuple[dict[str, Any], str]:
+    context = resolve_board_context(root, scene, unit_id)
     path = board_path(root, scene)
     if not path.is_file():
         raise BoardError(f"Missing scenes/{scene}/board.md; run init first")
-    return split_front_matter(path.read_text(encoding="utf-8"))
+    board, body = split_front_matter(path.read_text(encoding="utf-8"))
+    if not context.legacy:
+        require_board_membership(board, scene)
+    return board, body
 
 
-def write_board(root: Path, scene: str, board: dict[str, Any], body: str) -> Path:
+def require_board_membership(board: dict[str, Any], scene: str) -> None:
+    if board.get("scene") != scene or any(
+        not str(panel.get("id", "")).startswith(scene_prefix(scene) + "_sh")
+        for panel in board.get("panels", [])
+    ):
+        raise BoardError(f"Board or panels do not belong to {scene}")
+
+
+def write_board(
+    root: Path, scene: str, board: dict[str, Any], body: str, *, unit_id: str | None = None,
+) -> Path:
+    context = resolve_board_context(root, scene, unit_id)
+    if not context.legacy:
+        require_board_membership(board, scene)
     path = board_path(root, scene)
-    write_text_atomic(root, path, "---\n" + dump_yaml(board) + "---\n" + body)
+    write_text_atomic(
+        root, path, "---\n" + dump_yaml(board) + "---\n" + body, unit_id=context.unit_id,
+    )
     return path
 
 
@@ -543,7 +640,10 @@ def init_board(
     style: str,
     aspect: str,
     overwrite: bool,
+    *,
+    unit_id: str | None = None,
 ) -> dict[str, Any]:
+    resolve_board_context(root, scene, unit_id)
     if level not in LEVELS:
         raise BoardError(f"Level must be one of {', '.join(LEVELS)}")
     if not level_reason.strip():
@@ -586,7 +686,8 @@ def count_per_shot(panels: list[dict[str, Any]]) -> dict[str, int]:
     return counts
 
 
-def rebase_plan(root: Path, scene: str) -> dict[str, Any]:
+def rebase_plan(root: Path, scene: str, *, unit_id: str | None = None) -> dict[str, Any]:
+    resolve_board_context(root, scene, unit_id)
     board, body = read_board(root, scene)
     source = load_scene_source(root, scene)
     overrides = {
@@ -702,7 +803,8 @@ def normalize_reference_path(value: str) -> str:
     return "/".join(parts)
 
 
-def check_board(root: Path, scene: str) -> list[Finding]:
+def check_board(root: Path, scene: str, *, unit_id: str | None = None) -> list[Finding]:
+    resolve_board_context(root, scene, unit_id)
     board, _ = read_board(root, scene)
     findings = schema_findings(board)
     if findings:
@@ -1014,7 +1116,10 @@ def register_panel(
     bbox: str | None,
     prompt_file: str | None,
     task_id: str | None,
+    *,
+    unit_id: str | None = None,
 ) -> dict[str, Any]:
+    resolve_board_context(root, scene, unit_id)
     board, body = read_board(root, scene)
     panel = find_panel(board, panel_id)
     path = contained(root, file)
@@ -1080,8 +1185,12 @@ def register_panel(
 
 
 def check_final_decision(
-    root: Path, panel: dict[str, Any], decision_path: Path
+    root: Path, panel: dict[str, Any], decision_path: Path, *, unit_id: str | None = None,
 ) -> None:
+    match = re.fullmatch(r"s([0-9]{2,})_sh[0-9]{3}_p[0-9]{3}", str(panel.get("id", "")))
+    if not match:
+        raise BoardError("Panel needs an unambiguous scene ID")
+    context = resolve_board_context(root, f"scene-{match[1]}", unit_id)
     decision = read_json(decision_path)
     problems = schema_errors("production-decision.schema.json", decision)
     if problems:
@@ -1100,11 +1209,10 @@ def check_final_decision(
             "An edit-source decision approves the panel only as the input of a repair "
             "edit; it cannot approve the final panel"
         )
-    scripts = Path(__file__).resolve().parents[3] / "scripts"
-    if str(scripts) not in sys.path:
-        sys.path.insert(0, str(scripts))
-    validation = importlib.import_module("validate_request")
-    findings = validation.decision_findings(root, decision, require_current_project=True)
+    validation = shared_module("validate_request")
+    findings = validation.decision_findings(
+        root, decision, require_current_project=True, context=context,
+    )
     if findings:
         raise BoardError(
             "Decision evidence is invalid: "
@@ -1113,8 +1221,10 @@ def check_final_decision(
 
 
 def mark_panel(
-    root: Path, scene: str, panel_id: str, status: str, decision: str | None
+    root: Path, scene: str, panel_id: str, status: str, decision: str | None,
+    *, unit_id: str | None = None,
 ) -> dict[str, Any]:
+    resolve_board_context(root, scene, unit_id)
     board, body = read_board(root, scene)
     panel = find_panel(board, panel_id)
     if status not in {"review", "needs_edit", "rejected", "approved"}:
@@ -1351,8 +1461,10 @@ def footer_for(panels: list[dict[str, Any]]) -> str:
 
 
 def build_sheet(
-    root: Path, scene: str, font: str | None, pages: list[int] | None = None
+    root: Path, scene: str, font: str | None, pages: list[int] | None = None,
+    *, unit_id: str | None = None,
 ) -> dict[str, Any]:
+    resolve_board_context(root, scene, unit_id)
     board, _ = read_board(root, scene)
     validate_new_board(board)
     panels = board["panels"]
@@ -1441,9 +1553,34 @@ def run_renderer(renderer: Path, sidecar_path: Path) -> dict[str, Any]:
         raise BoardError(f"Renderer printed no JSON for {sidecar_path.name}") from error
 
 
+def validate_render_scope(root: Path, scene: str, path: Path, unit_id: str) -> None:
+    record = read_json(path)
+    directory = derived_path(root, scene, "sheet")
+    if record.get("scene") != scene or path.parent != directory:
+        raise BoardError("Renderer record belongs to a foreign scene")
+    paths = [contained(root, record[key]) for key in ("html", "png")]
+    for target in (*paths, paths[1].with_suffix(".render.json")):
+        require_write_scope(root, target.relative_to(root).as_posix(), unit_id)
+        if target.parent != directory:
+            raise BoardError("Renderer artifacts must stay in the scene sheet directory")
+    expected = render_arguments(paths[0], paths[1], [], root, SHEET_WIDTH, SHEET_HEIGHT, None)
+    arguments = record.get("render_arguments")
+    if (
+        not isinstance(arguments, list)
+        or arguments[:len(expected)] != expected
+        or len(arguments[len(expected):]) % 2
+        or any(not isinstance(value, str) for value in arguments)
+        or any(value not in {"--copy", "--require-local-font"}
+               for value in arguments[len(expected)::2])
+    ):
+        raise BoardError("Renderer arguments do not match the scoped sheet artifacts")
+
+
 def render_sheet(
-    root: Path, scene: str, renderer: str, pages: list[int] | None
+    root: Path, scene: str, renderer: str, pages: list[int] | None,
+    *, unit_id: str | None = None,
 ) -> dict[str, Any]:
+    context = resolve_board_context(root, scene, unit_id)
     renderer_path = Path(renderer).resolve()
     if not renderer_path.is_file():
         raise BoardError(f"Renderer not found: {renderer}")
@@ -1455,10 +1592,16 @@ def render_sheet(
     directory = derived_path(root, scene, "sheet")
     rendered: list[dict[str, Any]] = []
     sidecars = latest_sidecars(directory, "sheet") if directory.is_dir() else []
+    selected: list[Path] = []
     for sidecar_path in sidecars:
         sidecar = read_json(sidecar_path)
         if sidecar["page"] > page_count or (pages and sidecar["page"] not in pages):
             continue
+        if not context.legacy:
+            validate_render_scope(root, scene, sidecar_path, context.unit_id)
+        selected.append(sidecar_path)
+    for sidecar_path in selected:
+        sidecar = read_json(sidecar_path)
         run_renderer(renderer_path, sidecar_path)
         rendered.append({"page": sidecar["page"], "png": sidecar["png"]})
     if not rendered:
@@ -1536,7 +1679,8 @@ def overview_html(board: dict[str, Any]) -> tuple[str, list[tuple[str, str]]]:
     return document, copies
 
 
-def build_overview(root: Path, scene: str) -> dict[str, Any]:
+def build_overview(root: Path, scene: str, *, unit_id: str | None = None) -> dict[str, Any]:
+    resolve_board_context(root, scene, unit_id)
     board, _ = read_board(root, scene)
     if "layout" not in board:
         return {"skipped": "board.md has no layout block"}
@@ -1588,8 +1732,10 @@ def default_animatic_size(aspect: str) -> str:
 
 
 def build_animatic(
-    root: Path, scene: str, size: str | None, audio: str | None
+    root: Path, scene: str, size: str | None, audio: str | None,
+    *, unit_id: str | None = None,
 ) -> dict[str, Any]:
+    resolve_board_context(root, scene, unit_id)
     board, _ = read_board(root, scene)
     size = size or default_animatic_size(board["aspect_ratio"])
     if not re.fullmatch(r"\d{3,4}x\d{3,4}", size):
@@ -1809,7 +1955,8 @@ def overview_status(root: Path, scene: str, board: dict[str, Any]) -> dict[str, 
     return {"state": "current" if current else "stale"}
 
 
-def status_report(root: Path, scene: str) -> dict[str, Any]:
+def status_report(root: Path, scene: str, *, unit_id: str | None = None) -> dict[str, Any]:
+    resolve_board_context(root, scene, unit_id)
     board, _ = read_board(root, scene)
     plan_stale = board["shot_plan_sha256"] != load_scene_source(root, scene).plan_sha256
     return {
@@ -1944,15 +2091,9 @@ def schema_errors(schema_name: str, value: Any) -> list[str]:
     return [error.message for error in validator.iter_errors(value)]
 
 
-def is_studio_project(root: Path) -> bool:
-    studio = root / "studio"
-    canvas = root / "showcase.json"
-    return (
-        studio.is_dir()
-        and not studio.is_symlink()
-        and not canvas.exists()
-        and not canvas.is_symlink()
-    )
+def is_studio_project(root: Path, unit_id: str | None = None) -> bool:
+    context = resolve_board_context(root, unit_id=unit_id)
+    return bool(shared_module("validate_request").studio_project(root, context=context))
 
 
 def refuse_symlink(path: Path) -> None:
@@ -1967,7 +2108,10 @@ def edit_source(
     review: str,
     reason: str,
     user_words: str | None,
+    *,
+    unit_id: str | None = None,
 ) -> dict[str, Any]:
+    context = resolve_board_context(root, scene, unit_id)
     board, _ = read_board(root, scene)
     panel = find_panel(board, panel_id)
     if not panel.get("file"):
@@ -2006,7 +2150,7 @@ def edit_source(
     if words:
         if len(words) < 3:
             raise BoardError("--user-words must quote the user's own words")
-        if not is_studio_project(root):
+        if not is_studio_project(root, context.unit_id):
             raise BoardError(
                 "A user decision recorded from chat needs a Studio project (a real "
                 "studio/ directory and no showcase.json)"
@@ -2019,8 +2163,11 @@ def edit_source(
     for relative in (prompt_file, f"requests/request_{stem}.json"):
         if relative and contained(root, relative).is_file():
             upstream[relative] = sha256_file(contained(root, relative))
+    if not context.legacy:
+        project_sha = shared_module("production_context").context_project_sha256(root)
+        upstream[relative_to(root, context.unit_brief)] = sha256_file(context.unit_brief)
     decision: dict[str, Any] = {
-        "schema_version": 1,
+        "schema_version": 1 if context.legacy else 2,
         "decision_id": decision_id,
         "decision_type": "variant_selection",
         "asset_id": f"{panel_id}_edit_source",
@@ -2037,13 +2184,21 @@ def edit_source(
         "reason": reason.strip(),
         "decided_at": datetime.now(UTC).isoformat(),
     }
+    if not context.legacy:
+        decision["context"] = context.identity()
     if words:
         decision["authorization"] = {"source": "chat", "evidence": words}
     problems = schema_errors("production-decision.schema.json", decision)
     if problems:
         raise BoardError("Decision does not match the schema: " + "; ".join(problems))
-    decisions = safe_directory(root, "decisions")
-    decision_path = decisions / f"{decision_id}.json"
+    findings = shared_module("validate_request").decision_findings(
+        root, decision, require_current_project=True, context=context,
+    )
+    if findings:
+        raise BoardError("Decision evidence is invalid: " + "; ".join(
+            finding.message for finding in findings
+        ))
+    decision_path = contained(root, f"decisions/{decision_id}.json")
     manifest_path = scene_dir(root, scene) / panel["clip"] / f"panel_{panel_id}.md"
     refuse_symlink(decision_path)
     refuse_symlink(manifest_path)
@@ -2058,8 +2213,15 @@ def edit_source(
                 "content and cannot be replaced; a new panel version gets its own decision"
             )
         decision = existing
-    else:
-        write_json(root, decision_path, decision)
+    front: dict[str, Any] = {}
+    manifest_body = "\nApproved only as the source image of a repair edit, not as the final panel.\n"
+    if manifest_path.exists():
+        front, manifest_body = split_front_matter(
+            manifest_path.read_text(encoding="utf-8")
+        )
+    safe_directory(root, "decisions", unit_id=context.unit_id)
+    if not decision_path.exists():
+        write_json(root, decision_path, decision, unit_id=context.unit_id)
     evidence = {
         "decision_id": decision_id,
         "decision_path": relative_to(root, decision_path),
@@ -2072,12 +2234,6 @@ def edit_source(
         "reason": decision["reason"],
         "selected_sha256": panel["sha256"],
     }
-    front: dict[str, Any] = {}
-    manifest_body = "\nApproved only as the source image of a repair edit, not as the final panel.\n"
-    if manifest_path.exists():
-        front, manifest_body = split_front_matter(
-            manifest_path.read_text(encoding="utf-8")
-        )
     front.update(
         {
             "status": "approved",
@@ -2107,7 +2263,10 @@ def plan_repair(
     delta: str,
     accept: list[str],
     bbox: str | None,
+    *,
+    unit_id: str | None = None,
 ) -> dict[str, Any]:
+    resolve_board_context(root, scene, unit_id)
     ordered = list(dict.fromkeys(panel_ids))
     if not ordered:
         raise BoardError("Name at least one panel")
@@ -2244,12 +2403,14 @@ def stale_for(board: dict[str, Any], affected: set[str]) -> dict[str, Any]:
     }
 
 
-def build_review_page(root: Path, scene: str) -> dict[str, Any]:
+def build_review_page(root: Path, scene: str, *, unit_id: str | None = None) -> dict[str, Any]:
+    context = resolve_board_context(root, scene, unit_id)
     board, _ = read_board(root, scene)
-    review_directory = safe_directory(root, "review")
+    review_directory = safe_directory(root, "review", unit_id=context.unit_id)
     stylesheet = review_directory / "scene-board.css"
     write_text_atomic(
-        root, stylesheet, (TEMPLATE_DIR / "review.css").read_text(encoding="utf-8")
+        root, stylesheet, (TEMPLATE_DIR / "review.css").read_text(encoding="utf-8"),
+        unit_id=context.unit_id,
     )
     page_path = review_directory / f"{scene}-board.html"
     status = status_report(root, scene)
@@ -2324,7 +2485,7 @@ def build_review_page(root: Path, scene: str) -> dict[str, Any]:
         f"{notes}<table><thead><tr><th>Panel</th><th>State</th><th>Status</th></tr></thead>"
         f"<tbody>{rows}</tbody></table>{''.join(pieces)}</body></html>\n"
     )
-    write_text_atomic(root, page_path, document)
+    write_text_atomic(root, page_path, document, unit_id=context.unit_id)
     return {"page": relative_to(root, page_path)}
 
 
@@ -2338,6 +2499,7 @@ def build_parser() -> argparse.ArgumentParser:
         command = commands.add_parser(name, help=help_text)
         command.add_argument("project")
         command.add_argument("scene")
+        command.add_argument("--unit", help="Owning unit; required for multi-unit productions")
         return command
 
     init = common("init", "Derive board.md from the scene's shot plan")
@@ -2415,7 +2577,9 @@ def parse_pages(value: str | None) -> list[int] | None:
 
 def execute(arguments: argparse.Namespace) -> tuple[dict[str, Any], int]:
     root = project_root(arguments.project)
-    scene = normalize_scene(arguments.scene)
+    context = resolve_board_context(root, unit_id=arguments.unit)
+    scene = normalize_scene(arguments.scene, root)
+    resolve_board_context(root, scene, context.unit_id)
     command = arguments.command
     if command == "init":
         return (
@@ -2428,20 +2592,21 @@ def execute(arguments: argparse.Namespace) -> tuple[dict[str, Any], int]:
                 arguments.style,
                 arguments.aspect,
                 arguments.overwrite,
+                unit_id=context.unit_id,
             ),
             0,
         )
     if command == "rebase-plan":
-        return rebase_plan(root, scene), 0
+        return rebase_plan(root, scene, unit_id=context.unit_id), 0
     if command == "check":
-        findings = check_board(root, scene)
+        findings = check_board(root, scene, unit_id=context.unit_id)
         errors = [item for item in findings if item.severity == "error"]
         return {
             "ok": not errors,
             "findings": [item.as_dict() for item in findings],
         }, 1 if errors else 0
     if command == "status":
-        return status_report(root, scene), 0
+        return status_report(root, scene, unit_id=context.unit_id), 0
     if command == "register-panel":
         return (
             register_panel(
@@ -2454,12 +2619,14 @@ def execute(arguments: argparse.Namespace) -> tuple[dict[str, Any], int]:
                 arguments.bbox,
                 arguments.prompt_file,
                 arguments.task_id,
+                unit_id=context.unit_id,
             ),
             0,
         )
     if command == "mark":
         return mark_panel(
-            root, scene, arguments.panel, arguments.status, arguments.decision
+            root, scene, arguments.panel, arguments.status, arguments.decision,
+            unit_id=context.unit_id,
         ), 0
     if command == "edit-source":
         return (
@@ -2470,6 +2637,7 @@ def execute(arguments: argparse.Namespace) -> tuple[dict[str, Any], int]:
                 arguments.review,
                 arguments.reason,
                 arguments.user_words,
+                unit_id=context.unit_id,
             ),
             0,
         )
@@ -2485,21 +2653,28 @@ def execute(arguments: argparse.Namespace) -> tuple[dict[str, Any], int]:
                 arguments.delta,
                 arguments.accept,
                 arguments.bbox,
+                unit_id=context.unit_id,
             ),
             0,
         )
     if command == "sheet":
-        return build_sheet(root, scene, arguments.font, parse_pages(arguments.pages)), 0
+        return build_sheet(
+            root, scene, arguments.font, parse_pages(arguments.pages), unit_id=context.unit_id,
+        ), 0
     if command == "render-sheet":
         return (
-            render_sheet(root, scene, arguments.renderer, parse_pages(arguments.pages)),
+            render_sheet(
+                root, scene, arguments.renderer, parse_pages(arguments.pages), unit_id=context.unit_id,
+            ),
             0,
         )
     if command == "overview":
-        return build_overview(root, scene), 0
+        return build_overview(root, scene, unit_id=context.unit_id), 0
     if command == "animatic":
-        return build_animatic(root, scene, arguments.size, arguments.audio), 0
-    return build_review_page(root, scene), 0
+        return build_animatic(
+            root, scene, arguments.size, arguments.audio, unit_id=context.unit_id,
+        ), 0
+    return build_review_page(root, scene, unit_id=context.unit_id), 0
 
 
 def main() -> int:

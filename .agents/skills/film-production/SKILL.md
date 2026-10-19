@@ -1,6 +1,6 @@
 ---
 name: film-production
-description: Orchestrate an AI-assisted film, commercial, music video, or narrative production across brief, development, canon, storyboard, audio, shot generation, review, assembly, and delivery while maintaining one HyperFrames Studio project through every stage. Use when a request spans multiple scenes or modalities, asks to create or continue a film project, requires coordination between deterministic HTML-entrypoint graphics, Seedream, Seed Audio, Seedance, HyperFrames, or FFmpeg, or needs the next safe production step rather than a single prompt. Do not use for an isolated image, audio, video, or editing request that one specialist skill can complete independently.
+description: Orchestrate cinematic shorts, films, episodic shows, commercials, music videos and custom narratives through inspected Studio delivery. Use for multi-scene or multi-modality production, including an unspecified format. Do not use for isolated prompts, assets or edits.
 ---
 
 # Film Production
@@ -16,12 +16,47 @@ Studio commands, stage gates, prompt review, registration and submission
 recovery. This skill owns the sequencing: which stage comes next, which
 specialist runs it, and which production defaults make the result better.
 
+## Format and brief authority
+
+Use the [production brief](../../contracts/production-brief.md) and
+[production profiles](../../catalog/production-profiles.json) contracts.
+Format, genre, medium, audience,
+language and delivery are independent. Follow the supplied script or treatment;
+do not silently rewrite it into a short-form formula.
+
+Only an explicit micro-drama format or an existing selected `micro-drama`
+workflow delegates episode structure to that orchestrator and its market writer.
+An explicit format wins over a workflow hint; changing a conflicting lock still
+requires a recorded, authorized change.
+Without that selection, an unspecified format stays on this general route.
+A landscape cinematic short
+can have quiet held shots, wordless scenes and a resolved ending without
+Hook/Turn/Cliffhanger, a runtime default or a to-be-continued card. Use
+`tig-scene-engine` for scene craft as needed, not `microdrama-story-formats` as
+the generic development fallback.
+
+`project.md` remains the canonical shared brief. Preserve existing locks, optional
+market context and legacy episode fields; a validated `production.json` supplies
+format, ordered unit/scene membership and unit brief paths. Resolve scope before
+work: no manifest keeps `projects/<project>/studio/`, while an active manifest
+uses `projects/<project>/units/<unit>/studio/`. Use `--unit ID` for unit commands;
+multiple units require selection, except aggregate status and shared canon work.
+Invalid manifests fail closed. Candidate validation never authorizes activation
+or migration of existing productions.
+
+Do not start a second HyperFrames intake. Unit `init`/`sync` generate `BRIEF.md`
+with effective delivery, context and source hashes, not another editable
+authority; reconcile user-authored or modified adapters explicitly. The scoped
+APIs implement `PLAN_SEED_CINEMA_STUDIO.md`, but technical tests are not a fully
+verified release, creative-pilot approval or feature-length readiness.
+Record capacity gaps and require measured trials; alternate cuts remain deferred.
+
 ## Core operating model
 
 - Act as the single manager communicating with the user.
 - Treat project files and manifests as production memory; do not rely on chat
   history alone.
-- Keep the project's HyperFrames Studio project (`projects/<project>/studio/`)
+- Keep the selected legacy or unit HyperFrames Studio project
   in step with the manifests through `studio_project.py` for every stage
   review and handoff. A project with a `showcase.json` is a pre-Studio canvas
   project and keeps its canvas checkpoint instead.
@@ -38,13 +73,14 @@ specialist runs it, and which production defaults make the result better.
 
 1. Resolve the project directory. Search before creating a project, scene,
    element, shot, or same-purpose artifact.
-2. Read `project.md`, `handoff.md` when present, `task_ids.json`,
-   `studio/stages.json` (`showcase.json` for a pre-Studio canvas project),
+2. Read `project.md`, the active manifest and selected unit brief when present,
+   `handoff.md`, `task_ids.json`, the resolved Studio's `stages.json`
+   (`showcase.json` for a pre-Studio canvas project),
    relevant element, scene and shot manifests, prompt snapshots, and the latest
    review decisions. Manifests and the registry win over `handoff.md`. A new
    Studio project starts with `approval_mode: approve_for_me` in `project.md`,
-   `studio_project.py init <project>`, then
-   `studio_project.py stage <project> start brief-development`.
+   `studio_project.py init <project> [--unit ID]`, then
+   `studio_project.py stage <project> [--unit ID] start brief-development`.
 3. **Never hand-write Studio state** (`stages.json`, `provenance.json`,
    storyboard frames, compositions, render records) or a `showcase.json`. A
    scaffold delegated to a sub-agent names the exact command and prohibits
@@ -54,7 +90,11 @@ specialist runs it, and which production defaults make the result better.
 5. Identify contradictions, missing inputs, stale dependencies, pending provider
    tasks, and decision gates. Recheck the effective approval mode before each
    decision.
-6. State the current stage, the next safe objective, required specialist
+6. Carry the selected context into every unit command, request and decision.
+   New scoped requests use v3; scoped decisions use v2 with the actual unit-brief
+   upstream hash. Shared canon uses explicit production scope, not the unit.
+   Follow [production versions](../../contracts/production-versions.md).
+7. State the current stage, the next safe objective, required specialist
    skills, and any user decision needed before spending credits.
 
 Read [stage contracts](references/stage-contracts.md) for entry evidence,
@@ -70,7 +110,13 @@ between modalities.
 | --- | --- |
 | Brief intake, directorial defaults, audio route, look intent | `brief-intake` |
 | Brand-ad / reference-video inspiration | `template-factory` for reverse-engineering; `ark-mcp` (`seed_understand`) for lighter analysis |
-| Vertical episodic micro-drama | `micro-drama` (with a market writer such as `filipino-micro-drama`) |
+| Explicit micro-drama format | `micro-drama` (with a market writer such as `filipino-micro-drama`) |
+| General premise, treatment, outline or script-led scene list | `story-development`; preserve supplied writing and compose `tig-scene-engine` separately for scene craft |
+| Shared bible, mutable state and character knowledge | `series-continuity`; scoped audits without changing canon |
+| Review of an actual edit for coverage, pacing and continuity | `editorial-review`; explicit `editorial.py` snapshots, no automatic edit application |
+| Edit-bound cue sheets, mix decisions and listening evidence | `sound-post`; caller executes authorized mixing/rendering |
+| Locked-text SRT/WebVTT with measured unit-local timing | `subtitle-sidecars`; retain `microdrama-subtitles` and its shared engine |
+| Source-preserving language versions of delivered work | `production-localize`; retain `microdrama-localize` for explicit micro-drama |
 | Character identity asset | `seedream-character-sheet` |
 | Character sheet cleanup | `seedream-character-sheet-cleanup` |
 | Authorized face or voice asset (`asset://` Virtual Portrait) | `seedance-virtual-portrait` |
@@ -111,9 +157,10 @@ paid video submission and again at assembly. In short:
    Ambience-only, score-driven and wordless pieces generate picture with
    `generate_audio: false` and build the bed in post, because a "no music" line
    does not reliably hold.
-3. **Cinematic sequences for ads and TVCs.** About six 5 s sequences of 2–3
-   shots for a 30 s spot, one action per shot, each shot with lens, camera move,
-   motivated light and depth, and one wow image per sequence.
+3. **Structure from the confirmed brief.** Derive scenes, duration, ending,
+   aspect and coverage from the script or treatment and disclosed profile.
+   Preserve held shots and wordless passages. Advertising cadence and
+   micro-drama beats are not general narrative requirements.
 4. **Storyboards plan; they are never bound** as Seedance references. Bind
    element references and write staging in the prompt.
 5. **People in video inputs** (extension, video-to-video) need `asset://`
@@ -123,8 +170,9 @@ paid video submission and again at assembly. In short:
    in post; add a disclosure label only when the user, platform or brief requires one.
 7. **Ungraded assembly** in original colours, exact-length intermediates, one
    final encode.
-8. **Narrow fixes.** Word-scoped audio patches, re-voicing that keeps the
-   source soundtrack, and speech-to-text as the word authority.
+8. **Narrow fixes.** Word-scoped audio patches and re-voicing that keeps the
+   source soundtrack. Compare speech-to-text against locked dialogue and listen
+   to disputed words; a wordless piece does not invent a dialogue gate.
 
 ## Run one stage at a time
 
@@ -144,19 +192,25 @@ For the active stage:
    `ask_for_approval`. Choose takes with `studio_project.py candidates`, a swap
    in Studio (or `place`), then `record-selection`.
 7. Run `studio_project.py sync` after every material change and open the
-   project in Studio for visual review of shot takes.
-8. Exit with `studio_project.py stage <project> complete <stage-id>`; skip
-   out-of-scope `storyboard-visual-plan` or `audio-preparation` with
+   selected Studio for visual review of shot takes. It preserves manual edits;
+   do not treat sync as edit-order application.
+8. Exit with `studio_project.py stage <project> [--unit ID] complete <stage-id>`.
+   Skip out-of-scope `storyboard-visual-plan` or `audio-preparation` with
    `stage <project> skip <stage-id> --reason TEXT`; reopen a completed stage
-   when an upstream input changes. Update `handoff.md` at every exit.
+   when an upstream input changes. A changed unit context requires reopening
+   `brief-development`, preserving the prior ledger in history and invalidating
+   later locks. Update `handoff.md` at every exit.
 9. Advance only when the stage exit contract is satisfied.
 
 At the brief/development stage, run `brief-intake` before writing the brief's
 required output. It proposes directing defaults derived from the idea, and the
 brief must also record the audio route, the look intent (ungraded original
 colours unless a look is requested), the on-screen copy that will be added in
-post, and, for ads and TVCs, the cinematic sequence bar. Persist the
+post, and the script-led structure and delivery choices. Persist the
 mode-authorized confirmed set as a `locked` block in `project.md`.
+Sequence `story-development` for source inventories and script-led breakdown,
+and `series-continuity` for state/knowledge evidence. Do not require redundant
+new writing when a supplied locked script already contains it.
 
 At the scene breakdown stage, run `seedance-shot-design` for every narrative,
 ad, micro-drama, music-video or showcase scene before any shot prompt is
@@ -201,11 +255,27 @@ Preserve rejected history and never overwrite source media.
 
 ## Finish the run
 
+At assembly, export the actual Studio edit with `editorial.py export`, check it
+and explicitly reconcile the snapshot with an expected revision when accepting
+it as `editorial/<unit>/main.json`. These commands never apply order or trims.
+Unsupported edit constructs remain in Studio with a recorded coverage gap.
+Use `editorial-review` and `sound-post` for actual playback/listening evidence,
+not merely successful JSON validation.
+
+For an indexed named delivery, use `deliverables.py validate/status`, bind an
+explicit current unit render with `bind --render-record --expected-revision`,
+then record its own reviewed `lock --decision --expected-revision`. The ID
+selects its unit; this service has no `--unit` flag. Keep named locks separate
+from the unit stage's final-master lock and context-local newest-render gate.
+Only `cut_id: main` is supported; no newer proxy or language output silently
+replaces a named master. Follow the complete commands in the production policy.
+
 Report the stage reached, artifacts created or changed, Studio project path and
 stage-exit evidence, review status, provider tasks still running, costs when
 known, unresolved risks, and the next production decision. A production run is
-complete only when its active stage exit contract is satisfied; the local film
-is complete only after its inspected master has a mode-authorized final lock.
+complete only when its active stage exit contract is satisfied; the selected
+unit is complete only after its inspected master has a mode-authorized final
+lock and applicable named delivery evidence. Other units may remain planned.
 External delivery or publishing remains a separate action.
 
 Submission recovery (register before submitting, record the task ID at once,

@@ -2,7 +2,9 @@
 
 Read [the entrypoint](../SKILL.md). Load this reference when planning a project's
 stage flow, before the first paid video submission, at assembly, and whenever a
-take needs a fix. These defaults are working practice, not provider guarantees. An explicit user instruction overrides any of them.
+take needs a fix. These creative defaults are working practice, not provider
+guarantees. Confirmed creative choices override defaults, but never relax rights,
+approval, review, spending or durable-submission gates.
 Exact tool parameters live in the `ark-mcp` Seedance reference; this file says
 when to use them.
 
@@ -46,11 +48,20 @@ must stay ambient or score-led; generate the picture silent and build the bed
 in post. Say in the brief that post beds are laid to the cut and are not
 frame-synced to on-screen action unless SFX are placed by timestamp.
 
-## 3. Cinematic structure from the episode plan
+## 3. Structure from the confirmed brief
 
-Use the project's confirmed episode duration, scene split, energy and budget.
-A market card overrides the default Hook, Turn and Cliffhanger structure; do
-not impose advertising cadence on a dialogue scene.
+Use the confirmed script or treatment, target duration, scene plan, energy and
+budget. Consult the [production brief](../../../contracts/production-brief.md)
+and [profiles](../../../catalog/production-profiles.json) for disclosed defaults;
+do not infer format from aspect, genre or medium.
+
+Only an explicit micro-drama format or an existing selected micro-drama workflow
+inherits Hook/Turn/Cliffhanger, 45-60 s, three scenes, 9:16 and a to-be-continued
+card as defaults. Its confirmed brief or market card can override them.
+General narrative production requires none of those choices. Do not impose
+advertising cadence, a dramatic payoff image per scene or an arbitrary shot
+count on a supplied script. Quiet held shots, wordless passages and resolved or
+intentionally open endings are valid when they serve the brief.
 
 - Derive clip count and duration from the scene plan and verified model limits.
   Give each shot **one primary action** and a clear end state. Split an
@@ -58,15 +69,16 @@ not impose advertising cadence on a dialogue scene.
 - Give every shot a lens intent, a camera move, a motivated named light source
   and depth layers (foreground, subject, background), carried from the
   `seedance-shot-design` plan.
-- Give each scene **one dramatic payoff image** tied to its Hook, Turn or
-  Cliffhanger function, or the alternative structure recorded in the brief.
+- Give each scene a purpose and observable progression from the supplied
+  material. Let its visual emphasis follow that purpose.
 - Use dynamic verbs over soft mood words, and state the camera move for every
   shot. A static shot carries its recorded reason.
 - Keep every planned shot at least about 0.8 s; Seedance merges shorter shots.
   Blink cuts, intercuts and vision flashes are built in the edit, not the
   prompt.
-- Set ratio as a request parameter, never as a sentence in the prompt. 21:9 is
-  an accepted Seedance 2.5 ratio for a scope look.
+- Keep delivery dimensions separate from generation parameters. Set a supported
+  ratio as a request parameter, never as a sentence in the prompt; verify
+  current model capabilities rather than inferring them from the Studio canvas.
 
 ## 4. Storyboards are planning and review only
 
@@ -100,7 +112,8 @@ brief requires it.
 
 ## 7. Assembly defaults
 
-Default assembly does **conform, trim, crop, overlays, end card and mix only**.
+Assemble to the confirmed edit and delivery choices: conform, trim, necessary
+reframes and mix. Add overlays and end cards only when the brief calls for them.
 
 - **No grade unless the brief records a look.** Keep the original model colours
   that matched the approved drafts. Add a grade, grain, halation, vignette or a
@@ -122,6 +135,10 @@ Default assembly does **conform, trim, crop, overlays, end card and mix only**.
 ## 8. Review and fix loop
 
 Run these checks before a take passes, and use the narrowest fix.
+
+Wordless work needs temporal and sound review where applicable, not a fabricated
+spoken-dialogue transcript or pronunciation gate. A silent deliverable records
+that sound is intentionally absent.
 
 - **Words:** compare a word-timed `speech_to_text` transcript against locked
   dialogue and listen to disputed words; ASR can be wrong. A model summary is

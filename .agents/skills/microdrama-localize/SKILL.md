@@ -1,18 +1,6 @@
 ---
 name: microdrama-localize
-description: >-
-  Orchestrator that localizes an already delivered micro-drama episode to
-  another language or market without changing its picture, timing or locked
-  canon. Sequences translation of the locked lines with each speaker pair's
-  register preserved, subtitle sidecars, and one chosen route for the new
-  spoken language: subtitles only, a line-scoped Seed Audio re-voice that keeps
-  the source soundtrack, or a full regenerate, selected after the native
-  dialogue-language check. Owns approval, registry reconciliation and QA
-  gates: speech-to-text diff against the locked translation, an honest
-  lip-sync verdict, and cultural review flagged unverified until a native
-  speaker confirms. Use for adding a language or market to a delivered episode
-  or series. Do not use for a first-time episode, a story rewrite, or a single
-  subtitle file; use micro-drama or microdrama-subtitles.
+description: Orchestrator for localizing delivered micro-drama with preserved sources and honest lip-sync QA. Use for a new episode language or market version. Do not use for isolated subtitles or first production.
 ---
 
 # Microdrama Localize
@@ -24,6 +12,13 @@ loads only the ones the chosen route needs. Stage, approval, Studio and
 submission rules come from `AGENTS.md` and the
 [production policy](../../contracts/production-policy.md); this skill does not
 relax them.
+
+This is the retained micro-drama entry for the
+[shared localization protocol](../../contracts/production-localization.md).
+The generic `production-localize` entry follows the same protocol; neither
+orchestrator loads the other. Keep the old skill and reference paths supported.
+Use `production_post.py localization` for read-only preservation checks, never
+as evidence that Studio edits were imported or listening was completed.
 
 ## Inputs and outputs
 
@@ -144,7 +139,8 @@ evidence; unavailable evidence stays unresolved.
   the localized master, not the source.
 - **Lip-sync verdict.** Exactly one of: native (C, checked by eye),
   approximate (B, source-language mouths with a new-language voice), or not
-  applicable (A). Never claim sync that was not viewed.
+  applicable (A). Keep `unverified` while required playback is unavailable.
+  Never claim sync that was not viewed.
 - **Records.** Every paid operation is in `task_ids.json` with its prompt
   snapshot and review, with no duplicate or unreconciled submission. Estimated
   and confirmed cost recorded. New masters are new versions with hashes; source

@@ -1,17 +1,6 @@
 ---
 name: microdrama-subtitles
-description: >-
-  Generate per-language subtitle sidecars (SRT, optionally WebVTT) named
-  <master-stem>.<language-code>.srt from a micro-drama episode's locked
-  dialogue and measured timing. Subtitle text follows the locked words, never
-  the heard words, and is never burned into generated video. Wraps by
-  grapheme cluster so CJK, Indic, Thai-with-breaks and right-to-left scripts
-  are not split inside words, enforces characters per line, reading speed and
-  cue duration, splits overlong lines, resolves overlaps, and shifts times by
-  the clip's start on the master timeline. Use for any episode, language or
-  market, after dialogue QA and before or alongside delivery. This independent
-  leaf writes sidecar files only; it does not translate, generate media,
-  render the master or call a provider.
+description: Write multilingual SRT and WebVTT for micro-drama from locked text and measured timing. Use for episode subtitle sidecars. Do not use for translation, generation or burned-in captions.
 ---
 
 # Microdrama Subtitles
@@ -19,6 +8,14 @@ description: >-
 Turn locked dialogue plus measured timing into one subtitle sidecar per
 language. The skill owns the file format, wrapping and timing rules; it does not
 translate, listen, or render video.
+
+This independent leaf is the retained micro-drama compatibility entry. Follow
+the [shared subtitle contract](../../contracts/subtitle-sidecars.md). The
+generic `subtitle-sidecars` script calls this same engine; neither leaf loads
+or invokes its sibling. Existing flags, input schema and valid output bytes
+remain supported, including explicit horizontal limits and long offsets.
+The writer preflights all requested languages and targets before writing and
+rejects source-input aliases and symlink/hardlink targets even with `--overwrite`.
 
 ## Input and output contract
 

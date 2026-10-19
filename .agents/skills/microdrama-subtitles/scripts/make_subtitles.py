@@ -4,7 +4,9 @@ import argparse
 import hashlib
 import json
 import math
+import os
 import re
+import stat
 import sys
 import unicodedata
 from dataclasses import dataclass, replace
@@ -583,12 +585,29 @@ def parse_overrides(values: list[str], cast: type) -> dict[str, Any]:
     return overrides
 
 
-def write_sidecar(path: Path, content: str, overwrite: bool) -> str:
+def validate_target(path: Path, overwrite: bool) -> None:
+    if path.is_symlink():
+        raise SubtitleError(f"{path}: refusing a symlink target")
     if path.exists() and not overwrite:
         raise SubtitleError(
             f"{path} exists; pass --overwrite or choose a new --out-dir"
         )
-    path.write_text(content, encoding="utf-8")
+    if path.exists() and (not path.is_file() or path.stat().st_nlink != 1):
+        raise SubtitleError(f"{path}: target must be a regular file without hardlinks")
+
+
+def write_sidecar(path: Path, content: str, overwrite: bool) -> str:
+    validate_target(path, overwrite)
+    flags = os.O_WRONLY | os.O_CREAT | os.O_NOFOLLOW | os.O_NONBLOCK
+    if not overwrite:
+        flags |= os.O_EXCL
+    descriptor = os.open(path, flags, 0o666)
+    with os.fdopen(descriptor, "w", encoding="utf-8") as handle:
+        metadata = os.fstat(handle.fileno())
+        if not stat.S_ISREG(metadata.st_mode) or metadata.st_nlink != 1:
+            raise SubtitleError(f"{path}: target must be a regular file without hardlinks")
+        handle.truncate(0)
+        handle.write(content)
     return hashlib.sha256(content.encode("utf-8")).hexdigest()
 
 
@@ -609,9 +628,10 @@ def generate(arguments: argparse.Namespace) -> dict[str, Any]:
     rtl_marks = {"auto": None, "on": True, "off": False}[arguments.rtl_marks]
     formats = FORMATS if arguments.format == "both" else (arguments.format,)
     out_dir = Path(arguments.out_dir)
-    out_dir.mkdir(parents=True, exist_ok=True)
     files: list[dict[str, Any]] = []
+    pending: list[tuple[Path, str, str, str, int]] = []
     warnings: list[str] = []
+    inputs = {Path(path).resolve() for path in arguments.input}
     for language in arguments.language:
         code = normalize_language(language)
         settings = resolve_settings(
@@ -637,16 +657,26 @@ def generate(arguments: argparse.Namespace) -> dict[str, Any]:
         for extension in formats:
             content = render_srt(cues) if extension == "srt" else render_vtt(cues)
             target = out_dir / f"{arguments.master_stem}.{code}.{extension}"
-            digest = write_sidecar(target, content, arguments.overwrite)
-            files.append(
-                {
-                    "path": str(target),
-                    "language": code,
-                    "format": extension,
-                    "cues": len(cues),
-                    "sha256": digest,
-                }
-            )
+            if target.resolve() in inputs or (
+                target.exists() and any(target.samefile(source) for source in inputs)
+            ):
+                raise SubtitleError(f"{target}: output must not overwrite a dialogue input")
+            validate_target(target, arguments.overwrite)
+            if any(target == previous[0] for previous in pending):
+                raise SubtitleError(f"{target}: duplicate output language")
+            pending.append((target, content, code, extension, len(cues)))
+    out_dir.mkdir(parents=True, exist_ok=True)
+    for target, content, code, extension, cue_count in pending:
+        digest = write_sidecar(target, content, arguments.overwrite)
+        files.append(
+            {
+                "path": str(target),
+                "language": code,
+                "format": extension,
+                "cues": cue_count,
+                "sha256": digest,
+            }
+        )
     return {"files": files, "warnings": warnings}
 
 

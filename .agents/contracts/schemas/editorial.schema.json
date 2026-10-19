@@ -1,0 +1,78 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "urn:seed:editorial",
+  "title": "Read-only primary cut snapshot",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["schema_version", "unit_id", "cut_id", "duration_s", "source_edit", "entries"],
+  "properties": {
+    "schema_version": {"const": 1},
+    "unit_id": {"$ref": "urn:seed:post-common#/$defs/id"},
+    "cut_id": {"const": "main"},
+    "duration_s": {"$ref": "urn:seed:post-common#/$defs/duration"},
+    "source_edit": {"$ref": "urn:seed:post-common#/$defs/asset"},
+    "runtime": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["export_version", "context", "scene_ids", "tree_sha256"],
+      "properties": {
+        "export_version": {"const": 1},
+        "context": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": ["context_version", "kind", "effective_sha256"],
+          "properties": {
+            "context_version": {"const": 1},
+            "kind": {"enum": ["legacy", "unit"]},
+            "effective_sha256": {"type": "string", "pattern": "^[a-f0-9]{64}$"},
+            "unit_id": {"$ref": "urn:seed:post-common#/$defs/id"}
+          },
+          "allOf": [{
+            "if": {"properties": {"kind": {"const": "unit"}}},
+            "then": {"required": ["unit_id"]},
+            "else": {"not": {"required": ["unit_id"]}}
+          }]
+        },
+        "scene_ids": {
+          "type": "array",
+          "uniqueItems": true,
+          "items": {"type": "string", "pattern": "^scene-[0-9]{2,}$"}
+        },
+        "tree_sha256": {"type": "string", "pattern": "^[a-f0-9]{64}$"}
+      }
+    },
+    "notes": {"$ref": "urn:seed:post-common#/$defs/text"},
+    "entries": {
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["id", "shot_id", "take", "source_in_s", "source_out_s", "source_duration_s", "timeline_start_s"],
+        "properties": {
+          "id": {"$ref": "urn:seed:post-common#/$defs/id"},
+          "shot_id": {"type": "string", "pattern": "^s[0-9]{2,}_sh[0-9]{3,}$"},
+          "take": {"$ref": "urn:seed:post-common#/$defs/asset"},
+          "host_id": {"$ref": "urn:seed:post-common#/$defs/text"},
+          "shot_manifest": {"$ref": "urn:seed:post-common#/$defs/asset"},
+          "selection_decision": {"$ref": "urn:seed:post-common#/$defs/asset"},
+          "source_in_s": {"$ref": "urn:seed:post-common#/$defs/time"},
+          "source_out_s": {"$ref": "urn:seed:post-common#/$defs/duration"},
+          "source_duration_s": {"$ref": "urn:seed:post-common#/$defs/duration"},
+          "timeline_start_s": {"$ref": "urn:seed:post-common#/$defs/time"},
+          "note": {"$ref": "urn:seed:post-common#/$defs/text"}
+        }
+      }
+    }
+  },
+  "allOf": [{
+    "if": {"required": ["runtime"]},
+    "then": {
+      "properties": {
+        "entries": {
+          "items": {"required": ["host_id", "shot_manifest", "selection_decision"]}
+        }
+      }
+    }
+  }]
+}
