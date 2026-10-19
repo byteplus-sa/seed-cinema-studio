@@ -6,8 +6,11 @@ explicit gaps rather than fabricating their outputs.
 
 ## Stage checkpoint for every stage
 
-The project's stage ledger is `studio/stages.json`, kept only by
-`uv run python .agents/scripts/studio_project.py stage <project> {show|start|complete|reopen|skip}`.
+Resolve scope first under `PLAN_SEED_CINEMA_STUDIO.md` and the
+[production policy](../../../contracts/production-policy.md). Without
+`production.json`, the ledger remains `studio/stages.json`; a validated manifest
+selects `units/<unit>/studio/stages.json`. Keep it only through
+`uv run python .agents/scripts/studio_project.py stage <project> [--unit ID] {show|start|complete|reopen|skip}`.
 It holds the eight stages in fixed order (`brief-development`,
 `scene-breakdown`, `canon-elements`, `storyboard-visual-plan`,
 `audio-preparation`, `shot-generation`, `assembly-review`, `delivery`) and is
@@ -15,22 +18,34 @@ never hand-written. `studio_project.py init` creates an empty Studio project and
 `sync` creates it from the shot manifests: an outline frame for each planned shot and a built frame for
 each take, without deleting prior frames, variants or decisions. Exact
 generation prompts stay in their immutable snapshot files, referenced from the
-manifests.
+manifests. Pass the same selected `--unit` to every unit command below, including
+handoff commands whose legacy examples omit it. Multiple units require explicit
+selection for unit operations; `status` may aggregate. Shared canon locking is
+production-scoped. Invalid manifests fail closed; candidate validation does not
+authorize migration.
+
+Root ledgers/provenance/renders retain schema v1; unit records use v2 with typed
+context and ordered scene membership. `sync` preserves manual timeline edits
+and appends new frames; it does not apply editorial order. A changed unit
+context requires explicit `reopen brief-development`, archiving the prior
+ledger and invalidating later locks rather than rewriting history.
 
 Read `approval_mode` from `project.md` at start/resume and before each stage
 decision; the production policy defines both modes. Record the effective mode,
 decision actor, reason, review outcome, current selection or stage lock, and
-unresolved gaps in the relevant manifest. `status` checks takes and Studio
-assets only; it does not read review, decision or scene files, so re-run
-prompt-review or reopen the stage when those files change.
+unresolved gaps in the relevant manifest. `status` validates scope, takes and
+Studio assets but is not a full review/decision audit. Revalidate decisions and
+reopen affected stages when evidence changes; changed generation inputs also
+require fresh prompt review.
 
 Every stage exit additionally requires:
 
-1. `studio_project.py stage <project> complete <stage-id>` passes. Its
+1. `studio_project.py stage <project> [--unit ID] complete <stage-id>` passes. Its
    per-stage requirements (valid `project.md`, clean `status`, placed takes and
    a passing `check`, no pending selection, `picture`/`audio`/`final_master`
-   locks, a current delivery-level `render`) are the stage-exit table in the
-   production policy. Only `storyboard-visual-plan` and `audio-preparation` may
+   locks, a current context-local delivery-level `render`) are the stage-exit
+   table in the production policy. Named deliveries additionally bind an explicit
+   render by ID. Only `storyboard-visual-plan` and `audio-preparation` may
    be skipped with `--reason`;
 2. the stage's inputs, outputs, prompts, bindings, review evidence and
    mode-authorized decisions or pending recommendations are in the manifests;
@@ -50,7 +65,8 @@ not replace this checkpoint.
 
 ## 1. Brief and development
 
-Entry: user intent or an existing `project.md`.
+Entry: user intent or an existing `project.md`, plus the selected unit brief
+when a validated manifest is present.
 
 Required output: `approval_mode`, audience, format, runtime, aspect ratio,
 delivery resolution, story objective, tone, creative constraints, known rights
@@ -69,8 +85,15 @@ brief also records:
 - for ads and TVCs, the **cinematic bar**: sequence count and length, one action
   per shot, and the wow image each sequence must deliver.
 
-The brief is the `brief-development` stage source; `stage complete` checks that
-`project.md` is a valid record.
+Use `story-development` for source-preserving treatment, outline and scene-list
+artifacts, and compose `tig-scene-engine` separately for dramatic craft.
+Supplied scripts need faithful extraction, not an unsolicited rewrite. Profile
+planning outputs guide evidence; they do not force duplicate artifacts.
+
+The shared/unit briefs are stage sources; machine checks validate brief/context,
+not story quality. Unit `init`/`sync` generate a hash-bound Studio `BRIEF.md`
+adapter. It is not a second editable authority; modified or user-authored
+adapters need explicit reconciliation.
 
 Exit: the production objective, constraints, and directorial defaults are clear
 enough to break down. When the brief cites brand ads or other footage for
@@ -90,6 +113,9 @@ upload) before treating visual/motion claims from the ad as breakdown evidence.
 
 Required output: scene list, cast, locations, props, dialogue, sound needs,
 continuity states, delivery assumptions, and scene-level acceptance criteria.
+Use `series-continuity` to distinguish identity from mutable state and character
+knowledge, with source hashes and scripted/observed/unknown status. Unit scene
+membership follows the manifest; machine IDs remain globally unique.
 For every narrative, ad, micro-drama, music-video or showcase scene it also
 requires a shot plan from `seedance-shot-design` in the scene file's
 `## Shot plan` section: per shot, duration, size, angle, camera move, lens
@@ -146,10 +172,15 @@ The `canon-elements` manifests record every variant (acquired, generated, or
 deterministically rendered), its prompt or provenance/render record,
 recommendation/selection state and downstream role. Studio's Assets panel shows
 only the locked (selected, approved) elements, copied as
-`LOCKED_<element>_<vNN>.<ext>`; candidates and rejected samples stay in
-`elements/`. `studio_project.py lock-element` records the decision and does this
-copy; `sync-elements` repairs it and rewrites the static candidates page
-(`review/elements.html`).
+`LOCKED_<element>_<vNN>.<ext>` in the selected Studio's `assets/`; candidates and
+rejected samples stay in production-root `elements/`.
+`studio_project.py lock-element` records a production-scoped canon decision and
+synchronizes copies; it does not create separate unit canon approvals.
+Declare unit dependencies in `elements`/`required_elements` metadata on unit,
+scene or shot records (including structured shot-plan entries).
+Unit `sync-elements` validates and copies required canon only, recording managed
+files in `canon.json` and refusing to overwrite manual changes. Root legacy
+sync retains its static candidates page (`review/elements.html`) behavior.
 
 Exit: every required canonical element has an approved selected variant, or the
 dependent scene is explicitly marked unresolved. The element list has been
@@ -220,8 +251,12 @@ Required output: task registry entry, local media, exact prompt snapshot,
 provider metadata, actual media properties, cost fields, SHA-256, semantic QA
 including a comparison of the take against its shot plan, frame samples with
 top-left corner crops for leaked text, a speech-to-text diff for every locked
-line, and `review` status. Resolution is raised only after the current pass is
-approved (final-candidate gate); a native Draft is promoted by its
+line when dialogue exists, and `review` status. Wordless work does not invent a
+transcript gate; audible ambience/music still needs listening.
+Scoped operations use request v3 and decisions v2 bound to the normalized shared
+project digest and selected unit context, with real unit-brief upstream hashes.
+Production canon is not unit-scoped. Resolution is raised only after the current
+pass is approved (final-candidate gate); a native Draft is promoted by its
 `draft_task_id` without changing its inputs. For multi-shot productions, review the draft
 assembly and record picture/audio decisions before generating final takes.
 Each final request is separately registered and reviewed against its complete
@@ -257,11 +292,21 @@ re-voicing keeps the source soundtrack (see
 [production defaults](production-defaults.md)). The `assembly-review` stage
 keeps its approved inputs and comparison renders together.
 
+Export the actual edit with `editorial.py export`, run `check`, then explicitly
+`reconcile` the snapshot to `editorial/<unit>/main.json` using the expected
+revision. This reads Studio without applying order or trims. Runtime exports
+bind selections, measured ranges, context and tree hashes. Straight cuts, trims
+and gaps are supported; do not flatten unsupported overlaps/effects.
+`editorial-review` supplies timecoded actual-cut review. `sound-post` supplies
+`sound/<unit>/cues.json`, mix decisions and real listening evidence. These
+leaves do not execute edits, mixing, generation or stage approval.
+
 Exit: picture and audio have separate mode-authorized locks bound to the exact
 artifact and passing review hashes. Audio lock is required when audio is in
-scope. In `ask_for_approval`, wait for explicit user locks. Full editorial,
-color, and sound-post department contracts are future work tracked in the
-lifecycle specification.
+scope, including native or post-built sound after skipping audio preparation.
+In `ask_for_approval`, wait for explicit user locks. Record-validator success
+does not certify playback, listening, color or creative quality. Unavailable
+inspection stays unresolved.
 
 ## 8. Delivery
 
@@ -272,8 +317,23 @@ status, delivery metadata, hashes, and archive pointers. On-screen text comes
 only from post overlays; add no AI or fictional label unless the user, platform
 or brief requires one.
 The `delivery` stage exposes those files and final approval evidence.
+Use `subtitle-sidecars` for locked-text/measured-timing sidecars and
+`production-localize` for a separately scoped delivered language version.
+Legacy `microdrama-subtitles`/`microdrama-localize` entrypoints remain supported.
+
+For indexed named deliveries, validate/status the explicit ID with
+`deliverables.py`; bind a current unit render record with `--render-record` and
+`--expected-revision`. After actual output review, lock with `--decision` and
+the refreshed revision. The v2 final decision must bind the unit brief and
+immutable named binding in its upstream hashes. Binding/lock history is
+retained; drift reports findings, not an automatic rebuild or replacement.
+Only primary cut `main` is supported. See the production policy's full command
+forms and separate named-delivery versus unit-stage gates.
 
 Exit: inspect the actual local master, then record a mode-authorized final
-master lock bound to its file and review hashes. In `ask_for_approval`, wait for
+master lock bound to its file and review hashes. Unit stage completion checks
+its own newest eligible render and stage lock; a named lock instead binds the
+explicit delivery version and does not rewrite that stage lock. Another unit
+may remain planned. In `ask_for_approval`, wait for
 the user's explicit acceptance. Publishing, sending, or external delivery needs
 separate authorization in either mode.

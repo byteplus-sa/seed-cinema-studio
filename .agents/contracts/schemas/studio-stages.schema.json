@@ -10,7 +10,21 @@
   "additionalProperties": false,
   "properties": {
     "schema_version": {
-      "const": 1
+      "enum": [1, 2]
+    },
+    "context": {
+      "type": "object", "additionalProperties": false,
+      "required": ["context_version", "kind", "unit_id", "effective_sha256"],
+      "properties": {
+        "context_version": {"const": 1},
+        "kind": {"const": "unit"},
+        "unit_id": {"type": "string", "pattern": "^[a-z0-9]+(?:-[a-z0-9]+)*$"},
+        "effective_sha256": {"type": "string", "pattern": "^[0-9a-f]{64}$"}
+      }
+    },
+    "scene_ids": {
+      "type": "array", "uniqueItems": true,
+      "items": {"type": "string", "pattern": "^scene-[0-9]{2,}$"}
     },
     "current_stage": {
       "enum": [
@@ -88,7 +102,22 @@
               },
               "render_record": {
                 "type": "string"
+              },
+              "primary_deliverable_id": {
+                "type": "string",
+                "pattern": "^[a-z0-9]+(?:-[a-z0-9]+)*$(?![\\s\\S])"
+              },
+              "delivery_binding": {
+                "$ref": "#/$defs/delivery_history"
+              },
+              "delivery_lock": {
+                "$ref": "#/$defs/delivery_history"
               }
+            },
+            "dependentRequired": {
+              "primary_deliverable_id": ["delivery_binding", "delivery_lock", "render_record"],
+              "delivery_binding": ["primary_deliverable_id"],
+              "delivery_lock": ["primary_deliverable_id"]
             }
           },
           "reason": {
@@ -200,5 +229,25 @@
         ]
       }
     }
-  }
+  },
+  "$defs": {
+    "delivery_history": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["path", "sha256", "version"],
+      "properties": {
+        "path": {"type": "string", "minLength": 1},
+        "sha256": {"type": "string", "pattern": "^[0-9a-f]{64}$(?![\\s\\S])"},
+        "version": {"type": "integer", "minimum": 1}
+      }
+    }
+  },
+  "allOf": [{
+    "if": {"properties": {"schema_version": {"const": 2}}},
+    "then": {
+      "required": ["context", "scene_ids"],
+      "properties": {"context": {"properties": {"kind": {"const": "unit"}}}}
+    },
+    "else": {"not": {"anyOf": [{"required": ["context"]}, {"required": ["scene_ids"]}]}}
+  }]
 }

@@ -69,6 +69,9 @@ class StudioProjectTests(unittest.TestCase):
         self.project = Path(self.temp.name).resolve() / "demo"
         self.project.mkdir()
         self.write_project("approve_for_me")
+        audio_probe = mock.patch.object(studio, "probe_has_audio", return_value=True)
+        audio_probe.start()
+        self.addCleanup(audio_probe.stop)
 
     def write_project(self, mode):
         (self.project / "project.md").write_text(

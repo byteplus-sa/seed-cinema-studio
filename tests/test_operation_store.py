@@ -4,6 +4,7 @@ import sys
 import unittest
 from concurrent.futures import ThreadPoolExecutor
 from pathlib import Path
+from threading import Barrier
 from unittest.mock import patch
 
 import test_request_validation as fixtures
@@ -72,6 +73,79 @@ class OperationStoreTests(unittest.TestCase):
         self.assertEqual(
             len(json.loads((self.root / "task_ids.json").read_text())["tasks"]), 1
         )
+
+    def test_locked_writer_can_replace_registry_without_deadlocking(self):
+        self.prepare()
+        before = operation_store.read_registry(self.root / "task_ids.json")
+        code = (
+            "from pathlib import Path\n"
+            "import sys\n"
+            "sys.path.insert(0, sys.argv[1])\n"
+            "from operation_store import registry_lock, read_registry, replace_registry\n"
+            "with registry_lock(Path(sys.argv[2])) as path:\n"
+            "    replace_registry(path, read_registry(path))\n"
+        )
+        result = subprocess.run(
+            [sys.executable, "-c", code, str(Path(operation_store.__file__).parent),
+             str(self.root)],
+            capture_output=True, text=True, timeout=5, check=False,
+        )
+        self.assertEqual(result.returncode, 0, result.stderr)
+        self.assertEqual(operation_store.read_registry(self.root / "task_ids.json"), before)
+
+    def test_concurrent_snapshot_replacements_have_one_winner(self):
+        self.prepare()
+        barrier = Barrier(2)
+        path = self.root / "task_ids.json"
+
+        def attempt(confirmed):
+            snapshot = operation_store.read_registry(path)
+            snapshot["tasks"][0]["cost"]["confirmed"] = confirmed
+            barrier.wait(timeout=5)
+            try:
+                operation_store.replace_registry(path, snapshot)
+                return confirmed
+            except ValueError:
+                return None
+
+        with ThreadPoolExecutor(max_workers=2) as workers:
+            results = list(workers.map(attempt, (10, 20)))
+        winners = [value for value in results if value is not None]
+        self.assertEqual(len(winners), 1)
+        self.assertEqual(operation_store.read_registry(path)["tasks"][0]["cost"]["confirmed"], winners[0])
+
+    def test_plain_registry_document_requires_explicit_current_revision(self):
+        self.prepare()
+        path = self.root / "task_ids.json"
+        snapshot = operation_store.read_registry(path)
+        document = dict(snapshot)
+        document["tasks"][0]["cost"]["confirmed"] = 10
+        before = path.read_bytes()
+        with self.assertRaisesRegex(ValueError, "revision"):
+            operation_store.replace_registry(path, document)
+        self.assertEqual(path.read_bytes(), before)
+        operation_store.replace_registry(path, document, expected_revision=snapshot.revision)
+        self.assertEqual(operation_store.read_registry(path)["tasks"][0]["cost"]["confirmed"], 10)
+        with self.assertRaisesRegex(ValueError, "revision"):
+            operation_store.replace_registry(path, document, expected_revision=snapshot.revision)
+
+    def test_nested_registry_lock_releases_after_writer_exception(self):
+        self.prepare()
+        path = self.root / "task_ids.json"
+        before = path.read_bytes()
+        with (
+            operation_store.registry_lock(self.root),
+            patch.object(operation_store.os, "replace", side_effect=OSError("write failed")),
+            self.assertRaises(OSError),
+        ):
+            operation_store.replace_registry(path, operation_store.read_registry(path))
+        self.assertEqual(path.read_bytes(), before)
+
+        def write_again():
+            operation_store.replace_registry(path, operation_store.read_registry(path))
+
+        with ThreadPoolExecutor(max_workers=1) as workers:
+            workers.submit(write_again).result(timeout=5)
 
     def use_board_reference(self):
         relative = "scenes/scene-02/s02_sh010/s02_sh010_p010_t01_v01.png"

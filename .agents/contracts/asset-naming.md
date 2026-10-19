@@ -7,12 +7,27 @@ parseable by tools.
 
 ## Numbering rules
 
-- Scenes: 2-digit, prefixed `s` → `s01`, `s02`.
-- Shots: 3-digit, increments of **10** so shots can be inserted without renumbering → `sh010`, `sh020`; insert `sh015` between them.
+- Scenes: two or more ASCII digits, prefixed `s` → `s01`, `s001`, `s100`.
+  Preserve the scene directory's exact digits: `scene-01` uses `s01`,
+  `scene-001` uses `s001`. New scaffolds may use three digits; never rename
+  existing scenes, shot IDs, provider IDs or decision paths to change padding.
+  Scene and shot IDs are unique across the production, not reset per unit.
+  Numeric CLI shortcuts must reject ambiguity when `scene-01` and `scene-001`
+  both exist; use the explicit scene ID or exact asset prefix to disambiguate.
+- Shots: exactly 3 digits, increments of **10** so shots can be inserted without renumbering → `sh010`, `sh020`; insert `sh015` between them. Scene expansion does not permit `sh1000`.
 - Takes: 2-digit → `t01`, `t02` (one take = one generation attempt).
 - Versions: 2-digit → `v01`, `v02`; approved/final suffix → `final`.
-- Panels (storyboard): 3-digit, increments of 10 → `p010`, `p020`.
+- Panels (storyboard): exactly 3 digits, increments of 10 → `p010`, `p020`.
+  Board derivation is bounded to 99 panels per generated clip, ending at `p990`;
+  it rejects overflow instead of emitting `p1000`.
 - References: 2-digit → `ref_01`.
+
+All `<scene>` tokens below preserve that exact scene prefix. The `s01` examples
+remain valid with `s001`, `s100` or longer scene digit strings. This expansion
+does not widen shot, panel, take or version numbers. Storyboard-reference guards
+cover every supported scene width; panels, grid boards, sheets, overviews and
+animatics remain planning artifacts, not Seedance references. Separately approved
+blocking maps keep their distinct control-reference role.
 
 ## Video
 

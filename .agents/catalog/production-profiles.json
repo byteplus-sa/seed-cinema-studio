@@ -1,0 +1,62 @@
+{
+  "schema_version": 1,
+  "profiles": [
+    {
+      "id": null,
+      "revision": 1,
+      "workflow": "film-production",
+      "defaults": {},
+      "planning_outputs": ["supplied script or treatment", "ordered scene and shot plan"]
+    },
+    {
+      "id": "cinematic-short",
+      "revision": 1,
+      "workflow": "film-production",
+      "defaults": {},
+      "planning_outputs": ["short-film script or treatment", "ordered scene and shot plan", "ending intent"]
+    },
+    {
+      "id": "film",
+      "revision": 1,
+      "workflow": "film-production",
+      "defaults": {},
+      "planning_outputs": ["script or treatment", "ordered scene and shot plan", "duration and capacity assessment"]
+    },
+    {
+      "id": "episodic-show",
+      "revision": 1,
+      "workflow": "film-production",
+      "defaults": {},
+      "planning_outputs": ["series bible", "unit briefs", "ordered scene and shot plan", "continuity record"]
+    },
+    {
+      "id": "micro-drama",
+      "revision": 1,
+      "workflow": "micro-drama",
+      "defaults": {
+        "production": {
+          "duration_range_s": [45, 60],
+          "beats": ["hook", "turn", "cliffhanger"],
+          "scenes": [
+            {"role": "hook", "duration_s": 15},
+            {"role": "turn", "duration_s": 20},
+            {"role": "cliffhanger", "duration_s": 15}
+          ],
+          "max_recurring_cast": 3
+        },
+        "delivery": {
+          "aspect": "9:16",
+          "cards": ["title", "to-be-continued"]
+        }
+      },
+      "planning_outputs": ["episode brief", "ordered scene and shot plan", "continuity record"]
+    },
+    {
+      "id": "custom",
+      "revision": 1,
+      "workflow": "film-production",
+      "defaults": {},
+      "planning_outputs": ["user-defined structure and delivery", "ordered scene and shot plan"]
+    }
+  ]
+}

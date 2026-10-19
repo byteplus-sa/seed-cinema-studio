@@ -8,10 +8,14 @@ The normal flow is brief → draft breakdown → required canon → optional sto
 
 ## Persistent production workspace
 
-Every new production project is a HyperFrames Studio project in
-`projects/<project>/studio/`, created and kept in step with the manifests by
+Every new production project uses HyperFrames Studio, created and kept in step
+with the manifests by
 `uv run python .agents/scripts/studio_project.py <command> <project>` (JSON
-output). The manifests (`project.md`, scene and shot manifests,
+output). Without an active manifest, its root is `projects/<project>/studio/`.
+A validated `production.json` resolves each unit to
+`projects/<project>/units/<unit>/studio/`; select it with `--unit <id>` using the
+command forms below.
+The manifests (`project.md`, unit briefs, scene and shot manifests,
 `task_ids.json`, review and decision records) stay the source of truth for
 briefs, prompts, references, takes, approvals and cost. The Studio project is
 the editable view of them: its storyboard shows the plan and each shot's status,
@@ -23,7 +27,24 @@ Project type. A project that has a `showcase.json` is a pre-Studio canvas
 project: it keeps its canvas (see the `showcase-html` skill) until it is
 archived, is never migrated unasked, and never receives a `studio/` directory or
 a `stages.json`; `studio_project.py` refuses to run in it. A project without a
-`showcase.json` is a Studio project.
+`showcase.json` uses the legacy root Studio layout only when no `production.json`
+is present. Active manifests must be schema- and semantically valid; malformed
+files, symlinks, unsafe paths, duplicate or unowned scenes and mixed root/unit
+ownership fail closed, never fall back to legacy discovery. One unit may be
+selected implicitly; multiple units require `--unit` for unit operations.
+`status` without a unit aggregates units. Canon operations remain
+production-scoped, as described below. An explicit `production.plan.json`
+candidate can be checked with `production_context.py --manifest`; validation
+does not initialize units, activate the candidate or authorize migration.
+No existing production is automatically moved or reinterpreted. See
+[version boundaries](production-versions.md).
+
+`project.md` remains the shared brief, with creative exceptions in the manifest's
+unit brief. Unit `init`/`sync` generate `BRIEF.md` inside the selected Studio with
+typed context, effective delivery and raw source hashes. It is not an editable
+authority. User-authored or modified adapters require explicit reconciliation.
+Scenes, elements, reviews, decisions, `task_ids.json` and `drafts.json` remain
+production-relative, not relative to a unit's Studio root.
 
 Optional visual review. HTML is only a visual aid: a plain static `.html` file
 with a `.css` file beside it (relative links, no server, no required script),
@@ -40,50 +61,80 @@ only.
 Studio frames exist for shot video takes only. Elements, storyboard panels,
 posters and audio are reviewed from their manifests and files with the existing
 decision writer, and their evidence is recorded in the manifest. Locked assets
-are the ones in Studio: when an element is locked, copy its selected file to
-`studio/assets/` as `LOCKED_<element>_<vNN>.<ext>` and remove the copy of any
-variant it supersedes. Candidates, rejected samples and unlocked recommendations
-stay in `elements/` and are never copied into Studio's Assets panel. Candidate
+are the ones in Studio: copy selected files into the selected Studio's `assets/`
+as `LOCKED_<element>_<vNN>.<ext>`. Canon decisions remain production-scoped.
+In a unit layout, declare `elements` or `required_elements` in the unit, scene,
+shot or structured `shot_plan.shots` metadata; only those approved images are
+copied into that unit. `canon.json` tracks managed copies; changed/unmanaged
+copies require reconciliation, never destructive replacement. Root legacy
+Studio retains its existing locked-copy synchronization. Candidates, rejected
+samples and unlocked recommendations stay in `elements/` and are never copied
+into Studio's Assets panel. Candidate
 comparison belongs in a plain static HTML page, not in Studio.
 
-Commands.
+Commands. Ordinary rows use `studio_project.py COMMAND PROJECT [--unit ID] ...`;
+`PROJECT` is always the production root. Forwarding commands require
+`studio_project.py hf --unit ID PROJECT ...` or
+`studio_project.py record-render --unit ID PROJECT FILE ...`: put `--unit`
+before `PROJECT` so argparse does not forward it. Paths below refer to the
+resolved root or unit Studio, never a project-wide search.
 
 | Command | Purpose |
 | --- | --- |
-| `init [--aspect A] [--resolution R]` | Create an empty Studio project; works before any shot exists. The canvas defaults to the first shot's aspect and resolution (16:9 at 720p when there is no shot). The root composition's size is authoritative afterwards. `sync` does this automatically. |
+| `init [--aspect A] [--resolution R] [--fps F]` | Create an empty Studio project before shots exist. Legacy canvas defaults to the first shot (16:9 at 720p without shots); unit canvas uses effective brief delivery, including explicit even dimensions. Conflicting unit CLI choices fail. The root composition's size is authoritative afterwards. `sync` initializes automatically. |
 | `sync [--take SHOT=FILE]...` | Add an outline frame for each planned shot and a built frame for each take that is selected, active or named with `--take`. Upgrades an outline in place, never overwrites a frame or an edit made in Studio, refreshes the `approval:` line of existing frames from the manifest. `--take` for an unknown shot is an error and for an existing frame a warning. |
-| `candidates <shot>` | Copy every take of that shot into `studio/assets/` so Studio's Assets panel can swap them in; a take that cannot be copied safely is listed under `skipped`. |
+| `candidates <shot>` | Copy takes of that scoped shot into the selected Studio's `assets/` so its Assets panel can swap them in; unsafe takes are listed under `skipped`. Foreign-unit shots are rejected. |
 | `place <shot> <file>` | Put that take in the shot's frame (copies the asset, rewrites the clip source). Only when its length is within 0.25 s of the current clip; otherwise retime in Studio. |
-| `status` | Exit `0` ok, `3` blocking issue. Blocking codes: `asset_missing`, `asset_modified`, `unmanaged_asset`, `take_changed`, `placed_differs_from_selection`, `not_on_timeline`, `frame_missing`, `no_frame`. `selection_pending` is informational in planning stages and blocking for `assembly-review`, `delivery` and delivery-level renders. `orphan_frame` (a composition that is not a shot frame, such as a title card or registry block) is informational and never blocks. It checks takes and Studio assets only; it does not read review files or scene files. |
+| `status` | Exit `0` ok, `3` blocking issue. Blocking codes include `asset_missing`, `asset_modified`, `unmanaged_asset`, `take_changed`, `placed_differs_from_selection`, `not_on_timeline`, `frame_missing`, `no_frame`. `selection_pending` blocks assembly/delivery and delivery-level renders. `orphan_frame` for a non-shot composition is informational. Unit scope is validated, but status is not a complete review/decision audit; stage and decision checks remain required. Without `--unit`, active manifests return aggregate unit status. |
 | `check` | The pinned `hyperframes check`; passes only when its JSON says ok and the browser pass ran. Use it instead of a bare `hyperframes check`. |
 | `render --name N --quality Q` | Qualities `draft`, `looks`, `standard`, `delivery`, `high`; "delivery-level" means `standard`, `delivery` or `high`. A delivery-level render needs a clean `status` including no pending selection. Refuses to overwrite. Writes `<name>.mp4.render.json` with `produced_by: "render"`. |
-| `lock-element <id> --decision FILE` | Lock an element: record the agent or user decision for `elements/<id>/element.md` through the existing validated writer (the variant must be listed in `variants` and have a passing review), then run `sync-elements`. Needs an initialised Studio project. |
-| `sync-elements` | Make Studio hold exactly the locked elements: copy each approved element's selected image to `studio/assets/` as `LOCKED_<element>_<vNN>.<ext>`, remove any other `LOCKED_*` copy, and rewrite `elements/INDEX.md` and the static `review/elements.html` + `elements.css` (a copy of the shared `showcase-html` `assets/review-page.css`; locked element large, other samples as `OTHER` with the review's first observation). |
+| `lock-element <id> --decision FILE` | Record a listed variant's passing, authorized canon decision, then synchronize copies. In active layouts this is production-scoped decision v2, even when called with `--unit`; it needs at least one valid initialized unit Studio, not a dummy root Studio. |
+| `sync-elements` | Legacy: synchronize locked images and rewrite `elements/INDEX.md` and static `review/elements.html`/CSS. Active: validate shared canon decisions and synchronize required, managed copies per unit; no `--unit` processes initialized units, while `--unit` restricts copy synchronization. It does not change canon decisions. |
 | `record-lock --decision FILE` | Record a `picture`, `audio` or `final_master` stage lock for the current stage. The subject of a picture or final-master lock must be a render made by `render` (a final master at standard or higher quality); an audio lock names an audio file. Same authorization as `record-selection`; the review must pass real playback or listening checks. An agent cannot replace a user's lock. |
 | `record-render <file> [args]` | Register a render made elsewhere with the pinned CLI. Recorded as `produced_by: "manual"`; it does not satisfy the delivery gate and does not hide a good delivery render. |
-| `hf <command> [args]` | Run a pinned, privacy-safe HyperFrames command from inside `studio/` for the commands the script does not wrap: `preview`, `lint`, `snapshot`, `add`, `catalog`, `compositions`, `info`, `doctor`, `keyframes`, `compare`. Anything else is refused. Open Studio with `hf <project> preview --no-open --json` and open the returned `studioUrl`. |
-| `stage {show\|start\|complete\|reopen\|skip}` | The stage ledger (`studio/stages.json`). `skip <stage> --reason TEXT` is allowed only for `storyboard-visual-plan` and `audio-preparation`; a `skipped` status counts as done for later stages. |
+| `hf <command> [args]` | Run a pinned, privacy-safe command inside the selected Studio: `preview`, `lint`, `snapshot`, `add`, `catalog`, `compositions`, `info`, `doctor`, `keyframes`, `compare`. Anything else is refused. Open with `hf --unit ID PROJECT preview --no-open --json` (omit `--unit` for legacy) and use the returned `studioUrl`. |
+| `stage {show\|start\|complete\|reopen\|skip}` | Maintain the selected Studio's `stages.json`. Only `storyboard-visual-plan` and `audio-preparation` allow `skip --reason TEXT`. Changed unit context requires `reopen brief-development`, archiving the old ledger and invalidating later locks; never hand-edit scope into a ledger. |
 | `record-selection <shot> --decision FILE` | Write a decision for the placed take: an agent decision under `approve_for_me`, or a user decision in either mode whose authorization quotes the user's chat words. Checks that the Studio asset copy still matches and updates the frame's `approval:` line. |
 
 Run `sync` after every material change to a breakdown, shot manifest, take,
-selection or assembly. Do not hand-edit the ledger: `stage complete` rejects a
-stage that does not carry its evidence.
+selection or assembly. It preserves manual compositions and timeline edits;
+new frames append and do not silently impose manifest or editorial order.
+Reordering or retiming requires an explicit Studio edit. Do not hand-edit the
+ledger: `stage complete` rejects a stage that does not carry its evidence.
+
+Legacy stages/provenance/render records retain schema v1. Unit records use v2,
+binding typed context and ordered scene membership. Selection transactions write
+the selected unit ledger. A foreign unit's decision or render cannot close this
+unit's stage; another unit can remain planned.
+
+New frames and explicit take placement probe the source's audio streams.
+Picture-only footage is declared without audio so it renders without an invented
+soundtrack. Failed probes retain the legacy declaration and report a warning;
+inspect the media before rendering. `sync` does not rewrite existing manually
+edited frames to apply this change.
 
 Stage exit. A stage exits only through
-`studio_project.py stage <project> complete <stage-id>`; completing an earlier
-stage again does not move the current stage backwards.
+`studio_project.py stage <project> [--unit ID] complete <stage-id>`; completing
+an earlier stage again does not move the current stage backwards. The following
+table describes machine gates, not automatic creative evaluation.
 
 | Stage | Requires |
 | --- | --- |
-| `brief-development` | A `project.md` whose `approval_mode` is valid. An optional `market` or `episode` block, if present, must be well-formed; neither is required. |
-| `scene-breakdown` through `audio-preparation` | A Studio project with no blocking `status` issue. |
+| `brief-development` | Valid shared approval mode and optional market/episode fields. Active context resolution also validates the manifest, unit brief and effective settings; no screenplay quality is inferred. |
+| `scene-breakdown` through `audio-preparation` | Selected Studio has no blocking status issue. Active units additionally check declared required canon and its current copies from `canon-elements` onward. |
 | `shot-generation` | The above, a placed take for every shot, and a passing `check`. |
 | `assembly-review` | The `shot-generation` requirements, no pending selection, a `picture` lock, and an `audio` lock unless `audio-preparation` was skipped. |
-| `delivery` | The `assembly-review` requirements, and the newest render record that is `produced_by: "render"` at a delivery-level quality (drafts and manual records are ignored) still matches its file hash, was rendered from the Studio tree as it is now (`index.html`, `hyperframes.json`, every file in `compositions/` and `assets/`), and its frames equal the placed takes; plus a `final_master` lock on that same render. |
+| `delivery` | Placed scoped takes, clean selection status and passing `check`. Units with named definitions require exactly one `primary: true` index entry and its current binding and named lock, validated against the current spec, output, review and dependencies. Legacy root projects and units without named definitions retain the newest eligible render in their Studio context and a matching `final_master` ledger lock. Active units also revalidate their assembly locks. |
 
-Final files. `render` is the only authority for final files. Post work made
-elsewhere (FFmpeg assembly, loudness passes) is placed in
-Studio as a clip or overlay and rendered. Use `record-render` only to register a
+Audio review follows actual scope even when `audio-preparation` was skipped
+because dialogue was native or sound was built in post. The skip-sensitive
+machine lock rule above is not permission to omit listening or an audio decision
+for an audible deliverable. Synthetic checks do not establish creative approval.
+
+Final video files. `studio_project.py render` is the only authority for rendered
+final video files; named deliveries bind its explicit render records. Post work
+made elsewhere (FFmpeg assembly, loudness passes) is placed in Studio as a clip
+or overlay and rendered. Use `record-render` only to register a
 render that does not gate delivery. Every shot's frame stays on the
 timeline: a pre-assembled master cannot stand in for its shots, and titles,
 overlays and registry blocks are extra compositions beside the shot frames. A
@@ -92,6 +143,93 @@ in Studio for visual review and keep its preview server on loopback. A missing, 
 project leaves the stage incomplete. `media-review` is an OS-player fallback
 only when the browser is unavailable or explicitly requested; it never replaces
 the stage checkpoint.
+
+## Explicit Editorial Snapshots
+
+Studio is the editable timeline. `editorial.py` provides an explicit export/check/
+reconcile API for the actual edit, not an edit-application engine:
+
+```bash
+uv run python .agents/scripts/editorial.py export PROJECT --unit ep001 \
+  --output editorial/ep001/edit-v01.json
+uv run python .agents/scripts/editorial.py check PROJECT --unit ep001 \
+  --record editorial/ep001/edit-v01.json
+uv run python .agents/scripts/editorial.py reconcile PROJECT --unit ep001 \
+  --record editorial/ep001/edit-v01.json --expected-revision absent
+```
+
+For a subsequent reconciliation, replace `absent` with the current `main.json`
+SHA-256; optional `--expected-tree-sha256` binds export/reconciliation to a known
+Studio revision. Export writes an immutable snapshot; check is read-only;
+reconcile updates `editorial/<unit>/main.json` and archives prior evidence.
+All three read Studio without modifying it or auto-applying order. Legacy
+projects omit `--unit` and use `editorial/main/`.
+
+Runtime snapshots bind context, scene membership, whole Studio tree, selected
+take decisions and measured source ranges. Only straight cuts, trims and gaps
+are supported; overlaps, speed changes, custom effects and unsupported layers
+fail without flattening the edit. `production_post.py editorial` remains the
+lower-level record validator, not a substitute for runtime snapshot checking.
+Route actual cut review to `editorial-review`; use `sound-post` for edit-bound
+cues and listening evidence. Neither validator watches or listens.
+
+## Named Deliveries
+
+The [named delivery contract](production-deliverables.md) defines specification,
+history and validation details. `production.json` indexes existing
+`deliverables/<id>.json` specifications.
+`deliverables.py` resolves their unit by ID; it has no `--unit` flag and currently
+requires `cut_id: main`. Specs describe kind, language, dimensions/fps and
+audio/subtitle requirements. Binding probes and fully decodes the explicit
+rendered output; a spec alone is not measured evidence.
+
+```bash
+uv run python .agents/scripts/deliverables.py validate PROJECT ep001-en-master
+uv run python .agents/scripts/deliverables.py status PROJECT ep001-en-master
+uv run python .agents/scripts/deliverables.py bind PROJECT ep001-en-master \
+  --render-record units/ep001/studio/renders/master-v01.mp4.render.json \
+  --expected-revision DELIVERABLE_SHA256
+uv run python .agents/scripts/deliverables.py lock PROJECT ep001-en-master \
+  --decision decisions/ep001-en-master-final.json \
+  --expected-revision UPDATED_DELIVERABLE_SHA256
+```
+
+Use the revision returned by `status`, refreshing after each write. `bind`
+requires an existing `studio_project.py render` output at standard or higher
+quality from the exact current unit context/tree. It never chooses the latest
+render or renders implicitly. The new immutable binding records spec, output,
+render, dependencies, streams and decode evidence.
+
+`lock` requires the delivery stage started with earlier stages satisfied,
+current assembly locks and checks, and a v2 unit `final_master` decision whose
+upstream hashes include both the actual unit brief and immutable delivery
+binding file. Review must bind the output and include listening for audio.
+It appends a named lock, not a replacement for the unit stage ledger lock.
+An agent cannot replace a user's lock.
+
+`validate` and `status` are read-only. `ok` means no findings, not that a binding
+or lock exists; inspect those fields. Source/spec/output drift reports scoped
+findings while retaining prior binding/lock history; superseded drift is
+reported separately in `history_findings`. A successful write may still return
+findings for an older lock, so inspect the new revision before retrying.
+A newer proxy, another language or another episode never replaces a named
+master automatically.
+For units with named definitions, mark exactly one `production.json` delivery
+index entry `primary: true`. Studio `stage complete delivery` validates that
+ID's current binding and named lock, without requiring a duplicate ledger
+`final_master` lock. Missing or ambiguous primary selection, a missing binding
+or lock, a lock for an older binding, or stale evidence blocks completion.
+Legacy root projects and units without named definitions retain their
+context-local newest-render and stage-lock behavior.
+
+Use `subtitle-sidecars` for measured locked-text sidecars and
+`production-localize` for source-preserving language versions; retain the old
+`microdrama-subtitles` and `microdrama-localize` routes. Sidecars alone do not
+require re-rendering unchanged picture. Alternate-cut workflows, automatic
+creative proof, live migration and external delivery are not enabled by these
+APIs. Feature-length readiness requires measured trials.
+
+## Decisions And Runtime Safety
 
 Variant choice and approval. Run `candidates <shot>`, swap the chosen take in
 with Studio's Assets panel (or run `place <shot> <file>`), then run
@@ -118,7 +256,7 @@ wait, and the user then confirms in chat, never in a browser UI.
 
 Feedback. The user gives feedback in Studio (storyboard comments, Ask agent /
 Copy to Agent). The agent reads the running Studio with
-`hf <project> preview --context --json` and `--selection --json`.
+`hf [--unit ID] PROJECT preview --context --json` and `--selection --json`.
 
 Pinned entry and environment. HyperFrames runs only through
 `studio_project.py`, including its `hf` command; the release is the
@@ -222,13 +360,43 @@ before the PNG and record are promoted together.
 
 Use explicit prompt_type, model, operation, language, requested axes, may_change and must_preserve to route review. A completed review is bound to the request hash and lists applicable rule outcomes and evidence. Missing/empty reviewer output is incomplete. Static image, audio, editing and narrative checks are applied to their relevant artifact types.
 
-The request hash covers exact prompt bytes, model/operation/effective parameters and ordered reference hashes/roles/bindings. Credentials, expiring URLs and timestamps are excluded. Changed request content requires a new review.
+The request hash covers exact prompt bytes, model/operation/effective parameters
+and ordered reference hashes/roles/bindings. Scoped request v3 also binds typed
+context and the normalized shared project digest; historical v1/v2 algorithms
+are unchanged. Decision v2 uses current scoped identity and actual upstream file
+hashes. See [production versions](production-versions.md). Credentials, expiring
+URLs and timestamps are excluded from request identity. Changed request content
+requires a new review.
 
 ## Durable operations
 
 Use one project task_ids.json registry. New records follow schemas/generation-request.schema.json; the registry follows schemas/task-registry.schema.json. Preserve legacy records and report required migration rather than inventing missing facts.
 
-Persist prepared request and immutable prompt snapshot before calling the provider. Save an acknowledged provider ID immediately. Registration (`prepare_request.py --register`, `operation_store.prepare_operation`) and the `prepared` to `submitting` transition apply the same project-type rule: a Studio project (a real, non-symlink `studio/` directory and no `showcase.json`) registers version-2 requests with no canvas, while a pre-Studio canvas project requires its current `showcase.json` and `index.html`. A project with both, or with a `studio/` symlink or file, is not a Studio project and still needs the canvas. The submission never goes unregistered because a project is a Studio project. If a job was submitted before registration, adopt it: run `prepare_request.py --register` with the matching review and add `--adopt-provider-task-id <id>` (optionally `--adopt-provider-status`, and `--adopt-terminal` for a finished job); it registers the operation and walks it to `acknowledged` or `terminal` with the known provider task, and never resubmits. When a prompt is edited after its request was written but before registration, re-run with `--write --replace-unregistered` to rewrite that request; it refuses an asset that is already registered. Separate submission_status, provider_status and review_status. On a no-ID timeout use submission_unknown and reconcile. On a poll timeout retain the ID and resume the same task. When acceptance cannot be determined, hold for an explicit retry decision explaining possible duplicate cost. A provider terminal failure is evidence to review, not automatic approval of a replacement operation.
+Persist prepared request and immutable prompt snapshot before calling the
+provider. Save an acknowledged provider ID immediately. Registration
+(`prepare_request.py --register`, `operation_store.prepare_operation`) and the
+`prepared` to `submitting` transition recheck the same current project contract:
+
+- Legacy root Studio uses v2 requests and no canvas; pre-Studio canvas projects
+  require their current versioned `showcase.json` and `index.html`.
+- Active manifests use v3 with `--unit ID` or explicit `--production-scope` for
+  canon. The selected unit Studio must be valid and initialized; production
+  canon needs at least one valid unit Studio. No dummy root Studio is needed.
+- Mixed, malformed or unsafe layouts fail; historical unscoped records are not
+  reinterpreted as unit authorization. Candidate contexts cannot register work.
+
+Studio never bypasses registration. For an already submitted, unregistered job,
+the existing `--adopt-provider-task-id`, `--adopt-provider-status` and
+`--adopt-terminal` options reconcile the known job without resubmission, with the
+same explicit scope. `--write --replace-unregistered` can replace only a request
+whose asset is not registered. Registered identity stays immutable.
+
+Keep `submission_status`, `provider_status` and `review_status` separate.
+No-ID timeouts enter `submission_unknown`; polling timeouts retain the same ID.
+After submission, known outcomes may be reconciled despite changed creative
+context, but that does not approve stale outputs or permit promotion. Unknown
+acceptance requires an explicit retry decision explaining duplicate cost.
+Provider failure never approves a replacement operation.
 
 On success save each modality locally: Elements under elements/, shot outputs beside the shot, scene outputs in the scene folder, reusable non-shot media in library/. A durable provider URI supplements rather than replaces the local copy. Record artifact/task IDs, actual streams, bytes and SHA-256; download failure can retry the existing artifact without regenerating.
 
@@ -255,7 +423,7 @@ Inspect draft playback and audio, motion, continuity and the shot plan. Record a
 passing, hash-bound draft selection under the project's approval mode before
 final-resolution generation. A promotion by `draft_task_id` must name a
 registered 480p Seedance 2.5 draft of the same model and prompt that completed
-successfully. Version-2 requests and projects with a configured approval mode
+successfully. Version-2/3 requests and projects with a configured approval mode
 require a passing, hash-bound variant-selection decision for the expected output,
 valid under the current project and approval mode. A legacy version-1 project
 without an approval mode may retain its registry `approved` status
@@ -265,6 +433,8 @@ final takes. Preserve all draft files, prompt snapshots, references, task IDs
 and decisions. Generate final takes only within the authorized scope and budget
 at the recorded delivery target; do not assume 1080p is always required. A
 requested 480p delivery can use reviewed 480p takes after delivery QA.
+Scoped promotion additionally requires the same current unit context; another
+unit's draft is never eligible merely because the model and prompt match.
 
 A 480p output is not automatically a provider-native Draft task. Seedance 2.5
 through `ark-mcp` supports native Draft (`draft: true`) and promotion
@@ -297,4 +467,40 @@ The manifest is authoritative; selection.json is derived and selection.log is an
 
 Run validate_request.py with --project, --request, --capabilities, --review and applicable --required-rule values. For a generation-bound narrative, ad, micro-drama, music-video or showcase shot with no recorded exemption, pass `shot.plan_bound`, `shot.variety` and `shot.axis_carry`; for an exempt shot, omit them and let the reviewer record `not_applicable` with the exemption as the reason. When a required shot rule has nothing to check (no confirmed axis, a one-take), the reviewer records `pass` with that evidence, because a required rule cannot be `not_applicable`. It is read-only and never submits a provider task. Capability evidence uses capability-evidence.schema.json and self-contained parameter schemas; external schema URLs are rejected.
 
-The operation_store.py helper exposes prepare_operation(root, request, capabilities, review, required_rule_ids, allow_board_references=False) and transition_operation(root, operation_id, expected_status, new_status, provider_task_id, provider_status, allow_board_references=False). Only adoption of an already submitted job sets allow_board_references, because that job exists and cannot be withdrawn; it trusts the caller's provider task ID like the rest of adoption. Prepare only after the immutable snapshot exists. Validation occurs before registry writes. A file lock, unique operation/asset identities, expected state and atomic replace prevent duplicate local preparation and stale transitions. This does not promise provider idempotency. Legacy or invalid registries are preserved and require a migration preview.
+`operation_store.prepare_operation` accepts request, capabilities, review,
+required rules and keyword `unit_id`/`production_scope`; transition uses the
+registered identity. Only explicit adoption of an already submitted job permits
+historical board references. Prepare after the immutable snapshot exists;
+validation precedes registry writes. Shared writer locks, unique identities,
+expected state and atomic replacement prevent duplicate local preparation and
+stale transitions, not provider duplication. Preserve incompatible registries
+for explicit reconciliation; never delete history or downgrade scope.
+
+`read_registry` returns a revision-bound snapshot. `replace_registry` rejects a
+stale snapshot; callers supplying a plain dictionary must pass the revision
+obtained before editing as `expected_revision`. Re-read and reconcile changes
+after conflicts rather than overwriting confirmed billing. Nested use within
+the same thread's `registry_lock` is supported; independent writers serialize.
+
+A prepared operation that was never submitted closes through
+`transition_operation(..., expected_status="prepared", new_status="terminal",
+provider_status="cancelled_before_submission")`. This preserves the original
+request and releases only its unspent reservation, even when creative context
+has since changed. It rejects provider IDs, submission or billing evidence and
+cannot close an uncertain submission. Register changed inputs under a new
+operation version. Other terminal provider states are not assumed refunds.
+
+Late provider acknowledgments and draft-ID/expiry recording are historical
+reconciliation, not creative approval. `record_draft(..., status=None)` retains
+the registered historical context after a brief changes. Selection, approval,
+submission and promotion still require current effective scope and evidence.
+
+`budget_report.py PROJECT` reports production and unit estimated, confirmed,
+reserved and unknown exposure by currency without contacting a provider.
+Preparation accepts `--estimated-cost` and `--currency`; an omitted estimate
+means unknown, not zero. Explicit shared `budget.cap` and tighter `unit_budget`
+allocations are enforced again under the registry lock before registration and
+submission. Mixed currencies are not converted; unresolved exposure blocks new
+capped spending. Uncapped legacy projects retain their behavior. Recording
+already incurred billing or adopting an existing job is reconciliation, not
+permission for a new paid request.

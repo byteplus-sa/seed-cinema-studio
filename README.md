@@ -1,14 +1,115 @@
-# seed-microdrama-studio
+# Seed Cinema Studio
 
-Skills, contracts and tooling for making vertical micro-dramas with BytePlus Seedream, Seedance and Seed Audio. It supports any market, language and genre (romance, hidden heir, revenge, family conflict, thriller, horror, comedy, historical and more). The story-to-delivery pipeline was proven end to end on a first series for the Filipino market (the reference market pack): brief, cast and location canon, blocking maps, Seedance 2.5 shot prompts, review, a HyperFrames Studio timeline, and per-episode export for TikTok.
+An agent-driven production workspace for cinematic shorts, films, episodic shows
+and micro-drama with BytePlus Seedream, Seedance and Seed Audio. HyperFrames Studio
+remains the editor and review surface; this is not a new standalone application.
+Format, genre, medium, audience, language and delivery are independent choices.
 
-Status: the skills, contracts, scripts and tests carry the lessons from the first series. The target market is always chosen by the user (an optional market card in the `micro-drama` skill); no market is built in or assumed.
+The local implementation of `PLAN_SEED_CINEMA_STUDIO.md` supports validated
+`production.json` manifests, scoped request/decision lifecycles, independent unit
+Studio stages, explicit editorial snapshots and named delivery bindings. This
+describes available APIs, not a fully verified release. Micro-drama retains prior
+production evidence. The active technical pilot uses explicitly labeled synthetic
+decision fixtures to exercise strict selection gates; those are not genuine
+production decisions. Synthetic render/decode results are not creative-pilot
+approval. Feature-length readiness requires measured
+trials; custom formats also need scoped capacity and creative checks.
+
+Legacy projects retain root `studio/`; manifest-backed projects use
+`units/<unit>/studio/`. There is no automatic migration of active productions and
+no automatic repository or checkout rename. The local Python package metadata is
+`seed-cinema-studio-tools`, with dependency versions unchanged. This does not
+rename schemas, lock namespaces, commands or production paths, publish a package,
+or install additional workflows.
+
+## Production routing
+
+| Intent | Owner |
+| --- | --- |
+| Cinematic short, film, episodic show, custom narrative, or unspecified production format | `film-production`; follow the supplied script or treatment |
+| Explicit micro-drama format | `micro-drama`; retain market writers and episode conventions |
+| Existing composition edit or render | HyperFrames domain skills and `studio_project.py` |
+
+The project-local HyperFrames entry point applies this routing before its upstream
+workflow table. Narrative work does not need the absent `general-video` workflow.
+Hook/Turn/Cliffhanger, 45-60 s episodes, 9:16 and to-be-continued cards are
+micro-drama defaults only, not requirements for a cinematic short.
+
+Shared choices and compatibility rules live in the
+[production brief contract](.agents/contracts/production-brief.md) and
+[production profiles](.agents/catalog/production-profiles.json). Profiles disclose defaults; confirmed
+creative choices and locks win. No market is assumed. `project.md` remains the
+canonical shared brief; a manifest's unit brief supplies scoped creative choices.
+`init`/`sync` generate the selected unit's HyperFrames `BRIEF.md` adapter with
+context and source hashes. It is not a second editable authority. User-authored
+or manually changed adapters require explicit reconciliation.
+
+## Production scope
+
+Without a manifest, existing commands address root `studio/`. A validated
+`production.json` selects ordered scene membership and unit briefs; scene/shot
+IDs and shared `elements/`, `task_ids.json` and `drafts.json` stay at the production
+root. Invalid or ambiguous manifests fail closed, never fall back to legacy.
+One unit can be selected implicitly; multiple units require `--unit` for
+unit operations. `status` without `--unit` returns aggregate unit status.
+
+For an already validated manifest-backed project, the unit command forms are:
+
+```bash
+uv run python .agents/scripts/production_context.py /path/to/project --unit ep001
+uv run python .agents/scripts/studio_project.py init /path/to/project --unit ep001
+uv run python .agents/scripts/studio_project.py sync /path/to/project --unit ep001
+uv run python .agents/scripts/studio_project.py stage /path/to/project --unit ep001 show
+uv run python .agents/scripts/studio_project.py status /path/to/project --unit ep001
+```
+
+For forwarding commands put `--unit` before `PROJECT`:
+`studio_project.py hf --unit ep001 PROJECT preview --no-open --json` and
+`studio_project.py record-render --unit ep001 PROJECT FILE ...`. Shared
+canon decisions remain production-scoped through `lock-element`; `sync-elements`
+copies only each unit's declared required canon. Unit selections, stages,
+provenance and renders cannot stand in for another unit's evidence.
+
+Validate an explicitly supplied project-relative candidate without activating it:
+
+```bash
+uv run python .agents/scripts/production_context.py /path/to/project \
+  --manifest production.plan.json --unit ep001
+```
+
+The candidate must reference existing briefs and scenes. Validation checks
+membership, paths, profiles and context identity without writing production state;
+it is not migration authorization. Do not activate or relocate an existing
+production as a side effect. Active scoped work uses request v3 and decision v2.
+V3 binds typed context and a normalized shared project digest; historical v1/v2
+hashes remain unchanged. See [version boundaries](.agents/contracts/production-versions.md)
+and [Studio/approval commands](.agents/contracts/production-policy.md).
+
+## Editorial and delivery
+
+`editorial.py export`, `check` and explicit `reconcile` capture and validate the
+actual selected unit's Studio edit. They never apply a proposed order to Studio.
+The snapshot supports straight cuts, trims and gaps, not arbitrary effects or
+alternate cuts. `sync` preserves manual timeline edits.
+
+`deliverables.py validate|status|bind|lock PROJECT DELIVERABLE_ID` resolves the
+unit from the indexed deliverable. Binding requires an explicit `--render-record`
+from `studio_project.py render` and `--expected-revision`; locking additionally
+requires a reviewed, mode-authorized `--decision`. A proxy, language version or
+another episode's render does not replace a named lock merely by being newer.
+For units with named outputs, mark exactly one delivery index entry in
+`production.json` as `primary: true`. Unit completion validates that ID's current
+binding and named lock; missing or ambiguous primary selection blocks completion.
+Only the primary cut `main` is supported. Technical validation is not playback,
+listening, native-language review or creative proof. No automatic creative
+approval, provider generation or publishing follows from these commands.
 
 ## Markets and languages
 
 | Need | Skill |
 | --- | --- |
-| Stories for any market, language or genre | `microdrama-story-formats` |
+| General narrative development from a supplied script or treatment | `story-development`; the `film-production` orchestrator composes `tig-scene-engine` for scene craft |
+| Explicit micro-drama stories for any market, language or genre | `microdrama-story-formats` |
 | Spoken dialogue in any language, with a native-language check | `seedance-prompt-25-dialogue` |
 | Filipino market pack (reference example) | `filipino-micro-drama` and `seedance-prompt-25-filipino` |
 | Add a new market pack | [docs/ADD_A_MARKET.md](docs/ADD_A_MARKET.md) |
@@ -19,11 +120,11 @@ Seedance 2.5 speaks Chinese, English, Spanish, Indonesian, Malay, Thai, Arabic, 
 
 | Path | Contents |
 | --- | --- |
-| `.agents/skills/` | The micro-drama skills, one folder per skill |
+| `.agents/skills/` | Production orchestrators and independent specialist skills, one folder per skill |
 | `.agents/contracts/` | Production, routing, identity and naming contracts the skills cite |
 | `.agents/scripts/` | Request preparation, task registry, catalog sync, validation and `studio_project.py` (HyperFrames Studio bridge) |
 | `docs/` | How to add a market |
-| `projects/<series>/` | Local, uncommitted: one folder per series, with its own Studio project |
+| `projects/<production>/` | Local, uncommitted: shared canon/registry and either legacy root Studio or validated manifest-backed unit Studios |
 | `tests/` | Studio, registry, approval and validation tests |
 
 ## Skills
@@ -32,14 +133,20 @@ Edit skills only under `.agents/skills/`.
 
 | Skill | Summary |
 |---|---|
+| **story-development** | Prepare source-preserving premises, treatments, outlines and script-led scene lists without imposing a format formula. |
+| **series-continuity** | Maintain shared story state and character-knowledge continuity with scoped, evidence-backed contradiction audits. |
+| **editorial-review** | Review actual cuts and explicit edit snapshots for coverage, pacing and continuity without applying Studio edits. |
+| **sound-post** | Write edit-bound sound cue sheets, mix decisions and honest listening evidence without generating or mixing media. |
+| **subtitle-sidecars** | Write multilingual SRT/WebVTT from locked text and measured timing using the retained shared subtitle engine. |
+| **production-localize** | Localize delivered films, shorts and episodes through explicit routes with source preservation and honest language and lip-sync QA. |
 | **ark-mcp** | Uses the Ark multimodal MCP server for image, video, audio and 3D workflows, durable artifacts, and Advanced Creation Rights face/voice assets with existing authorization reuse and privacy rejection triage. |
 | **brief-intake** | Shape intent-led briefs and treatments; hand off brand-ad / footage inspiration for watchable-media analysis; preserve confirmed decisions. |
 | **color-grade-palettes** | Maps a named color grade palette or film look (teal & orange, bleach bypass, golden hour warm grade, etc.) into a canonical grade sentence for the Seedance Visual Style slot or the Seedream `Style:` section, with an optional matching FFmpeg filter graph for cross-shot matching. |
 | **ffmpeg** | Video and audio processing with FFmpeg. Use for format conversion, resizing, compression, audio extraction, and preparing assets for editing and assembly. Covers converting GIF to MP4, resizing video, extracting audio, compressing files, and any media transformation task. |
 | **filipino-micro-drama** | Write Filipino-market micro-drama stories: proven Pinoy formulas, locked episode briefs with English-dominant Taglish dialogue, honorifics, authentic settings and subtitle translations. |
-| **film-production** | Orchestrates multi-scene, multi-modality production one stage at a time while keeping one HyperFrames Studio project synchronized for review and handoff. |
+| **film-production** | General narrative orchestrator for cinematic shorts, films, shows and custom production, with scoped Studio edits and preserved legacy workflows. |
 | **html-graphic-render** | Author and render exact-size static posters, cards, product grids, UI, and transparent overlays from one project-local HTML entrypoint with CSS/SVG dependencies, exact-copy checks, and schema-valid provenance. |
-| **hyperframes** | Mandatory HyperFrames entry point — resumes project state, selects the owning workflow (nothing is installed), and routes all video, animation, and motion-graphic capabilities. |
+| **hyperframes** | HyperFrames entry point with local narrative routing to film-production, preserved micro-drama workflows, and composition/editing domains; no workflow installation. |
 | **hyperframes-animation** | Atomic motion rules, multi-phase scene blueprints, transitions, and the seven runtime adapters (GSAP, Lottie, Three.js, Anime.js, CSS, WAAPI, TypeGPU). |
 | **hyperframes-audio** | Mixing audio already placed in a composition — fades, crossfades, ducking, effect chains, automation envelopes, and submix buses. |
 | **hyperframes-cli** | HyperFrames CLI development loop — init, add, catalog, capture, lint, check, snapshot, and render workflows, run through the pinned workspace entry. |

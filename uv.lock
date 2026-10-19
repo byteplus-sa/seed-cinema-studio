@@ -956,7 +956,7 @@ wheels = [
 ]
 
 [[package]]
-name = "seed-microdrama-studio-tools"
+name = "seed-cinema-studio-tools"
 version = "0.1.0"
 source = { virtual = "." }
 dependencies = [

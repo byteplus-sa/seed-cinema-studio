@@ -1,5 +1,71 @@
 # Tool and skill routing
 
+## Production format routing
+
+Apply these workspace routes before the vendored HyperFrames creation table or
+intent interview. A specific edit, inspection or render remains that operation,
+not a new production intake. Match the requested format, not aspect, genre,
+runtime or the presence of music. An explicit format takes precedence over a
+workflow hint; an existing selected micro-drama workflow supplies defaults only
+when the format is otherwise unspecified. A conflicting lock still requires a
+recorded, authorized change before production continues.
+
+| Intent | Route |
+| --- | --- |
+| Explicit micro-drama format | `micro-drama`; an existing selected workflow retains its episode defaults and market writers |
+| Cinematic short, film, episodic show, or custom narrative production | `film-production`; preserve the supplied script or treatment and confirmed delivery choices |
+| Unspecified production format | `film-production`; develop a general brief, never assume micro-drama |
+
+The local `hyperframes` entry point hands narrative orchestration to
+`film-production`; its domain skills still own composition, editing and rendering.
+Do not install `general-video` to make a narrative route resolve. Independent
+prompt-only or storyboard-only requests still use their specialist, not a full
+production lifecycle. Only explicit micro-drama selects
+`microdrama-story-formats` or its market pack as the story-format writer.
+
+Use [production brief](production-brief.md) and
+[production profiles](../catalog/production-profiles.json) for shared settings,
+disclosed defaults and legacy compatibility. General production follows confirmed creative
+choices, without imposed Hook/Turn/Cliffhanger beats, duration, aspect or cards.
+Rights, approval, review, spending and registration gates remain universal.
+
+`project.md` is the canonical shared brief; a validated `production.json`
+selects unit briefs and ordered scenes. Without a manifest, retain root Studio
+commands. With one, resolve the selected `--unit` to `units/<unit>/studio/`;
+multiple units require explicit selection for unit operations. Invalid manifests
+fail closed. Candidate `production.plan.json` validation stays read-only and
+never activates or migrates a project.
+
+Do not replace the brief with a fresh HyperFrames interview or a second editable
+`BRIEF.md`. Unit `init`/`sync` generate a scoped adapter with context and source
+hashes. Reconcile existing user-authored or modified adapters explicitly.
+Shared canon remains production-scoped; unit stages, selections, provenance and
+renders bind their own context. Follow [version boundaries](production-versions.md)
+and [Studio commands](production-policy.md), not unscoped upstream examples.
+
+## Development And Post Routes
+
+| Intent | Route |
+| --- | --- |
+| General premise, treatment, outline or supplied-script scene list | `story-development`; source-preserving document leaf, with `tig-scene-engine` composed separately by the orchestrator for dramatic craft |
+| Story bible, mutable state or character-knowledge audit | `series-continuity`; evidence and proposals, never automatic canon changes |
+| Coverage, pacing or continuity review of an actual cut | `editorial-review`; `editorial.py export/check/reconcile` supplies current Studio snapshots without applying order |
+| Sound cues, mix decisions or listening evidence | `sound-post`; caller owns any authorized audio generation, mixing and rendering |
+| Locked-text multilingual SRT/WebVTT | `subtitle-sidecars`; the retained `microdrama-subtitles` command uses the same engine |
+| New language or market version of a delivered film, short or episode | `production-localize`; retain `microdrama-localize` for explicit micro-drama compatibility |
+| Explicit named master, proxy or language delivery binding | `deliverables.py validate/bind/lock/status`; resolve by ID and bind an explicit unit render record, never newest-project-wide output |
+
+Leaves do not invoke siblings. Localization is an explicit orchestrator with
+source-preservation and honest lip-sync/language QA. Neither subtitle command
+translates, transcribes or burns text into generated footage.
+Editorial export/reconcile writes evidence records only; Studio remains the
+editable authority and `sync` does not auto-apply their order. Only primary cut
+`main` is supported. Sound/localization record validation is not listening,
+native-speaker review or creative approval. No provider, publish or migration
+authorization follows from choosing one of these routes.
+
+## Tools and specialist capabilities
+
 | Intent | Route |
 | --- | --- |
 | Platform administration, catalog, pricing, billing, interactive generation | Available Ark CLI skills and current CLI help |
@@ -15,7 +81,7 @@
 | Animated exact graphic or timed overlay | HyperFrames for animation; HyperFrames or FFmpeg for final video composition |
 | Media sourcing or generation: images, icons, voiceover, music, SFX, captions | Generate through `ark-mcp` (Seedream, Seed Audio, `speech_to_text`); acquire authorized real assets per [Element identification](element-identification.md); finish, including grades and LUTs, with FFmpeg or HyperFrames. The upstream `media-use` skill is not installed; ignore its pointers inside vendored HyperFrames skills |
 | Media inspection | Native playback/listening when available and sufficient for the required criteria; supported provider analysis when coverage is insufficient or explicitly requested. Record temporal, dialogue and listening evidence and any unresolved checks; Studio stage gates still apply |
-| Production stage review | HyperFrames Studio project through `studio_project.py` (`sync`, `stage complete` with its `status` and `check`) at every stage; pre-Studio canvas projects with `showcase.json` keep the `showcase-html` canvas |
+| Production stage review | Selected legacy or unit HyperFrames Studio through `studio_project.py` (`sync`, `stage complete` with its `status` and `check`; `--unit` where applicable); pre-Studio canvas projects with `showcase.json` keep the `showcase-html` canvas |
 | Interactive editing, assembly and final render of a production | HyperFrames Studio; `studio_project.py render` is the only authority for final files and writes the hash-bound render record; post work made elsewhere is placed in Studio and rendered. Skills stay local; no `hyperframes skills` installs; `publish`, `cloud`, `lambda`, `cloudrun` and other account commands only on explicit request |
 | Ad-hoc media comparison, also an optional look at a Studio project's elements, audio or candidate takes (never a gate) | `showcase-html --quick`; `media-review` only for an explicitly requested OS player or unavailable browser |
 | Mermaid system/process diagram | `design-doc-mermaid` when available; cinematic blocking requests use `tig-blocking-map` |

@@ -1,6 +1,60 @@
 {
   "schema_version": 1,
   "skills": {
+    "story-development": {
+      "kind": "leaf",
+      "description": "Prepare premises, treatments, outlines and script-led scene lists. Use for narrative development or adapting supplied material. Do not use for generation or production orchestration.",
+      "readme_summary": "Prepare source-preserving premises, treatments, outlines and script-led scene lists without imposing a format formula.",
+      "dependencies": [],
+      "source_revision": "workspace",
+      "upstream_hash": null,
+      "overlay_notes": null
+    },
+    "series-continuity": {
+      "kind": "leaf",
+      "description": "Maintain story-bible, state and character-knowledge continuity records. Use for connected scenes or episodes and continuity audits. Do not use for generation or changing canon.",
+      "readme_summary": "Maintain shared story state and character-knowledge continuity with scoped, evidence-backed contradiction audits.",
+      "dependencies": [],
+      "source_revision": "workspace",
+      "upstream_hash": null,
+      "overlay_notes": null
+    },
+    "editorial-review": {
+      "kind": "leaf",
+      "description": "Review actual cuts for coverage, pacing and continuity with hash-bound notes. Use for assembly or editorial feedback. Do not use for generation, rendering or automatic timeline edits.",
+      "readme_summary": "Review actual cuts and explicit edit snapshots for coverage, pacing and continuity without applying Studio edits.",
+      "dependencies": [],
+      "source_revision": "workspace",
+      "upstream_hash": null,
+      "overlay_notes": null
+    },
+    "sound-post": {
+      "kind": "leaf",
+      "description": "Write cue sheets, mix decisions and listening evidence for an edit. Use for dialogue, ambience, score or sound-post planning and review. Do not use for audio generation or rendering.",
+      "readme_summary": "Write edit-bound sound cue sheets, mix decisions and honest listening evidence without generating or mixing media.",
+      "dependencies": [],
+      "source_revision": "workspace",
+      "upstream_hash": null,
+      "overlay_notes": null
+    },
+    "subtitle-sidecars": {
+      "kind": "leaf",
+      "description": "Write multilingual SRT and WebVTT from locked text and measured timing. Use for film, short or episode sidecars. Do not use for translation, transcription or burned-in captions.",
+      "readme_summary": "Write multilingual SRT/WebVTT from locked text and measured timing using the retained shared subtitle engine.",
+      "dependencies": [],
+      "source_revision": "workspace",
+      "upstream_hash": null,
+      "overlay_notes": null
+    },
+    "production-localize": {
+      "kind": "orchestrator",
+      "description": "Orchestrator for localizing delivered films, shorts and episodes with preserved sources. Use for new language or market versions. Do not use for first production or isolated subtitle files.",
+      "readme_summary": "Localize delivered films, shorts and episodes through explicit routes with source preservation and honest language and lip-sync QA.",
+      "dependencies": [],
+      "source_revision": "workspace",
+      "upstream_hash": null,
+      "overlay_notes": null
+    },
     "ark-mcp": {
       "kind": "tooling",
       "description": "Guide for using the Ark Seed Multimodal MCP server to generate or edit images, audio, video, and 3D models (including Seedance 2.5 and whitelist-only 2.5 Premium 4K, Hyper3D, Hitem3d, BytePlus VOD AI MediaKit enhancement, transcoding, subtitle burn-in/removal, and voice/background audio separation), understand images and videos through Seed 2.1, understand or reason about audio, transcribe speech to text, manage Advanced Creation Rights face and voice assets (virtual portraits, authorized real people, copyright IP referenced as asset://), reuse completed onboarding and diagnose privacy input rejections with BytePlus AK/SK, run background jobs, upload reference media, and fetch persisted artifacts. Long-running work is submitted through ark_job_capabilities, ark_job_submit, ark_job_get, and ark_job_cancel by default, because most clients cannot negotiate MCP task augmentation; clients that do negotiate it may call the tools with native task metadata instead.",
@@ -12,7 +66,7 @@
     },
     "brief-intake": {
       "kind": "leaf",
-      "description": "Shape a creative brief around the intended audience reaction, central visual idea, and practical constraints. Derive applicable directing choices with reasons; offer two distinct treatments during exploration or a compact proposal when direction is settled. Confirm only decisions that need a lock. When the brief cites real brand video ads or other footage for visual or motion inspiration, record that reference and hand off media acquisition plus seed_understand or template-factory \u2014 do not treat scripts or article text as the reference. Use for a new project or a scoped brief revision. Never generates media.",
+      "description": "Shape intent-led production briefs and directing proposals while preserving confirmed choices and source material. Use for a new brief or scoped revision. Never generates media or invokes other skills.",
       "readme_summary": "Shape intent-led briefs and treatments; hand off brand-ad / footage inspiration for watchable-media analysis; preserve confirmed decisions.",
       "dependencies": [],
       "source_revision": "workspace",
@@ -48,8 +102,8 @@
     },
     "film-production": {
       "kind": "orchestrator",
-      "description": "Orchestrate an AI-assisted film, commercial, music video, or narrative production across brief, development, canon, storyboard, audio, shot generation, review, assembly, and delivery while maintaining one HyperFrames Studio project through every stage. Use when a request spans multiple scenes or modalities, asks to create or continue a film project, requires coordination between deterministic HTML-entrypoint graphics, Seedream, Seed Audio, Seedance, HyperFrames, or FFmpeg, or needs the next safe production step rather than a single prompt. Do not use for an isolated image, audio, video, or editing request that one specialist skill can complete independently.",
-      "readme_summary": "Orchestrates multi-scene, multi-modality production one stage at a time while keeping one HyperFrames Studio project synchronized for review and handoff.",
+      "description": "Orchestrate cinematic shorts, films, episodic shows, commercials, music videos and custom narratives through inspected Studio delivery. Use for multi-scene or multi-modality production, including an unspecified format. Do not use for isolated prompts, assets or edits.",
+      "readme_summary": "General narrative orchestrator for cinematic shorts, films, shows and custom production, with scoped Studio edits and preserved legacy workflows.",
       "dependencies": [],
       "source_revision": "workspace",
       "upstream_hash": null,
@@ -66,8 +120,8 @@
     },
     "hyperframes": {
       "kind": "vendored",
-      "description": "Mandatory entry point: read this first for any request to make, create, edit, animate, or render a video, animation, or motion graphic, including a promo, explainer, captioned clip, title card, overlay, slideshow or interactive deck, Remotion port, or any HyperFrames HTML composition. Also use it to inspect, diagnose, validate, preview, publish, or batch-render an existing HyperFrames project. Inputs may be a website URL, GitHub PR, Figma design or URL, text or brief, existing footage, or music. It resumes project state, captures intent when applicable, selects and installs the owning workflow, and routes domain capabilities. HyperFrames is the default output framework unless the user explicitly chooses another framework for the deliverable or asks only to record a browser session.",
-      "readme_summary": "Mandatory HyperFrames entry point \u2014 resumes project state, selects the owning workflow (nothing is installed), and routes all video, animation, and motion-graphic capabilities.",
+      "description": "Orchestrating entry point for video, animation and HyperFrames requests. Use to create, edit, inspect or render video, routing narrative production to film-production and composition work to local domains without skill installation.",
+      "readme_summary": "HyperFrames entry point with local narrative routing to film-production, preserved micro-drama workflows, and composition/editing domains; no workflow installation.",
       "dependencies": [],
       "source_revision": "v0.8.141",
       "upstream_hash": "a277e9e46b3b5b8619639a353a4af3f46f8ae4f2e622ba802d5af730d135f410",
@@ -165,7 +219,7 @@
     },
     "microdrama-localize": {
       "kind": "orchestrator",
-      "description": "Orchestrator that localizes an already delivered micro-drama episode to another language or market without changing its picture, timing or locked canon. Sequences translation of the locked lines with each speaker pair's register preserved, subtitle sidecars, and one chosen route for the new spoken language: subtitles only, a line-scoped Seed Audio re-voice that keeps the source soundtrack, or a full regenerate, selected after the native dialogue-language check. Owns approval, registry reconciliation and QA gates: speech-to-text diff against the locked translation, an honest lip-sync verdict, and cultural review flagged unverified until a native speaker confirms. Use for adding a language or market to a delivered episode or series. Do not use for a first-time episode, a story rewrite, or a single subtitle file; use micro-drama or microdrama-subtitles.",
+      "description": "Orchestrator for localizing delivered micro-drama with preserved sources and honest lip-sync QA. Use for a new episode language or market version. Do not use for isolated subtitles or first production.",
       "readme_summary": "Orchestrates localizing a delivered episode to another language: register-preserving translation, subtitles, route choice (subtitles only, line-scoped re-voice, full regenerate), and approval, reconciliation and QA gates.",
       "dependencies": [],
       "source_revision": "workspace",
@@ -183,7 +237,7 @@
     },
     "microdrama-subtitles": {
       "kind": "leaf",
-      "description": "Generate per-language subtitle sidecars (SRT, optionally WebVTT) named <master-stem>.<language-code>.srt from a micro-drama episode's locked dialogue and measured timing. Subtitle text follows the locked words, never the heard words, and is never burned into generated video. Wraps by grapheme cluster so CJK, Indic, Thai-with-breaks and right-to-left scripts are not split inside words, enforces characters per line, reading speed and cue duration, splits overlong lines, resolves overlaps, and shifts times by the clip's start on the master timeline. Use for any episode, language or market, after dialogue QA and before or alongside delivery. This independent leaf writes sidecar files only; it does not translate, generate media, render the master or call a provider.",
+      "description": "Write multilingual SRT and WebVTT for micro-drama from locked text and measured timing. Use for episode subtitle sidecars. Do not use for translation, generation or burned-in captions.",
       "readme_summary": "Writes per-language SRT/WebVTT sidecars from locked dialogue and measured timing, with CJK and right-to-left safe wrapping, reading-speed and cue-length limits, and episode offsets.",
       "dependencies": [],
       "source_revision": "workspace",

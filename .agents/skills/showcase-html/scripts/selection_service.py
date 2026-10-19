@@ -2,11 +2,13 @@ import contextlib
 import datetime
 import fcntl
 import hashlib
+import importlib
 import io
 import json
 import os
 import re
 import subprocess
+import sys
 import tempfile
 import uuid
 from collections.abc import Mapping
@@ -35,6 +37,13 @@ STAGE_LOCKS = {
 }
 VIDEO_EXTENSIONS = {'.mp4', '.mov', '.mkv', '.webm'}
 AUDIO_EXTENSIONS = {'.wav', '.mp3', '.m4a', '.aac', '.flac'}
+
+
+def integrity_module():
+    scripts = str(Path(__file__).resolve().parents[3] / 'scripts')
+    if scripts not in sys.path:
+        sys.path.insert(0, scripts)
+    return importlib.import_module('validate_request')
 
 
 def sha256(path):
@@ -200,7 +209,7 @@ def read_selection(registry, root):
     return selections
 
 
-def revision(root, registry):
+def revision(root, registry, context=None):
     root = Path(root).resolve()
     hashes = {}
     for meta in registry.values():
@@ -213,14 +222,22 @@ def revision(root, registry):
     project = root / 'project.md'
     if project.exists():
         hashes['project.md'] = sha256(contained_path(root, 'project.md'))
+    if context is not None:
+        integrity = integrity_module()
+        current = integrity.operational_context(root, context=context)
+        if not current.legacy:
+            hashes['project.md'] = integrity.production_context_module().context_project_sha256(root)
+            hashes['context'] = current.identity()
+            if current.unit_brief is not None:
+                hashes[current.unit_brief.relative_to(root).as_posix()] = sha256(current.unit_brief)
     return hashlib.sha256(json.dumps(hashes, sort_keys=True).encode()).hexdigest()
 
 
-def stage_revision(root):
-    return revision(Path(root).resolve(), {})
+def stage_revision(root, context=None):
+    return revision(Path(root).resolve(), {}, context=context)
 
 
-def validate_selections(root, registry, selections):
+def validate_selections(root, registry, selections, context=None):
     if not isinstance(selections, dict) or not selections:
         raise SelectionError('selections must be a nonempty mapping of asset ids to filenames')
     prepared: dict[str, str] = {}
@@ -238,7 +255,7 @@ def validate_selections(root, registry, selections):
         prepared[meta['manifest']] = edited_manifest(current, meta, filename)
     for name in ('selection.json', 'selection.log', '.selection-journal.json', '.selection.lock'):
         contained_path(root, name, must_exist=False)
-    return {'registry': registry, 'selections': dict(selections), 'prepared': prepared, 'revision': revision(root, registry)}
+    return {'registry': registry, 'selections': dict(selections), 'prepared': prepared, 'revision': revision(root, registry, context=context)}
 
 
 def validated_review(root, review_path, review_sha256, subject_path, subject_sha256):
@@ -309,14 +326,22 @@ def validate_stage_media(root, lock_kind, subject_path, review, audio_required=F
         raise SelectionError(f'{lock_kind} lock requires a {missing} stream')
 
 
-def validated_decision(root, decision, subject_path, subject_sha256, mode, user_event=None, allow_chat=False):
+def validated_decision(root, decision, subject_path, subject_sha256, mode, user_event=None, allow_chat=False, context=None, allow_existing=False):
     if not isinstance(decision, dict):
         raise SelectionError('Expected a structured production decision')
     validate_schema(decision, 'production-decision.schema.json')
+    integrity = integrity_module()
+    findings = integrity.decision_findings(
+        root, decision, require_current_project=True, context=context,
+    )
+    if findings:
+        raise SelectionError('; '.join(finding.message for finding in findings))
     project_mode = read_project_mode(root)
+    if decision['schema_version'] == 2:
+        project_mode['project_sha256'] = integrity.production_context_module().context_project_sha256(root)
     if project_mode['project_sha256'] is None:
         raise SelectionError('A project.md file is required for production decisions')
-    if decision['project_sha256'] != project_mode['project_sha256'] or decision['approval_mode'] != mode:
+    if decision['project_sha256'] != project_mode['project_sha256'] or decision['approval_mode'] != mode or mode != project_mode['mode']:
         raise SelectionConflict('Project mode or project.md changed before decision')
     if decision['actor'] == 'agent' and mode != 'approve_for_me':
         raise SelectionError('Agent cannot approve in ask_for_approval mode')
@@ -341,9 +366,12 @@ def validated_decision(root, decision, subject_path, subject_sha256, mode, user_
         if sha256(contained_path(root, relative)) != expected_hash:
             raise SelectionError(f'Upstream artifact changed: {relative}')
     decision_path = f"decisions/{decision['decision_id']}.json"
-    if contained_path(root, decision_path, must_exist=False).exists():
-        raise SelectionConflict('Decision ID already exists')
     content = json.dumps(decision, indent=2, ensure_ascii=False, allow_nan=False) + '\n'
+    existing_path = contained_path(root, decision_path, must_exist=False)
+    if existing_path.exists():
+        if not allow_existing or json.loads(existing_path.read_text()) != decision:
+            raise SelectionConflict('Decision ID already exists')
+        content = existing_path.read_text()
     return decision_path, content, hashlib.sha256(content.encode('utf-8')).hexdigest()
 
 
@@ -402,7 +430,10 @@ def atomic_write(path, content):
 @contextlib.contextmanager
 def writer_lock(root):
     path = contained_path(root, '.selection.lock', must_exist=False)
-    with path.open('a') as stream:
+    if path.is_symlink():
+        raise SelectionError('Selection lock must not be a symlink')
+    descriptor = os.open(path, os.O_CREAT | os.O_RDWR | os.O_NOFOLLOW, 0o600)
+    with os.fdopen(descriptor, 'a') as stream:
         fcntl.flock(stream, fcntl.LOCK_EX)
         try:
             yield
@@ -490,15 +521,21 @@ def current_selection(metadata, meta):
     return selected, evidence
 
 
-def apply_selection_batch(root, batch, expected_revision, decisions=None, user_event=None, allow_chat=False):
+def apply_selection_batch(root, batch, expected_revision, decisions=None, user_event=None, allow_chat=False, context=None):
     registry = batch['registry']
-    if expected_revision != revision(root, registry):
+    integrity = integrity_module()
+    scoped = integrity.production_context_module().has_production_manifest(root)
+    if scoped:
+        integrity.operational_context(root, context=context)
+        if decisions is None:
+            raise SelectionError('Scoped selections require explicit decision evidence')
+    if expected_revision != revision(root, registry, context=context):
         raise SelectionConflict('Stale selection revision; reload the page or preview current manifests')
     with writer_lock(root):
         recover_selection(root)
-        if expected_revision != revision(root, registry):
+        if expected_revision != revision(root, registry, context=context):
             raise SelectionConflict('Stale selection revision; reload before saving')
-        batch = validate_selections(root, registry, batch['selections'])
+        batch = validate_selections(root, registry, batch['selections'], context=context)
         mode = read_project_mode(root)
         showcase_path = root / 'showcase.json'
         showcase = json.loads(contained_path(root, 'showcase.json').read_text()) if showcase_path.exists() else None
@@ -508,7 +545,13 @@ def apply_selection_batch(root, batch, expected_revision, decisions=None, user_e
             raise SelectionError('Production selections require decision evidence or a local UI event')
         if decisions is not None and (not isinstance(decisions, dict) or set(decisions) != set(batch['selections'])):
             raise SelectionError('Provide one decision for every selected asset')
-        selected = read_selection(registry, root)
+        selected = {}
+        if scoped and (root / 'selection.json').exists():
+            previous = json.loads(contained_path(root, 'selection.json').read_text())
+            if not isinstance(previous, dict) or not isinstance(previous.get('selections'), dict):
+                raise SelectionError('Invalid derived selection state; preserve and reconcile it')
+            selected.update(previous['selections'])
+        selected.update(read_selection(registry, root))
         selected.update(batch['selections'])
         targets = dict(batch['prepared'])
         decision_ids = {}
@@ -526,7 +569,13 @@ def apply_selection_batch(root, batch, expected_revision, decisions=None, user_e
             previous, previous_evidence = current_selection(metadata, meta)
             if decision.get('actor') == 'agent' and previous is not None and (not isinstance(previous_evidence, Mapping) or previous_evidence.get('actor') != 'agent'):
                 raise SelectionError(f'{asset_id}: an agent cannot replace or adopt an existing user selection')
-            decision_path, decision_content, decision_sha256 = validated_decision(root, decision, source, subject_sha256, mode['mode'], user_event, allow_chat)
+            scope_findings = integrity.record_scope_findings(
+                root, {**decision, 'subject_path': meta['manifest']},
+                context=context, decision=True,
+            )
+            if scope_findings:
+                raise SelectionError('; '.join(finding.message for finding in scope_findings))
+            decision_path, decision_content, decision_sha256 = validated_decision(root, decision, source, subject_sha256, mode['mode'], user_event, allow_chat, context=context)
             if decision_path in targets:
                 raise SelectionError('Duplicate decision ID in selection batch')
             targets[decision_path] = decision_content
@@ -544,8 +593,10 @@ def apply_selection_batch(root, batch, expected_revision, decisions=None, user_e
         audit = audit_path.read_text() if audit_path.exists() else ''
         record = {'ts': datetime.datetime.now(datetime.UTC).isoformat(), 'event': 'save', 'applied': list(batch['selections']), 'selections': batch['selections'], 'decisions': decision_ids, 'total': len(batch['selections']), 'errors': []}
         targets['selection.log'] = audit + json.dumps(record, ensure_ascii=False) + '\n'
+        if scoped and expected_revision != revision(root, registry, context=context):
+            raise SelectionConflict('Scoped selection inputs changed before commit')
         commit_targets(root, targets)
-        return {'ok': True, 'applied': list(batch['selections']), 'decisions': decision_ids, 'errors': [], 'revision': revision(root, registry), 'selections': read_selection(registry, root)}
+        return {'ok': True, 'applied': list(batch['selections']), 'decisions': decision_ids, 'errors': [], 'revision': revision(root, registry, context=context), 'selections': read_selection(registry, root)}
 
 
 def record_stage_decision(root, decision, expected_revision=None, user_event=None):

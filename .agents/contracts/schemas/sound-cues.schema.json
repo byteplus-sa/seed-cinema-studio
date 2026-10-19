@@ -1,0 +1,35 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "urn:seed:sound-cues",
+  "title": "Sound cue decisions and supplied listening evidence",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["schema_version", "unit_id", "cut_id", "duration_s", "edit", "cues", "listening"],
+  "properties": {
+    "schema_version": {"const": 1},
+    "unit_id": {"$ref": "urn:seed:post-common#/$defs/id"},
+    "cut_id": {"const": "main"},
+    "duration_s": {"$ref": "urn:seed:post-common#/$defs/duration"},
+    "edit": {"$ref": "urn:seed:post-common#/$defs/asset"},
+    "listening": {"$ref": "urn:seed:post-common#/$defs/review"},
+    "mix_notes": {"$ref": "urn:seed:post-common#/$defs/text"},
+    "cues": {
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["id", "kind", "start_s", "end_s", "intent", "gain_db"],
+        "properties": {
+          "id": {"$ref": "urn:seed:post-common#/$defs/id"},
+          "kind": {"enum": ["dialogue", "ambience", "music", "sfx", "silence"]},
+          "start_s": {"$ref": "urn:seed:post-common#/$defs/time"},
+          "end_s": {"$ref": "urn:seed:post-common#/$defs/duration"},
+          "intent": {"$ref": "urn:seed:post-common#/$defs/text"},
+          "gain_db": {"type": "number"},
+          "source": {"$ref": "urn:seed:post-common#/$defs/asset"}
+        }
+      }
+    }
+  }
+}

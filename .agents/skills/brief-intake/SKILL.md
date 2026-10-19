@@ -1,15 +1,6 @@
 ---
 name: brief-intake
-description: >
-  Shape a creative brief around the intended audience reaction, central visual
-  idea, and practical constraints. Derive applicable directing choices with
-  reasons; offer two distinct treatments during exploration or a compact
-  proposal when direction is settled. Confirm only decisions that need a lock.
-  When the brief cites real brand video ads or other footage for visual or motion
-  inspiration, record that reference and hand off media acquisition plus
-  seed_understand or template-factory — do not treat scripts or article text as
-  the reference. Use for a new project or a scoped brief revision. Never
-  generates media.
+description: Shape intent-led production briefs and directing proposals while preserving confirmed choices and source material. Use for a new brief or scoped revision. Never generates media or invokes other skills.
 ---
 
 # Brief Intake
@@ -17,6 +8,22 @@ description: >
 Translate intent into a usable creative direction. Genre is context, not a
 lookup key that selects a look. Preserve the user's existing creative choices
 and authorization; distinguish recommendations from confirmed decisions.
+
+Format, genre, medium, audience, language and delivery are independent choices.
+Use the shared [production brief](../../contracts/production-brief.md) and
+[production profiles](../../catalog/production-profiles.json) contracts.
+Keep `project.md` canonical; a
+HyperFrames `BRIEF.md` adapter is not a second editable brief. Do not overwrite
+an existing user-authored HyperFrames brief; flag conflicts for reconciliation.
+Unit-aware adapters remain deferred until unit support is enabled.
+
+Only an explicit micro-drama format or an already selected micro-drama workflow
+uses its episode defaults. Explicit format wins over a workflow hint, subject to
+existing locks. Without that selection, an unspecified format stays general. Preserve supplied
+scripts, quiet held shots, wordless scenes and resolved endings; do not add
+Hook/Turn/Cliffhanger, a duration, aspect or to-be-continued card by inference.
+Record disclosed profile defaults separately from confirmed choices and preserve
+legacy `market` and `episode` fields without automatically rewriting them.
 
 ## When to use
 
@@ -34,7 +41,9 @@ Read the supplied brief and existing confirmed decisions first. Extract:
 | Intended reaction | What should the viewer feel, understand, remember, or do? |
 | Central visual idea | What specific event, contrast, image, or recurring action carries that reaction? |
 | Story/product truth | Which supplied facts, characters, relationships, and claims must remain accurate? |
-| Target market (optional) | Country or region, dialogue language and variety, subtitle languages, platform and audience; user-defined and free-form, never assumed (see the `micro-drama` market card) |
+| Target market (optional) | Country or region, dialogue language and variety, subtitle languages, platform and audience; user-defined and free-form, never assumed (see the production brief contract) |
+| Production format | Explicit format or selected workflow; otherwise general narrative, not assumed micro-drama |
+| Medium and delivery | Preserve medium, duration, aspect, resolution and frame rate independently; provider capabilities do not follow from canvas dimensions |
 | Constraints | Runtime, format, available references, budget posture, delivery needs, forbidden changes |
 | Tone/genre references | What useful quality is being borrowed, and which convention should be avoided? |
 | Confirmed decisions | Which axes and identities are already accepted? |

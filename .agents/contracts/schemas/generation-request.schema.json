@@ -1,6 +1,57 @@
 {
   "$schema": "https://json-schema.org/draft/2020-12/schema",
   "$defs": {
+    "productionContext": {
+      "type": "object",
+      "required": ["context_version", "kind", "effective_sha256"],
+      "properties": {
+        "context_version": {"type": "integer", "const": 1},
+        "kind": {"enum": ["production", "unit"]},
+        "unit_id": {"type": "string", "pattern": "^[a-z0-9]+(?:-[a-z0-9]+)*$(?![\\s\\S])"},
+        "effective_sha256": {"type": "string", "pattern": "^[0-9a-f]{64}$(?![\\s\\S])"}
+      },
+      "additionalProperties": false,
+      "allOf": [{
+        "if": {"properties": {"kind": {"const": "unit"}}, "required": ["kind"]},
+        "then": {"required": ["unit_id"]},
+        "else": {"not": {"required": ["unit_id"]}}
+      }]
+    },
+    "requestV3": {
+      "description": "Scoped request. Operational readers recompute context and use the normalized shared project digest; legacy hash algorithms remain unchanged.",
+      "type": "object",
+      "required": [
+        "schema_version", "operation_id", "asset_id", "transport", "model",
+        "operation", "prompt_file", "prompt_sha256", "request_sha256",
+        "references", "params", "submission_status", "provider_task_id",
+        "provider_status", "review_status", "cost", "approval_mode",
+        "project_sha256", "context"
+      ],
+      "properties": {
+        "schema_version": {"const": 3},
+        "context": {"$ref": "#/$defs/productionContext"},
+        "operation_id": {"$ref": "#/$defs/requestV2/properties/operation_id"},
+        "asset_id": {"$ref": "#/$defs/requestV2/properties/asset_id"},
+        "transport": {"$ref": "#/$defs/requestV2/properties/transport"},
+        "model": {"$ref": "#/$defs/requestV2/properties/model"},
+        "operation": {"$ref": "#/$defs/requestV2/properties/operation"},
+        "prompt_file": {"$ref": "#/$defs/requestV2/properties/prompt_file"},
+        "prompt_sha256": {"$ref": "#/$defs/requestV2/properties/prompt_sha256"},
+        "request_sha256": {"$ref": "#/$defs/requestV2/properties/request_sha256"},
+        "references": {"$ref": "#/$defs/requestV2/properties/references"},
+        "params": {"$ref": "#/$defs/requestV2/properties/params"},
+        "submission_status": {"$ref": "#/$defs/requestV2/properties/submission_status"},
+        "provider_task_id": {"$ref": "#/$defs/requestV2/properties/provider_task_id"},
+        "provider_status": {"$ref": "#/$defs/requestV2/properties/provider_status"},
+        "review_status": {"$ref": "#/$defs/requestV2/properties/review_status"},
+        "cost": {"$ref": "#/$defs/requestV2/properties/cost"},
+        "extensions": {"$ref": "#/$defs/requestV2/properties/extensions"},
+        "approval_mode": {"$ref": "#/$defs/requestV2/properties/approval_mode"},
+        "project_sha256": {"$ref": "#/$defs/requestV2/properties/project_sha256"}
+      },
+      "additionalProperties": false,
+      "allOf": [{"$ref": "#/$defs/requestV2/allOf/0"}]
+    },
     "requestV1": {
       "type": "object",
       "required": [
@@ -549,6 +600,9 @@
     },
     {
       "$ref": "#/$defs/requestV2"
+    },
+    {
+      "$ref": "#/$defs/requestV3"
     }
   ]
 }

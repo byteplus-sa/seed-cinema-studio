@@ -2,23 +2,28 @@ from __future__ import annotations
 
 import argparse
 import hashlib
+import importlib
 import json
 import re
+import sys
 from dataclasses import asdict, dataclass
 from pathlib import Path
+from types import ModuleType
 from typing import Any
 
 from jsonschema import Draft202012Validator, FormatChecker
 from jsonschema.exceptions import SchemaError
+from jsonschema.protocols import Validator
 from ruamel.yaml import YAML
 from ruamel.yaml.error import YAMLError
 
 SCHEMA_ROOT = Path(__file__).resolve().parents[1] / "contracts/schemas"
-BOARD_DIRECTORY = re.compile(r"(?:^|/)scenes/scene-\d{2}/board/", re.IGNORECASE)
+BOARD_DIRECTORY = re.compile(r"(?:^|/)scenes/scene-\d{2,}/board/", re.IGNORECASE)
 BOARD_FILE = re.compile(
-    r"^s\d{2}_(?:"
+    r"^s\d{2,}_(?:"
     r"sh\d{3}_p\d{3}_t\d{2}_v\d{2}\.(?:png|jpe?g|webp)"
     r"|sh\d{3}_board_t\d{2}_v\d{2}\.(?:png|jpe?g|webp)"
+    r"|kf\d{2}_board(?:_t\d{2})?_v\d{2}\.(?:png|jpe?g|webp)"
     r"|sheet_pg\d{2}_v\d{2}\.[a-z0-9]+"
     r"|overview_v\d{2}\.[a-z0-9]+"
     r"|animatic_v\d{2}\.[a-z0-9]+"
@@ -73,18 +78,150 @@ def contained_path(root: Path, value: str) -> Path:
     return path
 
 
-def schema_findings(value: Any, name: str) -> list[Finding]:
+def schema_findings(
+    value: Any, name: str, *, candidate: bool = False
+) -> list[Finding]:
     schema = json.loads((SCHEMA_ROOT / name).read_text())
+    validator: Validator = Draft202012Validator(schema, format_checker=FormatChecker())
     if name == "generation-request.schema.json" and isinstance(value, dict):
         version = value.get("schema_version")
-        if version in (1, 2):
-            schema = schema["$defs"][f"requestV{version}"]
+        if version in (1, 2, 3):
+            validator = validator.evolve(schema={"$ref": f"#/$defs/requestV{version}"})
+    if (
+        name == "production-decision.schema.json" and isinstance(value, dict)
+        and value.get("schema_version") == 2
+    ):
+        validator = validator.evolve(schema={"$ref": "#/$defs/decisionV2"})
     return [
         Finding("schema.valid", error.message, ".".join(map(str, error.path)))
-        for error in Draft202012Validator(
-            schema, format_checker=FormatChecker()
-        ).iter_errors(value)
+        for error in validator.iter_errors(value)
     ]
+
+
+def production_context_module() -> ModuleType:
+    scripts = str(Path(__file__).resolve().parent)
+    if scripts not in sys.path:
+        sys.path.insert(0, scripts)
+    return importlib.import_module("production_context")
+
+
+def operational_context(
+    root: Path, *, unit_id: str | None = None, production_scope: bool = False,
+    context: Any = None,
+) -> Any:
+    module = production_context_module()
+    if production_scope and unit_id is not None:
+        raise ValueError("Production scope cannot select a unit")
+    if context is not None:
+        if getattr(context, "_candidate_manifest", None) is not None:
+            raise ValueError("Candidate contexts cannot authorize operational work")
+        if getattr(context, "legacy", False):
+            if module.has_production_manifest(root):
+                raise ValueError("Legacy context cannot authorize scoped production")
+            return module.resolve_context(root)
+        identity = context if isinstance(context, dict) else context.identity()
+        if schema_findings(identity, "production-context.schema.json"):
+            raise ValueError("Invalid typed production context")
+        module.validate_record_context(
+            root, identity,
+            unit_id=unit_id if unit_id is not None else identity.get("unit_id"),
+            kind="production" if production_scope else identity["kind"],
+        )
+        if identity["kind"] == "production":
+            return module.resolve_production_context(root)
+        return module.resolve_context(root, identity["unit_id"])
+    return (
+        module.resolve_production_context(root) if production_scope
+        else module.resolve_context(root, unit_id)
+    )
+
+
+def record_scope_findings(
+    root: Path, record: dict[str, Any], *, context: Any = None,
+    unit_id: str | None = None, production_scope: bool = False,
+    decision: bool = False,
+) -> list[Finding]:
+    module = production_context_module()
+    scoped = record.get("schema_version") == (2 if decision else 3)
+    if not module.has_production_manifest(root):
+        if scoped or "context" in record or unit_id is not None or production_scope:
+            return [Finding("production.context_hash", "Scoped work requires an active production manifest")]
+        return []
+    try:
+        current = operational_context(
+            root, unit_id=unit_id, production_scope=production_scope, context=context,
+        )
+        if not scoped:
+            raise ValueError("Unscoped history cannot be reinterpreted on an active unit layout")
+        module.validate_record_context(
+            root, record.get("context"), unit_id=current.unit_id,
+            kind=current.identity()["kind"],
+        )
+        paths = (
+            [record["subject_path"]] if decision else
+            [record["prompt_file"], record.get("extensions", {}).get("expected_output")]
+        )
+        for relative in paths:
+            if relative is None:
+                continue
+            path = Path(relative)
+            resolved = (root / path).resolve()
+            if path.is_absolute() or ".." in path.parts or not resolved.is_relative_to(root.resolve()):
+                raise ValueError("Scoped artifact path escapes production")
+            parts = resolved.relative_to(root.resolve()).parts
+            kind = current.identity()["kind"]
+            if kind == "production":
+                if parts and parts[0] in ("scenes", "units", "studio"):
+                    raise ValueError("Production canon cannot own unit artifacts")
+                if decision and record["decision_type"] != "variant_selection":
+                    raise ValueError("Production context authorizes canon, not unit stage locks")
+            elif len(parts) > 1 and (
+                (parts[0] == "scenes" and parts[1] not in current.scene_ids)
+                or (parts[0] == "units" and parts[1] != current.unit_id)
+            ):
+                raise ValueError("Artifact belongs to a foreign unit")
+            elif parts and parts[0] == "elements":
+                raise ValueError("Shared canon requires explicit production scope")
+        if decision and current.unit_brief is not None:
+            brief = current.unit_brief.relative_to(root.resolve()).as_posix()
+            if record["upstream_sha256"].get(brief) != hashlib.sha256(current.unit_brief.read_bytes()).hexdigest():
+                raise ValueError("Unit decision requires its current unit brief upstream hash")
+        if decision and (root / "task_ids.json").exists():
+            registry = json.loads(contained_path(root, "task_ids.json").read_text())
+            if schema_findings(registry, "task-registry.schema.json"):
+                raise ValueError("Cannot verify selection against an invalid task registry")
+            subject = (root / record["subject_path"]).resolve()
+            for task in registry["tasks"]:
+                output = task.get("extensions", {}).get("expected_output")
+                if (
+                    isinstance(output, str) and (root / output).resolve() == subject
+                    and (task.get("schema_version") != 3 or task.get("context") != record["context"])
+                ):
+                    raise ValueError("Selection cannot reinterpret a foreign or unscoped operation")
+    except (ValueError, TypeError, OSError, RuntimeError, YAMLError) as error:
+        return [Finding("production.context_hash", str(error), "context")]
+    return []
+
+
+def candidate_scope_findings(
+    root: Path, context: Any, *, manifest: str | Path, unit_id: str | None = None
+) -> list[Finding]:
+    findings = schema_findings(context, "production-context.schema.json")
+    if findings:
+        return findings
+    if context["kind"] != "unit":
+        return [Finding(
+            "production.unsupported_scope",
+            "unsupported production scope: shared canon fingerprint resolution is not implemented",
+            "context",
+        )]
+    try:
+        current = production_context_module().resolve_candidate_context(root, manifest, unit_id).identity()
+        if context != current:
+            return [Finding("production.context_hash", "Candidate scope is foreign or stale", "context")]
+    except (ValueError, TypeError, OSError, RuntimeError, YAMLError) as error:
+        return [Finding("production.context_hash", str(error), "context")]
+    return []
 
 
 def compute_request_hash(
@@ -96,7 +233,18 @@ def compute_request_hash(
     *,
     approval_mode: str | None = None,
     project_sha256: str | None = None,
+    schema_version: int | None = None,
+    context: dict[str, Any] | None = None,
 ) -> str:
+    if schema_version is not None and schema_version not in (1, 2, 3):
+        raise ValueError("Unsupported request hash version")
+    if context is not None and schema_version != 3:
+        raise ValueError("Typed context requires explicit request hash version 3")
+    if schema_version == 3:
+        if schema_findings(context, "production-context.schema.json"):
+            raise ValueError("Request hash version 3 requires valid typed context")
+        if approval_mode is None or project_sha256 is None:
+            raise ValueError("Request hash version 3 requires approval mode and project hash")
     body: dict[str, Any] = {
         "prompt_sha256": hashlib.sha256(prompt_bytes).hexdigest(),
         "model": model,
@@ -117,6 +265,8 @@ def compute_request_hash(
             }
             for ref in references
         ]
+    if schema_version == 3:
+        body["context"] = context
     return hashlib.sha256(
         json.dumps(
             body,
@@ -195,11 +345,15 @@ def project_mode_snapshot(root: Path) -> tuple[str, str]:
     return mode, hashlib.sha256(content).hexdigest()
 
 
-def project_mode_findings(root: Path, request: dict[str, Any]) -> list[Finding]:
-    if request["schema_version"] != 2:
+def project_mode_findings(
+    root: Path, request: dict[str, Any], *, candidate: bool = False
+) -> list[Finding]:
+    if request["schema_version"] not in (2, 3):
         return []
     try:
         mode, digest = project_mode_snapshot(root)
+        if request["schema_version"] == 3 and not candidate:
+            digest = production_context_module().context_project_sha256(root)
     except (ValueError, TypeError, OSError, UnicodeError, YAMLError) as error:
         return [Finding("approval.current_mode", str(error), "project.md")]
     if request["approval_mode"] != mode or request["project_sha256"] != digest:
@@ -300,7 +454,30 @@ def candidate_review_findings(
     return findings
 
 
-def studio_project(root: Path) -> bool:
+def studio_project(root: Path, context: Any = None) -> bool:
+    try:
+        module = production_context_module()
+        if module.has_production_manifest(root):
+            current = operational_context(root, context=context)
+            if current.identity()["kind"] == "production":
+                data = json.loads(contained_path(root, "production.json").read_text())
+                return any(
+                    studio_project(root, module.resolve_context(root, unit["id"]))
+                    for unit in data["units"]
+                )
+            studio = current.studio_root
+            initialized = (
+                studio.is_dir() and not studio.is_symlink()
+                and (studio / "index.html").is_file()
+                and (studio / "hyperframes.json").is_file()
+            )
+            if not initialized:
+                return False
+            for name in ("index.html", "hyperframes.json"):
+                contained_path(root, (studio / name).relative_to(root.resolve()).as_posix())
+            return isinstance(json.loads((studio / "hyperframes.json").read_text()), dict)
+    except (ValueError, TypeError, OSError, RuntimeError):
+        return False
     studio = root / "studio"
     canvas = root / "showcase.json"
     return (
@@ -312,13 +489,24 @@ def studio_project(root: Path) -> bool:
 
 
 def decision_findings(
-    root: Path, decision: Any, *, require_current_project: bool = False
+    root: Path, decision: Any, *, require_current_project: bool = False,
+    context: Any = None, unit_id: str | None = None, production_scope: bool = False,
 ) -> list[Finding]:
     findings = schema_findings(decision, "production-decision.schema.json")
     if findings:
         return findings
+    scope = record_scope_findings(
+        root, decision, context=context, unit_id=unit_id,
+        production_scope=production_scope, decision=True,
+    )
+    findings.extend(scope)
+    if scope:
+        return findings
+    effective_context = decision.get("context") if decision["schema_version"] == 2 else None
+    if effective_context and not studio_project(root, effective_context):
+        findings.append(Finding("approval.authorization", "Scoped decisions require an initialized valid unit Studio"))
     authorization = decision.get("authorization") or {}
-    if authorization.get("source") == "chat" and not studio_project(root):
+    if authorization.get("source") == "chat" and not studio_project(root, effective_context):
         findings.append(
             Finding(
                 "approval.authorization",
@@ -373,12 +561,12 @@ def decision_findings(
                 )
         except (ValueError, OSError) as error:
             findings.append(Finding("approval.upstream_hash", str(error), path))
-    if require_current_project:
+    if require_current_project or decision["schema_version"] == 2:
         findings.extend(
             project_mode_findings(
                 root,
                 {
-                    "schema_version": 2,
+                    "schema_version": 3 if decision["schema_version"] == 2 else 2,
                     "approval_mode": decision["approval_mode"],
                     "project_sha256": decision["project_sha256"],
                 },
@@ -388,7 +576,7 @@ def decision_findings(
 
 
 def approval_decision_findings(
-    root: Path, ref: dict[str, Any], target: Path
+    root: Path, ref: dict[str, Any], target: Path, *, context: Any = None
 ) -> list[Finding]:
     evidence = ref["approval_evidence"]
     path = ref["path"]
@@ -466,7 +654,13 @@ def approval_decision_findings(
             )
             return findings
         decision = json.loads(content)
-        findings.extend(decision_findings(root, decision))
+        decision_context = context
+        if (
+            isinstance(decision, dict) and isinstance(decision.get("context"), dict)
+            and decision["context"].get("kind") == "production"
+        ):
+            decision_context = production_context_module().resolve_production_context(root)
+        findings.extend(decision_findings(root, decision, context=decision_context))
         if schema_findings(decision, "production-decision.schema.json"):
             return findings
         if (
@@ -590,7 +784,10 @@ def is_draft_promotion(params: Any) -> bool:
 def draft_selected(
     root: Path, draft: dict[str, Any], *, require_decision: bool = False
 ) -> bool:
-    if draft["review_status"] == "approved" and not require_decision:
+    scoped = draft.get("schema_version") == 3
+    if scoped and record_scope_findings(root, draft, context=draft.get("context")):
+        return False
+    if draft["review_status"] == "approved" and not require_decision and not scoped:
         project = root / "project.md"
         project_text = (
             contained_path(root, "project.md").read_text()
@@ -612,7 +809,9 @@ def draft_selected(
             isinstance(decision, dict)
             and decision.get("decision_type") == "variant_selection"
             and decision.get("subject_path") == output
-            and not decision_findings(root, decision, require_current_project=True)
+            and not decision_findings(
+                root, decision, require_current_project=True, context=draft.get("context"),
+            )
         ):
             return True
     return False
@@ -630,6 +829,13 @@ def draft_promotion_findings(root: Path, request: dict[str, Any]) -> list[Findin
         )
         if draft is None:
             message = f"draft_task_id {task_id} names no registered operation"
+        elif draft.get("context") != request.get("context"):
+            message = "Draft and promotion must have the same effective production context"
+        elif request.get("schema_version") == 3 and (
+            record_scope_findings(root, request, context=request.get("context"))
+            or record_scope_findings(root, draft, context=request.get("context"))
+        ):
+            message = "Draft production context is stale or invalid"
         elif not (
             SEEDANCE_25_MODEL.search(draft["model"].lower())
             and draft["model"] == request["model"]
@@ -645,12 +851,17 @@ def draft_promotion_findings(root: Path, request: dict[str, Any]) -> list[Findin
         elif not draft_selected(
             root,
             draft,
-            require_decision=request["schema_version"] == 2 or draft["schema_version"] == 2,
+            require_decision=request["schema_version"] in (2, 3) or draft["schema_version"] in (2, 3),
         ):
             message = f"{draft['operation_id']} has no approved review or selection"
         elif draft["prompt_sha256"] != request["prompt_sha256"]:
             message = f"Prompt differs from the prompt of {draft['operation_id']}"
+        elif request["schema_version"] == 3 and draft["transport"] != request["transport"]:
+            message = "Native promotion must use the draft transport"
         else:
+            if request["schema_version"] == 3:
+                ledger = importlib.import_module("draft_ledger")
+                ledger.require_promotable_draft(root, draft, request["operation_id"])
             return []
     except (ValueError, TypeError, OSError, UnicodeError, YAMLError) as error:
         message = f"Cannot verify the draft: {error}"
@@ -666,6 +877,7 @@ def reference_findings(
     model: str = "",
     allow_board_references: bool = False,
     inherits_inputs: bool = False,
+    context: Any = None,
 ) -> list[Finding]:
     findings: list[Finding] = []
     guard_boards = board_guard_applies(model, allow_board_references)
@@ -699,8 +911,11 @@ def reference_findings(
             findings.append(
                 Finding("references.current_hashes", "Reference content changed", path)
             )
-        if schema_version == 2:
-            findings.extend(approval_decision_findings(root, ref, target))
+        if schema_version in (2, 3):
+            if schema_version == 3 and ref["approval_evidence"].get("evidence_type") == "legacy":
+                findings.append(Finding("production.context_hash", "Unscoped reference approval cannot authorize scoped work", path))
+            else:
+                findings.extend(approval_decision_findings(root, ref, target, context=context))
         elif not approval_matches(root, ref, target):
             findings.append(
                 Finding(
@@ -822,9 +1037,7 @@ def capability_findings(request: dict[str, Any], evidence: Any) -> list[Finding]
     return findings
 
 
-def prepared_evidence_findings(
-    project_root: Path, request: Any, allow_board_references: bool = False
-) -> list[Finding]:
+def request_hash_findings(project_root: Path, request: Any) -> list[Finding]:
     findings = schema_findings(request, "generation-request.schema.json")
     if findings:
         return findings
@@ -832,7 +1045,7 @@ def prepared_evidence_findings(
     try:
         prompt_path = contained_path(root, request["prompt_file"])
         prompt_bytes = prompt_path.read_bytes()
-        prompt_text = prompt_bytes.decode("utf-8")
+        prompt_bytes.decode("utf-8")
     except (ValueError, OSError, UnicodeError) as error:
         return [Finding("path.containment", str(error), request["prompt_file"])]
     if hashlib.sha256(prompt_bytes).hexdigest() != request["prompt_sha256"]:
@@ -852,6 +1065,8 @@ def prepared_evidence_findings(
             request["params"],
             approval_mode=request.get("approval_mode"),
             project_sha256=request.get("project_sha256"),
+            schema_version=request["schema_version"],
+            context=request.get("context"),
         )
         if digest != request["request_sha256"]:
             findings.append(
@@ -862,6 +1077,49 @@ def prepared_evidence_findings(
             )
     except (ValueError, TypeError) as error:
         findings.append(Finding("request.current_hash", str(error)))
+    return findings
+
+
+def candidate_request_findings(
+    project_root: Path, request: Any, *, manifest: str | Path, unit_id: str | None = None
+) -> list[Finding]:
+    findings = request_hash_findings(project_root, request)
+    if schema_findings(request, "generation-request.schema.json"):
+        return findings
+    if request["schema_version"] != 3:
+        return findings + [Finding("production.context_hash", "Candidate request must be version 3")]
+    findings.extend(candidate_scope_findings(
+        project_root, request["context"], manifest=manifest, unit_id=unit_id,
+    ))
+    findings.extend(project_mode_findings(project_root, request, candidate=True))
+    return findings
+
+
+def prepared_evidence_findings(
+    project_root: Path, request: Any, allow_board_references: bool = False, *,
+    unit_id: str | None = None, production_scope: bool = False, context: Any = None,
+) -> list[Finding]:
+    root = Path(project_root).resolve()
+    findings = request_hash_findings(root, request)
+    if schema_findings(request, "generation-request.schema.json"):
+        return findings
+    scope = record_scope_findings(
+        root, request, context=context, unit_id=unit_id, production_scope=production_scope,
+    )
+    if scope:
+        return findings + scope
+    try:
+        prompt_bytes = contained_path(root, request["prompt_file"]).read_bytes()
+        prompt_text = prompt_bytes.decode("utf-8")
+    except (ValueError, OSError, UnicodeError) as error:
+        return findings + [Finding("path.containment", str(error), request["prompt_file"])]
+    if (
+        hashlib.sha256(prompt_bytes).hexdigest() != request["prompt_sha256"]
+        and not any(finding.rule_id == "prompt.current_hash" for finding in findings)
+    ):
+        findings.append(Finding(
+            "prompt.current_hash", "Prompt snapshot content changed", request["prompt_file"],
+        ))
     promotion = is_draft_promotion(request["params"])
     promotion_findings = draft_promotion_findings(root, request) if promotion else []
     findings.extend(
@@ -873,6 +1131,7 @@ def prepared_evidence_findings(
             model=request["model"],
             allow_board_references=allow_board_references,
             inherits_inputs=promotion and not promotion_findings,
+            context=request.get("context"),
         )
     )
     findings.extend(promotion_findings)
@@ -895,8 +1154,12 @@ def validate_request(
     request: Any,
     capability_evidence: Any,
     allow_board_references: bool = False,
+    *, unit_id: str | None = None, production_scope: bool = False, context: Any = None,
 ) -> list[Finding]:
-    findings = prepared_evidence_findings(project_root, request, allow_board_references)
+    findings = prepared_evidence_findings(
+        project_root, request, allow_board_references, unit_id=unit_id,
+        production_scope=production_scope, context=context,
+    )
     if schema_findings(request, "generation-request.schema.json"):
         return findings
     findings.extend(capability_findings(request, capability_evidence))
@@ -980,12 +1243,16 @@ def main() -> int:
     parser.add_argument("--request", type=Path, required=True)
     parser.add_argument("--capabilities", type=Path, required=True)
     parser.add_argument("--review", type=Path)
+    scope = parser.add_mutually_exclusive_group()
+    scope.add_argument("--unit")
+    scope.add_argument("--production-scope", action="store_true")
     parser.add_argument("--required-rule", action="append", default=[])
     args = parser.parse_args()
     try:
         request = json.loads(args.request.read_text())
         findings = validate_request(
-            args.project, request, json.loads(args.capabilities.read_text())
+            args.project, request, json.loads(args.capabilities.read_text()),
+            unit_id=args.unit, production_scope=args.production_scope,
         )
         if args.review:
             findings.extend(

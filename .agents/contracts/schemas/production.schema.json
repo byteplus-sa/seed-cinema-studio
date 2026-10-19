@@ -1,0 +1,57 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "Production unit membership and deliverable index",
+  "description": "Version 1 membership for an active production.json or an explicitly validated candidate. Candidates never authorize mutations; active manifests require coordinated context-aware operations and do not migrate legacy projects.",
+  "type": "object",
+  "required": ["schema_version", "format", "units"],
+  "properties": {
+    "schema_version": {"type": "integer", "const": 1},
+    "format": {"enum": ["cinematic-short", "film", "episodic-show", "micro-drama", "custom"]},
+    "units": {
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "type": "object",
+        "required": ["id", "kind", "brief", "scene_ids"],
+        "properties": {
+          "id": {"$ref": "#/$defs/id"},
+          "kind": {"enum": ["film", "short", "episode", "custom"]},
+          "brief": {"$ref": "#/$defs/path"},
+          "scene_ids": {
+            "type": "array",
+            "minItems": 1,
+            "uniqueItems": true,
+            "items": {"type": "string", "pattern": "^scene-[0-9]{2,}$(?![\\s\\S])"}
+          }
+        },
+        "additionalProperties": false
+      }
+    },
+    "deliverables": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": ["id", "unit_id", "manifest"],
+        "properties": {
+          "id": {"$ref": "#/$defs/id"},
+          "unit_id": {"$ref": "#/$defs/id"},
+          "manifest": {"$ref": "#/$defs/path"},
+          "primary": {
+            "type": "boolean",
+            "description": "Exactly one named delivery per unit must be explicitly primary before that unit can complete delivery."
+          }
+        },
+        "additionalProperties": false
+      }
+    }
+  },
+  "additionalProperties": false,
+  "$defs": {
+    "id": {"type": "string", "pattern": "^[a-z0-9]+(?:-[a-z0-9]+)*$(?![\\s\\S])"},
+    "path": {
+      "type": "string",
+      "minLength": 1,
+      "pattern": "^(?!/)(?!.*\\\\)(?!.*:)(?!.*(?:^|/)\\.{1,2}(?:/|$))[^\\u0000-\\u001f]+$(?![\\s\\S])"
+    }
+  }
+}

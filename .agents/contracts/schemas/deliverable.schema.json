@@ -1,0 +1,171 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "Named production deliverable and immutable history",
+  "oneOf": [
+    {"$ref": "#/$defs/deliverable"},
+    {"$ref": "#/$defs/version"},
+    {"$ref": "#/$defs/lock"}
+  ],
+  "$defs": {
+    "id": {"type": "string", "pattern": "^[a-z0-9]+(?:-[a-z0-9]+)*$(?![\\s\\S])"},
+    "sha256": {"type": "string", "pattern": "^[0-9a-f]{64}$(?![\\s\\S])"},
+    "path": {
+      "type": "string", "minLength": 1,
+      "pattern": "^(?!/)(?!.*\\\\)(?!.*:)(?!.*(?:^|/)\\.{1,2}(?:/|$))[^\\u0000-\\u001f]+$(?![\\s\\S])"
+    },
+    "language": {
+      "type": "string", "pattern": "^[A-Za-z]{2,8}(?:-[A-Za-z0-9]{1,8})*$(?![\\s\\S])"
+    },
+    "file": {
+      "type": "object", "additionalProperties": false,
+      "required": ["path", "sha256"],
+      "properties": {
+        "path": {"$ref": "#/$defs/path"}, "sha256": {"$ref": "#/$defs/sha256"}
+      }
+    },
+    "history": {
+      "type": "object", "additionalProperties": false,
+      "required": ["path", "sha256", "version"],
+      "properties": {
+        "path": {"$ref": "#/$defs/path"}, "sha256": {"$ref": "#/$defs/sha256"},
+        "version": {"type": "integer", "minimum": 1}
+      }
+    },
+    "context": {
+      "type": "object", "additionalProperties": false,
+      "required": ["context_version", "kind", "unit_id", "effective_sha256"],
+      "properties": {
+        "context_version": {"const": 1}, "kind": {"const": "unit"},
+        "unit_id": {"$ref": "#/$defs/id"},
+        "effective_sha256": {"$ref": "#/$defs/sha256"}
+      }
+    },
+    "spec": {
+      "type": "object", "additionalProperties": false,
+      "required": ["width", "height", "fps", "audio", "subtitles"],
+      "properties": {
+        "width": {"type": "integer", "minimum": 2, "multipleOf": 2},
+        "height": {"type": "integer", "minimum": 2, "multipleOf": 2},
+        "fps": {
+          "oneOf": [
+            {"type": "number", "exclusiveMinimum": 0},
+            {"type": "string", "pattern": "^[1-9][0-9]*/[1-9][0-9]*$(?![\\s\\S])"}
+          ]
+        },
+        "audio": {
+          "type": "object", "additionalProperties": false, "required": ["required"],
+          "properties": {
+            "required": {"type": "boolean"},
+            "channels": {"type": "integer", "minimum": 1},
+            "sample_rate": {"type": "integer", "minimum": 1},
+            "language": {"$ref": "#/$defs/language"}
+          },
+          "allOf": [{
+            "if": {"properties": {"required": {"const": false}}},
+            "then": {"maxProperties": 1}
+          }]
+        },
+        "subtitles": {
+          "type": "array", "uniqueItems": true,
+          "items": {
+            "type": "object", "additionalProperties": false,
+            "required": ["language", "mode"],
+            "properties": {
+              "language": {"$ref": "#/$defs/language"},
+              "mode": {"enum": ["sidecar", "embedded"]},
+              "path": {"$ref": "#/$defs/path"}
+            },
+            "allOf": [{
+              "if": {"properties": {"mode": {"const": "sidecar"}}},
+              "then": {"required": ["path"]},
+              "else": {"not": {"required": ["path"]}}
+            }]
+          }
+        }
+      }
+    },
+    "specification": {
+      "type": "object", "additionalProperties": false,
+      "required": ["id", "unit_id", "cut_id", "kind", "language", "spec"],
+      "properties": {
+        "id": {"$ref": "#/$defs/id"}, "unit_id": {"$ref": "#/$defs/id"},
+        "cut_id": {"const": "main"}, "kind": {"enum": ["master", "proxy"]},
+        "language": {"$ref": "#/$defs/language"}, "spec": {"$ref": "#/$defs/spec"}
+      }
+    },
+    "deliverable": {
+      "type": "object", "additionalProperties": false,
+      "required": ["schema_version", "id", "unit_id", "cut_id", "kind", "language", "spec"],
+      "properties": {
+        "schema_version": {"const": 1},
+        "id": {"$ref": "#/$defs/id"}, "unit_id": {"$ref": "#/$defs/id"},
+        "cut_id": {"const": "main"}, "kind": {"enum": ["master", "proxy"]},
+        "language": {"$ref": "#/$defs/language"}, "spec": {"$ref": "#/$defs/spec"},
+        "versions": {"type": "array", "items": {"$ref": "#/$defs/history"}},
+        "locks": {"type": "array", "items": {"$ref": "#/$defs/history"}}
+      }
+    },
+    "media": {
+      "type": "object", "additionalProperties": false,
+      "required": ["duration_s", "streams"],
+      "properties": {
+        "duration_s": {"type": "number", "exclusiveMinimum": 0},
+        "streams": {
+          "type": "array", "minItems": 1,
+          "items": {
+            "type": "object", "required": ["codec_type"],
+            "properties": {"codec_type": {"enum": ["video", "audio", "subtitle"]}}
+          }
+        }
+      }
+    },
+    "version": {
+      "type": "object", "additionalProperties": false,
+      "required": [
+        "schema_version", "record_type", "version", "created_at", "specification",
+        "context", "scene_ids", "render_record", "output", "studio_sha256",
+        "media", "decode", "dependencies"
+      ],
+      "properties": {
+        "schema_version": {"const": 1}, "record_type": {"const": "delivery_binding"},
+        "version": {"type": "integer", "minimum": 1},
+        "created_at": {"type": "string", "format": "date-time"},
+        "specification": {"$ref": "#/$defs/specification"},
+        "context": {"$ref": "#/$defs/context"},
+        "scene_ids": {"type": "array", "uniqueItems": true, "items": {"type": "string"}},
+        "render_record": {"$ref": "#/$defs/file"}, "output": {"$ref": "#/$defs/file"},
+        "studio_sha256": {"$ref": "#/$defs/sha256"},
+        "media": {"$ref": "#/$defs/media"},
+        "decode": {
+          "type": "object", "additionalProperties": false,
+          "required": ["method", "status"],
+          "properties": {
+            "method": {"const": "ffmpeg-full-audio-video-decode"},
+            "status": {"const": "pass"}
+          }
+        },
+        "dependencies": {
+          "type": "object", "propertyNames": {"$ref": "#/$defs/path"},
+          "additionalProperties": {"$ref": "#/$defs/sha256"}
+        }
+      }
+    },
+    "lock": {
+      "type": "object", "additionalProperties": false,
+      "required": [
+        "schema_version", "record_type", "id", "version", "created_at",
+        "binding", "decision", "review", "actor", "prerequisites_sha256", "gate"
+      ],
+      "properties": {
+        "schema_version": {"const": 1}, "record_type": {"const": "delivery_lock"},
+        "id": {"$ref": "#/$defs/id"}, "version": {"type": "integer", "minimum": 1},
+        "created_at": {"type": "string", "format": "date-time"},
+        "binding": {"$ref": "#/$defs/history"},
+        "decision": {"$ref": "#/$defs/file"}, "review": {"$ref": "#/$defs/file"},
+        "actor": {"enum": ["agent", "user"]},
+        "prerequisites_sha256": {"$ref": "#/$defs/sha256"},
+        "gate": {"type": "object"}
+      }
+    }
+  }
+}
