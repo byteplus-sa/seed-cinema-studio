@@ -18,16 +18,18 @@ entries: record the boundary window separately from consecutive shot ranges.
 |---|---|---|
 | Jump cut | Same setup; skipped time produces a visible discontinuity | `At <N>s, jump cut within the same <shot size and angle> of <subject>: skip from <earlier action state> to <later action state>, keeping the viewpoint and background consistent.` |
 | Match cut | Shared shape, placement, or movement across distinct shots | `At <N>s, match cut from <outgoing subject and action> to <incoming subject and action> in <new scene>; align <shared shape / screen position / movement direction> across the cut.` |
-| Whip pan | Direction, full-frame occluder, continuing movement | `At <N>s, whip pan <left/right> from <outgoing subject>; cut when <foreground occluder> fully covers the frame, then continue the pan in the same direction at similar speed to reveal <incoming subject and scene>.` |
 | Cross dissolve | Outgoing picture fades while incoming picture appears | `From <N>s to <M>s, cross dissolve from <outgoing shot> into <incoming shot>: briefly overlap both pictures as the first fades away and the second becomes fully visible.` |
 | Wipe | Moving boundary replaces one picture with another | `From <N>s to <M>s, a <left-to-right / right-to-left / top-to-bottom> wipe replaces <outgoing shot> with <incoming shot>; a clear moving edge crosses the whole frame, ending entirely on the incoming picture.` |
 | Smash cut | Abrupt, motivated contrast between shots | `At <N>s, smash cut from <quiet/static outgoing shot> to <high-energy incoming shot>; switch abruptly to <contrasting action and composition> as <named sound> hits.` |
 
 A match cut needs an observable match, not just two related topics. A jump cut
 skips action within a setup; a smash cut creates a strong contrast. A wipe is
-a picture replacement, not a subject morph. For whip pans, resolve the camera
+a picture replacement, not a subject morph. A whip pan is both a camera move
+and a boundary: use the camera preset skill's whip-pan template (trigger time,
+direction, full-frame occluder, continuing movement) and resolve the camera
 path once in the complete prompt rather than duplicating contradictory camera
-blocks.
+blocks. A cut that must last less than about 0.8 s, or a blink, intercut or
+vision flash, is an assembly cut, not a prompt boundary.
 
 ## Audio bridges
 

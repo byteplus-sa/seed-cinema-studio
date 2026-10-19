@@ -22,7 +22,7 @@ Read only the mode-specific resources needed for the request. Reference paths
 mentioned in prose are relative to this skill directory unless a link says otherwise.
 
 - [References And Modes](references/references-and-modes.md) — Input references; Generation mode.
-- [Soundscape Arrangement](references/soundscape-arrangement.md) — Full-soundscape composition workflow; Scene transitions and dynamic arcs; Scene and atmosphere.
+- [Soundscape Arrangement](references/soundscape-arrangement.md) — Full-soundscape composition workflow; Scene transitions and dynamic arcs; Scene and atmosphere; Sonic motifs; Ambience or score bed for a video clip (load when native video audio leaked or a clip needs a post-only bed).
 - [Dialogue And Voices](references/dialogue-and-voices.md) — Characters and dialogue.
 - [Templates And Quality](references/templates-and-quality.md) — Reusable full-soundscape template; Creative and quality constraints; Conversational voiceover recipe (T2A); Brand-name pronunciation; hypothetical crowded-soundscape repair.
 - [Worked Examples](references/worked-examples.md) — Full example: T2A — Sci-fi news broadcast; Full example: TA2A — Multi-character fantasy battle dialogue; Full example: T2A — Timestamp control.
@@ -52,7 +52,7 @@ reasoning or evaluation notes when useful, not boilerplate in every final prompt
 
 ## Source authority
 
-The public API reference is the authoritative source of truth for request fields and limits. Prompt-writing conventions originate from the internal Seed Audio 1.0 prompting guide and are labeled where they are not defined in the public API.
+The public API reference is the authoritative source of truth for request fields and limits. Prompt-writing conventions follow the Seed Audio 1.0 prompting guidance and are labeled where they are not defined in the public API.
 - [Seed Audio 1.0 API Reference](https://docs.byteplus.com/en/docs/byteplusvoice/seedaudio-01) — authoritative
 - [Seed Audio 1.0 Pricing](https://docs.byteplus.com/en/docs/byteplusvoice/audiopricing) — authoritative
 
@@ -64,7 +64,7 @@ When the official API reference is updated, prefer the live page over this skill
 
 Build the shortest prompt that clearly communicates the requested result. Use plain-language headings only when they improve readability, and omit sections that do not apply.
 
-For full-soundscape generation, cover the five ingredients recommended by the prompting guide:
+For full-soundscape generation, cover the five ingredients recommended by the prompting guidance:
 
 1. The environment: location, weather, context, and acoustic space
 2. Background music and sound effects
@@ -81,6 +81,29 @@ Arrange those ingredients as one chronological audio scene, not as unrelated inv
 5. Creative or quality constraints, only when the user supplies them
 
 Generation mode and request limits belong in request metadata or validation, not in model-facing prompt boilerplate.
+
+## Verify the output
+
+This section owns audio verification for the Seed Audio prompting skills.
+
+- **Words**: transcribe the local file with word times (for example
+  `speech_to_text` with `audio_file_path`; set the transcript language). The
+  transcript is the authority for dropped, added or garbled words; spelling-only
+  variants of names are noise.
+- **Accent and pronunciation**: a native listener decides. A listening model
+  (for example `seed_audio_understand`) cannot judge accent and mislabels
+  music and drones; use it for soundtrack audits and same-speaker spot checks,
+  and confirm music-type claims with a human listen.
+- **Timing**: music tempo, arc points and line windows are obeyed only
+  roughly. Measure actual onsets and duration, then pad, trim or splice in
+  assembly rather than re-prompting for exact timing.
+- **Short lines**: a short clip can truncate its last word. State the intended
+  clip length and about a second of trailing silence in the prompt.
+- **Output audits**: the provider audits generated audio and rejects a share
+  of music-heavy runs after generation, and each rejected run is still billed.
+  Budget spare samples for music beds and record each rejection with its code.
+- **Technical**: probe duration, format and channels, run a full decode, and
+  record the SHA-256 before review.
 
 ## Ideal use cases
 

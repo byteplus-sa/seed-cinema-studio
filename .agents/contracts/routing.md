@@ -8,6 +8,7 @@
 | User explicitly requests direct HTTP/curl generation | Use the documented endpoint and exact API contract; resolve credentials from runtime configuration, record `curl` as the transport, and preserve the same review, registry, persistence and reconciliation gates |
 | Timeout after possible submission | Reconcile the existing operation; changing transport is not permission to submit twice |
 | Prompt composition only | Relevant independent prompt skill; no asset-generation or production-lock ceremony for a writing-only task |
+| Scene storyboard detail, panel lineage and repair, review sheets or animatics | `scene-board-sheet`; planning and review only, never a Seedance generation reference |
 | Multi-scene production | `film-production`; declared orchestrators route specialist work |
 | Exact static copy, poster, UI, title/end card, product grid, logo/price/CTA layout, or transparent overlay | `html-graphic-render`; keep source and inputs local, render exact-size PNG, and preserve provenance |
 | Invented photographic or illustrative still | Appropriate Seedream skill; hybrid work finishes exact copy/layout through `html-graphic-render` after the image is selected |

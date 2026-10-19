@@ -75,9 +75,9 @@ THROUGH them, as a byproduct.
 
 Always look at how the scene ENDS before naming its event. The last line/beat
 is the key you read the whole scene backward through. Watch for the
-double-meaning last line — spoken about one thing, meant about another ("Poor
-bastard. Just can't forgive himself" — said looking at the patient, meant about
-himself).
+double-meaning last line — spoken about one thing, meant about another ("He
+never could forgive himself" — said looking at the patient, meant about the
+speaker).
 
 #### 1b. ALL in one event
 
@@ -87,8 +87,8 @@ character stands outside the named event, the event is named wrong.
 
 #### 1c. The PHYSICAL ACTION is the channel
 
-The surface activity of the scene (the "terrain" — e.g., routine rounds;
-packing a suitcase) stays as the PHYSICAL ACTION, and each character pursues
+The surface activity of the scene (the "terrain" — e.g., a routine
+inspection; packing a suitcase) stays as the PHYSICAL ACTION, and each character pursues
 the event THROUGH it — each via their own distinct, visible physical behavior.
 The invisible task must have a physical channel the camera can read.
 
@@ -103,8 +103,8 @@ reason**. The son keeps it painless *for mom*; the mother *out of superstition*
 is what makes each performance distinct while the scene reads unified.
 
 Motives can be alternative hypotheses; the director picks. Given circumstances
-constrain motives: a man who took the job at an experimental convict lab is
-ALREADY compromised — he cannot play a moral innocent.
+constrain motives: a character who has already accepted a morally compromising
+job is ALREADY compromised — they cannot play a moral innocent.
 
 #### 3. Each character's GOAL — the personal fight
 
@@ -115,7 +115,7 @@ never the theme.
 #### 4. OBSTACLE — what presses against the direction
 
 The thing threatening to break the scene's line (the real feeling pressing to
-surface; the case too horrifying to stay routine). One crack and the shared goal
+surface; a discovery too alarming to stay routine). One crack and the shared goal
 collapses. This pressure is what the audience actually feels — precisely because
 nobody plays it; everyone plays keeping it out.
 
@@ -131,8 +131,8 @@ to the partner — with the eye-work named as purposeful action:
   show
 
 Beats are keyed to the actual dialogue words. Where the script demands it, mark
-the point where a character's fuel runs out and the line breaks (the medic's
-"...Poor bastard," under his breath — the break IS the delivery of the scene).
+the point where a character's fuel runs out and the line breaks (a last phrase
+let slip under the breath — the break IS the delivery of the scene).
 
 ### Contrast pairing (build duos on mirrored +/-)
 
@@ -197,6 +197,10 @@ limit. Fewer cues are appropriate when the brief asks for minimal action.
   delivery if audio is requested. Preserve the framing; do not uncover the face
   merely to satisfy an eye-work template.
 
+Name a hand, arm or foot by anatomy and frame side together ("her right hand,
+frame-left"): the model reads "left" and "right" as the character's own side, so
+a bare side flips in mirrored or facing shots.
+
 Keep motive and goal stable when comparing framings; translate their evidence.
 For revision diagnosis, load [hypothetical acting repairs](references/acting-repairs.md)
 only when a performance is stiff, overstated or unreadable.
@@ -247,6 +251,15 @@ reads. Levels 1/2/3 differ on the same emotion through three graduated levers:
 
 Never write "very happy" or "extremely terrified" — replace the adjective with
 more cues and more amplitude.
+
+### Restraint and shape patterns
+
+Load [restraint and shape patterns](references/restraint-and-shape.md) when a
+tactic needs a precise shape: a **first sign** (one small cue as the earliest
+consequence), a **suppression arc** (a visible feeling brought under control),
+an **animal image** translated into body cues with at most one burst action
+per shot, or **eyes through concealment** (a veil or mask that leaves only the
+eyes to carry the tactic).
 
 ---
 
@@ -325,6 +338,12 @@ language stated):
 Dialogue language: <language>. <character> <says/shouts/whispers> in <delivery style>: {<exact line>}
 ```
 
+Give each line room: native speech starts about 0.5-1.5 s after its cue and
+runs at about 2.2 words per second, so a line needs a shot of at least
+words / 2.2 + 1 s and should end at least 0.4 s before the clip does. The
+Seedance 2.5 prompt skill owns the full dialogue timing rules; keep the
+performance beats around a line inside that window.
+
 ### Worked example
 
 Directive: A woman confronts a locked door. Her husband just left. Scene
@@ -342,8 +361,9 @@ OBSTACLE: the locked door; the silence on the other side; the feeling pressing
 to surface.
 TACTIC: pressing the door, testing the handle, eyes hunting the frame for
 anything he left behind — checking the threshold, the mat, the hallway.
-CUES: gaze searches the threshold for a response; hand tests the handle once;
-weight stays toward the door while her reply catches in her breath.
+CUES: gaze searches the threshold for a response; her right hand, frame-left,
+tests the handle once; weight stays toward the door while her reply catches in
+her breath.
 Moment to moment:
 — presses the handle — finds it locked — eyes snap to the gap under the door
 — "Get out of my way." — said at the door, voice strained, eyes still searching
@@ -352,7 +372,7 @@ the frame
 (Safety: gaze always engaged in the task; natural blink cadence.)
 ```
 
-Dialogue language: American English. Gloria says in a sharp, strained voice
+Dialogue language: English. Gloria says in a sharp, strained voice
 through gritted teeth: {Get out of my way.}
 
 For the full scene prompt, drop this acting block into the six-part formula
@@ -400,20 +420,14 @@ dialogue-to-shot timestamp mapping in `shot.md` and `scene.md`.
 - **Cues serve the tactic, not the emotion label.** Always derive visible
   behavior from what the character is doing (the tactic), not from what they're
   feeling. The emotion bank is a lookup table, not a menu.
-- **Dialogue must be verbatim across both prompts.** If the Seed Audio line or
-  the Seedance `{line}` changes, change both. A mismatch causes lip-sync drift.
-- **Audio longer than video: trim audio, never pad video.** Reduce pauses,
-  ambience tails, and scene description in the Seed Audio prompt; regenerate.
+- **Plain wording already produces a big action.** "She lunges" makes a lunge;
+  the console adds control: the timed hold before it, the stop, the hold after
+  it and the wardrobe restated after it.
 - **Emotion arcs need ordered triggers and consequences.** Use multiple beats;
   timestamps are optional unless requested or needed for verified audio alignment.
 - **`reference_audio` forces lip-sync, not acting fidelity.** It locks the voice
   and mouth timing to the audio emotion. Whether Seedance visibly acts the
   emotion needs an empirical A/B: same prompt, neutral voice vs angry voice.
-- **`watermark: false` where supported** by the selected tool.
-  Enable the AIGC watermark only when explicitly requested.
-- **Cost.** Audio and video bill per generation. Prototype at the lowest
-  suitable resolution and duration; confirm duration fits before submitting the
-  video task.
 - **Content safety.** Do not direct performances depicting identifiable real
   people without rights or otherwise restricted content.
 
@@ -436,6 +450,13 @@ Before finalizing an acting block or plan, verify:
       movement degree, vocal delivery), with zero degree adjectives.
 - [ ] A single emotional transition uses 2-4 cues max; more beats use the
       multi-stage template.
+- [ ] A suppression arc moves toward control and ends on one residual cue
+      the framing can show.
+- [ ] An animal image is translated into observable cues, and a burst action
+      appears at most once per shot with a timed still hold before it, a still
+      hold after it, and the wardrobe restated after it.
+- [ ] A veil or mask that leaves the eyes visible keeps the covering and gives
+      the eyes the tactic.
 - [ ] Every arc beat has a trigger and readable consequence; timestamps appear
       only when requested or needed for verified audio alignment.
 - [ ] When dialogue is set, the line appears verbatim inside `{}` with a delivery
@@ -444,8 +465,7 @@ Before finalizing an acting block or plan, verify:
       duration checked (`audio_duration <= video_duration`), `reference_audio`
       passed as `@Audio 1`, identical `{dialogue}` text in both prompts, shot
       timestamps aligned to actual audio.
-- [ ] `shot.md` records the audio asset path, SHA-256, verified duration, and
-      the dialogue-to-shot mapping; `scene.md` carries the same single source
-      of truth.
-- [ ] Where the tool supports it, `watermark: false` unless the user requested the AIGC
-      watermark.
+- [ ] `shot.md` records the dialogue-to-shot mapping beside the audio record.
+- [ ] Every named hand, arm or foot gives both anatomy and frame side.
+- [ ] Each spoken line fits its shot: words / 2.2 + 1 s, ending at least 0.4 s
+      before the clip ends.

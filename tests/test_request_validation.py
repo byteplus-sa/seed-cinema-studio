@@ -15,6 +15,8 @@ validation = importlib.util.module_from_spec(SPEC)
 sys.modules[SPEC.name] = validation
 SPEC.loader.exec_module(validation)
 
+DRAFT_MODEL = "dreamina-seedance-2-5-260628"
+
 
 class RequestValidationTests(unittest.TestCase):
     def setUp(self):
@@ -361,6 +363,326 @@ class RequestValidationTests(unittest.TestCase):
         self.assertIn(
             "references.ordered_bindings", {f.rule_id for f in self.findings()}
         )
+
+    def use_reference_at(self, relative: str) -> None:
+        path = self.root / relative
+        path.parent.mkdir(parents=True, exist_ok=True)
+        path.write_bytes(b"board fixture")
+        self.request["references"][0]["path"] = relative
+        self.request["references"][0]["sha256"] = self.hash(relative)
+
+    def test_storyboard_artifacts_are_rejected_as_references(self):
+        for relative in [
+            "scenes/scene-02/s02_sh010/s02_sh010_p010_t01_v01.png",
+            "scenes/scene-02/s02_sh010/s02_sh010_board_t01_v01.png",
+            "scenes/scene-02/board/sheet/anything.png",
+            "scenes/scene-02/board/animatic/s02_animatic_v01.mp4",
+            "elsewhere/s02_sheet_pg01_v01.png",
+            "elsewhere/s02_overview_v02.png",
+        ]:
+            with self.subTest(relative=relative):
+                self.use_reference_at(relative)
+                self.assertIn(
+                    "board.animatic_review_only",
+                    {f.rule_id for f in self.findings()},
+                )
+
+    def test_board_guard_catches_path_spellings_that_resolve_to_a_board(self):
+        for relative in [
+            "scenes/scene-02//board/sheet/x.png",
+            "scenes/scene-02/./board/sheet/x.png",
+            "Scenes/Scene-02/Board/sheet/x.png",
+            "scenes/scene-02/s02_sh010/s02_sh010_p010_t01_v01.JPG",
+            "scenes/scene-02/s02_sh010/s02_sh010_board_t01_v01.webp",
+        ]:
+            with self.subTest(relative=relative):
+                path = self.root / relative
+                path.parent.mkdir(parents=True, exist_ok=True)
+                path.write_bytes(b"board fixture")
+                self.request["references"][0]["path"] = relative
+                self.request["references"][0]["sha256"] = self.hash(
+                    relative.replace("//", "/").replace("/./", "/")
+                )
+                self.assertIn(
+                    "board.animatic_review_only",
+                    {f.rule_id for f in self.findings()},
+                )
+
+    def test_board_guard_follows_a_symlink_to_a_board_file(self):
+        target = self.root / "scenes/scene-02/board/sheet/x.png"
+        target.parent.mkdir(parents=True)
+        target.write_bytes(b"board fixture")
+        (self.root / "innocent.png").symlink_to(target)
+        self.request["references"][0]["path"] = "innocent.png"
+        self.request["references"][0]["sha256"] = self.hash("innocent.png")
+        self.assertIn(
+            "board.animatic_review_only", {f.rule_id for f in self.findings()}
+        )
+
+    def test_board_guard_skips_seedream_edits_and_adoption(self):
+        relative = "scenes/scene-02/s02_sh010/s02_sh010_p010_t01_v01.png"
+        self.use_reference_at(relative)
+        references = self.request["references"]
+        prompt = (self.root / "prompt.md").read_text()
+        self.assertIn(
+            "board.animatic_review_only",
+            {
+                f.rule_id
+                for f in validation.reference_findings(
+                    self.root, references, prompt, model="dreamina-seedance-2-5"
+                )
+            },
+        )
+        for tricky in ("seedance-2-5-via-seedream", "ep-20260910224412-hcwv7", ""):
+            self.assertIn(
+                "board.animatic_review_only",
+                {
+                    f.rule_id
+                    for f in validation.reference_findings(
+                        self.root, references, prompt, model=tricky
+                    )
+                },
+                tricky,
+            )
+        self.assertNotIn(
+            "board.animatic_review_only",
+            {
+                f.rule_id
+                for f in validation.reference_findings(
+                    self.root, references, prompt, model="dola-seedream-5-0-pro"
+                )
+            },
+        )
+        self.assertNotIn(
+            "board.animatic_review_only",
+            {
+                f.rule_id
+                for f in validation.reference_findings(
+                    self.root,
+                    references,
+                    prompt,
+                    model="dreamina-seedance-2-5",
+                    allow_board_references=True,
+                )
+            },
+        )
+
+    def test_board_guard_reports_even_when_containment_fails(self):
+        self.request["references"][0]["path"] = "../scenes/scene-02/board/x.png"
+        rules = {f.rule_id for f in self.findings()}
+        self.assertIn("board.animatic_review_only", rules)
+        self.assertIn("path.containment", rules)
+
+    def test_element_sheets_and_keyframes_are_not_taken_for_boards(self):
+        for relative in [
+            "elements/gloria/char_gloria_turnaround_v01.png",
+            "scenes/scene-02/s02_kf01_v01.png",
+            "scenes/scene-02/s02_sh010/s02_sh010_t01_v01.mp4",
+            "projects/board/photo.png",
+            "my_scenes/scene-02/board.png",
+        ]:
+            with self.subTest(relative=relative):
+                self.use_reference_at(relative)
+                self.assertNotIn(
+                    "board.animatic_review_only",
+                    {f.rule_id for f in self.findings()},
+                )
+
+    def test_board_path_detection_handles_separators_and_nesting(self):
+        self.assertTrue(
+            validation.is_board_artifact("a\\scenes\\scene-01\\board\\x.png")
+        )
+        self.assertTrue(
+            validation.is_board_artifact("p/scenes/scene-01/board/overview/x.png")
+        )
+        self.assertFalse(
+            validation.is_board_artifact("scenes/scene-01/s01_sh010/x.mp4")
+        )
+        self.assertFalse(validation.is_board_artifact(""))
+
+    def register_draft(self, **changes):
+        draft = copy.deepcopy(self.request)
+        draft.update(
+            operation_id="fixture-draft",
+            asset_id="fixture_draft",
+            model=DRAFT_MODEL,
+            params={"draft": True, "resolution": "480p", "duration": 5},
+            submission_status="terminal",
+            provider_task_id="cgt-draft-1",
+            provider_status="succeeded",
+            review_status="approved",
+            extensions={"expected_output": "draft.mp4"},
+        )
+        draft.update(changes)
+        (self.root / "task_ids.json").write_text(
+            json.dumps({"schema_version": 1, "tasks": [draft]})
+        )
+        return draft
+
+    def promote(self, task_id="cgt-draft-1", **draft_changes):
+        self.register_draft(**draft_changes)
+        self.request["model"] = self.caps["model"] = DRAFT_MODEL
+        self.request["references"] = []
+        self.request["params"] = {"draft_task_id": task_id, "resolution": "1080p"}
+        self.caps["parameters"] = {
+            "draft_task_id": {"type": "string"},
+            "resolution": {"enum": ["1080p"]},
+        }
+        self.rehash()
+
+    def promotion_findings(self):
+        return [
+            finding
+            for finding in self.findings()
+            if finding.rule_id == "seedance.draft_promotion_source"
+        ]
+
+    def select_draft_take(self):
+        (self.root / "draft.mp4").write_bytes(b"fixture draft video")
+        review = {
+            "schema_version": 1,
+            "artifact_path": "draft.mp4",
+            "artifact_sha256": self.hash("draft.mp4"),
+            "status": "pass",
+            "inspection_method": "full playback with sound",
+            "coverage": "every frame of the draft",
+            "checks": [
+                {
+                    "criterion": "motion and speech timing",
+                    "status": "pass",
+                    "evidence": "Walk and line land on their beats",
+                }
+            ],
+            "observations": ["Draft is complete"],
+            "limitations": [],
+            "recommendation": "Promote this draft",
+        }
+        (self.root / "draft_review.json").write_text(json.dumps(review))
+        decision = {
+            "schema_version": 1,
+            "decision_id": "draft-choice",
+            "decision_type": "variant_selection",
+            "asset_id": "fixture_draft",
+            "subject_path": "draft.mp4",
+            "selected_variant": "draft.mp4",
+            "selected_sha256": self.hash("draft.mp4"),
+            "actor": "agent",
+            "approval_mode": "approve_for_me",
+            "project_sha256": "0" * 64,
+            "result": "approved",
+            "review_path": "draft_review.json",
+            "review_sha256": self.hash("draft_review.json"),
+            "upstream_sha256": {},
+            "reason": "Best passing draft",
+            "decided_at": "2026-10-17T00:00:00Z",
+        }
+        (self.root / "decisions").mkdir(exist_ok=True)
+        (self.root / "decisions/draft-choice.json").write_text(json.dumps(decision))
+
+    def ordered_binding_findings(self):
+        return [
+            finding
+            for finding in self.findings()
+            if finding.rule_id == "references.ordered_bindings"
+        ]
+
+    def test_draft_promotion_without_references_accepts_inherited_bindings(self):
+        self.promote()
+        self.assertEqual(self.findings(), [])
+
+    def test_request_without_references_still_fails_prompt_bindings(self):
+        self.request["references"] = []
+        self.rehash()
+        self.assertTrue(self.ordered_binding_findings())
+
+    def test_blank_draft_task_id_is_not_a_promotion(self):
+        self.promote(task_id="  ")
+        self.assertTrue(self.ordered_binding_findings())
+
+    def test_promotion_with_partial_references_still_fails_bindings(self):
+        reference = copy.deepcopy(self.request["references"][0])
+        (self.root / "prompt.md").write_text("Walks past @Image 1 and @Image 2.\n")
+        self.request["prompt_sha256"] = self.hash("prompt.md")
+        self.promote()
+        self.request["references"] = [reference]
+        self.caps["parameters"]["draft_task_id"] = {"type": "string"}
+        self.rehash()
+        self.assertTrue(self.ordered_binding_findings())
+
+    def test_promotion_with_recorded_references_still_checks_their_hashes(self):
+        reference = copy.deepcopy(self.request["references"][0])
+        self.promote()
+        self.request["references"] = [reference]
+        self.rehash()
+        self.assertEqual(self.findings(), [])
+        (self.root / "image.png").write_bytes(b"changed image")
+        self.assertIn(
+            "references.current_hashes", {f.rule_id for f in self.findings()}
+        )
+
+    def test_promotion_of_draft_selected_by_decision_passes(self):
+        self.promote(review_status="review")
+        self.select_draft_take()
+        self.assertEqual(self.findings(), [])
+
+    def test_promotion_of_unknown_draft_id_is_refused(self):
+        self.promote(task_id="cgt-draft-typo")
+        self.assertTrue(self.promotion_findings())
+        self.assertTrue(self.ordered_binding_findings())
+
+    def test_promotion_without_task_registry_is_refused(self):
+        self.promote()
+        (self.root / "task_ids.json").unlink()
+        self.assertTrue(self.promotion_findings())
+
+    def test_promotion_with_invalid_registry_reports_a_finding(self):
+        self.promote()
+        for content in ["not json", "[]", '{"schema_version": 1, "tasks": [{}]}']:
+            with self.subTest(content=content):
+                (self.root / "task_ids.json").write_text(content)
+                self.assertTrue(self.promotion_findings())
+
+    def test_promotion_of_non_draft_task_is_refused(self):
+        cases = {
+            "final render": {"params": {"resolution": "1080p", "duration": 5}},
+            "720p draft": {"params": {"draft": True, "resolution": "720p"}},
+            "draft flag as text": {"params": {"draft": "true", "resolution": "480p"}},
+            "other model": {"model": "dreamina-seedance-2-0-260128"},
+            "other 2.5 variant": {"model": "dreamina-seedance-2-5-premium-260915"},
+        }
+        for name, changes in cases.items():
+            with self.subTest(name):
+                self.promote(**changes)
+                self.assertTrue(self.promotion_findings())
+                self.assertTrue(self.ordered_binding_findings())
+
+    def test_promotion_of_unreviewed_draft_is_refused(self):
+        for status in ["not_started", "review", "rejected"]:
+            with self.subTest(status=status):
+                self.promote(review_status=status)
+                self.assertTrue(self.promotion_findings())
+
+    def test_promotion_of_draft_with_stale_selection_is_refused(self):
+        self.promote(review_status="review")
+        self.select_draft_take()
+        (self.root / "draft.mp4").write_bytes(b"replaced draft video")
+        self.assertTrue(self.promotion_findings())
+
+    def test_selection_of_another_take_does_not_approve_the_draft(self):
+        self.promote(
+            review_status="review", extensions={"expected_output": "other.mp4"}
+        )
+        self.select_draft_take()
+        self.assertTrue(self.promotion_findings())
+
+    def test_promotion_prompt_must_match_the_draft_prompt(self):
+        self.promote()
+        (self.root / "prompt.md").write_text("A performer runs beside @Image 1.\n")
+        self.request["prompt_sha256"] = self.hash("prompt.md")
+        self.rehash()
+        rules = {finding.rule_id for finding in self.findings()}
+        self.assertIn("seedance.draft_promotion_source", rules)
+        self.assertNotIn("prompt.current_hash", rules)
 
     def test_known_task_is_not_eligible_for_new_submission(self):
         self.request["submission_status"] = "acknowledged"

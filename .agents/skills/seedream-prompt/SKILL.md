@@ -57,7 +57,6 @@ The prompt structure and rules in this skill are sourced from:
 - [Seedream 5.0 Pro official blog](https://seed.bytedance.com/en/blog/beyond-generation-it-understands-design-introducing-seedream-5-0-pro) (2026-07-08)
 - [Seedream 4.0-5.0 API Tutorial](https://docs.byteplus.com/en/docs/ModelArk/1824121)
 - [Seedream 4.0-4.5 Prompt Guide](https://docs.byteplus.com/en/docs/ModelArk/1829186)
-- Seedream 5.0 Pro User Manual (Lark wiki, internal)
 
 When the official guide is updated, prefer the live page over this skill where they conflict.
 
@@ -74,6 +73,11 @@ For reusable location sheets, prefer `seedream-location-asset`. For prop and
 product identity sheets used as Seedance or storyboard references, prefer
 `seedream-prop-asset`. This skill keeps product imagery that is not an identity
 reference, such as a commercial scene or a clean isolated packshot.
+
+Storyboards belong to `seedream-storyboard`; a board is planning material and
+never a Seedance reference. An image-to-image edit re-composes the frame, so an
+edited still is not a substitute for a change the video should show happening;
+`seedream-edit` covers coordinate edits and that boundary.
 
 ## Deterministic graphic boundary
 

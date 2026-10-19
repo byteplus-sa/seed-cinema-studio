@@ -5,7 +5,7 @@ description: >-
   a hook in the first seconds, a mid-episode reveal or confrontation, and a
   close-up cliffhanger, delivered as 9:16 episodes with a to-be-continued card.
   Orchestrates a market story writer when one exists (for example
-  filipino-micro-drama) or the market-neutral microdrama-story-formats, then canon sheets, text-free storyboard conditioning,
+  filipino-micro-drama) or the market-neutral microdrama-story-formats, then canon sheets, planning-only storyboards,
   Seedance 2.5 scene clips with native dialogue, dialogue-accuracy QA,
   assembly, loudness-matched delivery, and an optional full-episode showreel,
   all in a HyperFrames Studio project. Use for micro-dramas, vertical
@@ -44,7 +44,9 @@ and an optional full-episode showreel.
 
 1. **Brief.** Lock logline, formula, a cast of at most three recurring
    characters, one or two locations, threshold props, and exact dialogue per
-   scene. Record `approval_mode`, format and run budget in `project.md`,
+   scene within the word budget in [episode structure](references/episode-structure.md).
+   Record `approval_mode`, format, run budget, the native-dialogue audio route and
+   look intent in `project.md`,
    run `brief-intake` with a fast proposal, then run `studio_project.py init <project>` (see the
    [production policy](../../contracts/production-policy.md)) (pre-Studio canvas projects with
    `showcase.json` keep the `showcase-html` canvas).
@@ -55,16 +57,22 @@ and an optional full-episode showreel.
    shots without spoken lines. Walk every beat against the element-identification
    contract.
 3. **Canon.** Character sheets, location plates and threshold props as
-   three-sample Seedream sets. Inspect every image and select with hash-bound
-   decisions.
-4. **Storyboard.** One grid per scene, bound to the selected canon. A grid is a
-   composition anchor only.
+   three-sample Seedream sets. Make the cast visually distinct and appealing
+   within the brief, including a natural range of complexions. Inspect every image
+   and select with hash-bound decisions.
+4. **Storyboard.** Optional planning and review boards bound to selected canon.
+   For scene boards use `scene-board-sheet` to derive the L1/L2/L3 panel record
+   (L2 by default), and `seedream-storyboard` to author the panels. Repair failed
+   panels individually. Never bind a board, grid, panel or animatic as a Seedance
+   reference; translate staging into prompt text. Skip this stage when the shot
+   plan already carries the staging. A separate approved blocking map remains
+   available under the blocking-map contract.
 5. **Audio preparation.** Mark it skipped unless the user requests a separate
    lip-sync track. Native Seedance audio carries the dialogue.
 6. **Shots.** Write each clip prompt from its shot plan with `seedance-prompt-25` and the market's
    dialogue partner skill (`seedance-prompt-25-dialogue` for any language; a
    market pack such as `seedance-prompt-25-filipino` adds language depth). Apply
-   the storyboard-leak and dialogue rules in the
+   the prompt, dialogue-timing and QA rules in the
    [production recipe](references/production-recipe.md). Run `prompt-review`
    inline by default; use a sub-agent only when the user explicitly requests
    sub-agent prompt review for the project or specific generation. Register the
@@ -74,7 +82,9 @@ and an optional full-episode showreel.
    within 7 days, as the [draft and promotion contract](../../contracts/draft-promotion.md)
    describes, and inspect each final before it replaces the draft in Studio.
 7. **Assembly.** In Studio, place the cold open first, then the title card, the
-   three clips with short dissolves, and the to-be-continued card. Add a subtitle sidecar and
+   three clips with short dissolves, and the to-be-continued card. Keep original
+   colours unless the brief records a look. Fix wrong words with word-scoped audio
+   patches. Add a subtitle sidecar per requested language and
    normalize loudness. Picture and audio locks come from real playback and
    listening evidence.
 8. **Delivery.** Final lock and passing Studio stage-exit checks, with the final
@@ -92,12 +102,15 @@ manager. For a connected series with shared canon, follow
 
 - Generated footage stays text-free. Titles, cards and subtitles are added in
   post from deterministic sources.
+- Storyboards are planning artifacts only. Bind approved element references and
+  any separately approved blocking map; carry board staging in shot prompt text.
 - The hook lands within the first 3 s of the delivered episode. Never let a
   title card consume the hook window.
 - Every spoken line is checked word by word against the locked dialogue with
   speech-to-text before a take can pass. A model's own summary of what was
   said is not sufficient.
-- Retakes fix hard-gate failures only, within the declared budget. Record
+- Retakes fix hard-gate failures only, within the declared budget, as a new native
+  Draft. Dialogue repairs patch only the wrong word windows. Record
   residual defects instead of silently promoting a flawed take.
 - Provider success is `review`, never approval. Never resubmit an ambiguous
   paid operation; reconcile it from the task registry.

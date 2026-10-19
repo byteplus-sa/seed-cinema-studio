@@ -58,7 +58,7 @@ Commands.
 | `check` | The pinned `hyperframes check`; passes only when its JSON says ok and the browser pass ran. Use it instead of a bare `hyperframes check`. |
 | `render --name N --quality Q` | Qualities `draft`, `looks`, `standard`, `delivery`, `high`; "delivery-level" means `standard`, `delivery` or `high`. A delivery-level render needs a clean `status` including no pending selection. Refuses to overwrite. Writes `<name>.mp4.render.json` with `produced_by: "render"`. |
 | `lock-element <id> --decision FILE` | Lock an element: record the agent or user decision for `elements/<id>/element.md` through the existing validated writer (the variant must be listed in `variants` and have a passing review), then run `sync-elements`. Needs an initialised Studio project. |
-| `sync-elements` | Make Studio hold exactly the locked elements: copy each approved element's selected image to `studio/assets/` as `LOCKED_<element>_<vNN>.<ext>`, remove any other `LOCKED_*` copy, and rewrite `elements/INDEX.md` and the static `review/elements.html` + `elements.css` (locked element large, other samples as `OTHER` with the review's first observation). |
+| `sync-elements` | Make Studio hold exactly the locked elements: copy each approved element's selected image to `studio/assets/` as `LOCKED_<element>_<vNN>.<ext>`, remove any other `LOCKED_*` copy, and rewrite `elements/INDEX.md` and the static `review/elements.html` + `elements.css` (a copy of the shared `showcase-html` `assets/review-page.css`; locked element large, other samples as `OTHER` with the review's first observation). |
 | `record-lock --decision FILE` | Record a `picture`, `audio` or `final_master` stage lock for the current stage. The subject of a picture or final-master lock must be a render made by `render` (a final master at standard or higher quality); an audio lock names an audio file. Same authorization as `record-selection`; the review must pass real playback or listening checks. An agent cannot replace a user's lock. |
 | `record-render <file> [args]` | Register a render made elsewhere with the pinned CLI. Recorded as `produced_by: "manual"`; it does not satisfy the delivery gate and does not hide a good delivery render. |
 | `hf <command> [args]` | Run a pinned, privacy-safe HyperFrames command from inside `studio/` for the commands the script does not wrap: `preview`, `lint`, `snapshot`, `add`, `catalog`, `compositions`, `info`, `doctor`, `keyframes`, `compare`. Anything else is refused. Open Studio with `hf <project> preview --no-open --json` and open the returned `studioUrl`. |
@@ -253,12 +253,15 @@ suitable supported resolution; do not switch models solely to force a draft.
 
 Inspect draft playback and audio, motion, continuity and the shot plan. Record a
 passing, hash-bound draft selection under the project's approval mode before
-final-resolution generation. For multi-shot projects, review the draft assembly
-and record the picture/audio decisions before generating final takes. Preserve
-all draft files, prompt snapshots, references, task IDs and decisions. Generate
-final takes only within the authorized scope and budget at the recorded delivery
-target; do not assume 1080p is always required. A requested 480p delivery can use
-reviewed 480p takes after delivery QA.
+final-resolution generation. A promotion by `draft_task_id` must name a
+registered 480p Seedance 2.5 draft of the same model and prompt whose registry
+review is `approved` or whose expected output has a passing variant-selection
+decision (`seedance.draft_promotion_source`). For multi-shot projects, review
+the draft assembly and record the picture/audio decisions before generating
+final takes. Preserve all draft files, prompt snapshots, references, task IDs
+and decisions. Generate final takes only within the authorized scope and budget
+at the recorded delivery target; do not assume 1080p is always required. A
+requested 480p delivery can use reviewed 480p takes after delivery QA.
 
 A 480p output is not automatically a provider-native Draft task. Seedance 2.5
 through `ark-mcp` supports native Draft (`draft: true`) and promotion
@@ -278,6 +281,11 @@ Use the lowest suitable cost/resolution within the requested behavior. For **See
 
 Record estimated cost separately from confirmed billing and provider usage. Do not infer billed cost or creative correctness from successful task status. Verify decode, actual streams/duration, opening/transitions/ending, and audible sound arc. Contact sheets support but do not replace playback and listening. Preserve high-quality masters and separately named review proxies.
 
+### Delivery look defaults
+
+- Assemble in the model's original colours with no grade, grain, halation or vignette unless the brief records a look; a recorded look is applied as a post treatment to the untouched master.
+- Add no "AI-generated" or "fictional" labels to deliverables unless the user, the destination platform or the brief requires one.
+
 ## Selection state
 
 The manifest is authoritative; selection.json is derived and selection.log is an audit. HTTP and CLI selections use one validated writer with variant membership, project containment, expected revision, writer lock and recoverable batch changes. A validation error cannot modify state. A partially committed batch must recover or report its exact state, not claim success.
@@ -286,4 +294,4 @@ The manifest is authoritative; selection.json is derived and selection.log is an
 
 Run validate_request.py with --project, --request, --capabilities, --review and applicable --required-rule values. For a generation-bound narrative, ad, micro-drama, music-video or showcase shot with no recorded exemption, pass `shot.plan_bound`, `shot.variety` and `shot.axis_carry`; for an exempt shot, omit them and let the reviewer record `not_applicable` with the exemption as the reason. When a required shot rule has nothing to check (no confirmed axis, a one-take), the reviewer records `pass` with that evidence, because a required rule cannot be `not_applicable`. It is read-only and never submits a provider task. Capability evidence uses capability-evidence.schema.json and self-contained parameter schemas; external schema URLs are rejected.
 
-The operation_store.py helper exposes prepare_operation(root, request, capabilities, review, required_rule_ids) and transition_operation(root, operation_id, expected_status, new_status, provider_task_id, provider_status). Prepare only after the immutable snapshot exists. Validation occurs before registry writes. A file lock, unique operation/asset identities, expected state and atomic replace prevent duplicate local preparation and stale transitions. This does not promise provider idempotency. Legacy or invalid registries are preserved and require a migration preview.
+The operation_store.py helper exposes prepare_operation(root, request, capabilities, review, required_rule_ids, allow_board_references=False) and transition_operation(root, operation_id, expected_status, new_status, provider_task_id, provider_status, allow_board_references=False). Only adoption of an already submitted job sets allow_board_references, because that job exists and cannot be withdrawn; it trusts the caller's provider task ID like the rest of adoption. Prepare only after the immutable snapshot exists. Validation occurs before registry writes. A file lock, unique operation/asset identities, expected state and atomic replace prevent duplicate local preparation and stale transitions. This does not promise provider idempotency. Legacy or invalid registries are preserved and require a migration preview.

@@ -1,5 +1,6 @@
 import contextlib
 import io
+import re
 import sys
 import tempfile
 import unittest
@@ -9,6 +10,10 @@ from unittest.mock import patch
 import test_showcase_selection as fixtures
 
 showcase = fixtures.showcase
+REVIEW_SHEET = (
+    Path(__file__).resolve().parents[1]
+    / ".agents/skills/showcase-html/assets/review-page.css"
+)
 
 
 class QuickReviewPlainPageTests(unittest.TestCase):
@@ -46,6 +51,27 @@ class QuickReviewPlainPageTests(unittest.TestCase):
         self.assertIn("<img", page)
         self.assertIn("<audio", page)
         self.assertIn("<video", page)
+
+    def test_stylesheet_is_the_shared_offline_review_sheet(self):
+        self.build([self.image])
+        stylesheet = self.out.with_suffix(".css").read_text()
+        self.assertEqual(stylesheet, REVIEW_SHEET.read_text())
+        self.assertNotIn("@import", stylesheet)
+        self.assertNotIn("url(", stylesheet)
+
+    def test_every_class_on_the_page_has_a_selector_in_the_sheet(self):
+        second_take = self.video.with_name("s01_sh010_t02_v01.mp4")
+        second_take.write_bytes(b"not a real video")
+        self.build([self.image, self.audio, self.video, second_take])
+        page = self.out.read_text()
+        selectors = set(re.findall(r"\.([A-Za-z][\w-]*)", REVIEW_SHEET.read_text()))
+        classes = {
+            name
+            for value in re.findall(r'class="([^"]+)"', page)
+            for name in value.split()
+        }
+        self.assertTrue(classes)
+        self.assertEqual(classes - selectors, set())
 
     def test_media_links_are_relative_to_the_page_and_never_file_uris(self):
         self.build([self.image, self.audio, self.video])

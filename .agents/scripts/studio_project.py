@@ -37,6 +37,8 @@ CHECK_TIMEOUT_S = 900
 RENDER_TIMEOUT_S = 7200
 PROBE_TIMEOUT_S = 120
 MEDIA_SUFFIXES = {".mp4", ".mov", ".webm", ".m4v"}
+SHOWCASE_SKILL = Path(__file__).resolve().parents[1] / "skills/showcase-html"
+REVIEW_PAGE_CSS = SHOWCASE_SKILL / "assets/review-page.css"
 SHOT_ID_PATTERN = re.compile(r"^[A-Za-z][A-Za-z0-9_-]*$")
 RESERVED_SHOT_IDS = {"main", "root"}
 NAME_PATTERN = re.compile(r"^[A-Za-z0-9][A-Za-z0-9_-]*$")
@@ -1586,7 +1588,7 @@ def complete_stage(
 
 
 def selection_service() -> Any:
-    scripts = Path(__file__).resolve().parents[1] / "skills/showcase-html/scripts"
+    scripts = SHOWCASE_SKILL / "scripts"
     if str(scripts) not in sys.path:
         sys.path.insert(0, str(scripts))
     return importlib.import_module("selection_service")
@@ -1779,28 +1781,6 @@ ELEMENT_ID_PATTERN = re.compile(r"[a-z0-9]+(?:-[a-z0-9]+)*")
 ELEMENT_VERSION_PATTERN = re.compile(r"_(v\d{2,})$")
 ELEMENT_IMAGE_SUFFIXES = {".png", ".jpg", ".jpeg", ".webp"}
 LOCKED_PREFIX = "LOCKED_"
-ELEMENTS_PAGE_CSS = """* { box-sizing: border-box; }
-body { margin: 0; font: 16px/1.5 system-ui, sans-serif; background: #faf8f5; color: #1d1b19; }
-main { max-width: 1100px; margin: 0 auto; padding: 32px 16px; }
-h1 { margin: 0 0 4px; }
-.lede, .sub, figcaption { color: #6b645c; font-size: 0.9rem; }
-section { background: #fff; border: 1px solid #e4ded5; border-radius: 12px; padding: 16px; margin: 0 0 20px; }
-h2 { margin: 0 0 4px; font-size: 1.1rem; }
-.badge { display: inline-block; font: 700 0.75rem/1 system-ui; letter-spacing: 0.06em; padding: 4px 8px; border-radius: 999px; margin-right: 8px; }
-.locked { background: #1f7a4d; color: #fff; }
-.other { background: #e7e1d8; color: #4a443d; }
-figure { margin: 0; }
-img { display: block; width: auto; max-width: 100%; max-height: 640px; margin: 0 auto; border-radius: 8px; }
-.row { display: grid; grid-template-columns: repeat(auto-fill, minmax(240px, 1fr)); gap: 12px; margin-top: 12px; }
-.row img { width: 100%; max-height: none; }
-figcaption { margin-top: 6px; }
-@media (prefers-color-scheme: dark) {
-  body { background: #151311; color: #ece7df; }
-  section { background: #1f1c19; border-color: #34302b; }
-  .lede, .sub, figcaption { color: #b3aba0; }
-  .other { background: #34302b; color: #d6cec3; }
-}
-"""
 
 
 def element_document(path: Path) -> dict[str, Any]:
@@ -1884,8 +1864,16 @@ def write_elements_index(
     atomic_write(project / "elements" / "INDEX.md", "\n".join(lines) + "\n")
 
 
+def review_page_css() -> str:
+    if not REVIEW_PAGE_CSS.is_file():
+        raise StudioError(f"Missing shared review stylesheet {REVIEW_PAGE_CSS}")
+    return REVIEW_PAGE_CSS.read_text(encoding="utf-8")
+
+
 def write_elements_page(
-    project: Path, approved: list[tuple[str, dict[str, Any], Path]]
+    project: Path,
+    approved: list[tuple[str, dict[str, Any], Path]],
+    stylesheet: str,
 ) -> None:
     review = project / "review"
     if review.is_symlink():
@@ -1931,7 +1919,7 @@ def write_elements_page(
         + "\n".join(body)
         + "</main></body></html>\n"
     )
-    atomic_write(review / "elements.css", ELEMENTS_PAGE_CSS)
+    atomic_write(review / "elements.css", stylesheet)
     atomic_write(review / "elements.html", page)
 
 
@@ -1939,6 +1927,7 @@ def sync_elements(project: Path) -> dict[str, Any]:
     project = project.resolve()
     if not studio_root(project).is_dir():
         raise StudioError("This project has no Studio project yet; run init first")
+    stylesheet = review_page_css()
     assets = studio_path(project, "assets")
     if assets.is_symlink():
         raise StudioError("assets must be a real directory")
@@ -1963,7 +1952,7 @@ def sync_elements(project: Path) -> dict[str, Any]:
             shutil.copy2(source, target)
             copied.append(name)
     write_elements_index(project, approved)
-    write_elements_page(project, approved)
+    write_elements_page(project, approved, stylesheet)
     return {"copied": copied, "removed": removed, "locked": sorted(wanted)}
 
 
@@ -2003,6 +1992,7 @@ def record_element_lock(
     studio_root(project)
     mode, _ = project_mode_snapshot(project)
     require_authorized(decision, mode)
+    review_page_css()
     registry = element_registry(project, element_id, document)
     selected = decision.get("selected_variant")
     if selected not in registry[element_id]["variants"]:
