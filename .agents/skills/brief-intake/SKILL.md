@@ -58,10 +58,14 @@ When a tone or genre reference is a **concrete brand video ad or other footage**
 (URL, campaign name, or user-supplied file) meant for visual or motion
 inspiration, record it under constraints or creative intent and **hand off** —
 this skill does not download or analyze media. Downstream work must obtain
-watchable media (prefer a public HTTPS URL that `seed_understand` accepts;
-download and upload only when that link is unusable) via `template-factory` for
-full reverse-engineering or `ark-mcp` (`seed_understand`) for a lighter
-pass. Transcripts, scripts, and article write-ups may note claims or dialogue
+decodable local media for native-first inspection, with timestamped visual
+evidence and local timing measurements. Full reverse-engineering belongs to
+`template-factory`; lighter passes may use capable native inspection or permitted
+MCP understanding tools when needed. Audio needs verified audio perception or
+documented human listening; ASR and separation may assist but do not replace it.
+Honor privacy, cost and explicit offline constraints. Preserve the selected
+production format and unit brief rather than importing the reference's structure.
+Transcripts, scripts, and article write-ups may note claims or dialogue
 but must not replace watching the video.
 
 An absent genre is not a blocker. If intent is clear, derive a proposal from it.
