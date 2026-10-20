@@ -5,6 +5,11 @@ delivery. These are working practices, not provider guarantees. Confirmed
 casting, medium, scene structure and timing override creative defaults here;
 approval, rights, review and submission gates remain unchanged.
 
+`review_mode: default` (also when absent) uses minimal inline preflight and
+final-output sanity, not the full QA gates below. Strict retains those gates.
+Explicit required checks and supplied reports remain binding in either mode.
+Approval authority is independent; never invent listening or user acceptance.
+
 ## Canon
 
 - Character sheets: three-panel identity sheets on a neutral background with
@@ -22,7 +27,8 @@ approval, rights, review and submission gates remain unchanged.
   envelope or a mark on the skin get a sheet. Describe every other recurring
   object positively as plain ("plain cream envelope, smooth unmarked paper"),
   because generic jars, cases, folders and labels grow invented lettering.
-- Three Seedream samples per element; select after looking at every image.
+- One Seedream image per element in default, three samples in strict, unless
+  another count is requested; inspect what was actually generated.
 
 ## Storyboards
 
@@ -78,6 +84,10 @@ fills to the clip end. Budget for it:
   recorded waiver.
 
 ## Draft, review, promote
+
+Default permits direct final generation within approved scope, without this
+draft-first pass or draft assembly. Use this sequence in strict or when a draft
+is actually requested; retain promotion source safety in either mode.
 
 1. Submit each clip as a 480p native Draft (`draft: true`) with its frozen,
    reviewed request. Draft the three clips of an episode in parallel.
@@ -150,9 +160,9 @@ estimated_cost = clips x seconds_per_clip x price_per_second(model, resolution)
 - `retake_allowance` is the planned share of clips regenerated, for example 0.15
   for roughly one retake in seven clips. Agree it with the user.
 - `draft_to_final_multiplier` is 1 plus the draft cost over the final cost,
-  because every shot is generated first as a 480p draft and then as a final:
+  when a shot is generated first as a 480p draft and then as a final:
   `1 + price_per_second(model, draft resolution) / price_per_second(model, final resolution)`.
-  Use 1 when the user skips drafts. A promoted Draft is billed again at the
+  Use 1 for default direct finals or when the user skips drafts. A promoted Draft is billed again at the
   final resolution (see the draft and promotion contract).
 - Illustrative only, with made-up numbers: 3 clips of 15 s at a price of 0.10 per
   second, a 0.15 retake allowance and a draft ratio of 0.25 give

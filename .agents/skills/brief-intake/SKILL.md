@@ -15,7 +15,15 @@ Use the shared [production brief](../../contracts/production-brief.md) and
 Keep `project.md` canonical; a
 HyperFrames `BRIEF.md` adapter is not a second editable brief. Do not overwrite
 an existing user-authored HyperFrames brief; flag conflicts for reconciliation.
-Unit-aware adapters remain deferred until unit support is enabled.
+Validated manifest-backed units use generated, hash-bound adapters.
+
+Record `review_mode: default|strict` independently of `approval_mode`. Missing
+means `default` for new actions; invalid values fail. An explicit unit-brief
+override applies only to that unit; shared canon keeps project mode. Default
+uses minimal inline preflight and final-output sanity, one image unless another
+count is requested, no mandatory prompt-review report/full checklist and no
+compulsory draft-first pass. Strict retains the full workflow. Do not infer
+strict from approval mode or turn a review preference into consent or a lock.
 
 Only an explicit micro-drama format or an already selected micro-drama workflow
 uses its episode defaults. Explicit format wins over a workflow hint, subject to

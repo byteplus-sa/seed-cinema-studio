@@ -28,6 +28,13 @@ _BUDGET_RUNTIME_FIELDS = frozenset({
 _MISSING = object()
 
 
+def review_mode(metadata: dict[str, Any]) -> str:
+    value = metadata.get("review_mode", "default")
+    if not isinstance(value, str) or value not in ("default", "strict"):
+        raise ValueError("review_mode must be default or strict")
+    return value
+
+
 def load_profile(format_id: str | None = None) -> dict[str, Any]:
     if format_id is not None and not isinstance(format_id, str):
         raise ValueError("format must be a supported profile id or None")
@@ -79,6 +86,7 @@ def _validate_market(market: dict[str, Any]) -> None:
 
 def _normalize(metadata: dict[str, Any], label: str) -> dict[str, Any]:
     result = deepcopy(_mapping(metadata, label))
+    review_mode(result)
     if "locks" in result:
         raise ValueError(f"{label}.locks is unsupported; use shared.locked")
     for group in (
@@ -252,7 +260,7 @@ def _apply_locks(
         parts = path.split(".")
         if (
             not all(parts)
-            or parts[0] in (*_AUTHORITY_FIELDS, "format", "profile", "workflow")
+            or parts[0] in (*_AUTHORITY_FIELDS, "review_mode", "format", "profile", "workflow")
             or parts[:2] == ["production", "format"]
         ):
             raise ValueError(f"Unsupported locked path: {path}")
@@ -314,4 +322,6 @@ def resolve_brief(
     effective["format"] = selected
     effective["workflow"] = profile["workflow"]
     effective["profile"] = profile
+    if "review_mode" in explicit:
+        effective["review_mode"] = review_mode(explicit)
     return effective

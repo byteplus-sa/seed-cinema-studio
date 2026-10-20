@@ -71,7 +71,9 @@ mode selection and caller responsibilities.
 - Multi-round extensions up to 180s (beta).
 
 ### Cost ladder
-- Draft first, then promote the selected draft (see [Draft mode](#draft-mode)).
+- In strict review mode, draft first, then promote the selected draft
+  (see [Draft mode](#draft-mode)). Default permits direct finals within approved
+  scope without a compulsory draft pass.
   Explicit user instructions override the default; record verified operation
   constraints when a draft is unsupported.
 - Keep resolution in request parameters, separate from prompt text and Studio
@@ -79,7 +81,8 @@ mode selection and caller responsibilities.
   `draft_task_id` as described in the workspace draft and promotion contract
   (`.agents/contracts/draft-promotion.md`), recording the draft task ID, and verify
   the live tool schema first. Final requests and outputs need fresh
-  request review and QA under the workspace production policy.
+  mode-appropriate preflight and output sanity under the workspace production
+  policy; strict or explicit required rules need matching review reports.
 - Video generation is billed per successful task completion; estimate final-resolution cost from the pricing page.
 - Confirm current billing rules on the [Pricing page](https://docs.byteplus.com/en/docs/ModelArk/1544106).
 
@@ -127,6 +130,8 @@ approval states in the shot manifest before submission.
 
 The Seedance 2.5 tool documents a two-step draft (`draft`, `draft_task_id`;
 checked 2026-10-17). Confirm the current tool schema before relying on it.
+This sequence applies to strict draft-first work or an actually requested draft
+or promotion. Default direct finals do not require it.
 
 1. **Draft.** Submit the full request with `draft: true` and an explicit
    `resolution: "480p"`. Prompt, references, duration, ratio, `generate_audio` and task type

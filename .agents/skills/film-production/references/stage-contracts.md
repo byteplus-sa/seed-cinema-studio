@@ -4,6 +4,17 @@ Use these contracts to determine the next safe stage. A later stage may begin
 only when its entry evidence exists. Keep unavailable future departments as
 explicit gaps rather than fabricating their outputs.
 
+Resolve `review_mode` separately from `approval_mode`. Missing mode is `default`:
+minimal inline preflight and final-output sanity, no mandatory full reports or
+checklists, one image unless requested otherwise, and direct finals within
+approved scope. Strict retains the full QA/report and draft-first requirements
+below. Explicit checks and supplied reports remain binding in either mode.
+Stage integrity, truthful candidate/final records, unit selection, locked
+choices and explicit named delivery bindings remain required in both.
+Default defers expensive HyperFrames checks at shot-generation and assembly-review
+to delivery; strict checks all three. Skipped checks record both `check_ran`
+and `check_ok` false. Status, provenance, placed takes and locks are unchanged.
+
 ## Stage checkpoint for every stage
 
 Resolve scope first under `PLAN_SEED_CINEMA_STUDIO.md` and the
@@ -36,7 +47,7 @@ decision actor, reason, review outcome, current selection or stage lock, and
 unresolved gaps in the relevant manifest. `status` validates scope, takes and
 Studio assets but is not a full review/decision audit. Revalidate decisions and
 reopen affected stages when evidence changes; changed generation inputs also
-require fresh prompt review.
+require fresh preflight and, in strict or explicitly required scope, prompt review.
 
 Every stage exit additionally requires:
 
@@ -68,7 +79,7 @@ not replace this checkpoint.
 Entry: user intent or an existing `project.md`, plus the selected unit brief
 when a validated manifest is present.
 
-Required output: `approval_mode`, audience, format, runtime, aspect ratio,
+Required output: independent `approval_mode` and `review_mode`, audience, format, runtime, aspect ratio,
 delivery resolution, story objective, tone, creative constraints, known rights
 constraints, run budget, and unresolved questions recorded in `project.md`.
 Confirmed directorial defaults (structure, energy level, camera and light
@@ -243,13 +254,14 @@ assembly, to the cut's measured length.
 
 Entry: shot objective, the scene's revalidated shot plan (or recorded exemption), selected
 video mode, approved inputs, reference roles, prompt snapshot target, duration,
-and any requested audio (if Stage 5 was completed) exist. Before submission the `prompt-review` gate has passed for
-every prompt being submitted. Review inline by default; use a sub-agent only
+and any requested audio (if Stage 5 was completed) exist. Before submission,
+minimal inline preflight passes in default; the `prompt-review` gate passes in
+strict or for explicitly required review. Use a sub-agent only
 when the user explicitly requests sub-agent prompt review for the project or
 specific generation. The ordered `references:` array is verified 1:1
 against `shot.md` (same files, same order, same `@Image N` / `@Video N` /
 `@Audio N` bindings); the request's `generate_audio` matches the brief's audio
-route; no storyboard image is bound; and the Seedance 2.5 draft pass uses
+route; no storyboard image is bound; and a requested Seedance 2.5 draft pass uses
 `resolution: "480p"` as a native Draft when the live schema supports it.
 Initialize Studio at the delivery target, not the draft resolution. Record any
 explicit user override or verified operation constraint under the production
@@ -263,11 +275,12 @@ line when dialogue exists, and `review` status. Wordless work does not invent a
 transcript gate; audible ambience/music still needs listening.
 Scoped operations use request v3 and decisions v2 bound to the normalized shared
 project digest and selected unit context, with real unit-brief upstream hashes.
-Production canon is not unit-scoped. Resolution is raised only after the current
+Production canon is not unit-scoped. Default permits direct final generation
+without a draft or draft assembly. In strict, resolution is raised only after the current
 pass is approved (final-candidate gate); a native Draft is promoted by its
 `draft_task_id` without changing its inputs. For multi-shot productions, review the draft
 assembly and record picture/audio decisions before generating final takes.
-Each final request is separately registered and reviewed against its complete
+Each final request is separately registered and preflighted; strict reviews its complete
 request hash; each final output needs fresh playback, audio and creative QA and
 a mode-authorized selection before it replaces the draft in Studio. A plain
 480p output requested without `draft: true` cannot be promoted. Record native
@@ -300,14 +313,16 @@ re-voicing keeps the source soundtrack (see
 [production defaults](production-defaults.md)). The `assembly-review` stage
 keeps its approved inputs and comparison renders together.
 
-Export the actual edit with `editorial.py export`, run `check`, then explicitly
+In strict or explicitly requested editorial review, export the actual edit with
+`editorial.py export`, run `check`, then explicitly
 `reconcile` the snapshot to `editorial/<unit>/main.json` using the expected
 revision. This reads Studio without applying order or trims. Runtime exports
 bind selections, measured ranges, context and tree hashes. Straight cuts, trims
 and gaps are supported; do not flatten unsupported overlaps/effects.
 `editorial-review` supplies timecoded actual-cut review. `sound-post` supplies
 `sound/<unit>/cues.json`, mix decisions and real listening evidence. These
-leaves do not execute edits, mixing, generation or stage approval.
+leaves do not execute edits, mixing, generation or stage approval. Default does
+not require these full reports; retain output sanity and truthful lock evidence.
 
 Exit: picture and audio have separate mode-authorized locks bound to the exact
 artifact and passing review hashes. Audio lock is required when audio is in

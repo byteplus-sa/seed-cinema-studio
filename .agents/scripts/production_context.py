@@ -17,7 +17,7 @@ SCENE_ID = re.compile(r"scene-[0-9]{2,}\Z")
 SHOT_ID = re.compile(r"[A-Za-z][A-Za-z0-9_-]*\Z")
 SHARED_FIELDS = (
     "production", "market", "episode", "delivery", "creative", "creative_intent", "story",
-    "directorial_axes", "locked", "locks", "approval_mode", "approval", "authorization",
+    "directorial_axes", "locked", "locks", "approval_mode", "review_mode", "approval", "authorization",
     "rights", "budget", "unit_budget",
 )
 OPERATIONAL_PATHS = frozenset(("effective_settings", name) for name in (
