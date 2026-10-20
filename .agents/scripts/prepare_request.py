@@ -359,7 +359,7 @@ def run(args: argparse.Namespace) -> tuple[dict[str, Any], list[Finding]]:
             findings.append(Finding("budget.cap", str(error), "task_ids.json"))
     result: dict[str, Any] = {"request_sha256": request["request_sha256"]}
     review = capabilities = None
-    if args.review:
+    if args.review is not None:
         review = load_json(root, args.review)
         findings.extend(validate_review(review, request["request_sha256"], args.required_rule))
     elif args.required_rule and not args.register:

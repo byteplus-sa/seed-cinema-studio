@@ -23,6 +23,21 @@ import studio_project as studio
 import validate_request as validation
 
 
+def validate_cli(root, request, capabilities, *extra):
+    request_path = root / "cli-request.json"
+    capability_path = root / "cli-capabilities.json"
+    request_path.write_text(json.dumps(request))
+    capability_path.write_text(json.dumps(capabilities))
+    return subprocess.run(
+        [
+            sys.executable, str(Path(validation.__file__)),
+            "--project", str(root), "--request", str(request_path),
+            "--capabilities", str(capability_path), *extra,
+        ],
+        capture_output=True, text=True, check=False,
+    )
+
+
 class ReviewModeTests(unittest.TestCase):
     def setUp(self):
         fixture = prepare_fixtures.PrepareRequestTests()
@@ -237,6 +252,70 @@ class ReviewModeTests(unittest.TestCase):
             {**request, "params": {"resolution": "unsupported"}}, self.caps
         ))
 
+    def test_cli_schema_invalid_roots_return_findings_without_tracebacks(self):
+        report_path = self.root / "cli-review.json"
+        for request in (None, [], "invalid", True, 1, {}):
+            for report in ("omitted", "object", "null"):
+                with self.subTest(request=request, report=report):
+                    report_path.write_text(json.dumps({} if report == "object" else None))
+                    extra = [] if report == "omitted" else ["--review", str(report_path)]
+                    checked = validate_cli(self.root, request, self.caps, *extra)
+                    self.assertEqual(checked.returncode, 1)
+                    self.assertEqual(checked.stderr, "")
+                    result = json.loads(checked.stdout)
+                    self.assertFalse(result["ok"])
+                    self.assertTrue(result["findings"])
+                    self.assertEqual(
+                        {finding["rule_id"] for finding in result["findings"]},
+                        {"schema.valid"},
+                    )
+
+    def test_cli_review_policy_remains_enforced_with_unrelated_failures(self):
+        report_path = self.root / "cli-review.json"
+        for failure in ("none", "prompt", "capabilities"):
+            for policy in ("default", "strict", "required", "stale", "failed", "null", "valid"):
+                with self.subTest(failure=failure, policy=policy):
+                    self.mode("strict" if policy in ("strict", "valid") else "default")
+                    request = self.request()
+                    self.assertEqual(
+                        validation.schema_findings(request, "generation-request.schema.json"), []
+                    )
+                    if failure == "prompt":
+                        request["prompt_sha256"] = "0" * 64
+                    capabilities = {} if failure == "capabilities" else self.caps
+                    extra = []
+                    if policy == "required":
+                        extra = ["--required-rule", "references.ordered_bindings"]
+                    elif policy in ("stale", "failed", "null", "valid"):
+                        report = self.report(request)
+                        if policy == "stale":
+                            report["request_sha256"] = "0" * 64
+                        elif policy == "failed":
+                            report["checks"][0]["status"] = "fail"
+                        report_path.write_text(json.dumps(None if policy == "null" else report))
+                        extra = ["--review", str(report_path)]
+                        if policy == "valid":
+                            extra += ["--required-rule", "references.ordered_bindings"]
+                    checked = validate_cli(self.root, request, capabilities, *extra)
+                    expected_ok = failure == "none" and policy in ("default", "valid")
+                    self.assertEqual(checked.returncode, int(not expected_ok), checked.stdout)
+                    self.assertEqual(checked.stderr, "")
+                    result = json.loads(checked.stdout)
+                    self.assertEqual(result["ok"], expected_ok)
+                    rules = {finding["rule_id"] for finding in result["findings"]}
+                    expected_rules = set()
+                    if failure == "prompt":
+                        expected_rules.add("prompt.current_hash")
+                    elif failure == "capabilities":
+                        expected_rules.add("model.supported_mode")
+                    if policy in ("strict", "required", "stale"):
+                        expected_rules.add("review.complete_evidence")
+                    elif policy == "failed":
+                        expected_rules.add("references.ordered_bindings")
+                    elif policy == "null":
+                        expected_rules.add("schema.valid")
+                    self.assertEqual(rules, expected_rules)
+
 
 class ScopedReviewModeTests(unittest.TestCase):
     def setUp(self):
@@ -244,6 +323,33 @@ class ScopedReviewModeTests(unittest.TestCase):
         self.fixture.setUp()
         self.addCleanup(self.fixture.doCleanups)
         self.root = self.fixture.root
+
+    def test_cli_malformed_v3_context_returns_schema_findings_with_active_manifest(self):
+        request = self.fixture.request()
+        report_path = self.root / "cli-review.json"
+        for context in ([], "invalid", True, 1, None, {}):
+            for report in ("omitted", "object", "null"):
+                with self.subTest(context=context, report=report):
+                    malformed = {**request, "context": context}
+                    report_path.write_text(json.dumps(
+                        self.fixture.review(request) if report == "object" else None
+                    ))
+                    extra = [] if report == "omitted" else ["--review", str(report_path)]
+                    checked = validate_cli(
+                        self.root, malformed, self.fixture.caps, "--unit", "ep001", *extra
+                    )
+                    self.assertEqual(checked.returncode, 1)
+                    self.assertEqual(checked.stderr, "")
+                    result = json.loads(checked.stdout)
+                    self.assertFalse(result["ok"])
+                    self.assertTrue(result["findings"])
+                    self.assertEqual(
+                        {finding["rule_id"] for finding in result["findings"]},
+                        {"schema.valid"},
+                    )
+                    self.assertTrue(all(
+                        finding["path"].startswith("context") for finding in result["findings"]
+                    ))
 
     def test_absent_mode_preserves_pre_change_v3_fingerprints(self):
         current = self.fixture.request()

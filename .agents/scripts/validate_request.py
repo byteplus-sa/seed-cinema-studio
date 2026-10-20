@@ -1302,11 +1302,12 @@ def main() -> int:
             args.project, request, json.loads(args.capabilities.read_text()),
             unit_id=args.unit, production_scope=args.production_scope,
         )
-        review = json.loads(args.review.read_text()) if args.review else None
-        if args.review and review is None:
-            findings.extend(validate_review(review, request.get("request_sha256", ""), args.required_rule))
-        else:
-            findings.extend(request_review_findings(args.project, request, review, args.required_rule))
+        if not schema_findings(request, "generation-request.schema.json"):
+            review = json.loads(args.review.read_text()) if args.review else None
+            if args.review and review is None:
+                findings.extend(validate_review(review, request.get("request_sha256", ""), args.required_rule))
+            else:
+                findings.extend(request_review_findings(args.project, request, review, args.required_rule))
     except (OSError, ValueError, TypeError, YAMLError) as error:
         findings = [Finding("input.readable", str(error))]
     print(

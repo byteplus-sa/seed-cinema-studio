@@ -536,6 +536,48 @@ class PrepareRequestTests(unittest.TestCase):
         self.assertFalse((self.root / "requests").exists())
         self.assertFalse((self.root / "task_ids.json").exists())
 
+    def test_invalid_review_paths_fail_before_writes_or_replacement(self) -> None:
+        for register in (False, True):
+            for existing in (False, True):
+                for review_path in ("", "missing.json", ".", "../outside.json", "absolute", "escaped.json"):
+                    with self.subTest(register=register, existing=existing, review_path=review_path):
+                        fixture = PrepareRequestTests()
+                        fixture.setUp()
+                        self.addCleanup(fixture.doCleanups)
+                        outside = Path(fixture.directory.name) / "outside.json"
+                        outside.write_text("{}")
+                        (fixture.root / "escaped.json").symlink_to(outside)
+                        extra = ["--write"]
+                        if existing:
+                            code, result = fixture.run_cli(fixture.argv("--write"))
+                            self.assertEqual(code, 0, result)
+                            (fixture.root / fixture.prompt).write_text(
+                                "@Image 1 pauses beside @Video 1 and @Image 2.\n"
+                            )
+                            extra += ["--replace-unregistered"]
+                        if register:
+                            extra += ["--register", "--capabilities", "capabilities/seedance-2-5.json"]
+                        extra += ["--review", str(outside) if review_path == "absolute" else review_path]
+                        before = {
+                            path.relative_to(fixture.root): path.read_bytes() if path.is_file() else None
+                            for path in fixture.root.rglob("*")
+                        }
+                        code, result = fixture.run_cli(fixture.argv(*extra))
+                        self.assertEqual(code, 1, result)
+                        self.assertFalse(result["ok"])
+                        self.assertEqual(
+                            [finding["rule_id"] for finding in result["findings"]],
+                            ["input.readable"],
+                        )
+                        self.assertEqual(
+                            {
+                                path.relative_to(fixture.root): path.read_bytes() if path.is_file() else None
+                                for path in fixture.root.rglob("*")
+                            },
+                            before,
+                        )
+                        self.assertEqual(outside.read_text(), "{}")
+
     def test_text_only_request_and_model_family(self) -> None:
         (self.root / "library").mkdir()
         (self.root / "library/prompt_amb_market_v01.md").write_text(
