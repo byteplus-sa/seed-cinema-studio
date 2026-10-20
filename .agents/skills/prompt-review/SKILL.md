@@ -1,18 +1,18 @@
 ---
 name: prompt-review
-description: >-
-  Review BytePlus Seedance, Seedream, and Seed Audio prompts inline by default,
-  with sub-agent review only when the user explicitly requests it for a project
-  or specific generation. Use explicit model, operation, change contract, and
-  request hash. Return rule findings and complete or incomplete status; fix and re-review
-  changed prompts before generation. Use for video, VFX, multilingual dialogue (any language, with market packs),
-  image/character/location/prop/UI/card/storyboard prompts, music, SFX, or ambience.
-  Trigger when asked to review, QA, validate, or lint prompts, or before submitting
-  newly authored generation prompts. Exclude manifest-only edits, generated-media
-  review, and frozen snapshots unless re-review is explicitly requested.
+description: Review BytePlus prompts for strict review_mode, explicit prompt QA or required rules. Default generation uses minimal inline preflight without this full checklist workflow. Never reviews generated media.
 ---
 
 # Prompt Review
+
+Read effective `review_mode` independently of `approval_mode`. Missing means
+`default`; invalid values fail. Shared mode applies unless the resolved unit
+brief explicitly overrides it. In default, do not load the full checklists,
+write a mandatory report or run this workflow merely because a prompt changed.
+The caller performs minimal inline preflight and final-output sanity.
+Use the full workflow below in strict mode; for explicit review requests or
+required rules, cover the requested scope without adding unrelated checklists.
+Every provided report remains hash-bound and must pass in either mode.
 
 A quality gate for prompts. The main agent writes and reviews prompts against the
 repo's skill best practices, then fixes any issues found. Sub-agent prompt review
@@ -36,10 +36,10 @@ Main agent writes/updates prompts
 
 ## When to trigger
 
-- After writing or updating any prompt for a BytePlus generative model.
-- Before submitting a generation task (Seedance, Seed Audio, Seedream).
+- In strict mode, after writing or updating a generation-bound prompt.
+- In strict mode, before submitting a generation task.
 - When the user asks to review, check, QA, validate, or lint prompts.
-- After revising a prompt based on generated output feedback.
+- For explicitly required rules in either mode.
 
 Do not trigger for:
 - Media review (project work reviews in Studio, or the pre-Studio `showcase-html`
@@ -150,7 +150,7 @@ For each prompt:
 
 Review inline by default. Use a sub-agent only when the user explicitly asks for
 prompt review with a sub-agent for this project or specific generation. Both
-review modes use the same inputs, checklists, findings format, and hash-bound
+execution approaches use the same inputs, checklists, findings format, and hash-bound
 review record. The reviewer uses:
 - The full text and explicit review input for each prompt being reviewed.
 - The request hash, change contract, reference evidence, and applicable rule IDs.
@@ -299,7 +299,7 @@ If the retry is still unusable, run the review inline against the same
 checklists. If evidence is still missing, retain incomplete status and block
 submission; never treat an empty sub-agent result as passed.
 
-For findings from either review mode:
+For findings from either execution approach:
 
 1. **Read all findings** for each prompt.
 2. **Triage by severity:**

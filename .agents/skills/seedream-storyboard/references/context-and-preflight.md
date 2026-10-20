@@ -3,6 +3,12 @@
 Focused reference for `seedream-storyboard`. Read [the entrypoint](../SKILL.md) for
 mode selection and caller responsibilities.
 
+Read effective `review_mode` independently of approval mode. Default (including
+absent) uses minimal inline preflight and final-output sanity, one sample per
+requested panel/grid, no mandatory report or full checklist. Strict retains the
+full checks and three samples unless another count is requested. This affects
+sample count, never narrative panel count or three-panel sheet layout.
+
 - [1. Inspect existing project context](#1-inspect-existing-project-context)
 - [2. Lock the brief](#2-lock-the-brief)
 - [3. Break the scene into observable beats](#3-break-the-scene-into-observable-beats)
@@ -244,5 +250,6 @@ Grid layout: [e.g. 2×3, reading left-to-right, top-to-bottom]
 Use panel numbers in increments of 10 so panels can be inserted without
 renumbering.
 
-For a one-panel board, create only `p010`. Generate alternatives as variants of
-`p010`; do not mislabel three alternatives as three narrative panels.
+For a one-panel board, create only `p010`. Default generates one image unless
+alternatives are requested; strict uses three samples. Alternatives are variants
+of `p010`, never additional narrative panels.

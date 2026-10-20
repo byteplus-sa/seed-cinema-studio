@@ -8,9 +8,18 @@ approval, review, spending or durable-submission gates.
 Exact tool parameters live in the `ark-mcp` Seedance reference; this file says
 when to use them.
 
-## 1. Draft first, then promote
+Review depth follows `review_mode`, independently of approval authority.
+Default (including absent mode) uses minimal inline preflight and final-output
+sanity, not the full checks below. Strict retains them. Explicit requested checks
+and supplied reports remain binding; never claim unavailable listening.
 
-Plan every new Seedance 2.5 shot as a 480p Draft followed by a promotion.
+## 1. Draft First In Strict Mode
+
+Default permits direct final generation within approved scope, with no compulsory
+draft or draft assembly. In strict, plan each new Seedance 2.5 shot as a 480p
+Draft followed by a promotion unless explicitly overridden. If a draft or
+promotion is requested in either mode, retain all source-selection, task-ID,
+expiry, capability and registry safeguards below.
 
 1. Freeze and review the full request (prompt, ordered references, duration,
    ratio, `generate_audio`, task type) and submit it with `draft: true` when
@@ -28,7 +37,7 @@ Plan every new Seedance 2.5 shot as a 480p Draft followed by a promotion.
 
 A plain 480p request without `draft: true` cannot be promoted; its final is a
 new paid request that may change picture, timing or audio, and it needs its
-own registration and review. When a fix requires a prompt change, write a new
+own registration and mode-appropriate preflight. When a fix requires a prompt change, write a new
 Draft rather than promoting the old one.
 
 ## 2. Choose the audio route at the brief
@@ -86,8 +95,8 @@ Never bind a storyboard grid, contact sheet or board panel as a Seedance
 reference: panel numbers, corner labels and the sketch or watercolour look can
 leak into the video. Translate the board's staging into prompt
 text and bind only element references (characters, locations, props, locked
-screens). Audit every take with frame samples plus top-left corner crops before
-selection.
+screens). Strict review audits frame samples and top-left corner crops; default
+uses output sanity without imposing that full checklist.
 
 ## 5. People in video inputs
 
@@ -134,7 +143,9 @@ reframes and mix. Add overlays and end cards only when the brief calls for them.
 
 ## 8. Review and fix loop
 
-Run these checks before a take passes, and use the narrowest fix.
+Run these full checks in strict mode or when explicitly requested, and use the
+narrowest fix. Default uses minimal actual-output sanity; a known defect still
+needs resolution or a recorded decision, not a fabricated pass.
 
 Wordless work needs temporal and sound review where applicable, not a fabricated
 spoken-dialogue transcript or pronunciation gate. A silent deliverable records

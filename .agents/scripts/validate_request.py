@@ -334,6 +334,38 @@ def frontmatter(root: Path, relative: str) -> dict[str, Any]:
     return parse_frontmatter(contained_path(root, relative).read_text())
 
 
+def project_review_mode(root: Path, *, context: Any = None) -> str:
+    from production_profiles import review_mode
+
+    module = production_context_module()
+    if module.has_production_manifest(root):
+        current = operational_context(root, context=context)
+        settings = module.context_fingerprint_payload(current)["effective_settings"]
+        return review_mode(settings)
+    path = root / "project.md"
+    if not path.exists() and not path.is_symlink():
+        return "default"
+    text = contained_path(root, "project.md").read_text(encoding="utf-8")
+    return review_mode(parse_frontmatter(text) if text.startswith("---") else {})
+
+
+def request_review_findings(
+    root: Path, request: dict[str, Any], review: Any, required_rule_ids: list[str],
+) -> list[Finding]:
+    try:
+        mode = project_review_mode(root, context=request.get("context"))
+    except (ValueError, TypeError, OSError, UnicodeError, YAMLError) as error:
+        return [Finding("review.current_mode", str(error), "project.md")]
+    if review is not None:
+        return validate_review(review, request.get("request_sha256", ""), required_rule_ids)
+    if mode == "strict" or required_rule_ids:
+        return [Finding(
+            "review.complete_evidence",
+            "A completed matching review is required in strict mode or for explicit required rules",
+        )]
+    return []
+
+
 def project_mode_snapshot(root: Path) -> tuple[str, str]:
     path = contained_path(root, "project.md")
     content = path.read_bytes()
@@ -348,10 +380,25 @@ def project_mode_snapshot(root: Path) -> tuple[str, str]:
 def project_mode_findings(
     root: Path, request: dict[str, Any], *, candidate: bool = False
 ) -> list[Finding]:
+    if request["schema_version"] in (2, 3):
+        try:
+            mode, digest = project_mode_snapshot(root)
+        except (ValueError, TypeError, OSError, UnicodeError, YAMLError) as error:
+            return [Finding("approval.current_mode", str(error), "project.md")]
+    if not candidate:
+        try:
+            project_review_mode(root, context=request.get("context"))
+            path = root / "project.md"
+            if request["schema_version"] == 1 and (path.exists() or path.is_symlink()):
+                text = contained_path(root, "project.md").read_text(encoding="utf-8")
+                metadata = parse_frontmatter(text) if text.startswith("---") else {}
+                if "review_mode" in metadata:
+                    raise ValueError("Explicit review_mode requires a version-2 generation request")
+        except (ValueError, TypeError, OSError, UnicodeError, YAMLError) as error:
+            return [Finding("review.current_mode", str(error), "project.md")]
     if request["schema_version"] not in (2, 3):
         return []
     try:
-        mode, digest = project_mode_snapshot(root)
         if request["schema_version"] == 3 and not candidate:
             digest = production_context_module().context_project_sha256(root)
     except (ValueError, TypeError, OSError, UnicodeError, YAMLError) as error:
@@ -569,6 +616,7 @@ def decision_findings(
                     "schema_version": 3 if decision["schema_version"] == 2 else 2,
                     "approval_mode": decision["approval_mode"],
                     "project_sha256": decision["project_sha256"],
+                    **({"context": decision["context"]} if decision["schema_version"] == 2 else {}),
                 },
             )
         )
@@ -1254,22 +1302,12 @@ def main() -> int:
             args.project, request, json.loads(args.capabilities.read_text()),
             unit_id=args.unit, production_scope=args.production_scope,
         )
-        if args.review:
-            findings.extend(
-                validate_review(
-                    json.loads(args.review.read_text()),
-                    request.get("request_sha256", ""),
-                    args.required_rule,
-                )
-            )
+        review = json.loads(args.review.read_text()) if args.review else None
+        if args.review and review is None:
+            findings.extend(validate_review(review, request.get("request_sha256", ""), args.required_rule))
         else:
-            findings.append(
-                Finding(
-                    "review.complete_evidence",
-                    "A completed review is required before submission",
-                )
-            )
-    except (OSError, ValueError) as error:
+            findings.extend(request_review_findings(args.project, request, review, args.required_rule))
+    except (OSError, ValueError, TypeError, YAMLError) as error:
         findings = [Finding("input.readable", str(error))]
     print(
         json.dumps(
