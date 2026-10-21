@@ -173,7 +173,7 @@
       "source": "./local",
       "sourceType": "local",
       "skillPath": ".agents/skills/seed-audio-prompt/SKILL.md",
-      "computedHash": "b11306c96617944602bb22df6f1d4e2aa945f43198b6ec5b0368442694616c5d"
+      "computedHash": "bc5fe8872a27ada25adf047aaba1037c81818b2b5e1b1ac9126d6e8166175dd3"
     },
     "seedance-acting-console": {
       "source": "./local",
