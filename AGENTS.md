@@ -124,8 +124,13 @@ schemas live in `.agents/contracts/schemas/`.
   unchanged. Keep decision upstream hashes tied to real production-relative files.
 - Canon first: approve recurring characters, locations and story-critical props
   before dependent shot generation. Elements define identity.
-- Draft first: Seedance 2.5 shots start as native 480p drafts (`draft: true`); review
-  and select before any final-resolution generation. Record each draft task ID in
+- Draft first: every new Seedance 2.5 generation, including edits, extensions
+  and retries, uses explicit `resolution: "480p"` and boolean `draft: true`.
+  This applies in every review mode and overrides conflicting skill defaults.
+  Plain 480p is not native Draft mode; resolve missing tool controls rather than
+  dropping `draft`. Other models without native Draft support use ordinary
+  480p tests. Review and select before any final-resolution generation.
+  Record each native draft task ID in
   `drafts.json` (`draft_ledger.py`) so the approved draft can be promoted to the
   final with `draft_task_id` within 7 days (see the draft and promotion contract).
   A final is a new paid request with its own review, and its output is inspected
