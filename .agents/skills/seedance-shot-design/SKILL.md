@@ -25,8 +25,10 @@ skill.
 
 ## Why clips read flat
 
-Flat, stock-footage takes trace to four common causes. The plan exists to
-remove each one.
+The table describes coverage problems to investigate, not established causes
+of every flat performance. A held setup, soft light or subtle action can be
+intentional. Preserve the approved scene and consult its performance plan;
+more cuts or camera movement cannot substitute for acting intent.
 
 | Cause | What the plan does instead |
 | --- | --- |
@@ -55,8 +57,10 @@ not plan one unless the user asks for a single take.
 | Resolve a named light setup into recipes and phrases | `seedance-lighting-presets` |
 | Speed ramps and montage rhythm | `seedance-pacing-presets` |
 | When cuts land on a song (cut timing, beat contract) | the song owns the timing; this skill plans what each shot is |
-| Character geometry and blocking | `tig-blocking-map` |
-| Dramatic structure of the scene | `tig-scene-engine` |
+| Character geometry and blocking | `blocking-map` |
+| Dramatic structure of the scene | `scene-craft` |
+| Performance intentions, triggers and listening | `acting-direction`; consume the supplied plan |
+| Readable staged-fight exchanges and actor/prop states | `seedance-fight-choreography`; consume its ledger |
 | Six-part formula, per-shot prompt block, references, audio syntax | `seedance-prompt-25` |
 
 These are prose pointers for the calling agent. This skill decides *which*
@@ -92,9 +96,19 @@ Input: the scene beats and intended viewer reaction, location and light facts
 (draft until canon is approved, then revalidated), runtime and aspect ratio,
 any confirmed `directorial_axes` or `locked` block recorded in `project.md`,
 and any user locks.
+For character-performance work, consume the caller's performance plan with
+beat IDs, intentions, listening tasks, required registration/response time and
+critical acceptance criteria. For staged fights, consume the exchange and
+state ledger. Missing material input goes back to the caller; this leaf does
+not invoke the other skills or invent character motivations.
 
 Output: a shot plan record per [shot plan format](references/shot-plan-format.md)
 and the per-shot facts the Seedance 2.5 prompt carries.
+Carry relevant performance/exchange beat IDs and readable evidence in existing
+shot notes; this does not add provider parameters. Reconcile required cues
+with crop, camera side, occlusion, scale and duration. Reserve listener and
+reaction time, preserve sustained holds, and return conflicts with camera or
+timing locks instead of silently changing them.
 
 ## Procedure
 

@@ -12,9 +12,11 @@ they are prompt-composition only and never call the API themselves.
 | Lens / focal length / aperture / sensor | `seedance-lens-presets` | Always pairs numeric optics with the visible result; resolve requested 4K against current model capabilities |
 | Lighting | `seedance-lighting-presets` | Causal lighting presets; emit both the Seedream `Lighting:` recipe (elements) and the Seedance visual-style phrase so image + video share one lighting intent |
 | Color grading | `color-grade-palettes` | Named palettes + film looks in the Visual Style slot; keep one project-wide palette; optional FFmpeg match graphs in the mix step |
-| Acting / emotion | `seedance-acting-console` | Scene-level analysis (motive, tactic, eye-work) + per-character cue encoding (6 emotions × 3 intensities); optional audio reinforcement via `seed-audio-prompt` |
-| Scene structure & dramaturgy | `tig-scene-engine` | Five-element engine (Goal, Obstacle, Tactic, Reversal, Value Shift); bespoke definitions — do not substitute textbook craft |
-| Staging / blocking | `tig-blocking-map` | Color-coded outline schematic for character disposition; geometry only, no style bleed |
+| Performance intentions and listening | `acting-direction` | Scene-level motives, goals, tactics and trigger/registration/response ledger; source-bound performance plan before shot design |
+| Seedance performance encoding | `seedance-acting-console` | Encode supplied intentions with readable cues; emotion bank optional, no repeated scene analysis |
+| Staged fighting | `seedance-fight-choreography` | Stable participants and props, readable exchanges, reactions and settled end states |
+| Scene structure & dramaturgy | `scene-craft` | Selected framework; five-element engine is opt-in, never a universal defect gate |
+| Staging / blocking | `blocking-map` | Color-coded outline schematic for character disposition; geometry only, no style bleed |
 | Pacing / rhythm | `seedance-pacing-presets` | Speed ramps and montage pacing; second-level timestamps are opt-in and not frame-accurate |
 | Original music / vocal master, audio-first track | `seed-audio-prompt` | Seed Audio prompt structure (T2A/TA2A) for an original music or vocal master |
 | Production design: sets, props and locations with an emotional function | `seedream-location-asset`, `seedream-prop-asset` | The element manifest's optional `emotional_function` (see element identification) turns a feeling into visible design: fit, scale, height, pattern, age; a counterpoint location states a world rule |
@@ -23,6 +25,14 @@ they are prompt-composition only and never call the API themselves.
 | Storyboard, full multi-scene production | `seedream-storyboard`, `scene-board-sheet`, `film-production` | Boards are planning and review artifacts, never Seedance references (`board.animatic_review_only`): their staging goes into prompt text. Scene boards run at L1, L2 (default) or L3 per scene, repair failed panels by editing, and assemble into a sheet and animatic; `film-production` orchestrates across scenes |
 
 ## Composition rules
+
+For character-performance scenes, follow
+[Performance direction](performance-direction.md): establish the performance
+plan first, then reconcile readability with shot design and encode cues.
+Prompt review checks `acting.plan_bound` and, for fights,
+`fight.readable_exchange`. Take review and editorial review must inspect
+critical responses in actual playback/listening; camera fidelity alone does
+not establish acting quality.
 
 Narrative, ad, micro-drama, music-video and showcase shots get a shot plan by
 default: size, angle, camera move, lens intent and light source per shot, from
@@ -35,9 +45,10 @@ A preset adds control (timing, holds, a named variant), not the effect itself:
 plain wording already produces a light going off or a lunge, and a timed light
 cue on a declared source is honoured closely. Load a preset when the plan or
 the user names that axis; do not stack presets to make a flat clip dynamic.
-Flat video usually comes from a single-setup clip with no camera-move statement
-and soft verbs, so the remedy is a shot plan with one action, a move and a named
-light per shot.
+For flat acting, inspect the scene, performance plan, submitted prompt, actual
+take and edit before diagnosing the cause. More camera movement cannot replace
+missing pursuit or listening. Preserve quiet held shots when they carry the
+intended performance; a move is not a compulsory repair.
 
 A static camera or an unchanging light is a choice that carries a recorded
 reason (`static_reason`); the allowed values and the exempt formats are in

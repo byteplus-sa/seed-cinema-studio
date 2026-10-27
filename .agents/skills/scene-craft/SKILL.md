@@ -1,11 +1,16 @@
 ---
-name: tig-scene-engine
+name: scene-craft
 description: Write and audit screenplay scenes using an explicitly selected craft framework. Use for scene drafts or structural feedback; the bespoke five-element engine is an option, not a universal defect gate.
 ---
 
-# Scene Engine
+# Scene Craft
 
 A skill for writing and auditing scenes/sequences with an explicit framework.
+The five-element method below is also present in the user-supplied Higgsfield
+prompt-engine skill. Retain it here as one selected framework instead of
+creating a duplicate prompt-engine entrypoint. Scene craft is not the
+Seedance prompt grammar, and this leaf does not invoke sibling skills or
+submit media tasks.
 
 ## Framework selection
 
@@ -255,14 +260,19 @@ prose hints for the calling workflow, not steps this skill runs:
   imposing one beat per shot, a fixed shots-per-generation cadence, or a
   mandatory reaction close-up. Split generation at verified model limits
   without turning every technical boundary into an editorial cut.
+- **Performance handoff.** Pass source beat/line locators, character knowledge,
+  intentions, locked words and end state to the caller for `acting-direction`.
+  It derives performance tactics, triggers and listening; shot design tests
+  readability, and `seedance-acting-console` encodes the result. An audience
+  value shift is not an emotion the character must perform.
 - **Dialogue budget.** Derive timing from the actual words, speaker, pauses
   and delivery; verify with playback and listening. Keep room for the final
   word and intended tail rather than using a universal speech rate.
-- **No extension with people.** Seedance rejects extending or editing a clip
-  that shows a realistic person unless each person is an `asset://` asset. A
-  scene longer than one clip continues as new generations: stage each from the
-  previous clip's last frame with `tig-blocking-map` text geometry and the same
-  element references, placing any cut according to the approved coverage.
+- **Continuation capability.** The caller checks current model controls and
+  authorized likeness routes before editing or extending footage. This craft
+  skill does not establish a provider restriction. When a new generation is
+  required, carry the prior end state as text geometry through `blocking-map`
+  and approved elements, placing cuts according to approved coverage.
 
 ## Reminders
 
@@ -270,4 +280,4 @@ prose hints for the calling workflow, not steps this skill runs:
 - The engine is genre-agnostic. Confirm genre, theme and idea with the user when writing.
 - Audit is in-chat prose; rewrites within it are in FD format.
 - Under the selected engine, prioritize **a reversal that turns the plot but does not move the audience's verdict**. Do not apply that failure label to another framework.
-- When an audited scene becomes a storyboard or video, compose with `tig-blocking-map` for staging and `seedance-prompt-25` for the video prompt (see From scene to video).
+- When an audited scene becomes a storyboard or video, compose with `blocking-map` for staging and `seedance-prompt-25` for the video prompt (see From scene to video).

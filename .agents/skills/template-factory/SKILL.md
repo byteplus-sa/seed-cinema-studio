@@ -443,6 +443,6 @@ reference; then record its manifest, current SHA-256, `reference_image` or
 `reference_video` role, and `control_only: false`, and confirm live mode
 support. Flipping the flag alone never grants approval.
 
-A separately approved `tig-blocking-map` position map remains a dedicated control
+A separately approved `blocking-map` position map remains a dedicated control
 reference under the workspace blocking contract. A scene-board overview, panel or
 sheet never substitutes for that map.

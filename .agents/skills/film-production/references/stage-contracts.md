@@ -86,7 +86,7 @@ brief also records:
   per shot, and the wow image each sequence must deliver.
 
 Use `story-development` for source-preserving treatment, outline and scene-list
-artifacts, and compose `tig-scene-engine` separately for dramatic craft.
+artifacts, and compose `scene-craft` separately for dramatic craft.
 Supplied scripts need faithful extraction, not an unsolicited rewrite. Profile
 planning outputs guide evidence; they do not force duplicate artifacts.
 
@@ -121,6 +121,12 @@ assist; local-only tools are not required.
 
 Required output: scene list, cast, locations, props, dialogue, sound needs,
 continuity states, delivery assumptions, and scene-level acceptance criteria.
+For character-performance scenes, also require `## Performance plan` from
+`acting-direction` with source evidence, per-character intentions and a
+trigger/registration/response ledger. Apply
+[Performance direction](../../../contracts/performance-direction.md).
+For staged fights, include the `seedance-fight-choreography` state and exchange
+ledger. Feed readability needs into shot design and reconcile any conflicts.
 Use `series-continuity` to distinguish identity from mutable state and character
 knowledge, with source hashes and scripted/observed/unknown status. Unit scene
 membership follows the manifest; machine IDs remain globally unique.
@@ -241,6 +247,12 @@ assembly, to the cut's measured length.
 
 ## 6. Shot generation
 
+For applicable new or revised character performances, entry also requires the
+current performance plan and its `seedance-acting-console` encoding, with
+`acting.plan_bound` and applicable `fight.readable_exchange` prompt checks.
+Missing material context leaves review incomplete. Preservation-only edits
+retain source acting rather than acquiring a new performance arc.
+
 Entry: shot objective, the scene's revalidated shot plan (or recorded exemption), selected
 video mode, approved inputs, reference roles, prompt snapshot target, duration,
 and any requested audio (if Stage 5 was completed) exist. Before submission the `prompt-review` gate has passed for
@@ -283,6 +295,10 @@ project instead lists them in one `kind: "takes"` group using
 `showcase-html` production-canvas and schema.
 
 Exit: a passing take has a hash-bound, mode-authorized selection. In
+addition to technical QA, playback/listening must demonstrate the declared
+critical performance beats, listener responses and fighting continuity where
+applicable. Record beat IDs and timestamps under the performance contract;
+unavailable inspection remains unresolved. In
 `ask_for_approval`, the recommendation remains pending until the user chooses.
 If no take passes, make a bounded correction within the run budget or leave the
 shot blocked.

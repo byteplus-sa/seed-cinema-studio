@@ -33,6 +33,13 @@ Record the unit, primary cut `main` and exact artifact reviewed.
    direction, state continuity, entrances/exits, pacing, transitions and
    opening/ending intent. Evaluate a quiet hold by its purpose; do not
    prescribe extra cuts merely because the camera is static.
+   For character performances, compare the cut with the supplied performance
+   beat IDs and critical criteria under
+   [Performance direction](../../contracts/performance-direction.md).
+   Check that trims retain registration, listening, response and state across
+   cuts; fights retain readable exchanges and prop/participant continuity.
+   Missing plan evidence stays unresolved, not invented. Do not report vocal
+   delivery as verified unless the actual sound was heard.
 5. Separate observed defects, artistic suggestions and unavailable evidence.
    Each proposed trim/reorder names clip ID, old/new range, rationale and
    downstream effects on sound and subtitles. Never apply it in this leaf.

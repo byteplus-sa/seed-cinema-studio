@@ -1,5 +1,5 @@
 {
-  "skill_name": "tig-scene-engine",
+  "skill_name": "scene-craft",
   "evals": [
     {
       "id": 1,
@@ -56,11 +56,11 @@
     {
       "id": 5,
       "prompt": "This audited 40-second sequence works on the page: Lena searches three drawers for a key, the third is locked, her brother walks in holding it. Turn it into Seedance clips. Can we just generate the first 15 seconds and extend it?",
-      "expected_output": "A shot breakdown that keeps the engine beats visible, and a clear answer that extension of a clip with people is rejected without asset:// assets, with the blocking-map continuation route instead.",
+      "expected_output": "A shot breakdown preserving approved beats, with extension dependent on live capability and authorized likeness checks; new-generation continuation is a supported alternative, not a universal requirement.",
       "files": [],
       "expectations": [
         "Keeps the search, locked drawer, brother holding the key and Lena's reaction visible without inventing hidden agency or a value shift unsupported by the supplied scene.",
-        "States that Seedance rejects extending a clip showing realistic people unless each person is an asset:// asset, and proposes new generations staged from the previous last frame with tig-blocking-map text geometry and the same element references.",
+        "Returns extension and likeness eligibility to the caller for current checks rather than claiming universal rejection or acceptance. If new generations are needed, proposes blocking-map text geometry and approved elements to carry the prior end state.",
         "Derives coverage and reaction timing from the approved scene, allowing multiple beats in a held shot and no fixed shots-per-generation cadence.",
         "Does not change the audited beats or invent new motives while converting to shots."
       ]

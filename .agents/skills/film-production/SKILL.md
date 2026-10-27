@@ -32,7 +32,7 @@ Without that selection, an unspecified format stays on this general route.
 A landscape cinematic short
 can have quiet held shots, wordless scenes and a resolved ending without
 Hook/Turn/Cliffhanger, a runtime default or a to-be-continued card. Use
-`tig-scene-engine` for scene craft as needed, not `microdrama-story-formats` as
+`scene-craft` for scene craft as needed, not `microdrama-story-formats` as
 the generic development fallback.
 
 `project.md` remains the canonical shared brief. Preserve existing locks, optional
@@ -111,7 +111,10 @@ between modalities.
 | Brief intake, directorial defaults, audio route, look intent | `brief-intake` |
 | Narrative reference-video inspiration | `template-factory` for native-first reverse-engineering; native/local inspection and timing evidence for lighter analysis, with permitted MCP fallbacks when needed. Preserve the selected unit, supplied script, quiet holds and confirmed format |
 | Explicit micro-drama format | `micro-drama` (with a market writer such as `filipino-micro-drama`) |
-| General premise, treatment, outline or script-led scene list | `story-development`; preserve supplied writing and compose `tig-scene-engine` separately for scene craft |
+| General premise, treatment, outline or script-led scene list | `story-development`; preserve supplied writing and compose `scene-craft` separately for scene craft |
+| Character intentions, listening and performance beats | `acting-direction`; required for new or revised character-performance scenes |
+| Seedance performance cue encoding | `seedance-acting-console`; consume the performance plan, not mood labels alone |
+| Staged screen fights | `seedance-fight-choreography`; actor/prop state and readable exchanges |
 | Shared bible, mutable state and character knowledge | `series-continuity`; scoped audits without changing canon |
 | Review of an actual edit for coverage, pacing and continuity | `editorial-review`; explicit `editorial.py` snapshots, no automatic edit application |
 | Edit-bound cue sheets, mix decisions and listening evidence | `sound-post`; caller executes authorized mixing/rendering |
@@ -126,7 +129,7 @@ between modalities.
 | General image generation or edit | `seedream-prompt` or `seedream-edit` |
 | Storyboard for planning and review | `seedream-storyboard` |
 | Scene board record, annotated sheet, animatic and panel repair planning | `scene-board-sheet` |
-| Scene geography and crowd blocking | `tig-blocking-map` |
+| Scene geography and crowd blocking | `blocking-map` |
 | Score, ambience, SFX or dialogue audio | `seed-audio-prompt` |
 | Per-shot coverage, camera, lens intent and light for a scene | `seedance-shot-design` |
 | Seedance 2.5 video prompt | `seedance-prompt-25` |
@@ -211,6 +214,17 @@ mode-authorized confirmed set as a `locked` block in `project.md`.
 Sequence `story-development` for source inventories and script-led breakdown,
 and `series-continuity` for state/knowledge evidence. Do not require redundant
 new writing when a supplied locked script already contains it.
+
+At scene breakdown, apply the
+[performance contract](../../contracts/performance-direction.md). Run
+`acting-direction` before coverage decisions for new or revised character
+performances and store `## Performance plan` in the scene. Coordinate
+`seedance-fight-choreography` when fighting is in scope. Reconcile their
+readability needs with the shot plan, then use `seedance-acting-console` at
+prompt composition to carry the selected intentions, triggers and responses.
+Require `acting.plan_bound` and applicable `fight.readable_exchange` checks.
+Actual playback/listening must establish critical performance beats before
+take selection or promotion; a correct transcript is insufficient.
 
 At the scene breakdown stage, run `seedance-shot-design` for every narrative,
 ad, micro-drama, music-video or showcase scene before any shot prompt is
