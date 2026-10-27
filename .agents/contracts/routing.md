@@ -47,7 +47,10 @@ and [Studio commands](production-policy.md), not unscoped upstream examples.
 
 | Intent | Route |
 | --- | --- |
-| General premise, treatment, outline or supplied-script scene list | `story-development`; source-preserving document leaf, with `tig-scene-engine` composed separately by the orchestrator for dramatic craft |
+| General premise, treatment, outline or supplied-script scene list | `story-development`; source-preserving document leaf, with `scene-craft` composed separately by the orchestrator for dramatic craft |
+| Character objectives, tactics, listening and performance beats | `acting-direction`; establish the source-bound performance plan before shot design |
+| Seedance performance cue encoding | `seedance-acting-console`; consumes the plan without redoing scene analysis |
+| Staged fight choreography | `seedance-fight-choreography`; stable actors/props and readable action/reaction chains |
 | Story bible, mutable state or character-knowledge audit | `series-continuity`; evidence and proposals, never automatic canon changes |
 | Coverage, pacing or continuity review of an actual cut | `editorial-review`; `editorial.py export/check/reconcile` supplies current Studio snapshots without applying order |
 | Sound cues, mix decisions or listening evidence | `sound-post`; caller owns any authorized audio generation, mixing and rendering |
@@ -84,7 +87,7 @@ authorization follows from choosing one of these routes.
 | Production stage review | Selected legacy or unit HyperFrames Studio through `studio_project.py` (`sync`, `stage complete` with its `status` and `check`; `--unit` where applicable); pre-Studio canvas projects with `showcase.json` keep the `showcase-html` canvas |
 | Interactive editing, assembly and final render of a production | HyperFrames Studio; `studio_project.py render` is the only authority for final files and writes the hash-bound render record; post work made elsewhere is placed in Studio and rendered. Skills stay local; no `hyperframes skills` installs; `publish`, `cloud`, `lambda`, `cloudrun` and other account commands only on explicit request |
 | Ad-hoc media comparison, also an optional look at a Studio project's elements, audio or candidate takes (never a gate) | `showcase-html --quick`; `media-review` only for an explicitly requested OS player or unavailable browser |
-| Mermaid system/process diagram | `design-doc-mermaid` when available; cinematic blocking requests use `tig-blocking-map` |
+| Mermaid system/process diagram | `design-doc-mermaid` when available; cinematic blocking requests use `blocking-map` |
 | Narrative reference-video inspiration | Obtain decodable local media first. Use capable native inspection and timestamped measurements; use permitted `ark-mcp` analysis when coverage is insufficient or explicitly requested. Full reverse-engineering follows `template-factory`. Preserve selected unit, source writing, quiet holds and format; scripts, article text and sparse frame samples alone do not establish motion grammar |
 | Reference soundtrack analysis | Native audio input or a capable local audio model first; permitted audio-understanding tools or documented human listening when needed. ASR and separation may assist, but do not establish listening. Record full-soundtrack coverage and provenance under privacy, cost and explicit offline constraints; unresolved sound is not approved post evidence |
 
@@ -110,5 +113,10 @@ Credential names are BYTEPLUS_MODELARK_API_KEY and BYTEPLUS_SEED_AUDIO_API_KEY. 
 New requests set `operation` to the short verb, not the provider tool name: `generate` (the dominant value in existing registries), `edit`, `extend`, `generate_variations`, `text_video_to_audio`, `enhance`, or the legacy hyphenated `erase-subtitles`. `validate_request.py` checks `operation` against the `operations` list in the capability evidence, so a value must appear there. The provider tool is identified by `model` and `transport`. Submit long-running work through `ark_job_submit`. Existing records that carry a tool name such as `seedance_2_5_create_task` are read as-is; constrain the schema to an enum only after the legacy-registry migration preview.
 
 ## Directorial axes
+
+For applicable character-performance work, first follow
+[Performance direction](performance-direction.md), including its prompt checks
+and actual-take acceptance. Static camera choices do not exempt acting;
+source-preserving edits inherit it. Static assets need no performance plan.
 
 Read [seedance-reference.md](seedance-reference.md) when composing a generation-bound shot. Plan the shots first with `seedance-shot-design` (per-shot camera, lens intent and light, with a recorded reason for any static camera or constant light), then load only the preset skills the plan or the user's request needs for camera, lens, lighting, grade, acting, pacing, blocking or medium. Keep one grade per clip, one dominant lighting direction per shot and one or two camera moves per shot unless the explicitly requested choreography needs more.

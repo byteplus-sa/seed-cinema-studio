@@ -16,6 +16,21 @@ Pass selected element paths, roles, approval states, hashes, and stable prompt
 tokens. If an element is not approved, keep the dependent board in `draft` or
 `review` and make video handoff ineligible.
 
+## Performance to shots and assembly
+
+Follow [Performance direction](../../../contracts/performance-direction.md).
+Pass the source-bound `acting-direction` plan, beat IDs, character/listener
+tasks, reaction triggers, readability needs and critical criteria to shot
+design and `seedance-acting-console`. Staged fights also pass participant,
+prop and exchange states from `seedance-fight-choreography`.
+Compare the final prompt with those facts under `acting.plan_bound` and,
+when applicable, `fight.readable_exchange`. Changed plan hashes invalidate
+dependent reviews; preserve source snapshots.
+
+For take selection, pass actual timecoded playback/listening evidence of the
+critical beats, not just transcript accuracy. At assembly, verify that trims
+and cuts retain the intended registration, response and performance state.
+
 ## Storyboard to video
 
 Pass the board's staging as text, never as an image. Elements are the identity

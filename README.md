@@ -35,6 +35,18 @@ workflow table. Narrative work does not need the absent `general-video` workflow
 Hook/Turn/Cliffhanger, 45-60 s episodes, 9:16 and to-be-continued cards are
 micro-drama defaults only, not requirements for a cinematic short.
 
+Scene craft and performance have separate owners in both narrative workflows:
+`scene-craft` writes or audits scenes under the selected framework; its five-element
+engine is optional. `acting-direction` supplies the scene's `## Performance plan`
+before `seedance-shot-design`, and `seedance-acting-console` encodes the supplied
+intentions, triggers and responses for Seedance. `seedance-fight-choreography`
+adds readable staged exchanges when fights are in scope, preserving the selected
+style, medium and outcome. `blocking-map` supplies planning geometry, not a
+default video reference. These leaves do not invoke one another or submit media.
+Quiet holds and source-preserving edits retain their approved intent. See the
+[performance contract](.agents/contracts/performance-direction.md) for
+`acting.plan_bound`, `fight.readable_exchange` and actual-take review requirements.
+
 Shared choices and compatibility rules live in the
 [production brief contract](.agents/contracts/production-brief.md) and
 [production profiles](.agents/catalog/production-profiles.json). Profiles disclose defaults; confirmed
@@ -108,7 +120,7 @@ approval, provider generation or publishing follows from these commands.
 
 | Need | Skill |
 | --- | --- |
-| General narrative development from a supplied script or treatment | `story-development`; the `film-production` orchestrator composes `tig-scene-engine` for scene craft |
+| General narrative development from a supplied script or treatment | `story-development`; the `film-production` orchestrator composes `scene-craft` for scene craft |
 | Explicit micro-drama stories for any market, language or genre | `microdrama-story-formats` |
 | Spoken dialogue in any language, with a native-language check | `seedance-prompt-25-dialogue` |
 | Filipino market pack (reference example) | `filipino-micro-drama` and `seedance-prompt-25-filipino` |
@@ -133,6 +145,7 @@ Edit skills only under `.agents/skills/`.
 
 | Skill | Summary |
 |---|---|
+| **acting-direction** | Plan character intentions, listening and performance beats before shot design; prompt-only direction, with no generation or take approval. |
 | **story-development** | Prepare source-preserving premises, treatments, outlines and script-led scene lists without imposing a format formula. |
 | **series-continuity** | Maintain shared story state and character-knowledge continuity with scoped, evidence-backed contradiction audits. |
 | **editorial-review** | Review actual cuts and explicit edit snapshots for coverage, pacing and continuity without applying Studio edits. |
@@ -163,8 +176,9 @@ Edit skills only under `.agents/skills/`.
 | **prompt-review** | Review and fix BytePlus Seedance, Seed Audio, and Seedream prompts against the repo's best practices inline by default; use a sub-agent only when explicitly requested for a project or specific generation. |
 | **scene-board-sheet** | Derive a scene's storyboard record from its shot plan at L1, L2 (default) or L3, register generated and edited panels, plan panel-only repairs, and build annotated sheets, an animatic and a static review page. |
 | **seed-audio-prompt** | Write structured Seed Audio 1.0 prompts for full-soundscape audio generation including dialogue, music, SFX, and ambience. |
-| **seedance-acting-console** | Turn playable motives and tactics into observable acting cues appropriate to framing, visibility and intensity. |
+| **seedance-acting-console** | Encode supplied performance plans as concise Seedance intent, trigger and response cues; preserve framing, restraint and dialogue locks. |
 | **seedance-camera-presets** | Compose prompt-only camera moves and framing, including optical zoom, Dutch angle, dolly, orbit, FPV, whip pan, and single, two-shot, over-the-shoulder, point-of-view and insert framing. |
+| **seedance-fight-choreography** | Plan fictional screen-fight beats with stable participants, readable reactions and prop continuity; prompt-only, with style explicitly selected and outcome locks preserved. |
 | **seedance-lens-presets** | Translates a lens, focal length, aperture, focus or sensor request into a canonical visible-result phrase for Seedance prompts or Seedream style, and routes unreliable focus pulls and tape looks to post. |
 | **seedance-lighting-presets** | Translates a named lighting setup (rim light, backlight, golden hour, night and moonlight, soft/hard light, three-point, Rembrandt, practicals, silhouette, contre-jour) into a Seedream `Lighting:` recipe and a matching Seedance phrase, and words timed light cues inside a shot. |
 | **seedance-motion-recast** | Write Seedance 2.5 Motion Transfer prompts that keep a clip's motion, camera and cuts while rebuilding cast, wardrobe, product, location and style from locked references, with per-subject dispositions, Virtual Portrait identities, a muted source with post audio and a 480p probe ladder. |
@@ -187,8 +201,8 @@ Edit skills only under `.agents/skills/`.
 | **seedream-storyboard** | Create, revise, and optionally generate production-ready cinematic storyboards—from one hero panel with alternatives to a multi-panel continuity sequence—with BytePlus Seedream. Boards are planning and review artifacts, never Seedance references. |
 | **showcase-html** | Maintain the HTML production canvas of pre-Studio canvas projects and build ad-hoc comparison pages (optional for Studio projects). |
 | **template-factory** | Native-first narrative reference recipes with permitted tool fallbacks; preserve selected units, script-led format and draft-ledger contracts. |
-| **tig-blocking-map** | Tigran's project-agnostic method for giving Seedance character DISPOSITION via a color-coded outline schematic — a "staging reference" (blocking map). |
-| **tig-scene-engine** | Apply the five-element dramatic engine when selected, preserving supplied scripts, alternative narrative structures and intended shot duration. |
+| **blocking-map** | Tigran's project-agnostic method for giving Seedance character DISPOSITION via a color-coded outline schematic — a "staging reference" (blocking map). |
+| **scene-craft** | Apply the five-element dramatic engine when selected, preserving supplied scripts, alternative narrative structures and intended shot duration. |
 
 ## Setup
 

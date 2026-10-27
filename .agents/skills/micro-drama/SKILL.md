@@ -64,6 +64,11 @@ Candidate validation does not authorize activation or migration.
    [production policy](../../contracts/production-policy.md)) (pre-Studio canvas projects with
    `showcase.json` keep the `showcase-html` canvas).
 2. **Breakdown.** Follow the confirmed episode or market-card scene plan.
+   For new or revised character performances, run `acting-direction` and
+   record `## Performance plan` before shot design under the
+   [performance contract](../../contracts/performance-direction.md).
+   Use `scene-craft` for the selected scene framework, without forcing its
+   five-element engine. Coordinate `seedance-fight-choreography` for fights.
    Default to three scenes: Hook (about 15 s), Turn (about 20 s), Cliffhanger
    (about 15 s). Split scenes into clips as needed for verified model limits and
    dialogue timing. Each scene gets a shot plan (size, angle, move and light per
@@ -83,7 +88,11 @@ Candidate validation does not authorize activation or migration.
    available under the blocking-map contract.
 5. **Audio preparation.** Mark it skipped unless the user requests a separate
    lip-sync track. Native Seedance audio carries the dialogue.
-6. **Shots.** Write each clip prompt from its shot plan with `seedance-prompt-25` and the market's
+6. **Shots.** Encode the performance plan with `seedance-acting-console`.
+   Require `acting.plan_bound` and applicable `fight.readable_exchange` checks.
+   Inspect actual registration, listening, response and delivery before
+   selecting or promoting takes; a correct transcript alone is insufficient.
+   Write each clip prompt from its shot plan with `seedance-prompt-25` and the market's
    dialogue partner skill (`seedance-prompt-25-dialogue` for any language; a
    market pack such as `seedance-prompt-25-filipino` adds language depth). Apply
    the prompt, dialogue-timing and QA rules in the

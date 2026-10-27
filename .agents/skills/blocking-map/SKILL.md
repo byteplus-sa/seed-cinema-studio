@@ -1,5 +1,5 @@
 ---
-name: tig-blocking-map
+name: blocking-map
 description: >-
   Project-agnostic method for giving Seedance character DISPOSITION via a
   color-coded outline schematic — a "staging reference" (blocking map). Use
@@ -14,7 +14,7 @@ description: >-
   location into the shot.
 ---
 
-# TIG BLOCKING MAP v2 — staging reference as character disposition (any project)
+# Blocking Map v2 — staging reference as character disposition (any project)
 
 A **staging reference** is a deliberately schematic, color-coded OUTLINE drawing used to design cinematic positions before video prompting. It tells the model WHO IS WHERE — nothing else. It is built to carry maximum geometry with minimum style mass, because style bleed from the map into the shot is the method's known enemy.
 
@@ -144,13 +144,21 @@ Compose with `seedance-prompt-25` when writing the surrounding video prompt.
 
 ## CONTINUING A CLIP WITH PEOPLE (the extension substitute)
 
-Seedance rejects `extend` and video-to-video inputs of a clip that shows a realistic person — generated or real — with `PrivacyInformation` before any cost, unless each person is bound as an `asset://` Virtual Portrait or authorized asset. Without assets, a scene with people continues as a NEW generation, and this method carries the continuity:
+First have the caller check current operation/reference capabilities and the
+authorized likeness route under `seedance-virtual-portrait`. This planning
+skill does not establish a universal privacy rejection, a no-cost guarantee
+or permission to evade an input restriction. When continuation as a new
+generation is selected, carry continuity as follows:
 
 1. Take the previous clip's last frame (`return_last_frame`, or a frame grab) as the STEP 1 source frame and build its blocking map.
 2. In STEP 2, write the text geometry for the next clip: each letter's start position, facing and crop must match that last frame, then its path, end mark and trigger beat.
-3. Choose one route, because first-frame and reference modes are mutually exclusive:
+3. Choose a supported route from live capability evidence; do not assume
+   first-frame and reference modes are always mutually exclusive:
    - **Reference route (default):** bind the same character, location and prop element references by role, and use the last frame only to write the text geometry. Never bind the previous clip as a video input and, by default, never the map.
-   - **First-frame route:** the last frame opens the new clip as `first_frame`, with no element references. Stills of generated people as first frames are usually accepted, while face or body crops as `reference_image` tend to be rejected, so keep the reference route ready.
+   - **First-frame route:** use the last frame only when its role, authorized
+     likeness handling and any combination with element references are
+     supported. Do not repackage a rejected identity input to bypass a rights
+     restriction. Return unsupported combinations to the caller.
 4. QA the seam: positions, facing, wardrobe and light match on both sides of the cut.
 
 ## Intentional conditioning representation

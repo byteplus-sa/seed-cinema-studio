@@ -239,6 +239,6 @@ generated and saved.
 - Compose with `seedream-character-sheet` / `seedream-location-asset` /
   `seedream-prop-asset` for canonical Element references in every panel.
 
-A separately approved `tig-blocking-map` position map remains a dedicated control
+A separately approved `blocking-map` position map remains a dedicated control
 reference under the workspace blocking contract. A scene-board overview, panel or
 sheet never substitutes for that map.

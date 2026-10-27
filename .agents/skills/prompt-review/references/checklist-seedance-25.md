@@ -230,10 +230,25 @@ does not create a native draft; confirm the live tool supports `draft: true`.
 
 ## Emotion, motion and space
 
-35. **Visible or audible cues.** Abstract emotions are paired with 2-4 readable
-    cues (eyes, brows, mouth, breathing, gaze, hands) grounded in the tactic and
-    framing; masked wide shots use posture, spacing or hand action. Bare labels
-    such as "very sad" fail.
+35. **Performance handoff (`acting.plan_bound`).** For new or revised character
+    performance, collect the source-bound performance plan or equivalent
+    isolated-prompt input. Trace critical beat IDs to the prompt's intention,
+    trigger, registration, maintained/changed tactic and readable consequence.
+    Relevant listeners have a task or intentional non-response. Missing material
+    input is incomplete; dropping a critical beat or substituting a generic
+    mood/gesture list is MAJOR. Cues fit framing, occlusion, subject scale and
+    delivery time. Two to four cues is a heuristic, not a minimum; quiet
+    sustained attention need not change emotion. Static assets and
+    preservation-only edits record not_applicable with their concrete reason;
+    source performance still needs preservation review.
+
+    **Staged fights (`fight.readable_exchange`).** For authored or revised fight
+    action, trace the choreography ledger through actor identities, start/end
+    positions, apparent contact or avoidance, motivated reaction, occupied
+    hands and prop transfers. Timing and crop must reveal the required event.
+    Missing continuity or an invisible required interaction is MAJOR; a
+    selected style cannot change a locked outcome. Non-fights and
+    preservation-only edits record their applicability reason.
 
 36. **Motion grammar.** Each moving element in stylized or reverse-engineered
     takes states motion type, direction, speed, amplitude, easing and loop
