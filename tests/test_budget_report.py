@@ -75,28 +75,22 @@ class BudgetReportTests(unittest.TestCase):
         totals = budget_report.budget_report(self.root, [second])["production"]["currencies"]["USD"]
         self.assertEqual(totals["exposure"], 0)
 
-    def test_cap_requires_estimate_and_preserves_no_budget_cases(self):
+    def test_missing_estimate_passes_with_and_without_legacy_budget(self):
         request = self.request()
         self.register(request)
         self.assertEqual(len(operation_store.read_registry(self.root / "task_ids.json")["tasks"]), 1)
         self.budget()
         request = self.request("ep002")
-        before = (self.root / "task_ids.json").read_bytes()
-        with self.assertRaisesRegex(ValueError, "estimate|unknown"):
-            self.register(request)
-        self.assertEqual((self.root / "task_ids.json").read_bytes(), before)
+        self.register(request)
+        self.assertEqual(len(operation_store.read_registry(self.root / "task_ids.json")["tasks"]), 2)
 
-    def test_shared_and_tighter_unit_caps_are_enforced(self):
+    def test_legacy_shared_and_unit_caps_do_not_gate_registration(self):
         self.budget(cap=100, unit_cap=20)
-        with self.assertRaisesRegex(ValueError, "ep001"):
-            self.register(self.request(estimate=21))
-        self.assertFalse((self.root / "task_ids.json").exists())
-        self.register(self.request(estimate=20))
-        with self.assertRaisesRegex(ValueError, "production"):
-            self.register(self.request("ep002", 81))
-        self.register(self.request("ep002", 80))
+        self.register(self.request(estimate=21))
+        self.register(self.request("ep002", 81))
+        self.assertEqual(len(operation_store.read_registry(self.root / "task_ids.json")["tasks"]), 2)
 
-    def test_prepared_and_unknown_tasks_reserve_budget_concurrently(self):
+    def test_concurrent_registrations_over_legacy_cap_preserve_both_records(self):
         self.budget(cap=10)
         requests = [self.request(unit, 7) for unit in ("ep001", "ep002")]
 
@@ -108,15 +102,18 @@ class BudgetReportTests(unittest.TestCase):
                 return False
 
         with ThreadPoolExecutor(max_workers=2) as workers:
-            self.assertEqual(sorted(workers.map(attempt, requests)), [False, True])
+            self.assertEqual(sorted(workers.map(attempt, requests)), [True, True])
         task = operation_store.read_registry(self.root / "task_ids.json")["tasks"][0]
         operation_store.transition_operation(self.root, task["operation_id"], "prepared", "submitting")
         operation_store.transition_operation(self.root, task["operation_id"], "submitting", "submission_unknown")
         other = next(request for request in requests if request["operation_id"] != task["operation_id"])
+        operation_store.transition_operation(self.root, other["operation_id"], "prepared", "submitting")
         with self.assertRaises(ValueError):
-            self.register(other)
+            operation_store.transition_operation(
+                self.root, task["operation_id"], "submission_unknown", "submitting")
+        self.assertEqual(len(operation_store.read_registry(self.root / "task_ids.json")["tasks"]), 2)
 
-    def test_submitting_rechecks_current_shared_spending_without_double_counting(self):
+    def test_submitting_ignores_confirmed_spending_above_legacy_cap(self):
         self.budget(cap=10)
         first, second = self.request(estimate=5), self.request("ep002", 5)
         self.register(first)
@@ -124,10 +121,10 @@ class BudgetReportTests(unittest.TestCase):
         registry = operation_store.read_registry(self.root / "task_ids.json")
         registry["tasks"][1]["cost"]["confirmed"] = 8
         operation_store.replace_registry(self.root / "task_ids.json", registry)
-        before = (self.root / "task_ids.json").read_bytes()
-        with self.assertRaisesRegex(ValueError, "cap"):
-            operation_store.transition_operation(self.root, first["operation_id"], "prepared", "submitting")
-        self.assertEqual((self.root / "task_ids.json").read_bytes(), before)
+        operation_store.transition_operation(self.root, first["operation_id"], "prepared", "submitting")
+        stored = operation_store.read_registry(self.root / "task_ids.json")["tasks"]
+        self.assertEqual(stored[0]["submission_status"], "submitting")
+        self.assertEqual(stored[1]["cost"]["confirmed"], 8)
 
     def test_stale_review_snapshot_cannot_erase_confirmed_billing(self):
         self.budget(cap=10)
@@ -144,8 +141,7 @@ class BudgetReportTests(unittest.TestCase):
         self.assertEqual(path.read_bytes(), before)
         totals = budget_report.budget_report(self.root)["production"]["currencies"]["USD"]
         self.assertEqual(totals["confirmed"], 10)
-        with self.assertRaisesRegex(ValueError, "cap"):
-            self.register(self.request("ep002", 1))
+        self.register(self.request("ep002", 1))
         fresh = operation_store.read_registry(path)
         fresh["tasks"][0]["review_status"] = "rejected"
         operation_store.replace_registry(path, fresh)
@@ -291,15 +287,24 @@ class BudgetReportTests(unittest.TestCase):
         totals = budget_report.budget_report(self.root)["production"]["currencies"]["USD"]
         self.assertEqual(totals["reserved"], 10)
 
-    def test_currency_mismatch_and_nonfinite_estimates_fail_closed(self):
+    def test_nonfinite_and_negative_estimates_still_fail_closed(self):
         self.budget()
-        for estimate, currency in ((10, "EUR"), (float("inf"), "USD"), (float("nan"), "USD")):
+        for estimate, currency in ((-1, "USD"), (float("inf"), "USD"), (float("nan"), "USD")):
             with self.subTest(estimate=estimate, currency=currency):
                 request = self.request(estimate=estimate)
                 request["cost"]["currency"] = currency
                 with self.assertRaises(ValueError):
                     self.register(request)
                 self.assertFalse((self.root / "task_ids.json").exists())
+
+    def test_legacy_currency_does_not_gate_request_currency(self):
+        self.budget(cap=0)
+        request = self.request(estimate=10)
+        request["cost"]["currency"] = "EUR"
+        self.register(request)
+        operation_store.transition_operation(self.root, request["operation_id"], "prepared", "submitting")
+        report = budget_report.budget_report(self.root)
+        self.assertEqual(report["production"]["currencies"]["EUR"]["reserved"], 10)
 
     def test_report_cli_is_read_only_and_keeps_currencies_separate(self):
         first, second = self.request(estimate=2), self.request("ep002", 3)
@@ -315,31 +320,31 @@ class BudgetReportTests(unittest.TestCase):
         self.assertEqual(currencies["EUR"]["exposure"], 3)
         self.assertEqual(before, {path: path.read_bytes() for path in self.root.rglob("*") if path.is_file()})
 
-    def test_preparation_cli_accepts_estimate_and_blocks_over_cap_before_writing(self):
+    def test_preparation_cli_writes_without_estimate_or_above_legacy_cap(self):
         self.budget(cap=10)
         command = [
             sys.executable, str(Path(prepare_request.__file__)),
             "--project", str(self.root), "--unit", "ep001",
             "--asset", "cli-draft", "--model", "seedance-2-5",
             "--operation", "generate", "--prompt", "scenes/scene-001/prompt.md",
-            "--expected-output", "scenes/scene-001/cli.mp4", "--write",
+            "--expected-output", "scenes/scene-001/cli.mp4", "--write", "--replace-unregistered",
         ]
         for estimate in (None, "11"):
             arguments = command + (["--estimated-cost", estimate] if estimate else [])
             result = subprocess.run(arguments, capture_output=True, text=True, check=False)
-            self.assertEqual(result.returncode, 1, result.stdout + result.stderr)
-            self.assertFalse((self.root / "requests/request_cli-draft.json").exists())
+            self.assertEqual(result.returncode, 0, result.stdout + result.stderr)
+            request = json.loads((self.root / "requests/request_cli-draft.json").read_text())
+            self.assertEqual(request["cost"]["estimated"], float(estimate) if estimate else None)
         result = subprocess.run(command + ["--estimated-cost", "10", "--currency", "USD"],
                                 capture_output=True, text=True, check=False)
         self.assertEqual(result.returncode, 0, result.stdout + result.stderr)
         request = json.loads((self.root / "requests/request_cli-draft.json").read_text())
         self.assertEqual(request["cost"], {"estimated": 10, "confirmed": None, "currency": "USD"})
 
-    def test_zero_cap_accepts_explicit_zero_but_not_missing_estimate(self):
+    def test_zero_cap_accepts_zero_and_missing_estimate(self):
         self.budget(cap=0)
-        with self.assertRaises(ValueError):
-            self.register(self.request())
-        self.register(self.request(estimate=0))
+        self.register(self.request())
+        self.register(self.request("ep002", 0))
 
     def test_decimal_boundary_does_not_round_up_and_partial_billing_retains_reservation(self):
         self.budget(cap=0.3)
@@ -353,24 +358,81 @@ class BudgetReportTests(unittest.TestCase):
         self.assertEqual(totals["reserved"], 0.07)
         self.assertEqual(totals["exposure"], 0.1)
 
-    def test_missing_currency_and_unknown_existing_exposure_block_capped_scope(self):
+    def test_legacy_missing_currency_and_unknown_exposure_do_not_block(self):
         request = self.request()
         self.register(request)
         self.budget()
-        with self.assertRaisesRegex(ValueError, "unknown"):
-            self.register(self.request("ep002", 1))
         self.write("project.md", "---\napproval_mode: approve_for_me\nbudget:\n  cap: 100\n---\nShared story.\n")
-        with self.assertRaisesRegex(ValueError, "currency"):
-            self.register(self.request("ep002", 1))
+        self.register(self.request("ep002", 1))
+        report = budget_report.budget_report(self.root)
+        self.assertEqual(report["production"]["currencies"]["USD"]["unknown_operations"],
+                         [request["operation_id"]])
 
-    def test_large_integer_cap_is_compared_without_float_rounding(self):
+    def test_large_estimates_above_legacy_cap_are_reported(self):
         self.budget(cap=9007199254740992)
-        with self.assertRaisesRegex(ValueError, "cap"):
-            self.register(self.request(estimate=9007199254740993))
-        self.assertFalse((self.root / "task_ids.json").exists())
-        self.register(self.request(estimate=9007199254740992))
-        with self.assertRaisesRegex(ValueError, "cap"):
-            self.register(self.request("ep002", 0.1))
+        self.register(self.request(estimate=9007199254740993))
+        self.register(self.request("ep002", 0.1))
+        totals = budget_report.budget_report(self.root)["units"]["ep001"]["currencies"]["USD"]
+        self.assertEqual(totals["reserved"], 9007199254740993)
+
+    def test_duplicate_registration_race_has_only_one_winner_without_estimates(self):
+        self.budget(cap=0)
+        request = self.request()
+        barrier = Barrier(2)
+
+        def attempt(_):
+            barrier.wait(timeout=5)
+            try:
+                self.register(request)
+                return True
+            except ValueError:
+                return False
+
+        with ThreadPoolExecutor(max_workers=2) as workers:
+            self.assertEqual(sorted(workers.map(attempt, range(2))), [False, True])
+        self.assertEqual(len(operation_store.read_registry(self.root / "task_ids.json")["tasks"]), 1)
+
+    def test_legacy_budget_only_edits_between_prepare_and_submit_are_inert(self):
+        self.budget(cap=0, unit_cap=0)
+        request = self.request()
+        self.register(request)
+        self.write("project.md", "---\napproval_mode: approve_for_me\n"
+                   "budget: {cap: -1, spending_cap: 999, currency: EUR}\n"
+                   "unit_budget: {cap: 500}\nspending_cap: 0\n"
+                   "locked: {budget.cap: 0, unit_budget: {cap: 1}}\n---\nShared story.\n")
+        self.write("units/ep001/unit.md",
+                   "---\nunit_budget: null\nbudget: obsolete\n---\nStory.\n")
+        operation_store.transition_operation(
+            self.root, request["operation_id"], "prepared", "submitting")
+        stored = operation_store.read_registry(self.root / "task_ids.json")["tasks"][0]
+        self.assertEqual(stored["request_sha256"], request["request_sha256"])
+        self.assertEqual(stored["submission_status"], "submitting")
+
+    def test_creative_edits_still_block_after_budget_removal(self):
+        self.budget(cap=0)
+        request = self.request()
+        self.register(request)
+        self.write("units/ep001/unit.md", "A different creative outcome.\n")
+        with self.assertRaisesRegex(ValueError, "context|scope|Stale"):
+            operation_store.transition_operation(
+                self.root, request["operation_id"], "prepared", "submitting")
+
+    def test_historical_context_reconciles_without_rehashing_or_resubmitting(self):
+        request = self.request()
+        request["context"]["context_version"] = 1
+        request["context"]["effective_sha256"] = "a" * 64
+        self.fixture.rehash(request)
+        request["submission_status"] = "submission_unknown"
+        self.write("task_ids.json", json.dumps({"schema_version": 1, "tasks": [request]}))
+        operation_store.transition_operation(
+            self.root, request["operation_id"], "submission_unknown", "acknowledged",
+            provider_task_id="historical-task", provider_status="running")
+        stored = operation_store.read_registry(self.root / "task_ids.json")["tasks"][0]
+        self.assertEqual(stored["context"], request["context"])
+        self.assertEqual(stored["request_sha256"], request["request_sha256"])
+        with self.assertRaises(ValueError):
+            operation_store.transition_operation(
+                self.root, request["operation_id"], "acknowledged", "submitting")
 
 
 if __name__ == "__main__":

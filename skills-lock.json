@@ -42,7 +42,7 @@
       "source": "./local",
       "sourceType": "local",
       "skillPath": ".agents/skills/production-localize/SKILL.md",
-      "computedHash": "a5cd8ca85018168b9c82d80c2f32047705637a5365d5596b7565b6f4fbfbf6e7"
+      "computedHash": "a9b4d54daf8eb22990891ac5bb278c1cf58262633323a466e0d05afd92a73a5c"
     },
     "ark-mcp": {
       "source": "./local",
@@ -54,7 +54,7 @@
       "source": "./local",
       "sourceType": "local",
       "skillPath": ".agents/skills/brief-intake/SKILL.md",
-      "computedHash": "bfc81201d9bbabeb117bca17d08b73a0dc236b534ffeacb90cc50a82f28cc22f"
+      "computedHash": "2df81cc08f2af05907515d046ce7965e1504a0532ceae87a6d949679c2304c93"
     },
     "color-grade-palettes": {
       "source": "./local",
@@ -78,7 +78,7 @@
       "source": "./local",
       "sourceType": "local",
       "skillPath": ".agents/skills/film-production/SKILL.md",
-      "computedHash": "1cdf7efecfe4ea47b8a70c4c094f915d921ec73e6acd2f82079b880a0240fb66"
+      "computedHash": "ada75a5bd6c2ef9cb40b7bd988b0e8fc970d87827299d6b43be9324b1dc45d43"
     },
     "html-graphic-render": {
       "source": "./local",
@@ -150,13 +150,13 @@
       "source": "./local",
       "sourceType": "local",
       "skillPath": ".agents/skills/micro-drama/SKILL.md",
-      "computedHash": "8c96f4a49a31ab19adb56bf8cfeb0be98774a6db91b492e4b07dffc35ac677df"
+      "computedHash": "069599c34274439944e3f6b7bac5ddcf1dc44a7129cb769cd2626ab1a96a58a7"
     },
     "microdrama-localize": {
       "source": "./local",
       "sourceType": "local",
       "skillPath": ".agents/skills/microdrama-localize/SKILL.md",
-      "computedHash": "a8a4e3c956f97ef63dd265c04af9cf52ff0e3ec51c577d2955e24bf5a44b725f"
+      "computedHash": "f20c516ccd84fc6ce5b7ca4d478e101a16493b39c961bd870245f017b8e6fe7d"
     },
     "microdrama-story-formats": {
       "source": "./local",
@@ -180,7 +180,7 @@
       "source": "./local",
       "sourceType": "local",
       "skillPath": ".agents/skills/seed-audio-prompt/SKILL.md",
-      "computedHash": "bc5fe8872a27ada25adf047aaba1037c81818b2b5e1b1ac9126d6e8166175dd3"
+      "computedHash": "26e4fd3f6452103c52377bba598f5867a3e5329fdaa39d2e1050659b9f26b8b1"
     },
     "seedance-acting-console": {
       "source": "./local",
@@ -331,7 +331,7 @@
       "source": "./local",
       "sourceType": "local",
       "skillPath": ".agents/skills/template-factory/SKILL.md",
-      "computedHash": "8aef9a00c055b500a902c63fee96ae942e96dd4cc22b0cc19504f161382e5011"
+      "computedHash": "d71fa442804166ca2c325d23cee0f21521581e624f9fbedfd18b0ae928cc080c"
     },
     "blocking-map": {
       "source": "./local",
@@ -349,7 +349,7 @@
       "source": "./local",
       "sourceType": "local",
       "skillPath": ".agents/skills/scene-board-sheet/SKILL.md",
-      "computedHash": "912061595dd2285e7c235d24309976354aa15f25a59b3f3285f06e9f837c4013"
+      "computedHash": "729037384f81b53ea03625fdeb524f6092a412b70066c49d0de726e66b405676"
     }
   }
 }

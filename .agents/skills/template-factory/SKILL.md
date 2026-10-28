@@ -42,7 +42,7 @@ factory-specific steps.
   fallbacks, not mandatory dependencies. Available MCP tools may also assist
   with ASR, stem separation, media preparation and measurements; local ASR and
   separation are not required. Select tools
-  by capability, availability and the user's privacy and cost constraints.
+  by capability, availability and the user's privacy and explicit offline constraints.
   Native reasoning needs no ModelArk credentials, uploads or provider task IDs;
   an optional provider tool still follows its own authentication, upload,
   authorization and persistence contracts. Do not require tool setup for

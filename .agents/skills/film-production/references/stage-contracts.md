@@ -70,7 +70,7 @@ when a validated manifest is present.
 
 Required output: `approval_mode`, audience, format, runtime, aspect ratio,
 delivery resolution, story objective, tone, creative constraints, known rights
-constraints, run budget, and unresolved questions recorded in `project.md`.
+constraints and unresolved questions recorded in `project.md`.
 Confirmed directorial defaults (structure, energy level, camera and light
 stance, lens, grade, pacing, acting, staging, medium, audio) from
 `brief-intake` persisted as a `locked` block in `project.md` frontmatter. The
@@ -101,7 +101,7 @@ visual or motion inspiration, record the reference URL or local path and treat
 local media acquisition and native video/image inspection as unresolved until
 decodable media and a capable reviewer are available. Prefer native/local
 inspection; use available MCP understanding tools when needed, under privacy
-and cost constraints. No upload or cloud call is required when native
+and explicit offline constraints. No upload or cloud call is required when native
 inspection suffices. Scripts and
 article text alone do not satisfy that gap.
 
@@ -300,7 +300,7 @@ critical performance beats, listener responses and fighting continuity where
 applicable. Record beat IDs and timestamps under the performance contract;
 unavailable inspection remains unresolved. In
 `ask_for_approval`, the recommendation remains pending until the user chooses.
-If no take passes, make a bounded correction within the run budget or leave the
+If no take passes, make a targeted correction or leave the
 shot blocked.
 
 ## 7. Assembly and review

@@ -53,11 +53,11 @@ Extract or infer:
   coverage;
 - whether the user wants prompts only or actual image generation.
 
-Ask only when a missing answer would materially change identity, format, cost,
+Ask only when a missing answer would materially change identity, format,
 or story meaning. Otherwise state reasonable assumptions and continue. An
-explicit request to generate the storyboard authorizes a low-cost draft pass;
-higher resolution, large batches, or repeated paid re-generation requires a
-new explicit request or approval.
+explicit request to generate the storyboard authorizes the requested pass.
+Preserve requested resolution, count and creative scope; changes outside that
+scope need a new request or approval, not a budget or spending confirmation.
 
 ### 3. Break the scene into observable beats
 

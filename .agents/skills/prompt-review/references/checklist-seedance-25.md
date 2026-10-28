@@ -113,7 +113,7 @@ does not create a native draft; confirm the live tool supports `draft: true`.
     exemption is MAJOR.
 
 17. **Shot density.** Clip count, shot lengths and scene rhythm follow the
-    confirmed episode format, scene plan, dialogue and budget; do not impose a
+    confirmed episode format, scene plan and dialogue timing; do not impose a
     fixed advertising cadence on micro-drama. Each shot or stage has one primary
     state change and a clear end state. An overpacked clip that cannot preserve
     its planned beats or dialogue timing is MAJOR. About 7 shots per clip at

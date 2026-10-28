@@ -179,12 +179,10 @@ class ProductionProfileTests(unittest.TestCase):
         self.assertIsNone(brief["market"])
         self.assertIsNone(brief["episode"])
 
-    def test_unit_cannot_replace_shared_authority_or_spending(self):
+    def test_unit_cannot_replace_shared_authority(self):
         for field, shared, unit in (
             ("approval_mode", "ask_for_approval", "approve_for_me"),
             ("rights", {"assets": ["a"]}, {"assets": ["a", "b"]}),
-            ("budget", {"cap": 100, "confirmed": 30}, {"cap": 200}),
-            ("budget", {"cap": 100, "confirmed": 30}, {"confirmed": 0}),
             ("approval", {"evidence": "accepted"}, {}),
         ):
             with self.subTest(field=field), self.assertRaisesRegex(ValueError, field):
@@ -205,10 +203,12 @@ class ProductionProfileTests(unittest.TestCase):
             {"cap": 101}, {"cap": -1}, {"cap": True}, {"cap": 20, "currency": "EUR"},
             {"cap": 20, "confirmed": 0},
         ):
-            with self.subTest(allocation=allocation), self.assertRaisesRegex(ValueError, "unit_budget"):
-                resolve_brief({"budget": budget}, {"unit_budget": allocation})
-        with self.assertRaisesRegex(ValueError, "budget.cap"):
-            resolve_brief({}, {"unit_budget": {"cap": 10}})
+            with self.subTest(allocation=allocation):
+                self.assertEqual(
+                    resolve_brief({"budget": budget}, {"unit_budget": allocation})["unit_budget"],
+                    allocation,
+                )
+        self.assertEqual(resolve_brief({}, {"unit_budget": {"cap": 10}})["unit_budget"], {"cap": 10})
 
     def test_unit_cannot_override_nested_or_dotted_locks(self):
         for locked in ({"delivery": {"aspect": "16:9"}}, {"delivery.aspect": "16:9"}):
@@ -279,12 +279,12 @@ class ProductionProfileTests(unittest.TestCase):
             self.assertNotIn("duration_range_s", brief["production"])
             self.assertNotIn("scenes", brief["production"])
 
-    def test_tighter_existing_allocation_cannot_be_relaxed(self):
-        with self.assertRaisesRegex(ValueError, "unit_budget.cap"):
-            resolve_brief(
-                {"budget": {"cap": 100}, "unit_budget": {"cap": 20}},
-                {"unit_budget": {"cap": 30}},
-            )
+    def test_legacy_unit_allocation_does_not_limit_new_settings(self):
+        brief = resolve_brief(
+            {"budget": {"cap": 100}, "unit_budget": {"cap": 20}},
+            {"unit_budget": {"cap": 30}},
+        )
+        self.assertEqual(brief["unit_budget"], {"cap": 30})
 
     def test_explicit_and_locked_ranges_reject_conflicting_unit_targets(self):
         for shared in (
@@ -421,7 +421,7 @@ class ProductionProfileTests(unittest.TestCase):
                 self.assertEqual(brief["budget"], budget)
                 self.assertEqual(brief["unit_budget"], {"cap": cap, "currency": "USD"})
 
-    def test_locked_unit_allocations_cannot_bypass_validation(self):
+    def test_legacy_locked_allocations_are_preserved_without_enforcement(self):
         for allocation in (
             {"cap": 200}, {"cap": -1}, {"cap": True},
             {"cap": float("nan")}, {"cap": float("inf")},
@@ -435,16 +435,17 @@ class ProductionProfileTests(unittest.TestCase):
             ):
                 shared = {"budget": {"cap": 100, "currency": "USD"}, "locked": locked}
                 before = copy.deepcopy(shared)
-                with (
-                    self.subTest(locked=locked),
-                    self.assertRaisesRegex(ValueError, "unit_budget"),
-                ):
-                    resolve_brief(shared)
+                with self.subTest(locked=locked):
+                    brief = resolve_brief(shared)
+                    self.assertEqual(brief["locked"], locked)
+                    self.assertNotIn("unit_budget", brief)
                 self.assertEqual(shared, before)
-        with self.assertRaisesRegex(ValueError, "budget.cap"):
-            resolve_brief({"locked": {"unit_budget.cap": 10}})
+        self.assertEqual(
+            resolve_brief({"locked": {"unit_budget.cap": 10}})["locked"],
+            {"unit_budget.cap": 10},
+        )
 
-    def test_invalid_shared_allocations_cannot_be_hidden_by_unit_overrides(self):
+    def test_legacy_allocations_do_not_require_validation(self):
         for allocation in (
             {"cap": 20, "currency": "EUR"}, {"cap": 200},
             {"cap": 20, "confirmed": 0}, {"cap": -1},
@@ -454,13 +455,10 @@ class ProductionProfileTests(unittest.TestCase):
             shared = {"budget": {"cap": 100, "currency": "USD"}, "unit_budget": allocation}
             for unit in ({}, {"unit_budget": {"cap": 10}},
                          {"unit_budget": {"cap": 10, "currency": "USD"}}):
-                with (
-                    self.subTest(allocation=allocation, unit=unit),
-                    self.assertRaisesRegex(ValueError, "unit_budget"),
-                ):
+                with self.subTest(allocation=allocation, unit=unit):
                     resolve_brief(shared, unit)
 
-    def test_final_allocation_merges_inherited_currency_and_valid_locks(self):
+    def test_legacy_budget_locks_do_not_apply_or_override_settings(self):
         for cap in (0, 20, 100):
             for locked in (
                 {"unit_budget.cap": cap},
@@ -470,9 +468,10 @@ class ProductionProfileTests(unittest.TestCase):
                 unit = {"production": {"genre": "drama"}}
                 before = copy.deepcopy((shared, unit))
                 brief = resolve_brief(shared, unit)
-                self.assertEqual(brief["unit_budget"]["cap"], cap)
+                self.assertNotIn("unit_budget", brief)
+                self.assertEqual(brief["locked"], locked)
                 self.assertEqual(brief["budget"], shared["budget"])
-                brief["unit_budget"]["cap"] = 999
+                brief["locked"].clear()
                 self.assertEqual((shared, unit), before)
         shared = {
             "budget": {"cap": 100, "currency": "USD"},
@@ -480,10 +479,10 @@ class ProductionProfileTests(unittest.TestCase):
             "locked": {"unit_budget.currency": "USD"},
         }
         brief = resolve_brief(shared, {"unit_budget": {"cap": 10}})
-        self.assertEqual(brief["unit_budget"], {"cap": 10, "currency": "USD"})
-        with self.assertRaisesRegex(ValueError, "unit_budget.currency"):
-            resolve_brief({**shared, "locked": {"unit_budget.currency": "EUR"}},
-                          {"unit_budget": {"cap": 10}})
+        self.assertEqual(brief["unit_budget"], {"cap": 10})
+        brief = resolve_brief({**shared, "locked": {"unit_budget.currency": "EUR"}},
+                              {"unit_budget": {"cap": 10}})
+        self.assertEqual(brief["unit_budget"], {"cap": 10})
 
     def test_repeated_unit_budget_survives_shared_runtime_updates(self):
         unit = {"budget": {"cap": 100, "currency": "USD", "confirmed": 0}}
@@ -512,7 +511,7 @@ class ProductionProfileTests(unittest.TestCase):
                         shared["budget"],
                     )
 
-    def test_unit_budget_policy_must_match_including_unknown_fields(self):
+    def test_legacy_unit_budget_differences_do_not_block_or_replace_shared_metadata(self):
         budget = {
             "cap": 100, "currency": "USD", "confirmed": 10,
             "approval_threshold": {"amount": 20},
@@ -525,8 +524,8 @@ class ProductionProfileTests(unittest.TestCase):
             {**budget, "new_policy": True},
             {}, None, [],
         ):
-            with self.subTest(policy=policy), self.assertRaisesRegex(ValueError, "unit.budget"):
-                resolve_brief({"budget": budget}, {"budget": policy})
+            with self.subTest(policy=policy):
+                self.assertEqual(resolve_brief({"budget": budget}, {"budget": policy})["budget"], budget)
         unit = {"budget": {**budget, "confirmed": 0}}
         before = copy.deepcopy((budget, unit))
         brief = resolve_brief({"budget": budget}, unit)
@@ -534,8 +533,23 @@ class ProductionProfileTests(unittest.TestCase):
         brief["budget"]["approval_threshold"]["amount"] = 999
         self.assertEqual((budget, unit), before)
         for budget in ({}, {"confirmed": 0}, {"cap": 100}):
-            with self.subTest(budget=budget), self.assertRaisesRegex(ValueError, "unit.budget"):
-                resolve_brief({}, {"budget": budget})
+            with self.subTest(budget=budget):
+                self.assertEqual(resolve_brief({}, {"budget": budget})["budget"], budget)
+
+    def test_legacy_budget_locks_do_not_weaken_creative_lock_authority(self):
+        shared = {"locked": {"delivery.aspect": "16:9", "budget.cap": 0}}
+        unit = {"locked": {"delivery.aspect": "16:9", "budget.cap": 999}}
+        before = copy.deepcopy((shared, unit))
+        self.assertEqual(resolve_brief(shared, unit)["delivery"]["aspect"], "16:9")
+        self.assertEqual((shared, unit), before)
+        with self.assertRaisesRegex(ValueError, "locked"):
+            resolve_brief(shared, {"locked": {"budget.cap": 999, "delivery.aspect": "9:16"}})
+        with self.assertRaisesRegex(ValueError, "locked"):
+            resolve_brief(shared, {"locked": {}})
+        self.assertEqual(
+            resolve_brief({}, {"locked": {"budget.cap": 999}})["locked"],
+            {"budget.cap": 999},
+        )
 
     def test_frontmatter_reader_output_is_consumed_without_file_access(self):
         from validate_request import parse_frontmatter

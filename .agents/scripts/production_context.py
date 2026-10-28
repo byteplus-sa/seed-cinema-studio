@@ -5,10 +5,12 @@ import hashlib
 import json
 import re
 from dataclasses import asdict, dataclass, field
+from datetime import date
 from pathlib import Path
 from typing import Any
 
 from jsonschema import Draft202012Validator
+from production_profiles import without_legacy_budgets
 from ruamel.yaml import YAML
 from ruamel.yaml.error import YAMLError
 
@@ -28,7 +30,6 @@ OPERATIONAL_PATHS = frozenset(("effective_settings", name) for name in (
     "credentials", "api_key", "token", "secret", "signed_url", "units",
     "deliverables", "progress", "render", "renders", "task_ids", "drafts",
 ))
-BUDGET_PATHS = frozenset({("shared_inputs", "budget"), ("effective_settings", "budget")})
 
 
 @dataclass(frozen=True)
@@ -64,7 +65,7 @@ class ProductionContext:
         if self.legacy or self.effective_sha256 is None:
             raise ValueError("Legacy context has no integrity-bound unit identity")
         identity = {
-            "context_version": 1,
+            "context_version": 2,
             "kind": "unit" if self.unit_id is not None else "production",
             "effective_sha256": self.effective_sha256,
         }
@@ -305,6 +306,8 @@ def _canonical(value: Any) -> str:
 
 def _creative_data(value: Any, path: tuple[str, ...] = ()) -> Any:
     if isinstance(value, dict):
+        if path in (("shared_inputs",), ("effective_settings",), ("unit_brief",)):
+            value = without_legacy_budgets(value)
         result = {}
         for key, item in value.items():
             if not isinstance(key, str):
@@ -312,14 +315,6 @@ def _creative_data(value: Any, path: tuple[str, ...] = ()) -> Any:
             field_path = (*path, key)
             if field_path in OPERATIONAL_PATHS:
                 continue
-            if field_path in BUDGET_PATHS:
-                if not isinstance(item, dict):
-                    raise ValueError("Budget must be a mapping")
-                item = {name: item[name] for name in
-                        ("cap", "spending_cap", "currency")
-                        if name in item}
-                if not item:
-                    continue
             result[key] = _creative_data(item, field_path)
         return result
     if isinstance(value, list):
@@ -329,23 +324,38 @@ def _creative_data(value: Any, path: tuple[str, ...] = ()) -> Any:
     raise ValueError("Creative metadata must contain JSON-compatible values")
 
 
+def _unit_metadata(value: Any) -> Any:
+    if isinstance(value, dict):
+        if not all(isinstance(key, str) for key in value):
+            raise ValueError("Unit metadata keys must be strings")
+        return ["mapping", [[key, _unit_metadata(value[key])] for key in sorted(value)]]
+    if isinstance(value, list):
+        return ["sequence", [_unit_metadata(item) for item in value]]
+    if isinstance(value, date):
+        return ["timestamp", value.isoformat()]
+    return _creative_data(value)
+
+
 def _fingerprint(root: Path, data: dict[str, Any], unit: dict[str, Any]) -> str:
     from production_profiles import load_profile, resolve_brief
 
     shared, body = _brief(_path(root, "project.md", "file"))
     unit_path = _path(root, unit["brief"], "file")
-    unit_bytes = unit_path.read_bytes()
-    unit_metadata, _ = _brief(unit_path, text=unit_bytes.decode("utf-8"))
+    unit_metadata, unit_body = _brief(unit_path)
+    unit_brief = _canonical({
+        "metadata": _unit_metadata(without_legacy_budgets(unit_metadata)),
+        "body": unit_body,
+    })
     effective = resolve_brief(shared, unit_metadata, format_id=data["format"])
     inputs = {key: shared[key] for key in SHARED_FIELDS if key in shared}
     inputs = _creative_data(inputs, ("shared_inputs",))
     inputs["body_sha256"] = hashlib.sha256(body.encode()).hexdigest()
     return _canonical({
-        "context_version": 1,
+        "context_version": 2,
         "kind": "unit",
         "unit_id": unit["id"],
         "format": data["format"],
-        "unit_brief_sha256": hashlib.sha256(unit_bytes).hexdigest(),
+        "unit_brief_sha256": hashlib.sha256(unit_brief.encode()).hexdigest(),
         "scene_ids": unit["scene_ids"],
         "profile": _creative_data(load_profile(data["format"]), ("profile",)),
         "effective_settings": _creative_data(effective, ("effective_settings",)),
@@ -404,7 +414,7 @@ def _shared_payload(root: Path, data: dict[str, Any]) -> dict[str, Any]:
     )
     inputs["body_sha256"] = hashlib.sha256(body.encode()).hexdigest()
     return {
-        "context_version": 1,
+        "context_version": 2,
         "kind": "production",
         "format": data["format"],
         "profile": _creative_data(load_profile(data["format"]), ("profile",)),

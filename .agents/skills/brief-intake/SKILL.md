@@ -44,7 +44,7 @@ Read the supplied brief and existing confirmed decisions first. Extract:
 | Target market (optional) | Country or region, dialogue language and variety, subtitle languages, platform and audience; user-defined and free-form, never assumed (see the production brief contract) |
 | Production format | Explicit format or selected workflow; otherwise general narrative, not assumed micro-drama |
 | Medium and delivery | Preserve medium, duration, aspect, resolution and frame rate independently; provider capabilities do not follow from canvas dimensions |
-| Constraints | Runtime, format, available references, budget posture, delivery needs, forbidden changes |
+| Constraints | Runtime, format, available references, delivery needs, forbidden changes |
 | Tone/genre references | What useful quality is being borrowed, and which convention should be avoided? |
 | Confirmed decisions | Which axes and identities are already accepted? |
 | Where the feeling lives | Which channel carries the inner state (performance, sound, light, framing, edit) rather than literal effects? |

@@ -44,24 +44,40 @@ historical behavior.
   `production_context.context_project_sha256`, not the raw `project.md` hash.
 - Context with an omitted, v1 or v2 hash version is rejected, never ignored.
   A missing or malformed v3 context is rejected.
-- Context version 1 canonicalization belongs to `production_context.py` and
+- Context canonicalization belongs to `production_context.py` and
   `production-context.schema.json`. Changing that projection requires a new
   context version. The self-contained request/registry/decision schema copies
   are parity-tested against the context schema.
 
-Context version 1 includes shared creative/authorization inputs and prose-body
+New context version 2 includes shared creative/authorization inputs and prose-body
 hash, selected format/profile revision and effective settings. Unit identity
-also includes the selected unit ID, raw unit-brief hash and ordered scene IDs.
+also includes the selected unit ID, normalized unit-brief hash and ordered scene IDs.
 Production canon identity omits unit membership. Normalization excludes the
-defined operational metadata paths and mutable budget totals, retaining budget
-cap/currency. Exclusions are path-specific, not a recursive removal of every
-field named `runtime` or `billing`; the prose and raw unit brief remain binding.
+defined operational metadata paths and all root `budget`, `unit_budget` and
+`spending_cap` values, including budget-only lock entries. Unit-brief hashing
+ignores empty lock containers left after removing legacy fields. Authority
+checks still reject explicit attempts to erase non-budget locks. Unit hashing
+uses canonical parsed metadata with those same exclusions plus decoded prose;
+formatting-only YAML and line-ending changes are not creative changes.
+Normalized unit metadata encodes mappings as `["mapping", sorted key/value
+pairs]`, lists as `["sequence", items]`, and YAML dates/timestamps as
+`["timestamp", ISO text]`; JSON scalar types retain their values. These
+distinct encodings prevent timestamps from aliasing user-authored structures.
+Non-budget incidental unit metadata remains bound. Exclusions are path-specific,
+not a recursive removal of fields such as `story.budget`.
 
 Unrelated unit edits do not change another unit's identity. A changed shared
-creative setting, authorization or cap can affect every dependent unit. A raw
+creative setting or authorization can affect every dependent unit; legacy
+budget-only edits do not stale new requests. A raw
 file listed in a decision's `upstream_sha256` still invalidates that decision
 when it changes, even if normalized scope is unchanged. Computed digests belong
 in typed context, never under invented upstream file paths.
+
+Version 1 context records remain schema-readable for historical reconciliation.
+They are not automatically rehashed or migrated. A new submission from an old
+context needs explicit re-preparation and current review; already-submitted jobs
+remain subject to duplicate protection and historical reconciliation. Legacy
+request v1/v2 and decision v1 raw-file hashes are unchanged.
 
 ## Context And Operational APIs
 
@@ -93,7 +109,7 @@ Preparation, registration and transition to `submitting` revalidate current
 scope, reference approvals, prompt and project digests. Unit decision v2 also
 requires the actual unit brief in `upstream_sha256`. Shared `elements/` requests
 and decisions require `kind: production`; selecting a unit cannot grant canon
-authority or expand rights or budget.
+authority or expand rights.
 
 ## Candidate Compatibility
 
@@ -107,7 +123,7 @@ retains the candidate helper's raw-project-hash binding. That historical
 validation helper is not the operational v3 normalized-project contract.
 
 Candidate checks do not validate reference approvals, review adequacy,
-capability evidence, spending, provider status, promotion eligibility or
+capability evidence, provider status, promotion eligibility or
 stage/delivery completion. Candidate shared production scope is not resolved by
 `candidate_scope_findings`. Structural decision schema checks are not approval.
 Do not reuse a candidate request as an operational authorization.

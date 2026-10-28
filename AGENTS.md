@@ -123,6 +123,9 @@ schemas live in `.agents/contracts/schemas/`.
 - New scoped work uses request v3 and decision v2, binding typed context and
   the normalized shared project digest. Historical v1/v2 request hashes are
   unchanged. Keep decision upstream hashes tied to real production-relative files.
+  New context v2 excludes legacy budget metadata from shared and unit identity.
+  Historical context v1 remains readable for reconciliation, not silently
+  rehashed for new submissions; re-prepare those requests with current review.
 - Canon first: approve recurring characters, locations and story-critical props
   before dependent shot generation. Elements define identity.
 - Draft first: every new Seedance 2.5 generation, including edits, extensions
@@ -140,6 +143,11 @@ schemas live in `.agents/contracts/schemas/`.
   (`prepare_request.py --register`); never submit the same paid generation twice or
   through two transports. A prepared but never submitted operation is closed
   terminal and re-registered under a new version.
+- Generation has no project or unit budget prerequisite, monetary ceiling,
+  generated-seconds spending cap or budget-related retake limit. Do not invent
+  spending approvals or stop for missing estimates or legacy budget metadata.
+  Report estimated and confirmed costs separately when available. Preserve
+  provider/API limits, rights, consent, creative approvals and operation locks.
 - Run prompt review inline for every generation-bound prompt and resolve CRITICAL
   and MAJOR findings. Changed inputs invalidate review.
 - Do not bake captions, taglines or overlay text into generated video; add text in

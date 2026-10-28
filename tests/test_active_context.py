@@ -47,7 +47,8 @@ class ActiveContextTests(unittest.TestCase):
         self.assertEqual(set(payload), {
             "context_version", "kind", "format", "profile", "effective_settings", "shared_inputs",
         })
-        expected = "fc827825d745b7e93581279e85d9feb94438d5cf10de76fed475cd4cec945026"
+        self.assertEqual(payload["context_version"], 2)
+        expected = "80f22118a76f799f294318cd5c2d92e8f1351993a014804e39ff616b2373fad2"
         self.assertEqual(context.effective_sha256, expected)
         self.assertEqual(contexts.context_project_sha256(self.root), expected)
 

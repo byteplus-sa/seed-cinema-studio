@@ -4,7 +4,7 @@ Read [the entrypoint](../SKILL.md). Load this reference when planning a project'
 stage flow, before the first paid video submission, at assembly, and whenever a
 take needs a fix. These creative defaults are working practice, not provider
 guarantees. Confirmed creative choices override defaults, but never relax rights,
-approval, review, spending or durable-submission gates.
+approval, review or durable-submission gates.
 Exact tool parameters live in the `ark-mcp` Seedance reference; this file says
 when to use them.
 
@@ -50,8 +50,8 @@ frame-synced to on-screen action unless SFX are placed by timestamp.
 
 ## 3. Structure from the confirmed brief
 
-Use the confirmed script or treatment, target duration, scene plan, energy and
-budget. Consult the [production brief](../../../contracts/production-brief.md)
+Use the confirmed script or treatment, target duration, scene plan and energy.
+Consult the [production brief](../../../contracts/production-brief.md)
 and [profiles](../../../catalog/production-profiles.json) for disclosed defaults;
 do not infer format from aspect, genre or medium.
 
@@ -163,10 +163,10 @@ that sound is intentionally absent.
   picture (copy the video stream and confirm its hash is unchanged). Measure the
   original first: loudness over time, its own transcript and its non-voice
   sounds, then confirm they survive.
-- **Music beds:** provider audits reject a share of music generations; budget
-  spare samples. Tempo and arc timing are only roughly obeyed, so measure and
+- **Music beds:** provider audits reject a share of music generations; record
+  rejected samples. Tempo and arc timing are only roughly obeyed, so measure and
   pad or splice in assembly. Short lines truncate unless the prompt states the
   clip length and trailing silence.
-- **Retakes:** fix hard-gate failures within the run budget with one targeted
+- **Retakes:** fix hard-gate failures with one targeted
   change per retake, written as a revision (locked decisions, delta,
   acceptance, known rejections, invalidation scope).

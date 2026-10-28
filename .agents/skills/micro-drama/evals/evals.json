@@ -4,15 +4,15 @@
     {
       "id": 1,
       "prompt": "Make three vertical micro-drama episodes for the US market, 1080p, fully produced.",
-      "expected_output": "A per-episode brief and production plan using the three-scene structure, with parallel ownership and a budget cap.",
+      "expected_output": "A per-episode brief and production plan using the three-scene structure, with parallel ownership and no budget prerequisite.",
       "files": [],
       "expectations": [
         "Uses three scene clips of about 15/20/15 s with a hook in the first 3 s and a close-up cliffhanger.",
         "Assigns one production agent per episode with exclusive project ownership and a shared playbook.",
-        "Declares a per-episode generated-seconds budget before any paid submission.",
+        "Does not declare a spending cap, require an estimate or ask for budget approval before submission.",
         "Keeps generated footage text-free and adds cards and subtitles in post.",
         "Does not invent a market writer skill; drafts the brief fields itself when none exists.",
-        "Plans each clip as a 480p Draft that is reviewed before promotion to 1080p, and counts drafts in the budget."
+        "Plans each clip as a 480p Draft that is reviewed before promotion to 1080p, and reports draft and final costs separately when available."
       ]
     },
     {
@@ -129,6 +129,18 @@
         "Treats the active manifest as authoritative and asks for the missing unit selection.",
         "Does not use shot IDs or the legacy scene-00 convention to select an episode.",
         "Keeps invalid or ambiguous scope closed rather than editing any Studio."
+      ]
+    },
+    {
+      "id": 12,
+      "prompt": "The second corrective draft still has the wrong speaker on a locked line. Fix it. The old episode file lists a 90-second generation cap which has already been exceeded. Do not change the locked line.",
+      "expected_output": "Plans a targeted new native draft without enforcing a retake or spending cap, preserving the locked dialogue and review gates.",
+      "files": [],
+      "expectations": [
+        "Does not stop because of a one-retake rule or the legacy generated-seconds cap.",
+        "Does not ask for a new budget or spending approval.",
+        "Uses a targeted speaker-attribution repair with unchanged locked dialogue.",
+        "Reviews and registers a distinct new native draft, then inspects its dialogue before selection."
       ]
     }
   ]

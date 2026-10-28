@@ -40,7 +40,9 @@ jitter, 0.25 s base, 4 s max) and provider errors with `retryable=true`.
 
 With `DAILY_BUDGET_USD` above zero, requests over the per-principal daily
 budget are rejected with a clear message. `0` (default) records spend without
-enforcement. Wait for the UTC day rollover or raise the budget.
+enforcement. This is an external server limit, not a project generation
+prerequisite. Report an actual rejection and its source; do not recommend
+configuring a cap or change server settings as part of generation.
 
 ## Content rejections
 

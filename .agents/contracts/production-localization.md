@@ -9,8 +9,8 @@ approval authority. Localization is not permission to rewrite source material.
 ## Inventory and Translation
 
 Require the selected unit, delivered master/hash, locked source lines and
-their timing, current canon, target language/variety/register, user locks and
-budget. Preserve source scripts, manifests, dialogue, master, stems and earlier
+their timing, current canon, target language/variety/register and user locks.
+Preserve source scripts, manifests, dialogue, master, stems and earlier
 renders. Record their hashes before work and recheck them after producing the
 new version. Never write the target text over the source column or source file.
 
@@ -44,7 +44,7 @@ hook/turn/cliffhanger intent.
 
 Prefer the least-cost route that satisfies the confirmed requirement. Subtitles
 need no new master render. Spoken audio or regenerated footage requires explicit
-scope and budget, not an automatic fallback. The native-language check precedes
+creative scope, not an automatic fallback. The native-language check precedes
 spoken generation; audio tools need their own verified capability evidence.
 Unsupported languages remain experimental or use a confirmed fallback.
 

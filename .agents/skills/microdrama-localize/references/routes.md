@@ -9,9 +9,9 @@ user's goal and record it, with the reason, in the localization note.
 | --- | --- |
 | The audience accepts reading subtitles over the source audio | A |
 | The audience needs spoken audio in their language and the picture must stay | B |
-| Lip sync in the new language matters and the user accepts new clips and cost | C |
+| Lip sync in the new language matters and the user accepts new clips | C |
 | Target language is not on the native list and spoken audio is required | B with a verified audio tool, or C with annotation as an experiment, or an explicitly requested audio-first track |
-| Budget is tight or the language is unverified | A first; upgrade later |
+| The language is unverified and subtitles meet the request | A first; upgrade later |
 
 ## A. Subtitles only
 

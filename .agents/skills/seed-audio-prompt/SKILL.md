@@ -120,7 +120,7 @@ This section owns audio verification for the Seed Audio prompting skills.
   clip length and about a second of trailing silence in the prompt.
 - **Output audits**: the provider audits generated audio and rejects a share
   of music-heavy runs after generation, and each rejected run is still billed.
-  Budget spare samples for music beds and record each rejection with its code.
+  Record each rejected music sample with its code and billing evidence.
 - **Technical**: probe duration, format and channels, run a full decode, and
   record the SHA-256 before review.
 

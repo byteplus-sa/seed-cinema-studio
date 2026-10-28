@@ -9,7 +9,6 @@ from typing import Any
 
 from validate_request import (
     contained_path,
-    parse_frontmatter,
     production_context_module,
 )
 
@@ -32,35 +31,15 @@ def json_number(value: Fraction) -> int | float:
     return int(value) if value.denominator == 1 else float(value)
 
 
-def brief_metadata(path: Path) -> dict[str, Any]:
-    text = path.read_text(encoding="utf-8")
-    return parse_frontmatter(text) if text.startswith("---") else {}
-
-
-def budget_scopes(project: Path) -> dict[str, dict[str, Any]]:
-    shared_path = project / "project.md"
-    shared = brief_metadata(contained_path(project, "project.md")) if shared_path.exists() else {}
-    budget = shared.get("budget", {})
-    if not isinstance(budget, dict):
-        raise TypeError("budget must be a mapping")
-    if "cap" in budget and "spending_cap" in budget and budget["cap"] != budget["spending_cap"]:
-        raise ValueError("Conflicting budget.cap and budget.spending_cap")
-    cap = amount(budget.get("cap", budget.get("spending_cap")), "budget.cap")
-    currency = budget.get("currency")
-    scopes = {"production": {"cap": cap, "currency": currency}}
+def report_units(project: Path) -> list[str]:
     context_module = production_context_module()
     if context_module.has_production_manifest(project):
         context_module.resolve_production_context(project)
         manifest = json.loads(contained_path(project, "production.json").read_text())
         for unit in manifest["units"]:
-            context = context_module.resolve_context(project, unit["id"])
-            effective = context_module.context_fingerprint_payload(context)["effective_settings"]
-            allocation = effective.get("unit_budget", {})
-            scopes[f"unit:{unit['id']}"] = {
-                "cap": amount(allocation.get("cap"), "unit_budget.cap"),
-                "currency": allocation.get("currency", currency),
-            }
-    return scopes
+            context_module.resolve_context(project, unit["id"])
+        return [unit["id"] for unit in manifest["units"]]
+    return []
 
 
 def cancelled_before_submission(record: dict[str, Any]) -> bool:
@@ -117,10 +96,8 @@ def currency_totals(tasks: list[dict[str, Any]]) -> dict[str, dict[str, Any]]:
     return result
 
 
-def scope_report(config: dict[str, Any], tasks: list[dict[str, Any]]) -> dict[str, Any]:
+def scope_report(tasks: list[dict[str, Any]]) -> dict[str, Any]:
     return {
-        "cap": None if config["cap"] is None else json_number(config["cap"]),
-        "currency": config["currency"],
         "currencies": {
             currency: {
                 key: json_number(value) if isinstance(value, Fraction) else value
@@ -139,62 +116,22 @@ def budget_report(
         from operation_store import read_registry
 
         tasks = read_registry(project / "task_ids.json")["tasks"]
-    configs = budget_scopes(project)
+    units = report_units(project)
     return {
         "source": "task_ids.json",
-        "production": scope_report(configs["production"], tasks),
+        "production": scope_report(tasks),
         "units": {
-            unit.removeprefix("unit:"): scope_report(config, [
+            unit: scope_report([
                 task for task in tasks
-                if task.get("context", {}).get("unit_id") == unit.removeprefix("unit:")
+                if task.get("context", {}).get("unit_id") == unit
             ])
-            for unit, config in configs.items() if unit != "production"
+            for unit in units
         },
     }
 
 
-def check_budget(
-    project: Path, tasks: list[dict[str, Any]] | None, request: dict[str, Any],
-) -> None:
-    configs = budget_scopes(project)
-    unit = request.get("context", {}).get("unit_id")
-    unit_scope = f"unit:{unit}"
-    applicable = ["production"] + ([unit_scope] if unit_scope in configs else [])
-    capped = [name for name in applicable if configs[name]["cap"] is not None]
-    if not capped:
-        return
-    if tasks is None:
-        from operation_store import read_registry
-
-        tasks = read_registry(project / "task_ids.json")["tasks"]
-    estimate = amount(request["cost"]["estimated"], "Request estimate")
-    if estimate is None:
-        raise ValueError("Capped scope requires an explicit request cost estimate")
-    records = [task for task in tasks if task["operation_id"] != request["operation_id"]]
-    records.append(request)
-    for name in capped:
-        config = configs[name]
-        currency = config["currency"]
-        if not isinstance(currency, str) or not currency.strip():
-            raise ValueError(f"{name} budget cap requires an explicit currency")
-        relevant = records if name == "production" else [
-            task for task in records
-            if task.get("context", {}).get("unit_id") == name.removeprefix("unit:")
-        ]
-        totals = currency_totals(relevant)
-        if set(totals) - {currency}:
-            raise ValueError(f"{name} cap cannot combine different cost currencies")
-        current = totals.get(currency)
-        if current is None:
-            continue
-        if current["unknown_operations"]:
-            raise ValueError(f"{name} cap has unknown exposure; reconcile missing estimates or billing")
-        if current["known_exposure"] > config["cap"]:
-            raise ValueError(f"{name} budget cap exceeded by reserved and confirmed costs")
-
-
 def main() -> int:
-    parser = argparse.ArgumentParser(description="Read-only registry budget accounting; never calls a provider")
+    parser = argparse.ArgumentParser(description="Read-only registry cost reporting; never calls a provider")
     parser.add_argument("project", type=Path)
     args = parser.parse_args()
     try:

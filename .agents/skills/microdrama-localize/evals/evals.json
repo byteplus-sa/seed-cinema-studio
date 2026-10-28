@@ -3,7 +3,7 @@
   "evals": [
     {
       "id": 1,
-      "prompt": "Episode 2 is delivered with locked dialogue in its source language. Localize it to Portuguese for a new audience; we have a small budget.",
+      "prompt": "Episode 2 is delivered with locked dialogue in its source language. Localize it to Portuguese for a new audience using subtitles, keeping the audio and picture.",
       "expected_output": "Picks the cheapest route that fits, keeps picture and canon unchanged, and produces a translation sheet and subtitles.",
       "files": [],
       "expectations": [

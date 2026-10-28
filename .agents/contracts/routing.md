@@ -27,7 +27,7 @@ Use [production brief](production-brief.md) and
 [production profiles](../catalog/production-profiles.json) for shared settings,
 disclosed defaults and legacy compatibility. General production follows confirmed creative
 choices, without imposed Hook/Turn/Cliffhanger beats, duration, aspect or cards.
-Rights, approval, review, spending and registration gates remain universal.
+Rights, approval, review and registration gates remain universal.
 
 `project.md` is the canonical shared brief; a validated `production.json`
 selects unit briefs and ordered scenes. Without a manifest, retain root Studio
@@ -89,7 +89,7 @@ authorization follows from choosing one of these routes.
 | Ad-hoc media comparison, also an optional look at a Studio project's elements, audio or candidate takes (never a gate) | `showcase-html --quick`; `media-review` only for an explicitly requested OS player or unavailable browser |
 | Mermaid system/process diagram | `design-doc-mermaid` when available; cinematic blocking requests use `blocking-map` |
 | Narrative reference-video inspiration | Obtain decodable local media first. Use capable native inspection and timestamped measurements; use permitted `ark-mcp` analysis when coverage is insufficient or explicitly requested. Full reverse-engineering follows `template-factory`. Preserve selected unit, source writing, quiet holds and format; scripts, article text and sparse frame samples alone do not establish motion grammar |
-| Reference soundtrack analysis | Native audio input or a capable local audio model first; permitted audio-understanding tools or documented human listening when needed. ASR and separation may assist, but do not establish listening. Record full-soundtrack coverage and provenance under privacy, cost and explicit offline constraints; unresolved sound is not approved post evidence |
+| Reference soundtrack analysis | Native audio input or a capable local audio model first; permitted audio-understanding tools or documented human listening when needed. ASR and separation may assist, but do not establish listening. Record full-soundtrack coverage and provenance under privacy and explicit offline constraints; unresolved sound is not approved post evidence |
 
 Deterministic HTML/CSS/SVG is a production route, not a provider fallback. In
 this workspace, that shorthand means one HTML entrypoint with project-local CSS

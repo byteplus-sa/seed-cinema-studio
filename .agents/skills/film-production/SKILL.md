@@ -95,7 +95,7 @@ Record capacity gaps and require measured trials; alternate cuts remain deferred
    upstream hash. Shared canon uses explicit production scope, not the unit.
    Follow [production versions](../../contracts/production-versions.md).
 7. State the current stage, the next safe objective, required specialist
-   skills, and any user decision needed before spending credits.
+   skills, and any unresolved creative, rights or consent decision.
 
 Read [stage contracts](references/stage-contracts.md) for entry evidence,
 required outputs and exit conditions, and
@@ -237,18 +237,18 @@ override. At shot generation, inspect each take against its plan: a missing
 planned cut, move or light change is a soft defect to record, and a missing
 move or light on the turn shot is a hard-gate failure.
 
-## Approval and spending gates
+## Approval and cost reporting
 
 Approval modes, decision evidence and lock rules are defined once in the
 production policy. The orchestration-specific rules are:
 
-- Declare a run budget (generated seconds or currency) before the first paid
-  submission, and stop and report before exceeding it. Promote only selected
-  drafts.
+- No budget declaration, monetary cap or generated-seconds spending cap is
+  required. Missing estimates and legacy budget fields do not block generation.
+  Promote only selected drafts.
 - A tie between passing candidates uses stable operation ID and
   variation-index order. Do not promote the least-bad output merely to advance.
-- Rights, real-person likeness or voice consent, new spending beyond the
-  declared budget, external delivery and publishing need their own scope in
+- Rights, real-person likeness or voice consent, external delivery and
+  publishing need their own scope in
   either mode. An approval to generate never approves its result.
 - Record estimated and confirmed cost separately.
 

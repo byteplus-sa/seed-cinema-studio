@@ -22,7 +22,7 @@
           "additionalProperties": false,
           "required": ["context_version", "kind", "effective_sha256"],
           "properties": {
-            "context_version": {"const": 1},
+            "context_version": {"enum": [1, 2]},
             "kind": {"enum": ["legacy", "unit"]},
             "effective_sha256": {"type": "string", "pattern": "^[a-f0-9]{64}$"},
             "unit_id": {"$ref": "urn:seed:post-common#/$defs/id"}

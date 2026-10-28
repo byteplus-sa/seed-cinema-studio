@@ -14,7 +14,7 @@ from pathlib import Path
 from threading import local
 from typing import Any
 
-from budget_report import cancelled_before_submission, check_budget
+from budget_report import cancelled_before_submission
 from ruamel.yaml.error import YAMLError
 from validate_request import (
     operational_context,
@@ -358,9 +358,7 @@ def _register_operation(
                 "Operation or asset identity already exists; reconcile or use an explicitly authorized new take"
             )
         record = deepcopy(request)
-        if adoption is None:
-            check_budget(root, registry["tasks"], record)
-        else:
+        if adoption is not None:
             task_id, status, terminal = adoption
             record.update(
                 submission_status="terminal" if terminal else "acknowledged",
@@ -464,7 +462,6 @@ def transition_operation(
                     "; ".join(finding.message for finding in evidence_findings)
                 )
             require_current_approval_contract(root, record, context=record.get("context"))
-            check_budget(root, registry["tasks"], record)
         if provider_task_id and record["provider_task_id"] not in (
             None,
             provider_task_id,

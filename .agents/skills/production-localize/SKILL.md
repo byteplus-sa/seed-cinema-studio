@@ -13,7 +13,7 @@ the chosen route; the leaves never invoke each other. Follow the shared
 ## Scope and Preservation
 
 Require the delivered source master, locked source lines, canonical references,
-selected unit, target language/register, rights and budget. Keep scripts,
+selected unit, target language/register and rights. Keep scripts,
 source-language lines, canon and all earlier renders intact. Inventory their
 paths and hashes before work. Source picture and timing stay unchanged for
 subtitles/re-voice; regenerate is an explicitly chosen new version with new
@@ -30,7 +30,7 @@ supplied, never impose micro-drama structure on a film.
    Obtain required text acceptance before generation or delivery. Keep cultural
    claims `unverified` without native-speaker evidence.
 3. Choose subtitles only, line-scoped re-voice with preserved soundtrack, or
-   full regenerate. Explain what picture/audio changes, estimated cost and
+   full regenerate. Explain what picture/audio changes, available cost estimates and
    lip-sync limitations. Never silently upgrade into a paid route.
 4. For spoken target audio, sequence `seedance-prompt-25-dialogue` for the
    native-language check; use the actual audio tool's verified language
@@ -44,7 +44,7 @@ supplied, never impose micro-drama structure on a film.
 6. Before any generation, sequence inline `prompt-review` and durable
    `prepare_request.py --register`. Reconcile unknown submissions from
    `task_ids.json`; never duplicate a paid operation or switch transports
-   as a retry. Preserve current authorization and spending boundaries.
+   as a retry. Preserve current authorization and creative scope.
 7. Inspect the localized output under the shared QA protocol: locked-line
    transcript comparison, listening where audible, full-cut picture/timing,
    soundtrack preservation, subtitle/player checks and honest lip-sync verdict.

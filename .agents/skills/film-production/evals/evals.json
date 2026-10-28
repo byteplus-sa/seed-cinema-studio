@@ -9,7 +9,7 @@
       "expectations": [
         "Runs brief-intake first and records a picture_only audio route, ungraded original colours and the logo/end card as post overlays in project.md.",
         "Plans about six 5 s sequences of 2-3 shots with one action per shot, each shot carrying lens intent, camera move, a named light and depth, and one wow image per sequence.",
-        "Submits each sequence as a 480p native Draft with generate_audio false after prompt-review and registration, with a declared run budget.",
+        "Submits each sequence as a 480p native Draft with generate_audio false after prompt-review and registration, without requiring a budget or estimate.",
         "Does not bind any storyboard image as a Seedance reference."
       ]
     },
@@ -56,6 +56,18 @@
         "Does not submit an extension of a clip with people unless the identities are registered asset:// Virtual Portrait assets.",
         "Offers a new single-pass shot with matching first frame and a blocking map, assembled at a cut.",
         "Does not submit a paid request before the user chooses the route."
+      ]
+    },
+    {
+      "id": 6,
+      "prompt": "Generate the next approved shot as a native draft. The legacy project budget cap is zero and old spending exceeds it; there is no estimate. Its reviewed request and rights are current, but the registry says submission_unknown for this operation.",
+      "expected_output": "Ignores legacy spending caps and missing estimates but reconciles the uncertain operation instead of resubmitting.",
+      "files": [],
+      "expectations": [
+        "Does not request a budget, estimate, cap increase or spending approval.",
+        "Reconciles the existing operation and never retries it through another transport.",
+        "Retains native-draft, rights, current review and selection requirements for any genuinely new operation.",
+        "Reports unknown costs honestly without treating them as zero."
       ]
     }
   ]
