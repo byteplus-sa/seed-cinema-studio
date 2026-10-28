@@ -112,8 +112,8 @@ shot_plan:
 | `axis_carry` | Where each confirmed project axis appears (camera, lens, lighting, pacing, energy), or the scene override and its reason |
 | `sources` | Every light source the scene uses, with a fixed world position and the event that switches it on |
 | `cues` | Optional, per source. Each cue has `at_s` (scene time), `change` (`on`, `off`, `dim` or `flicker`), `trigger` (the visible or story event) and, when it lands inside a shot, that shot's `id`. A shot's `light` describes the state at its start and names any cue inside it |
-| `duration_s` | Shot length in seconds; lengths are uneven and the turn differs from its neighbors |
-| `turn` | `true` on exactly one shot |
+| `duration_s` | Shot length in seconds, chosen for perception, performance and editorial intent; equal lengths are valid |
+| `turn` | Optional marker for an approved turning point; omit when absent or unhelpful |
 | `job` | One of establish, reveal, emphasize, connect, escalate, hold, release |
 | `size` | Extreme wide, wide, medium, medium close-up, close-up, extreme close-up or insert |
 | `framing` | Single, dirty single, two-shot, three-shot, group, over-the-shoulder, over-the-hip, point of view or insert, per [framing](framing.md). Required in a scene with two or more characters |
@@ -126,9 +126,9 @@ shot_plan:
 | `static_reason` | Required with a static hold; a value from the entrypoint table |
 | `lens_intent` | A visible result (sharp plane, soft background, compression), never a number alone. A focus pull away from a face is marked `post` rather than prompted |
 | `depth_layers` | Recommended at standard and kinetic energy. A named foreground, the subject and a named background, each a visible thing in the declared location |
-| `wow` | `true` on one shot per clip: the image the clip is remembered for. It may be the turn |
+| `wow` | Optional marker for a selected standout image; no required count |
 | `light` | A declared `source`, the `key_side` relative to the lens, and the quality and contrast |
-| `contrast_with_previous` | Which of size family, angle class, move and key side change; `n/a` for the first shot |
+| `contrast_with_previous` | What repeats or changes and why it serves attention; `n/a` for the first shot |
 | `blocking_change`, `axis_crossed`, `state_change`, `sub_beats` | Optional. Facts the scene board reads to mark a shot key and to pick its panel states: `blocking_change: true` when positions change inside the shot, `axis_crossed: true` when the 180 degree axis is crossed or restated, `state_change` as a list of prop, wardrobe or location changes, and `sub_beats` as the named beats an L3 board draws |
 | `transition_in`, `dialogue`, `sound_cue`, `screen_direction`, `continuity_carry`, `elements` | Optional. Copied onto the scene board's annotation strip and panel prompts; leave them out when the shot has nothing to say |
 
@@ -152,14 +152,14 @@ The lighting preset skill words the cue for the prompt. The plan's job is to
 give every cue a time, a change and a trigger; an untimed "partway through" switch lands
 at an unplanned moment.
 
-A plan with `energy`, `sources`, a `turn`, uneven `duration_s` values and a
-`contrast_with_previous` for every shot after the first is complete enough for
-review.
+A plan records energy, sources, shot purposes and durations, with a rationale
+for repetition or contrast. Review readability and source fidelity, not the
+presence of a turn or a timing pattern.
 
 ## Sequences in a long spot
 
-A spot planned under the cinematic sequence bar records its sequences above the
-shots, and each sequence becomes one generated clip:
+When short sequences serve the brief, record them above the shots. This
+illustrative grouping is optional, not a five-second or shot-count template:
 
 ```yaml
 sequences:
@@ -177,10 +177,10 @@ sequences:
     wow: s01_sh020_c
 ```
 
-Each sequence has 2-3 shots, one action per shot and one `wow` shot. Lengths
-vary from sequence to sequence like shot lengths do. The joins between
-sequences are cuts made in assembly, so a sequence may end on a held frame that
-the edit trims.
+Sequence count, duration and emphasis follow the approved idea and verified
+generation limits. Equal lengths, single shots and omitted `wow` markers are
+valid. Joins are made in assembly, so a sequence may end on a held frame that
+the edit trims without losing a critical beat.
 
 ## Carrying the plan into the prompt
 

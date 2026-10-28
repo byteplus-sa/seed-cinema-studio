@@ -326,7 +326,15 @@ holds and source-preserving edits; static assets do not require acting plans.
 
 Narrative, ad, micro-drama, music-video and showcase shots also need a recorded shot plan before prompt authoring: for each shot, duration, size, angle, camera move, lens intent, and a named light source with its key side, produced by `seedance-shot-design` and stored with the scene. A static camera or an unchanging light needs a recorded `static_reason`. Exemptions are recorded, never assumed: a user lock, a static-by-design format (the `ugc`, `ugc-how-to`, `ugc-unboxing`, `product-review` and `ugc-virtual-try-on` modes, named UGC presets with a locked camera block, talking-head, avatar and news takes, frame-break), an explicit per-shot camera plan from another skill (a pin plan; a music-video genre lock is vocabulary, not an exemption), a plate for cutdown, a source-preserving edit, an extension continuation, or no video shot at all. A confirmed (`agent_confirmed` or `user_confirmed`) camera, lens, lighting, pacing or energy axis recorded in `directorial_axes` or the `locked` block must reach the shot prompts, or the scene records an override with its reason; `proposed` and `defaulted` axes may be revised freely. A user-confirmed lock is never replaced by the plan.
 
-Inspect each take against its plan. A planned cut, camera move or light change that is missing is a soft defect to record; a missing move or light on the shot flagged as the turn is a hard-gate failure. A 480p draft is the default way to check shot structure before final-resolution generation. A project whose scene breakdown is already complete plans only new or revised shots, proposes a migration preview for older scenes, and never invents a plan for takes that already exist.
+Inspect each take against its plan and project-specific artistic criteria. A lost critical event, response or explicit lock is a hard failure; a missing optional camera move or turn marker is not. Coverage serves audience attention with repeated framing, equal lengths and held shots available. Record less material differences without imposing variety quotas. A 480p draft is the default way to check shot structure before final-resolution generation. A project whose scene breakdown is already complete plans only new or revised shots, proposes a migration preview for older scenes, and never invents a plan for takes that already exist.
+
+Resolve a compact premise when open: audience response, what carries attention
+and why the ending matters. Plan sound/editorial intent before generation, then
+conform cues to the measured edit. Acceptance needs timestamped actual playback
+and listening evidence for takes and the final cut, not only valid records.
+Body energy follows approved intent independently of camera and edit energy;
+speech imposes readability, not a kinetic cap. Optional coverage or templates
+never authorize additional generated clips or spending.
 
 Choose the static-graphics route by fidelity requirement. Exact copy,
 typography, logos, screen/UI layouts, title cards, posters, product lineups,

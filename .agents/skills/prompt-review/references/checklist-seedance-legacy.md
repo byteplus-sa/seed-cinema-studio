@@ -63,7 +63,7 @@ Source skill: `seedance-prompt-20`
 12a. **Shot plan carried (`shot.plan_bound`, `shot.variety`, `shot.axis_carry`).**
     The Seedance 2.5 shot-plan items (`shot.plan_bound`, `shot.variety`, `shot.axis_carry` in [the 2.5 checklist](checklist-seedance-25.md#shot-plan-and-structure)) apply to a 2.0 prompt: each shot line carries
     its size, angle, camera move (or a recorded static reason) and a declared
-    light source with its key side, and neighboring shots differ.
+    light source with its key side, and coverage serves the approved intent.
 
 13. **Per-shot references repeated.** Every shot repeats applicable `@Image N`,
     `@Video N`, `@Audio N` references inline.
@@ -72,19 +72,22 @@ Source skill: `seedance-prompt-20`
     actions/expressions, (3) Position/spatial changes, (4) Lighting & color tone,
     (5) Audio.
 
-15. **Coherent camera movement.** Use one or two clear requested movements per
-    shot, with sequence and endpoints; avoid competing simultaneous directions.
+15. **Coherent camera movement.** Preserve requested paths with sequence and
+    endpoints; flag competing simultaneous directions or unreadable evidence,
+    not the number of moves alone.
 
-16. **Complexity budget.** At most 3 major action beats or 4 tightly related shots
-    for 15s generation.
+16. **Complexity budget.** Density estimates are provisional; preserve requested
+    rhythm within verified request limits. Flag demonstrated lost action or
+    continuity, not a numeric beat or shot quota. Additional generated clips
+    require authorization.
 
 17. **Action detail.** Body-part level detail (hands, legs, head, shoulders, back)
     with range, speed, force.
 
-18. **Motion preference.** The performer's body prefers slow, gentle,
-    continuous motion and avoids high-burst, large-dynamic actions unless the
-    brief calls for them. Camera and cut energy follow the shot plan, not this
-    item.
+18. **Intent-led body energy.** Speed, amplitude, interruptions and recovery
+    follow approved action with grounded physics. No slow-body preference or
+    universal burst limit applies. Actor energy, camera energy and edit rhythm
+    are separate; speech requires readable performance, not automatic restraint.
 
 19. **Emotion externalization.** Emotions are externalized as physical details,
     never bare labels.
@@ -93,8 +96,9 @@ Source skill: `seedance-prompt-20`
     `{curly braces}` or quotes for lip-sync, with speaker labels for several
     speakers. Use measured delivery or a native-language-informed read with
     pauses, onset and tail. Words / 2.2 is an English planning estimate, not a
-    universal rejection rule. Initially allow 0.5-1.5 s onset and at least
-    0.4 s tail, then verify actual delivery; without evidence, fit is provisional.
+    universal rejection rule. Derive onset and tail from measured delivery,
+    required response and the intended ending without fixed margins or final
+    state quotas; without evidence, fit is provisional.
     Preserve approved text; propose retiming or splitting before an authorized
     wording change.
 

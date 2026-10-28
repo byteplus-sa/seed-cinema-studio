@@ -27,10 +27,11 @@ episode is a contiguous run of shots.
 ## Series bible and ladder
 
 Write the bible first with the story skill's series-bible template (for any
-market, `microdrama-story-formats`). The ladder lists, per episode, the hook, the
-turn, the cliffhanger and the new information it reveals. Treat the ladder as
-planning data: change it when story needs change, and record the change in the
-ledger below.
+market, `microdrama-story-formats`). The ladder records each episode's approved
+purpose, attention carrier, ending and continuity consequences. Hook, turn and
+cliffhanger fields apply only when that optional template is selected; preserve
+resolved or open source endings. Treat the ladder as planning data: propose
+changes under the existing approval mode and record accepted changes below.
 
 ## Continuity ledger
 

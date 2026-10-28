@@ -38,8 +38,8 @@ each clip reliable:
 
 | Budget per clip | Guidance |
 | --- | --- |
-| Hard cuts | At most about 6–7 shots per clip, and no shot shorter than about 0.8 s. Denser grammar merges or drops cuts; build the pin's blink cuts, flashes and intercuts in the edit. |
-| Duration | Choose natural integer durations from the pin spans, rounded up, with at least 0.3 s of hold after the last action. |
+| Hard cuts | Density estimates are provisional, not count ceilings or duration floors. Preserve source rhythm within verified request limits; use assembly for exact timing or demonstrated merging, reusing footage where possible. Additional generated clips require authorization. |
+| Duration | Choose supported request durations from the pin spans; trim any necessary rounding margin in assembly. Preserve the source ending without adding a compulsory hold. |
 | Split points | Split only on measured hard cuts. Do not split inside a whip, match cut, or continuous camera move. |
 
 Timing rules at clip boundaries:

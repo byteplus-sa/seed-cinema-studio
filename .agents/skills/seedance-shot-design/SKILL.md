@@ -32,21 +32,19 @@ more cuts or camera movement cannot substitute for acting intent.
 
 | Cause | What the plan does instead |
 | --- | --- |
-| One setup for the whole clip | Several shots, each with its own size, angle, move and key side (V1) |
+| Coverage hides the intended event | Choose a held setup or several shots that reveal the event (V1) |
 | No camera-move statement, so the model holds a neutral frame | Every shot states its move with a start and an end, or records a `static_reason` (V3, V6) |
 | Soft, hedged words ("gentle", "subtle", "slight") on every line | Active verbs with a speed: the camera drives in, sweeps, rises, snaps; the light rakes, cuts out, floods |
 | Camera, lens and light presets used only when the user names them | The plan assigns them by default at the chosen energy level; a user lock still wins |
 
-### Cinematic sequence bar
+### Intent-led coverage
 
-For an ad, trailer or showcase spot of about 15 s or more, build the piece as
-sequences of about 5 s, each generated as its own clip of 2-3 shots, and cut
-them together in assembly. A 30 s spot is about six such sequences. Each shot
-carries one action, a lens intent, a camera move, a motivated light source and
-depth layers (a named foreground, the subject, a named background), and each
-sequence has one `wow` shot: the image the sequence is remembered for. A single
-30 s pass that carries nine or more beats tends to read as stock footage, so do
-not plan one unless the user asks for a single take.
+Choose clip boundaries from what the audience needs to perceive, the approved
+action, sound/editorial intent and verified generation limits. An ad, trailer
+or showcase has no automatic five-second sequence, shot-count or `wow` quota.
+Short sequences and standout images are optional techniques. A sustained take,
+equal durations or repeated framing can carry the idea without special waiver.
+Record each shot's purpose, lens intent, move or hold and motivated light.
 
 ## Boundary
 
@@ -121,49 +119,51 @@ timing locks instead of silently changing them.
    | Level | Fits | Typical shot length | Camera | Light |
    | --- | --- | --- | --- | --- |
    | Restrained | Naturalistic, documentary, brand-safe realism, quiet drama | 3-10 s | Slow motivated push, drift or pan; holds as contrast | Motivated window or practical light; soft contrast between shots |
-   | Standard | Most narrative, ad and micro-drama work (default) | 2-6 s | One clear motivated move in about half the shots; one signature move | A named key side per shot; one contrast beat such as backlight or a practical |
+   | Standard | Moderate energy supported by the brief | 2-6 s | Motivated moves or sustained holds | Named source and key side; contrast when useful |
    | Kinetic | Action, sport, chase, music video, high-energy ad | 1-3 s | Tracking, whip, handheld, crash zoom, orbit or FPV per beat | Hard contrast, rim or backlight, flicker, colored practicals |
 
-   Restrained lowers the amplitude of moves and light shifts; it does not lower
-   the variety of size, angle and light between shots. Choose kinetic only when
-   the brief supports it, and only for shots without spoken lines.
+   These ranges are optional planning examples, not timing or variety quotas.
+   Separate actor energy, camera energy and edit rhythm. Kinetic dialogue is
+   valid when words, speaking assignments and critical performance remain
+   readable at the planned framing and speed. Do not soften body action merely
+   because speech is present; verify the actual take by playback and listening.
 3. **Give every beat a job:** establish, reveal, emphasize, connect, escalate,
    hold or release. A shot with no job is cut or merged into its neighbor.
-4. **Set the shot count and lengths** from the beats. A clip carries at most
-   about 7 shots and none shorter than about 0.8 s; split a longer kinetic sequence into
-   several clips. A shorter cut is planned as an assembly cut: generate each
-   side at a natural length and trim in post (see the pacing preset skill's
-   assembly-only cuts). Make lengths uneven and give the turn shot a length unlike its
-   neighbors. One shot across a long clip needs a recorded one-take or
+4. **Set the shot count and lengths** from the beats. Density estimates are
+   provisional, not a shot-count ceiling or minimum shot duration. Preserve
+   requested rhythm within verified request limits; inspect actual cuts and
+   propose assembly when exact timing or demonstrated merging requires it.
+   Reuse suitable footage; additional generated clips require authorization.
+   Choose equal or unequal lengths from perception time,
+   performance and editorial intent. One shot across a long clip needs a recorded one-take or
    `static_reason`. Size dialogue shots from measured delivery or a
    native-language-informed read with pauses. About 2.2 words/s is an English
-   estimate, not a universal gate. Allow for onset (initially 0.5-1.5 s) and
-   a final tail (initially at least 0.4 s), then verify actual delivery.
+   estimate, not a universal gate. Derive onset and tail from measured delivery,
+   the required response and intended ending, without fixed margins.
    Without evidence, timing is provisional. Preserve language and locked text;
-   propose retiming or splitting before authorized rewrites. Plan no
-   more than two visible state changes in the clip's last 3 s. For a spot of
-   about 15 s or more, apply the cinematic sequence bar above.
+   propose retiming or splitting before authorized rewrites. Judge final action
+   by readability, not a state-change quota.
 5. **Declare the scene's light sources** with world positions, the event that
    switches each on, and any in-scene cue that switches it off, dims it or makes
    it flicker. Then give every shot a source, a key side relative to the
    lens, a quality and a contrast. Assign each shot a size, a framing (who is
    featured and how the subjects relate, per [framing](references/framing.md)),
    an angle, a move with start and end, a lens intent as a visible result, and
-   at standard or kinetic energy its depth layers. Dialogue shots vary size,
-   framing and angle; keep their moves quiet so speech and lips stay readable.
+   where useful its depth layers. Dialogue coverage may repeat or vary framing;
+   choose movement by intent and speech/performance readability, not a speed cap.
    Plan an attention shift inside one frame with staging or a move, not a
    prompted rack focus: Seedance drafts keep a face sharp, so a focus pull away
    from a face is added in post (see the lens preset skill).
-6. **Run the variety rules below** and revise until every shot passes or carries
-   a recorded reason. Flag exactly one shot as the turn.
+6. **Run the coverage checks below.** Explain how choices serve the brief.
+   Mark a turn only when the approved scene contains one and the label helps.
 7. **Tell one light story per scene.** The sources stay fixed in the room. A cut
    changes which side of a source the camera sees, or a motivated event adds or
    removes a source (a door opens, a lamp is switched on, the room lights go
    out). A light cue may land inside a shot, even during a move, when the plan
    records its time and trigger; a timed cue tends to land close to its
    stated time. A shot never invents a source or a cue the
-   scene did not declare. Silhouette is for shots without speech; contre-jour
-   that keeps the face readable is allowed on spoken shots.
+   scene did not declare. A silhouette is compatible with speech when required
+   cues remain readable; preserve concealed faces and flag visibility conflicts.
 8. **Write the plan** per [shot plan format](references/shot-plan-format.md).
    Choose recurring structures from
    [coverage patterns](references/coverage-patterns.md).
@@ -172,16 +172,16 @@ timing locks instead of silently changing them.
 
 | Rule | Check |
 | --- | --- |
-| V1 Neighbor contrast | Adjacent shots differ in at least two of: size family (wide, medium, close), angle class (eye level, over-the-shoulder, low, high, overhead, first-person) with a recorded reason (extreme wide and wide count as wide; medium and medium close-up as medium; close-up, extreme close-up and insert as close), camera move (moving versus held, or a different type or direction), and key side from the same declared source or a motivated new source. A step within a family, "slightly low", and a reworded light phrase with no new position do not count. |
-| V2 Angle range | At least one shot per scene is not plain eye level (low, high, overhead, first-person or over-the-shoulder) unless a lock or `static_reason` says otherwise. |
+| V1 Neighbor intent | Repetition or contrast in size, angle, move and key side serves attention, action or relationship. No minimum number of changed dimensions. |
+| V2 Viewpoint | Choose eye level or another angle for what must be seen or felt. An entire scene may remain eye level. |
 | V3 Motivated motion or stillness | Derive motion from the confirmed script, medium and directing intent. Motion ratios are optional planning aids, not quotas. A whole clip or scene may remain held with a recorded rationale; repeated stillness is valid when intentional. Do not insert a move, cut or light change merely to satisfy a count. |
 | V4 Light named | Every shot names a declared source and a key side. "Cinematic lighting" and "soft fill" without a source and a side are not light facts. |
-| V5 Turn emphasized | The shot flagged as the turn has the largest contrast with its neighbors, and its length differs from theirs. |
-| V6 Move budget | One primary move per shot and at most one secondary, each with a subject, a start and an end. The clip-level cap is the shot ceiling in step 4, not a move count. |
+| V5 Emphasis | Emphasize the approved event where useful through performance, sound, staging, light or edit. No turn, largest-contrast shot or duration difference is required. |
+| V6 Coherent camera path | A primary move with a compatible secondary is a planning aid. Preserve requested compound paths with explicit order and endpoints; flag competing directions or unreadable cues, not the move count alone. |
 | V7 Readable performance | A move never stands in for a cue that cannot be read at that size; match shot size to the cues the beat needs. |
 | V8 Screen direction | Travel and confrontation state the axis and restate it after each cut; a deliberate axis crossing is named. |
-| V9 Uneven timing | Shot lengths are not all within 20% of each other. Cut times fixed by a song map, a pacing axis or a lock are recorded as given: V9 is waived and the turn is marked by contrast instead. |
-| V10 Framing intent | In a scene with two or more characters every shot names its framing and featured subjects, and the framing fits the beat: a scene of three or more shots that cover a conversation does not run on clean singles alone, a trio is not covered by three singles when one three-shot serves, a point-of-view shot sits next to its looker and its reaction shot or records why it stands alone, and an over-the-hip shot is used when the characters are at different heights (over-the-shoulder otherwise) or records why. Framing sets the `angle` class (see the plan format), so it counts once under V1 and V2. Scenes with one character are exempt. |
+| V9 Perception time | Equal or unequal shot lengths preserve the needed action, attention, speech and response. Carry fixed song-map times and timing locks unchanged. |
+| V10 Framing intent | In multi-character scenes name framing and featured subjects. Singles, shared frames and unpaired point-of-view shots are available when the relationship and required evidence remain legible; no coverage pattern is mandatory. |
 
 ## Inputs and limits
 
@@ -197,8 +197,8 @@ views, or request an approved extra view before Stage 6.
 ## Evidence and limits
 
 A recorded plan (or exemption) is a workspace requirement under the
-`shot.plan_bound`, `shot.variety` and `shot.axis_carry` rules. The V1-V10
-thresholds are craft heuristics and optional artistic technique, drawn from
+`shot.plan_bound`, `shot.variety` and `shot.axis_carry` rules. V1-V10
+are intent/readability checks, not numeric variety quotas. Optional techniques are drawn from
 common failure shapes: equal-length wide, medium, two-shot, wide ladders with
 no move and no light change, and project axes that never reach the shot lines. V10 and the framing vocabulary follow a
 StudioBinder framing article, with the group shot and the over-the-hip height
@@ -215,19 +215,17 @@ final render.
 Before returning a plan, confirm:
 
 1. Every shot has a job, duration, size, angle, move (or `static_reason`), lens
-   intent, source and key side, a framing in multi-character scenes, and
-   exactly one shot is the turn.
-2. V1 through V10 pass or carry a recorded reason.
+   intent, source and key side, and a framing in multi-character scenes.
+2. V1 through V10 support the intended perception without imposing variety.
 3. Locks and confirmed axes are carried, not overwritten.
 4. The shot count and lengths fit the duration, the energy level and any
    dialogue.
 5. No shot stacks competing moves, and no shot invents a light source or an
    undeclared light cue.
-6. A cut shorter than about 0.8 s (a blink cut, a vision flash, a fast
-   intercut) is an assembly cut: the plan names the clips it is cut from, and
-   each clip is generated at a natural length.
-7. A spot of about 15 s or more is planned as about 5 s sequences of 2-3
-   shots, each with one `wow` shot, unless the user asked for a single take.
+6. Exact edit timing names the available source footage and assembly operation.
+   Short cuts alone do not require separate generation or slower rhythm.
+7. Clip boundaries follow the approved idea and verified limits, not a cadence
+   or standout-image quota.
 8. No shot relies on a prompted focus pull away from a face; that defocus is
    planned for post.
 9. The plan names where it is stored and which prompt carries it.

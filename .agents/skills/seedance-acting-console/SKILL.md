@@ -136,8 +136,8 @@ does not require more movement or override a restraint lock.
 Load [restraint and shape patterns](references/restraint-and-shape.md) when a
 tactic needs a precise shape: a **first sign** (one small cue as the earliest
 consequence), a **suppression arc** (a visible feeling brought under control),
-an **animal image** translated into body cues with at most one burst action
-per shot, or **eyes through concealment** (a veil or mask that leaves only the
+an **animal image** translated into intent-led body cues, or
+**eyes through concealment** (a veil or mask that leaves only the
 eyes to carry the tactic).
 
 ---
@@ -192,8 +192,9 @@ inventing dialogue. Continue clear physical cue work with that gap flagged.
 
 Give each line room using measured delivery or a native-language-informed
 read, including pauses. About 2.2 words/s is an English planning estimate, not
-a universal gate. Allow for onset (initially 0.5-1.5 s) and a final tail
-(initially at least 0.4 s), then verify the actual take. Without delivery
+a universal gate. Derive onset and tail from measured delivery, required
+response and the intended ending without fixed margins or final-state quotas.
+Verify the actual take. Without delivery
 evidence, timing is provisional. Preserve exact words, language, register,
 pauses and timing locks. Return an overrun or unresolved fit to the caller
 with retiming/splitting options for authorization; do not shorten text, remove
@@ -260,9 +261,10 @@ dialogue-to-shot mapping in existing shot/scene evidence.
 - **Cues serve the tactic, not the emotion label.** Always derive visible
   behavior from what the character is doing (the tactic), not from what they're
   feeling. The emotion bank is optional, not a required classification.
-- **Burst control is optional.** For a supplied lunge, a hold before and after
-  the stop can clarify the movement. Keep supplied wardrobe and timing;
-  return any conflict rather than adding holds across locked action.
+- **Burst control is optional.** Body speed, amplitude, interruptions and
+  recovery follow supplied intent. A single burst with holds or slower motion
+  can repair a demonstrated failure; it is not a default or universal limit.
+  Keep supplied repeated actions, wardrobe and timing; return conflicts.
 - **Emotion arcs need ordered triggers and consequences.** Use multiple beats;
   timestamps are optional unless requested or needed for verified audio alignment.
 - **Evidence limits.** A prompt-only repair predicts a clearer cue; it does
@@ -288,9 +290,9 @@ Before returning an acting block, verify:
 - [ ] Strength uses observable changes rather than bare degree adjectives.
 - [ ] A suppression arc moves toward control and ends on one residual cue
       the framing can show.
-- [ ] An animal image is translated into observable cues, and a burst action
-      uses this pattern's single burst and holds only where compatible with
-      source locks; conflicts are returned, not silently repaired.
+- [ ] An animal image is translated into observable cues; any burst-control
+      remedy names the demonstrated failure and preserves source action and
+      timing. No universal single-burst cap is imposed.
 - [ ] A veil or mask stays on; eye cues appear only when readable at the
       selected scale, with physical channels used otherwise.
 - [ ] Supplied triggers and consequences remain ordered; timestamps are

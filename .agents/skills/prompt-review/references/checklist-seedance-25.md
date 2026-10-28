@@ -50,8 +50,8 @@ does not create a native draft; confirm the live tool supports `draft: true`.
 
 6. **Action granularity.** The Action slot describes motion at the body-part
    level with range, speed and force, grounded in weight, balance, momentum and
-   contact — not as bare verbs. High-burst actions appear only when the shot or
-   energy level requires them.
+   contact, following approved intent rather than a default speed. Preserve
+   repeated bursts or stillness when they serve the action.
 
 ## References
 
@@ -116,23 +116,24 @@ does not create a native draft; confirm the live tool supports `draft: true`.
     confirmed episode format, scene plan, dialogue and budget; do not impose a
     fixed advertising cadence on micro-drama. Each shot or stage has one primary
     state change and a clear end state. An overpacked clip that cannot preserve
-    its planned beats or dialogue timing is MAJOR. About 7 shots per clip at
-    most, none shorter than about 0.8 s; shorter cuts merge. A static shot is
+    its planned beats or dialogue timing is MAJOR when demonstrated. Density
+    estimates are provisional, not shot-count ceilings or duration floors;
+    preserve requested rhythm within verified request limits. A static shot is
     valid with the recorded reason required by the shot plan.
 
-18. **Neighbor contrast and angle range (`shot.variety`).** Adjacent shots
-    differ in at least two of size family, angle class, camera move and key
-    side. The scene has a non-eye-level shot, moving shots at its energy level,
-    uneven shot lengths and one turn shot, or a recorded reason. A continuous
-    take shows a motivated camera path, a named light at each stage and a
-    distinct payoff. MAJOR when the clip repeats one framing, MINOR when one
-    dimension is thin.
+18. **Intent-led coverage (`shot.variety`).** Check what each shot lets the
+    audience notice and how its duration serves action, attention and response.
+    Equal lengths, repeated framing, eye-level scenes and sustained holds are
+    valid. No angle, contrast, turn, `wow` image or sequence quota applies.
+    Flag a specific lost critical event or contradicted lock as MAJOR, not
+    repetition itself. A continuous take may hold or move for its stated purpose.
 
 19. **Light sources declared (`shot.plan_bound`).** One set of declared sources
     across the scene's cuts; a new source has a motivating event. A light that
     changes inside a shot is a timed cue on a declared source ("at 3.2 s the
     overhead lamp clicks off"); timed cues are honoured closely, vague ones
-    drift. No silhouette on a shot with spoken lines.
+    drift. Check required cue visibility in silhouette; speech alone does not
+    prohibit it or authorize uncovering a locked concealed face.
 
 20. **Axis carried (`shot.axis_carry`).** Each confirmed camera, lens, lighting,
     pacing or energy axis appears on a named shot, or the scene records an
@@ -140,22 +141,26 @@ does not create a native draft; confirm the live tool supports `draft: true`.
 
 21. **Static locks carry a reason (`shot.plan_bound`).** "Locked-off" or "no
     camera movement" appears with a recorded `static_reason`, not as
-    boilerplate. A scene has at most one `performance_hold` and one
-    `contrast_hold`; a `contrast_hold` follows a moving shot; in a scene of four
-    or more shots, one reason on more than a third of the shots is MAJOR.
-    Quiet moves are fine during a spoken line; large moves there are MINOR.
+    boilerplate. Repeated `performance_hold` reasons are valid; `contrast_hold`
+    describes a hold following motion, not a required alternation.
+    Separate actor energy, camera energy and edit rhythm. Judge speech and
+    performance readability at planned framing and speed, not a blanket kinetic
+    cap; a large move during speech is not itself a defect.
 
-22. **Post-only effects stay in the edit (`shot.plan_bound`).** Blink cuts,
-    intercuts and vision flashes shorter than about 0.8 s are assembly cuts,
-    never requested inside one prompt; asking the model to skip an action it
-    describes is MAJOR. A rack focus that leaves the subject soft ("focus left
+22. **Exact edit timing (`shot.plan_bound`).** Use assembly for exact blink,
+    intercut or flash timing, or demonstrated merging, without rejecting short
+    shots solely by duration. Reuse suitable footage; additional generated
+    clips require authorization. Asking to show and omit the same action is
+    contradictory. A rack focus that leaves the subject soft ("focus left
     behind", subject sharp to background) mostly fails because the model keeps
-    the face sharp: plan the defocus in post (MINOR). A sudden burst action
-    appears at most once per shot with a still hold before and after (MINOR).
+    the face sharp: plan the defocus in post (MINOR). Single-burst holds or slow
+    motion are optional repairs for demonstrated failures, not acceptance
+    conditions. Preserve source action, interruptions and recovery.
 
-23. **Camera direction coherent.** One primary move plus at most one secondary
-    per shot, each with subject, start and end; no competing simultaneous
-    moves; a requested static camera is preserved. Uncommon terms follow Term +
+23. **Camera direction coherent.** A primary move with a compatible secondary
+    is a planning aid, not a numeric gate. Preserve coherent requested compound
+    paths with subject, order, start and end; flag competing simultaneous
+    directions or unreadable evidence. A requested static camera is preserved. Uncommon terms follow Term +
     Target Subject + Visual Change + Foreground/Background + Direction or Speed.
 
 24. **Timestamps.** Ranges are consecutive and non-overlapping, treated as a
@@ -192,11 +197,13 @@ does not create a native draft; confirm the live tool supports `draft: true`.
 
 29. **Progressive or partial change.** A change that crosses the body or frame
     over time (an outfit changing only past a line) is staged by timestamp and
-    body part, slow enough that the crossing lasts about 1.5 s, with the motion
+    body part at the readable source timing and intended energy, with the motion
     continuing unbroken and no glow, flash, sparkle, dissolve or particle
     effect. Wording that makes it instantaneous ("swaps at the doorway",
     "changes in place", "the doorway is the boundary", a bare wipe) is MAJOR. It is pure
     reference-to-video; an I2I-edited first frame recomposes the scene (MAJOR).
+    A slower crossing of about 1.5 s is an optional remedy for a demonstrated
+    failure, not a requirement or authority to change locked timing.
 
 30. **Known drift points (MINOR).** Hair covered by a shawl, blanket or high
     collar states its length falling over the garment. Night states black sky,
@@ -216,14 +223,14 @@ does not create a native draft; confirm the live tool supports `draft: true`.
 
 33. **Speech budget (`dialogue.speech_budget`).** Use measured delivery or a
     native-language-informed read, including pauses, onset and tail. About
-    2.2 words/s is an English planning estimate, not a universal gate. An onset
-    allowance of 0.5-1.5 s and a final tail of at least 0.4 s are planning
-    margins, to be checked against the actual take. Preserve requested language
+    2.2 words/s is an English planning estimate, not a universal gate. Derive
+    onset and tail from actual delivery, the required response and intended
+    ending, without compulsory margins. Preserve requested language
     and locked text; propose retiming or splitting before authorized rewrites.
     A demonstrated duration conflict is MAJOR; an English word-count estimate
     alone cannot establish one. Without delivery evidence, timing is provisional.
-    Direct unused gaps and keep the final 3 s to at most two state changes;
-    trimming the clip head does not lengthen the tail.
+    Direct unused gaps and inspect final action for readability without a
+    state-change quota; trimming the clip head does not lengthen the tail.
 
 34. **Same dialogue in both prompts.** When separate audio is in scope, the Seed
     Audio text matches the `{}` text exactly: no paraphrase, reorder or omission.

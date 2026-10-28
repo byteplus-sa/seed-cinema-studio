@@ -38,9 +38,9 @@ plan already carries the staging.
 ## Clip prompt
 
 Build with `seedance-prompt-25` from the scene's shot plan: each internal shot
-keeps its planned size, angle, camera move and light direction, and the hook,
-turn and cliffhanger each get the plan's most distinct shot. A close-up
-cliffhanger can hold still as a recorded `contrast_hold` after motion. Bind
+keeps its planned size, angle, camera move or hold and light direction. Optional
+hook/turn/cliffhanger templates do not require distinct shots or close-ups.
+Repeated `performance_hold` shots are valid when they serve the scene. Bind
 element references (character sheets, location plates, threshold props), plus
 a dedicated approved blocking map when required by the blocking contract. A
 blocking map is a separate control artifact, never a board panel or overview.
@@ -64,23 +64,25 @@ State:
 
 ### Dialogue timing
 
-Speech lands 0.5–1.5 s after its cue, later after a long pre-line action, and
-fills to the clip end. Budget for it:
+Budget from measured delivery or a native-language-informed read:
 
-- Each spoken line sits inside one shot at least `words / 2.2 + 1` s long.
-- Keep the spoken total near 2.2 words per second of available time, and end
-  the last line at least 0.4 s before the clip's end.
-- Avoid three state changes (a line, a move, a reveal) inside the last 3 s.
+- Fit each line in its intended window, including pauses and required response.
+  About 2.2 words per second is a provisional English estimate, not a gate.
+- Derive onset and tail from performance and the intended ending without fixed
+  margins. Judge final action by readability, not a state-change quota.
+- Preserve locked words; propose retiming or splitting before authorized
+  rewrites. Additional generated clips require authorization.
 - Choose hook words that speech-to-text transcribes cleanly; a garbled first
   word costs the hook.
-- Trimming a clip's head does not lengthen the tail after the last word. Fix a
-  short tail with a retake that shortens pre-line action, a freeze-hold, or a
-  recorded waiver.
+- Trimming a clip's head does not lengthen the tail after the last word.
+  A readable abrupt ending is valid; propose an edit or authorized retake
+  when actual playback shows the required response is lost.
 
 ## Draft, review, promote
 
 1. Submit each clip as a 480p native Draft (`draft: true`) with its frozen,
-   reviewed request. Draft the three clips of an episode in parallel.
+   reviewed request. Draft independent selected clips in parallel within
+   authorization; an optional template never authorizes extra generations.
 2. QA the Draft with the gates below and record a selection.
 3. Record the draft task ID with `draft_ledger.py`, then promote the selected
    Draft with its `draft_task_id` within 7 days to the delivery resolution
@@ -106,7 +108,9 @@ be promoted to a passing take from frame samples or a summary.
 
 Hard-gate failures: identity swap, wrong speaker, missing or wrong word in a
 locked line, baked-in text, broken anatomy, impossible motion, wrong location,
-and a missing planned move or light on the shot flagged as the turn. Soft
+and a missing declared critical event or performance response. Optional camera
+or turn markers are not artistic gates. Use project-specific criteria with
+timestamped actual playback/listening evidence for takes and the final edit. Soft
 defects (small continuity slips, softness, a missing planned cut or move on
 another shot) are recorded, not retaken.
 

@@ -130,12 +130,12 @@
     {
       "id": 11,
       "prompt": "I need a 30-second cinematic spot for a running shoe. Write it as one Seedance 2.5 prompt with about ten beats.",
-      "expected_output": "A recommendation to build the spot from several short sequences of 2-3 shots each, generated separately and assembled, with per-shot camera, lens intent and light, rather than one ten-beat pass.",
+      "expected_output": "A ten-beat spot plan that checks the selected operation's verified duration limits, preserves intended rhythm and proposes only necessary authorized clip boundaries, with per-shot camera, lens intent and light.",
       "files": [],
       "expectations": [
-        "The output explains that a single 30-second pass with many beats tends to read flat and proposes about five or six shorter sequences.",
-        "Each proposed shot has one action, a size and angle, a camera move, a lens intent as a visible result and a named light source.",
-        "Adjacent shots differ in at least two of size, angle, move and key side.",
+        "The output checks whether the selected operation supports the requested duration; any split follows action and verified limits, not a fixed sequence recipe, and additional generated clips require authorization.",
+        "Each proposed shot has a primary action, a size and angle, a camera move or hold, a lens intent as a visible result and a named light source.",
+        "Repeated framing and equal durations are valid when they serve audience attention; contrast is not counted as an acceptance quota.",
         "No caption, tagline, logo or end card is requested inside the footage; those are left to post."
       ]
     },

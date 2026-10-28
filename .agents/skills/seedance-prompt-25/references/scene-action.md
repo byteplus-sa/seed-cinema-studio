@@ -108,15 +108,15 @@ front foot, and scans the room left to right" is testable.
 - **Physics grounding.** State where weight and balance sit, what stays planted,
   and what the body pushes against or reacts to: ground contact, momentum
   through a turn, inertia carried between actions.
-- **Prefer slow, gentle, continuous motion for the performer's body.** "Slowly
-  raise a hand," "gently lower the head," "naturally sit down." This guidance
-  protects physical plausibility. It does not set the camera's energy or the cut
-  rate; those come from the shot plan.
-- **Avoid high-burst, large-dynamic actions** — sprinting, big jumps, violent
-  rolls — unless the shot explicitly requires them. A kinetic brief, a chase or a
-  music-video beat requires them; state them with grounded physics. A single
-  sudden strike in an otherwise still performance (an ambush, a lunge) also
-  qualifies: write one burst with a still hold before and after it.
+- **Body energy follows approved intent and action.** Set speed, amplitude,
+  interruptions and recovery from the performance plan, not a slow or gentle
+  default. Stillness, urgent reaching, repeated attempts and abrupt withdrawal
+  are all available. Ground each in balance, contact and momentum.
+- **Separate actor energy, camera energy and edit rhythm.** Speech does not
+  automatically lower any of them; preserve the required readable evidence.
+  Slow motion or a single burst bracketed by holds is an optional repair for
+  a demonstrated failure, not a universal burst limit. Identify the failed
+  moment and preserve source action and timing; return conflicts to the caller.
 - **Describe transitions between actions** for continuity: "use the inertia of
   turning around to naturally raise a hand."
 - **Externalize emotions as physical detail**, never bare emotion labels. Use
