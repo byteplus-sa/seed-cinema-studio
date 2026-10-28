@@ -151,6 +151,56 @@ class CreativeDefaultsTests(unittest.TestCase):
         self.assertEqual(rule["severity"], "error")
         self.assertIn("required response", rule["summary"])
 
+    def test_action_timing_is_evidence_led_and_legacy_dispatches_performance(self):
+        for relative, start, end in (
+            (
+                "prompt-review/references/checklist-seedance-25.md",
+                "24. **timestamps.**", "25. **natural duration.**",
+            ),
+            (
+                "seedance-prompt-25/references/scene-action.md",
+                "### timestamps and pacing", "## action description",
+            ),
+        ):
+            with self.subTest(path=relative):
+                text = normalized(SKILLS / relative).split(start, 1)[1].split(end, 1)[0]
+                self.assertNotRegex(text, r"impossible (?:densities|frequencies)")
+                for phrase in (
+                    "consecutive", "non-overlapping", "time budget",
+                    "provisional", "demonstrated", "readab",
+                ):
+                    self.assertIn(phrase, text)
+        legacy = normalized(SKILLS / "prompt-review/references/checklist-seedance-legacy.md")
+        with self.subTest(dispatch="legacy performance"):
+            for rule in ("acting.plan_bound", "fight.readable_exchange"):
+                self.assertIn(f"`{rule}`", legacy)
+            target = "../../../contracts/performance-direction.md"
+            self.assertIn(f"]({target}", legacy)
+            self.assertTrue((SKILLS / "prompt-review/references" / target).is_file())
+            self.assertIn("preservation-only", legacy)
+
+    def test_lunge_eval_and_repair_keep_prehold_optional_and_authorized(self):
+        cases = json.loads((SKILLS / "seedance-acting-console/evals/evals.json").read_text())
+        case = next(case for case in cases["evals"] if case["id"] == 10)
+        with self.subTest(source="eval 10"):
+            self.assertIn("suddenly lunges", case["prompt"])
+            self.assertIn("hold a needle", case["prompt"])
+            text = " ".join([case["expected_output"], *case["expectations"]]).lower()
+            self.assertNotIn("with a still hold before it", text)
+            self.assertNotIn("one burst and still holds", text)
+            for phrase in (
+                "one sudden lunge", "final needle hold", "pre-lunge hold",
+                "optional", "approved", "veil", "eyes", "wardrobe",
+            ):
+                self.assertIn(phrase, text)
+        with self.subTest(source="strike repair"):
+            text = normalized(
+                SKILLS / "seedance-acting-console/references/acting-repairs.md"
+            ).split("## strike that jitters", 1)[1]
+            for phrase in ("optional", "approval", "propose", "timing", "needle"):
+                self.assertIn(phrase, text)
+            self.assertNotIn("keep the end position and cut to it", text)
+
     def test_minimal_framing_and_compound_template_camera_remain_valid(self):
         text = normalized(SKILLS / "template-factory/references/slot-mapping.md")
         self.assertNotIn("\u22642 moves per shot", text)

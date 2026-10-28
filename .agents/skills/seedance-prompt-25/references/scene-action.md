@@ -94,7 +94,11 @@ Rules:
 - Time ranges must be **consecutive and non-overlapping**.
 - They are a **time budget**, not a precise edit point — actions may occur slightly before or after a boundary.
 - Too little content gives the model too much freedom; too much causes excessive cutting or omitted events.
-- **Never** demand impossible frequencies (e.g., "complete three actions in one second").
+- Density estimates are provisional, not action-count quotas. Judge readability
+  at the requested speed; flag demonstrated lost critical action or timing
+  conflicts, not the number of actions alone. Preserve approved action and
+  timing; return conflicts for authorization rather than automatically slowing,
+  splitting or adding holds.
 
 ## Action description
 

@@ -164,8 +164,12 @@ does not create a native draft; confirm the live tool supports `draft: true`.
     Target Subject + Visual Change + Foreground/Background + Direction or Speed.
 
 24. **Timestamps.** Ranges are consecutive and non-overlapping, treated as a
-    time budget, and never demand impossible densities ("three actions in one
-    second"). The last stage ends at the requested duration.
+    time budget. Density estimates are provisional, not action-count quotas.
+    Judge readability at the requested speed; a demonstrated lost critical
+    action or timing conflict is MAJOR, not the number of actions alone.
+    Preserve approved action and timing; return conflicts for authorization
+    rather than automatically slowing, splitting or adding holds.
+    The last stage ends at the requested duration.
 
 25. **Natural duration.** Each scene runs at its natural length (4-30 s); a 30 s
     single pass or native extension is a recorded exception.

@@ -4,6 +4,14 @@ Seedance 2.0 generation (4K, Fast, Mini) and the legacy video-to-video VFX path.
 Apply the universal items in [the
 index](review-checklists.md#universal--all-prompts) first.
 
+For applicable character performance and staged fights, also apply the
+model-independent [Performance direction](../../../contracts/performance-direction.md#prompt-review)
+criteria: `acting.plan_bound` and `fight.readable_exchange`. Include these checks
+even if the caller omitted them. Missing material input is incomplete; material
+omissions or contradictions are MAJOR. Static assets and preservation-only edits
+record a concrete applicability reason; source performance still needs
+preservation review.
+
 ## Seedance 2.0
 
 Source skill: `seedance-prompt-20`
