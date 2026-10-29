@@ -263,7 +263,7 @@ checks, so the reasons live here and the checks live there.
 
 In strict or explicitly requested full review, confirm the checklist below.
 Default uses minimal inline preflight and final-output sanity instead, retaining
-capability, reference, rights, budget, registry and locked-choice safeguards.
+capability, reference, rights, registry and locked-choice safeguards.
 
 1. Subject and primary action are clear, and the action is at body-part level
    with an observable end state for every critical beat.

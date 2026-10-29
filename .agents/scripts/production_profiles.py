@@ -19,13 +19,25 @@ _EPISODE_FIELDS = {
     "max_recurring_cast": ("production", "max_recurring_cast"),
 }
 _AUTHORITY_FIELDS = (
-    "approval_mode", "approval", "authorization", "rights", "budget", "locked", "locks",
+    "approval_mode", "approval", "authorization", "rights", "locked", "locks",
 )
-_BUDGET_RUNTIME_FIELDS = frozenset({
-    "estimated", "confirmed", "unknown", "spent", "estimated_spend",
-    "confirmed_spend", "unknown_spend", "reserved", "reservations",
-})
+_LEGACY_BUDGET_FIELDS = frozenset({"budget", "unit_budget", "spending_cap"})
 _MISSING = object()
+
+
+def without_legacy_budgets(
+    metadata: dict[str, Any], *, preserve_empty_locks: bool = False,
+) -> dict[str, Any]:
+    result = {key: deepcopy(value) for key, value in _mapping(metadata, "metadata").items()
+              if key not in _LEGACY_BUDGET_FIELDS}
+    if isinstance(result.get("locked"), dict):
+        locked = {key: value for key, value in _mapping(result["locked"], "locked").items()
+                  if key.split(".")[0] not in _LEGACY_BUDGET_FIELDS}
+        if locked or (preserve_empty_locks and not result["locked"]):
+            result["locked"] = locked
+        else:
+            result.pop("locked")
+    return result
 
 
 def review_mode(metadata: dict[str, Any]) -> str:
@@ -180,21 +192,14 @@ def _select_format(
 
 
 def _check_authority(shared: dict[str, Any], unit: dict[str, Any]) -> None:
+    shared = without_legacy_budgets(shared, preserve_empty_locks=True)
+    unit = without_legacy_budgets(unit, preserve_empty_locks=True)
     for field in _AUTHORITY_FIELDS:
         if field not in unit:
             continue
         if field not in shared:
             raise ValueError(f"unit.{field} cannot replace production-wide {field}")
         shared_value, unit_value = shared[field], unit[field]
-        if field == "budget":
-            shared_value = {
-                key: value for key, value in _mapping(shared_value, "shared.budget").items()
-                if key not in _BUDGET_RUNTIME_FIELDS
-            }
-            unit_value = {
-                key: value for key, value in _mapping(unit_value, "unit.budget").items()
-                if key not in _BUDGET_RUNTIME_FIELDS
-            }
         if unit_value != shared_value:
             raise ValueError(f"unit.{field} cannot replace production-wide {field}")
     for axis, record in shared.get("directorial_axes", {}).items():
@@ -206,30 +211,6 @@ def _check_authority(shared: dict[str, Any], unit: dict[str, Any]) -> None:
         override = unit.get("directorial_axes", {}).get(axis, _MISSING)
         if override is not _MISSING and override != record:
             raise ValueError(f"unit.directorial_axes.{axis} conflicts with a confirmed lock")
-
-
-def _validate_unit_budget(budget: Any, allocation: Any) -> None:
-    allocation = _mapping(allocation, "unit_budget")
-    if set(allocation) - {"cap", "currency"} or "cap" not in allocation:
-        raise ValueError("unit_budget accepts only cap and optional currency, not spending totals")
-    _number(allocation["cap"], "unit_budget.cap", zero=True)
-    budget = _mapping(budget, "budget")
-    _number(budget.get("cap"), "budget.cap", zero=True)
-    if allocation["cap"] > budget["cap"]:
-        raise ValueError("unit_budget.cap cannot exceed production budget.cap")
-    if allocation.get("currency", budget.get("currency")) != budget.get("currency"):
-        raise ValueError("unit_budget.currency must match production budget.currency")
-
-
-def _check_allocation(shared: dict[str, Any], unit: dict[str, Any]) -> None:
-    for settings in (shared, unit):
-        if "unit_budget" in settings:
-            _validate_unit_budget(shared.get("budget", {}), settings["unit_budget"])
-    if (
-        "unit_budget" in shared and "unit_budget" in unit
-        and unit["unit_budget"]["cap"] > shared["unit_budget"]["cap"]
-    ):
-        raise ValueError("unit_budget.cap cannot increase the shared unit allocation")
 
 
 def _lock_items(locked: dict[str, Any], prefix: str = "") -> list[tuple[str, Any]]:
@@ -258,6 +239,8 @@ def _apply_locks(
     applied: dict[str, Any] = {}
     for path, value in _lock_items(shared.get("locked", {})):
         parts = path.split(".")
+        if parts[0] in _LEGACY_BUDGET_FIELDS:
+            continue
         if (
             not all(parts)
             or parts[0] in (*_AUTHORITY_FIELDS, "review_mode", "format", "profile", "workflow")
@@ -295,13 +278,11 @@ def resolve_brief(
     selected = _select_format(shared_settings, unit_settings, format_id, workflow)
     profile = load_profile(selected)
     _check_authority(shared_settings, unit_settings)
-    _check_allocation(shared_settings, unit_settings)
     explicit = _merge(shared_settings, unit_settings)
     if "budget" in shared_settings:
         explicit["budget"] = deepcopy(shared_settings["budget"])
     _apply_locks(shared_settings, explicit, explicit)
     effective = _merge(profile["defaults"], explicit)
-    _check_allocation(shared_settings, effective)
     if (
         "target_duration_s" in explicit["production"]
         and "duration_range_s" not in explicit["production"]

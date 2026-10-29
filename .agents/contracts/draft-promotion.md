@@ -63,10 +63,10 @@ result as capability evidence.
    in the request's `extensions.draft_promotion` so the link is auditable. The
    request carries no prompt or references; the prompt snapshot stays the Draft's.
 3. Preflight and register it like any other paid request (complete request hash,
-   capability evidence listing `draft_task_id`, estimated cost at final
-   resolution). Strict or explicit required rules need a matching report;
+   capability evidence listing `draft_task_id`). Strict or explicit required rules need a matching report;
    default needs minimal inline preflight. Any supplied report must pass.
-   Then submit through the same transport. Never submit a final
+   Report estimated cost at final resolution when available; a missing estimate
+   does not block promotion. Then submit through the same transport. Never submit a final
    through a second transport.
 4. Save the final's provider task ID, run `draft_ledger.py record` to mark the
    Draft `promoted` with the final operation ID, and download the final.

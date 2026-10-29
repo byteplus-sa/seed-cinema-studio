@@ -10,7 +10,7 @@ from datetime import UTC, datetime
 from pathlib import Path
 from typing import Any
 
-from budget_report import amount, check_budget
+from budget_report import amount
 from operation_store import (
     adopt_submitted_operation,
     prepare_operation,
@@ -352,11 +352,6 @@ def run(args: argparse.Namespace) -> tuple[dict[str, Any], list[Finding]]:
     findings = schema_findings(request, "generation-request.schema.json")
     if not findings:
         findings = prepared_evidence_findings(root, request, adopting, **scope)
-    if not findings and not adopting:
-        try:
-            check_budget(root, None, request)
-        except ValueError as error:
-            findings.append(Finding("budget.cap", str(error), "task_ids.json"))
     result: dict[str, Any] = {"request_sha256": request["request_sha256"]}
     review = capabilities = None
     if args.review is not None:

@@ -40,7 +40,7 @@ recipe. A held setup or repeated framing is not evidence of flatness.
 - Each shot carries its action, lens intent, move or hold and motivated light;
   depth layers are useful when they serve the composition.
 - A standout image is optional, not a required substitute for an effective scene.
-  Additional generated clips require authorization within the caller's budget.
+  Additional generated clips require creative authorization.
 - Density estimates are provisional; preserve requested rhythm within verified
   request limits. Exact cuts or demonstrated merging may need assembly using
   suitable footage, not automatic additional generation.

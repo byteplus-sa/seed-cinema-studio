@@ -35,7 +35,7 @@
       "type": "object", "additionalProperties": false,
       "required": ["context_version", "kind", "unit_id", "effective_sha256"],
       "properties": {
-        "context_version": {"const": 1}, "kind": {"const": "unit"},
+        "context_version": {"enum": [1, 2]}, "kind": {"const": "unit"},
         "unit_id": {"$ref": "#/$defs/id"},
         "effective_sha256": {"$ref": "#/$defs/sha256"}
       }

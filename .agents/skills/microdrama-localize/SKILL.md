@@ -24,8 +24,8 @@ as evidence that Studio edits were imported or listening was completed.
 
 Input: the delivered episode project (`project.md`, shot manifests with locked
 dialogue, takes, the final render and locks), the target language and market,
-the market card entry for it if one exists, the user's preferred route or
-budget, and any glossary, names or lines the user has locked in the target
+the market card entry for it if one exists, the user's preferred route,
+and any glossary, names or lines the user has locked in the target
 language.
 
 Output: a localized deliverable set per target, never an overwrite of the source:
@@ -106,7 +106,8 @@ Output: a localized deliverable set per target, never an overwrite of the source
   assets. Cloning a voice is a rights question; do not clone a voice without
   the speaker's authorization, and prefer voices attached to invented
   characters.
-- Cost is estimated before submission and confirmed afterwards; record both.
+- Record available cost estimates separately from confirmed billing; missing
+  estimates do not block submission and provider success is not billing evidence.
 - Cultural review is separate from creative approval. Nothing is marked
   `native_checked` until a native speaker has said so in the user's words.
 

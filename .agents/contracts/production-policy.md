@@ -9,7 +9,7 @@ unreadable values fail closed. Read at start/resume and recheck under writer
 locks before registration and submission.
 
 - **Default:** minimal inline preflight for intent, supported parameters,
-  references, rights, scope and budget; final-output sanity for usable output,
+  references, rights and scope; final-output sanity for usable output,
   requested content and obvious defects. No mandatory prompt-review report,
   full checklist pass or three-image comparison unless required checks apply.
   Generate one image unless another count is requested. Native Seedance 2.5
@@ -38,7 +38,7 @@ modes under the performance contract. Keep minimal
 truthful hash-bound candidate/final sanity records where validated selections
 and locks need them. Neither mode invents listening, approval, consent or
 creative proof. Unavailable required perception remains unresolved. All modes
-retain capabilities, hashes, rights, spending, registration, idempotency, unit
+retain capabilities, hashes, rights, registration, idempotency, unit
 selection, manual edit order, locked choices and explicit named delivery IDs.
 
 ## Stage evidence and authorization
@@ -345,7 +345,7 @@ checklist. In `approve_for_me`, inspect every generated candidate
 with modality-appropriate evidence, reject hard-gate failures, rank passing
 candidates against recorded criteria, and save a hash-bound review and agent
 decision before a validated writer sets `selected_variant` and `approved`. If
-none passes or inspection is unavailable, repair within the run budget or block
+none passes or inspection is unavailable, make a targeted repair or block
 the stage. In `ask_for_approval`, record `recommended_variant` and review
 evidence, then wait for an explicit user choice before setting
 `selected_variant` or `approved`. A recommendation alone never approves. A
@@ -500,7 +500,7 @@ without an approval mode may retain its registry `approved` status
 (`seedance.draft_promotion_source`). For multi-shot projects, review
 the draft assembly and record the picture/audio decisions before generating
 final takes. Preserve all draft files, prompt snapshots, references, task IDs
-and decisions. Generate final takes only within the authorized scope and budget
+and decisions. Generate final takes only within the authorized creative scope
 at the recorded delivery target; do not assume 1080p is always required. A
 requested 480p delivery can use reviewed 480p takes after delivery QA.
 Scoped promotion additionally requires the same current unit context; another
@@ -578,9 +578,12 @@ submission and promotion still require current effective scope and evidence.
 `budget_report.py PROJECT` reports production and unit estimated, confirmed,
 reserved and unknown exposure by currency without contacting a provider.
 Preparation accepts `--estimated-cost` and `--currency`; an omitted estimate
-means unknown, not zero. Explicit shared `budget.cap` and tighter `unit_budget`
-allocations are enforced again under the registry lock before registration and
-submission. Mixed currencies are not converted; unresolved exposure blocks new
-capped spending. Uncapped legacy projects retain their behavior. Recording
-already incurred billing or adopting an existing job is reconciliation, not
-permission for a new paid request.
+means unknown, not zero. The historical command name is retained for compatibility;
+the report has no cap or gating behavior. Mixed currencies are reported
+separately, never converted. Unknown exposure, absent estimates and legacy
+`budget.cap`, `spending_cap` or `unit_budget` fields do not block preparation,
+registration or submission. No run-budget declaration or spending approval
+replaces these removed checks. Registry locks, duplicate protection, current
+scope/review checks and reconciliation of uncertain submissions remain required.
+Recording already incurred billing or adopting an existing job is reconciliation,
+not creative approval.

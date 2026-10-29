@@ -42,7 +42,7 @@ sanity records for selections and locks, never fabricated listening or approval.
 
 Input: optionally a market card (user-defined, free-form; see
 [market card](references/market-card.md); never assume one), a premise or formula, the episode count, and any
-locked dialogue, cast, budget or approval mode. When a market writer skill
+locked dialogue, cast or approval mode. When a market writer skill
 exists for the audience, obtain a locked episode brief from it first; for any
 other market or language use `microdrama-story-formats`. Otherwise draft the
 brief with the fields in [episode structure](references/episode-structure.md).
@@ -67,7 +67,7 @@ Candidate validation does not authorize activation or migration.
    scene within the word budget in [episode structure](references/episode-structure.md).
    Default to at most three recurring characters and one or two locations unless
    the confirmed episode plan specifies otherwise.
-   Record independent `approval_mode` and `review_mode`, format, run budget, the native-dialogue audio route and
+   Record independent `approval_mode` and `review_mode`, format, the native-dialogue audio route and
    look intent in `project.md`,
    run `brief-intake` with a fast proposal, then run `studio_project.py init <project>` (see the
    [production policy](../../contracts/production-policy.md)) (pre-Studio canvas projects with
@@ -112,7 +112,7 @@ Candidate validation does not authorize activation or migration.
    inline; use a sub-agent only when the user explicitly requests
    sub-agent prompt review for the project or specific generation. Register the
    operation for each clip, submit independent planned clips in parallel within
-   the run budget as native 480p drafts in both review modes
+   provider concurrency limits as native 480p drafts in both review modes
    (`draft: true`), record each draft task ID with `draft_ledger.py`, and QA each
    take. Promote approved drafts to the final resolution with `draft_task_id`
    within 7 days, as the [draft and promotion contract](../../contracts/draft-promotion.md)
@@ -156,7 +156,7 @@ legacy-only for existing series without a manifest.
 - In strict, every spoken line is checked word by word against locked dialogue with
   speech-to-text before a take can pass. A model's own summary of what was
   said is not sufficient.
-- Retakes fix failures within the declared budget as a new native
+- Retakes fix failures without budget-related caps as a new native
   Draft in both review modes. Dialogue repairs patch only the wrong word windows. Record
   residual defects instead of silently promoting a flawed take.
 - Provider success is `review`, never approval. Never resubmit an ambiguous
@@ -167,7 +167,7 @@ legacy-only for existing series without a manifest.
 | Need | Reference |
 | --- | --- |
 | Beat timing, hooks, reveals, cliffhangers, cards, brief fields | [Episode structure](references/episode-structure.md) |
-| Clip plan, prompt clauses, QA gates, retakes, budget, assembly | [Production recipe](references/production-recipe.md) |
+| Clip plan, prompt clauses, QA gates, retakes, cost reporting, assembly | [Production recipe](references/production-recipe.md) |
 | Several independent episodes in parallel, checkpoints, portfolio, showreel | [Batch production](references/batch-production.md) |
 | Legacy connected series without a manifest: shared canon, continuity ledger, season order | [Series production](references/series-production.md) |
 | Series music identity, ambience beds, native audio that ignores a negative | [Music and ambience](references/music-and-ambience.md) |

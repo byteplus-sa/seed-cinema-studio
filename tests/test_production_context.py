@@ -198,14 +198,14 @@ class ProductionContextTests(unittest.TestCase):
         self.write("studio/stages.json", "{}")
         self.assertTrue(self.findings())
 
-    def test_fingerprint_version_one_field_set_and_digest(self):
+    def test_fingerprint_version_two_field_set_and_digest(self):
         context = self.candidate()
         payload = context_fingerprint_payload(context)
         self.assertEqual(set(payload), {
             "context_version", "kind", "unit_id", "format", "unit_brief_sha256",
             "scene_ids", "profile", "effective_settings", "shared_inputs",
         })
-        self.assertEqual(payload["context_version"], 1)
+        self.assertEqual(payload["context_version"], 2)
         encoded = json.dumps(payload, sort_keys=True, separators=(",", ":"),
                              ensure_ascii=False, allow_nan=False).encode()
         self.assertEqual(context.effective_sha256, hashlib.sha256(encoded).hexdigest())
@@ -213,7 +213,7 @@ class ProductionContextTests(unittest.TestCase):
                             .read_text())
         Draft202012Validator(schema).validate(context.identity())
         for invalid in (
-            {**context.identity(), "context_version": 2},
+            {**context.identity(), "context_version": 3},
             {**context.identity(), "kind": "production"},
             {**context.identity(), "effective_sha256": "bad"},
         ):
@@ -244,7 +244,7 @@ class ProductionContextTests(unittest.TestCase):
         self.assertNotEqual(self.candidate().effective_sha256, expected)
         self.write("units/ep001/unit.md", "# Episode 1\nA turn.\n")
         for metadata in ("approval_mode: ask_for_approval", "rights:\n  status: authorized",
-                         "budget:\n  cap: 100", "delivery:\n  aspect: '16:9'"):
+                         "delivery:\n  aspect: '16:9'"):
             self.write("project.md", f"---\n{metadata}\n---\nShared story.\n")
             self.assertNotEqual(self.candidate().effective_sha256, expected)
         self.write("project.md", "---\napproval_mode: approve_for_me\n---\nNew shared story.\n")
@@ -309,7 +309,15 @@ class ProductionContextTests(unittest.TestCase):
         with self.assertRaisesRegex(ValueError, "Stale"):
             discover_unit_shots(context)
 
-    def test_unit_brief_binds_raw_bytes_including_line_endings_and_yaml_comments(self):
+    def test_unit_timestamp_types_cannot_alias_user_mapping_or_string(self):
+        hashes = []
+        for value in ("2026-10-19", "'2026-10-19'", "{yaml_timestamp: '2026-10-19'}",
+                      "[timestamp, '2026-10-19']"):
+            self.write("units/ep001/unit.md", f"---\nupdated_at: {value}\n---\nA turn.\n")
+            hashes.append(self.candidate().effective_sha256)
+        self.assertEqual(len(set(hashes)), len(hashes))
+
+    def test_unit_brief_normalizes_formatting_without_mutating_source(self):
         brief = self.root / "units/ep001/unit.md"
         for before, after in (
             (b"# Episode 1\nA turn.\n", b"# Episode 1\r\nA turn.\r\n"),
@@ -320,12 +328,10 @@ class ProductionContextTests(unittest.TestCase):
             with self.subTest(before=before):
                 brief.write_bytes(before)
                 context = self.candidate()
-                self.assertEqual(context_fingerprint_payload(context)["unit_brief_sha256"],
-                                 hashlib.sha256(before).hexdigest())
                 brief.write_bytes(after)
-                self.assertNotEqual(self.candidate().effective_sha256, context.effective_sha256)
-                with self.assertRaisesRegex(ValueError, "Stale"):
-                    discover_unit_shots(context)
+                self.assertEqual(self.candidate().effective_sha256, context.effective_sha256)
+                self.assertEqual(len(discover_unit_shots(context)), 1)
+                self.assertEqual(brief.read_bytes(), after)
 
     def test_nested_creative_fields_are_bound_without_name_based_exclusions(self):
         def source(group, field, nested_list, value):
@@ -385,12 +391,31 @@ class ProductionContextTests(unittest.TestCase):
         payload = context_fingerprint_payload(current)
         self.assertNotIn("synthetic-marker", json.dumps(payload))
         for scope in ("shared_inputs", "effective_settings"):
-            self.assertEqual(payload[scope]["budget"], {"cap": 100, "currency": "USD"})
+            self.assertNotIn("budget", payload[scope])
             self.assertNotIn("runtime", payload[scope])
             self.assertNotIn("billing", payload[scope])
         self.write("project.md", "---\nbudget:\n  cap: 101\n  currency: USD\n---\n")
-        with self.assertRaisesRegex(ValueError, "Stale"):
-            discover_unit_shots(context)
+        self.assertEqual(len(discover_unit_shots(context)), 1)
+
+    def test_legacy_budget_shapes_are_inert_in_shared_and_unit_fingerprints(self):
+        expected = self.candidate().effective_sha256
+        for value in ("null", "[]", "obsolete", "{cap: .nan, currency: EUR}",
+                      "{cap: -1, spending_cap: 999}", "{cap: .inf}"):
+            with self.subTest(value=value):
+                self.write("project.md", "---\napproval_mode: approve_for_me\n"
+                           f"budget: {value}\nunit_budget: {value}\nspending_cap: {value}\n"
+                           "locked: {budget: {cap: 0}, unit_budget.cap: 1}\n---\nShared story.\n")
+                self.write("units/ep001/unit.md", "---\n"
+                           f"budget: {value}\nunit_budget: {value}\nspending_cap: {value}\n"
+                           "---\n# Episode 1\nA turn.\n")
+                before = {path: path.read_bytes() for path in (
+                    self.root / "project.md", self.root / "units/ep001/unit.md",
+                )}
+                self.assertEqual(self.candidate().effective_sha256, expected)
+                self.assertEqual({path: path.read_bytes() for path in before}, before)
+        self.write("project.md", "---\napproval_mode: approve_for_me\nlocked: {}\n---\nShared story.\n")
+        self.write("units/ep001/unit.md", "---\nlocked: {}\n---\n# Episode 1\nA turn.\n")
+        self.assertEqual(self.candidate().effective_sha256, expected)
 
     def test_shared_and_unit_brief_symlink_aliases_are_rejected(self):
         shared = self.root / "project.md"
@@ -495,11 +520,13 @@ class ProductionContextTests(unittest.TestCase):
         profile = {"id": "episodic-show", "revision": 1, "defaults": {}}
         effective = {"format": "episodic-show", "delivery": {"aspect": "16:9"}}
         expected = {
-            "context_version": 1,
+            "context_version": 2,
             "kind": "unit",
             "unit_id": "ep001",
             "format": "episodic-show",
-            "unit_brief_sha256": hashlib.sha256(b"# Episode 1\nA turn.\n").hexdigest(),
+            "unit_brief_sha256": hashlib.sha256(
+                b'{"body":"# Episode 1\\nA turn.\\n","metadata":["mapping",[]]}'
+            ).hexdigest(),
             "scene_ids": ["scene-001"],
             "profile": profile,
             "effective_settings": effective,
@@ -517,8 +544,6 @@ class ProductionContextTests(unittest.TestCase):
         expected_bytes = json.dumps(expected, sort_keys=True, separators=(",", ":"),
                                     ensure_ascii=False, allow_nan=False).encode()
         self.assertEqual(context.effective_sha256, hashlib.sha256(expected_bytes).hexdigest())
-        self.assertEqual(context.effective_sha256,
-                         "0032d28600fd5de885f309e6e6e7db75336d8c52398709761de404881ede5dc0")
         payload = context_fingerprint_payload(context)
         payload["scene_ids"].clear()
         self.assertEqual(context_fingerprint_payload(context), expected)

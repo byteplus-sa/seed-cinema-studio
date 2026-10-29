@@ -22,6 +22,16 @@ no automatic repository or checkout rename. The local Python package metadata is
 rename schemas, lock namespaces, commands or production paths, publish a package,
 or install additional workflows.
 
+Generation does not require a project/unit budget or cost estimate, and legacy
+spending caps do not gate preparation, registration, submission or retakes.
+`budget_report.py PROJECT` remains a read-only cost report: it separates
+estimates, confirmed billing, reservations and unknown exposure by currency.
+Native drafts, rights/consent, review, provider limits, duplicate protection and
+registry locks remain in place. Existing budget metadata is not rewritten.
+New context version 2 ignores budget-only metadata edits. Historical context
+version 1 remains readable for reconciliation; new submissions require explicit
+re-preparation instead of silently migrating old hashes or approvals.
+
 ## Production routing
 
 | Intent | Owner |

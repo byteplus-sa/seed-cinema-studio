@@ -5,7 +5,7 @@ in `PLAN_SEED_CINEMA_STUDIO.md`, sections 3.3-3.4 and 4. Validated active
 `production.json` manifests support unit production. Brief resolution and
 candidate validation never migrate or activate a project automatically.
 The [production policy](production-policy.md) still owns authorization, review,
-rights, spending and durable submission.
+rights, cost reporting and durable submission.
 
 ## API
 
@@ -163,39 +163,26 @@ editable. A changed lock requires a separately authorized update to shared
 source metadata before resolution; this function never approves that change.
 
 Units cannot replace, erase or introduce production-wide `approval_mode`,
-`approval`, `authorization`, `rights`, `budget`, or `locked`. Identical copies are accepted;
-otherwise the resolver fails conservatively. Budget policy comparison excludes
-known bookkeeping fields (`estimated`, `confirmed`, `unknown`, `spent`,
-`estimated_spend`, `confirmed_spend`, `unknown_spend`, `reserved`, and
-`reservations`), so stale repeated totals do not block unrelated unit work.
-The effective budget always retains the complete authoritative shared copy;
-unit totals never replace it. Caps, currency and unknown policy fields remain
-protected. The resolver does not invent approval
-mode, rights, consent or spending authorization when absent. Tighter approval
+`approval`, `authorization`, `rights`, or non-budget `locked` values. Identical
+copies are accepted; otherwise the resolver fails conservatively.
+The resolver does not invent approval mode, rights or consent when absent. Tighter approval
 or rights restrictions also require a shared-record update;
 there is no speculative policy comparison engine.
 
-An optional `unit_budget` supports a tighter allocation:
+Legacy `budget`, `unit_budget` and `spending_cap` metadata is retained, not
+validated as spending policy. Shared `budget` metadata keeps its complete copy
+in effective settings when present, so unit copies cannot erase historical
+totals. Legacy budget locks remain recorded but are not applied as constraints.
+Missing estimates, mismatched currencies, exceeded caps and stale allocations
+do not block resolution or generation. Do not create replacement spending
+approvals. Cost reporting is informational; registry reconciliation and state
+locks remain required.
 
-```yaml
-budget:
-  cap: 100
-  currency: USD
-  confirmed: 30
-  unknown: 20
-unit_budget:
-  cap: 40
-  currency: USD
-```
-
-`unit_budget` accepts only a finite nonnegative `cap` and optional matching
-`currency`. It requires a numeric shared `budget.cap`, cannot exceed it, and
-cannot increase an inherited unit allocation. The shared budget, including
-estimated/confirmed/unknown spending and reservations, remains unchanged.
-Shared, explicit unit and final locked/merged allocations are all validated.
-No allocation resets spending or grants permission to spend. Actual aggregation,
-reservation reconciliation and concurrent enforcement remain the operation
-registry's responsibility; this resolver is not an accounting ledger.
+New context version 2 excludes these legacy fields and budget-only lock entries
+from fingerprints without changing the source files. Changing a cap after
+preparation does not stale a new request; true creative and authority changes do.
+Historical contexts remain readable and require explicit re-preparation for new
+submissions rather than an automatic approval migration.
 
 `review_mode` is an independent review-depth setting, not approval authority.
 Only `default` and `strict` are valid; absent shared mode resolves to `default`
@@ -204,16 +191,16 @@ either source, even when another source would override them. An explicit unit
 value overrides shared review depth for that unit only; omitted unit mode
 inherits shared mode. Production-scoped canon uses shared mode. Do not put
 review mode in `locked`, a profile default or `approval_mode`.
-An absent key stays absent in normalized settings, preserving existing v3
-fingerprints. Explicit mode additions or changes invalidate dependent context.
+An absent key stays absent in normalized settings. Explicit mode additions or
+changes invalidate dependent context under the current context version.
 Default requires minimal inline preflight and final-output sanity, not a full
 prompt-review report/checklist or three-image set. Native Seedance 2.5 Draft-first
 and applicable performance checks remain required in both modes.
 Strict retains the full workflow. Explicit required rules and supplied reports
-remain binding in both modes. Neither mode changes rights, budget or approvals.
+remain binding in both modes. Neither mode changes rights or approvals.
 
 Profile defaults contain creative settings only. No profile can waive rights,
-review, locks, cost boundaries or durable submission.
+review, non-budget locks or durable submission.
 Micro-drama's compatibility defaults are optional template proposals, not
 artistic acceptance gates. Before creative execution, disclose and settle their
 use against the premise under the existing approval mode. Preserve explicit

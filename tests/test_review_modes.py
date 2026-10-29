@@ -39,6 +39,22 @@ def validate_cli(root, request, capabilities, *extra):
 
 
 class ReviewModeTests(unittest.TestCase):
+    def test_review_and_creative_policies_do_not_restore_financial_gates(self):
+        root = Path(__file__).resolve().parents[1]
+        for relative in (
+            ".agents/contracts/production-policy.md",
+            ".agents/skills/film-production/references/stage-contracts.md",
+            ".agents/skills/seedance-prompt-25/SKILL.md",
+            ".agents/skills/seedance-prompt-25/references/shot-staging.md",
+        ):
+            with self.subTest(path=relative):
+                text = " ".join((root / relative).read_text().split()).lower()
+                self.assertNotRegex(
+                    text,
+                    r"scope and budget|rights, spending|rights, budget|"
+                    r"within the declared budget|within the caller's budget",
+                )
+
     def test_review_depth_does_not_waive_native_drafts_or_performance_checks(self):
         root = Path(__file__).resolve().parents[1]
         paths = [
@@ -375,19 +391,20 @@ class ScopedReviewModeTests(unittest.TestCase):
                         finding["path"].startswith("context") for finding in result["findings"]
                     ))
 
-    def test_absent_mode_preserves_pre_change_v3_fingerprints(self):
+    def test_absent_mode_preserves_context_v2_fingerprints(self):
         current = self.fixture.request()
+        self.assertEqual(current["context"]["context_version"], 2)
         self.assertEqual(
             current["context"]["effective_sha256"],
-            "7860c3f2db11424f512b5a4ae6ae47c0c4cee7899f01a4f5a522ef67b037adca",
+            "6341e41ea1c2cef777f03b84f85b38509d6abd87296aea23afc00fb6dcabe398",
         )
         self.assertEqual(
             current["request_sha256"],
-            "0528adebf8167ee242089a194b44b1f7f9a7f5b6ea28a7bb5ab6f3e4ffc9eb1e",
+            "59df3f44f162d9835d5b8a9bf8ef998f3c9b7dea3f7a391a6f6141827893f1bf",
         )
         self.assertEqual(
             production_context.context_project_sha256(self.root),
-            "fc827825d745b7e93581279e85d9feb94438d5cf10de76fed475cd4cec945026",
+            "80f22118a76f799f294318cd5c2d92e8f1351993a014804e39ff616b2373fad2",
         )
         self.assertNotIn("review_mode", production_profiles.resolve_brief({}))
 
