@@ -1,6 +1,13 @@
 {
   "version": 1,
   "skills": {
+    "seedance-character-reference-video": {
+      "source": "./local",
+      "sourceType": "local",
+      "skillPath": ".agents/skills/seedance-character-reference-video/SKILL.md",
+      "computedHash": "01f6d84a8166ef81d457839ebeca231e0a141c4fd9f69ea43f69b559d71bb5e0",
+      "sourceNotes": "Local prompt-only skill informed by a user-supplied animated character-sheet example and recreation prompt. Requires approved image and authorized vocal recording. No example media bundled or provider provenance asserted."
+    },
     "acting-direction": {
       "source": "./local",
       "sourceType": "local",

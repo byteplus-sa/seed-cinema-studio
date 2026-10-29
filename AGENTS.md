@@ -13,6 +13,13 @@ genre, medium, audience, language and delivery are independent choices.
   and character knowledge. Do not use micro-drama formulas as a generic fallback.
 - Use `micro-drama` only for an explicit micro-drama format or an already selected
   micro-drama workflow. A vertical aspect alone does not select that format.
+- Use `seedance-character-reference-video` for prompt-only animated character
+  sheets from an approved image and required authorized voice recording.
+  The caller inspects both inputs, resolves the authorized image/audio route,
+  and owns mode-aware review, durable draft submission and take approval.
+  Missing either input blocks this workflow; do not invent audio or fall back
+  to silence. Keep the still as canon: this skill does not add Studio video
+  element selection or authorize downstream video identity/voice reuse.
 - The project-local `hyperframes` overlay routes narrative work to the existing
   orchestrator, without installing an absent upstream workflow.
 - Follow [production brief](.agents/contracts/production-brief.md) and
@@ -161,9 +168,12 @@ schemas live in `.agents/contracts/schemas/`.
   changed inputs invalidate any supplied review.
 - Do not bake captions, taglines or overlay text into generated video; add text in
   post with FFmpeg or HyperFrames.
-- Storyboards are planning and review artifacts. Never bind panels, grids, sheets or
-  animatics as Seedance references; translate staging into prompt text and bind
-  canonical elements. Seedream panel repairs may use the panel as an edit source.
+- Storyboards are planning and review artifacts. Never bind storyboard panels,
+  grids, sheets or animatics as Seedance references; translate staging into prompt
+  text and bind canonical elements. Seedream panel repairs may use the panel as
+  an edit source. Approved character design sheets are identity sources, not
+  storyboard exceptions: the caller must still use a supported rights route,
+  with separate approved views where registration forbids collages.
 - Real-person likeness and voice inputs go through authorized Advanced Creation
   Rights assets (`seedance-virtual-portrait`), never by disguising the input.
 - Provider success sets `review`, not `approved`. Selections are hash-bound decisions
