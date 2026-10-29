@@ -8,7 +8,7 @@ description: >-
   replacement, audio editing), forward and backward video extension, keyframe
   sequences, coarse and fine blockout references, one-click video, seamless
   transitions, audio bracket syntax, dialogue language reinforcement, emotional
-  direction, camera language, and draft-first request packaging. Use this
+  direction, camera language, and mode-aware request packaging. Use this
   skill for Seedance 2.5 prompts, multi-reference asset orchestration, scene
   staging, video editing, extension, and corrections to generated motion or
   continuity. For legacy Seedance 2.0 prompts, 4K output through 2.0, or the
@@ -49,11 +49,12 @@ blockout manifests; shot-staging for any clip that cuts or carries dialogue.
 Add audio-performance-camera only for applicable dialogue, sound, acting, UI, or
 camera detail.
 
-When packaging generation parameters, read the parameter reference: a Seedance
-2.5 clip is drafted first (`draft: true`, 480p) and the selected draft is
-promoted by `draft_task_id`, so every prompt, reference, duration and audio
-decision is final before the draft. Honor user overrides and verified
-operation constraints.
+When packaging generation parameters, read the parameter reference. Independent
+`review_mode: default` uses minimal inline preflight and final-output sanity,
+without a full report/checklist unless required checks apply.
+Both modes use native Draft-first (`draft: true`, explicit 480p).
+When promotion is requested, freeze inputs before the draft and promote only a
+selected draft by `draft_task_id`. Honor verified operation constraints.
 
 Read only the mode-specific resources needed for the request. Reference paths
 mentioned in prose are relative to this skill directory unless a link says otherwise.
@@ -72,14 +73,15 @@ mentioned in prose are relative to this skill directory unless a link says other
 
 ## Submission boundary and failure behavior
 
-The caller owns production authorization, the exact request preflight, and the
-complete hash-bound prompt review. The caller reviews inline by default and
+The caller owns production authorization and exact request preflight. Complete
+hash-bound prompt review applies in strict or for explicit review/required rules.
+Provided reports must pass in either mode. The caller reviews inline and
 uses a sub-agent only when the user explicitly requests sub-agent prompt review
 for the project or specific generation. A leaf returns its prompt package without
 loading sibling skills. An explicitly declared orchestrator may coordinate the
 review and submission stages. Missing required inputs remain unresolved; a draft
 or technical success does not establish user approval. Preserve optional timing,
-the three-image sampling default where applicable, and the requested delta.
+one-image default (three in strict unless explicitly specified), and the requested delta.
 
 ## Evidence and creative advice
 
@@ -259,7 +261,9 @@ checks, so the reasons live here and the checks live there.
 
 ## Preflight review
 
-Before handing the package to review, confirm:
+In strict or explicitly requested full review, confirm the checklist below.
+Default uses minimal inline preflight and final-output sanity instead, retaining
+capability, reference, rights, budget, registry and locked-choice safeguards.
 
 1. Subject and primary action are clear, and the action is at body-part level
    with an observable end state for every critical beat.
@@ -281,7 +285,7 @@ Before handing the package to review, confirm:
 8. For blockouts, coarse, fine or video-lock is identified and a manifest's
    hashes match the package; camera movement cannot stand in for required
    subject movement.
-9. The request is a draft (`draft: true`, 480p) unless a recorded override
+9. In both modes, the request is a draft (`draft: true`, 480p) unless a recorded override
    applies, and the final will be promoted from the selected draft.
 
 ## Usage limitations

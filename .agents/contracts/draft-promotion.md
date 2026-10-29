@@ -1,9 +1,11 @@
 # Draft and promotion
 
-Seedance 2.5 generates a cheap 480p **Draft** first and renders the approved Draft
+In both review modes, Seedance 2.5 generates a native 480p **Draft** first and renders the approved Draft
 as the higher-resolution **final** later, reusing the Draft's seed and inputs. The
 Draft task ID is the handle for that later render, so it is recorded the moment
-the provider acknowledges it. This contract applies to every Seedance 2.5 shot;
+the provider acknowledges it. Review depth does not waive native Draft-first
+generation, source selection or promotion checks. This contract applies to
+every new Seedance 2.5 generation;
 `production-policy.md` owns approval, review and registry rules.
 
 ## Verified provider behavior
@@ -60,9 +62,11 @@ result as capability evidence.
    user wants it). Put the Draft operation ID, draft task ID and Draft request hash
    in the request's `extensions.draft_promotion` so the link is auditable. The
    request carries no prompt or references; the prompt snapshot stays the Draft's.
-3. Review and register it like any other paid request (complete request hash,
+3. Preflight and register it like any other paid request (complete request hash,
    capability evidence listing `draft_task_id`, estimated cost at final
-   resolution), then submit through the same transport. Never submit a final
+   resolution). Strict or explicit required rules need a matching report;
+   default needs minimal inline preflight. Any supplied report must pass.
+   Then submit through the same transport. Never submit a final
    through a second transport.
 4. Save the final's provider task ID, run `draft_ledger.py record` to mark the
    Draft `promoted` with the final operation ID, and download the final.
@@ -75,8 +79,8 @@ result as capability evidence.
 - Draft cost is a normal 480p generation. The final is billed again at its own
   resolution. Estimate both with the pricing formula in the production recipe and
   report estimated and confirmed costs separately.
-- Promote in batches within the 7-day window. Run `draft_ledger.py list` at the
-  start of every session; plan promotions before any Draft expires.
+- When using drafts, promote in batches within the 7-day window. Run
+  `draft_ledger.py list` at session start; plan promotions before expiry.
 - If the user explicitly asks for 480p delivery, the Draft can be the delivery
   take after delivery QA and no promotion is needed.
 
@@ -86,5 +90,5 @@ If the tool, model or operation does not support `draft` or `draft_task_id`
 (an older tool, another transport, an edit or extension operation, or an expired
 Draft), a 480p request is only a cheap iteration. The final is then a fresh paid
 generation using the selected prompt and approved inputs, with its own registry
-entry and full request review, and it can change picture, timing and audio. Record
+entry and mode-appropriate preflight/review, and it can change picture, timing and audio. Record
 the constraint in the project handoff.
