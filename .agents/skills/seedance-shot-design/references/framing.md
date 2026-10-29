@@ -33,7 +33,7 @@ the camera points. Three decisions carry it:
 
 | Decision | Meaning | Plan field |
 | --- | --- | --- |
-| Size | How large a subject is signals how much it matters | `size` |
+| Size | What scale makes the intended action, relationship or environment readable | `size` |
 | Relationship | Several featured subjects in one frame are read as related (romantic, contentious and so on) | `framing`, `featured` |
 | Balance | A balanced frame holds elements on both the left and right sides; reading an unbalanced frame as tension or isolation is a workspace heuristic | `composition` |
 
@@ -53,7 +53,7 @@ the framing type.
 | Three-shot | 3 | Show a trio without paying for three singles | Adventure, family, any small group | Name the left-to-right order |
 | Group shot (workspace addition) | 4 or more | Place an ensemble in one space | Establishing a crowd, a family table, a team | Name the grouping and the front or center subject |
 | Over-the-shoulder (OTS) | 1 featured, 1 foreground | Orient the scene and connect two characters emotionally; it echoes what one of them sees | Conversation scenes | The foreground shoulder and back of the head sit soft at one side of frame |
-| Over-the-hip (OTH) | 1 featured, 1 foreground | Like OTS, but a hip in the foreground; when one stands and the other sits or kneels, the uneven terrain often suggests a power imbalance | Interrogation, a child and an adult, a patient and a doctor | Describe the foreground hip and hand as soft and the featured subject as sharp, at a lower or higher level than the foreground character |
+| Over-the-hip (OTH) | 1 featured, 1 foreground | Like OTS, but with a hip in the foreground; a supplied standing/seated difference may help show a relationship | Actual blocking places a hip in the relevant foreground | Describe the foreground hip and hand and the featured subject at their actual positions and heights; do not invent a height difference |
 | Point of view (POV) | 0 or more | Show exactly what a character, or an object such as a bullet or a rolling ball, sees | A reveal that the viewer must read as the character's discovery | No part of the looker is visible except hands or limbs they would see |
 | Insert | 0 | Direct attention to a detail, or show the viewer something the characters miss (dramatic irony) | A prop, a screen, a hand, a note, an environmental clue | The detail fills the frame; add a face only when the beat needs it |
 
@@ -66,51 +66,51 @@ Notes on the types:
   it a single.
 - A dirty single technically has two people in the frame. It remains a single
   because only one is featured.
-- A POV shot is normally the middle of a look, POV, reaction sequence: a shot of the
-  character looking, the POV shot, and a shot of the character reacting. The
-  sequence is what tells the viewer whose view it is.
+- A look, POV, reaction sequence is one way to establish viewpoint. Existing
+  scene context may already make ownership clear without either adjacent shot.
 - An insert is only as useful as how it presents the information. Choose the
   detail, its size and its move for what the viewer must learn, and keep it to
   props and details the canon approves (the prop threshold applies).
 
 ## Choosing a framing
 
-Decide the framing from the beat, then confirm the size.
+Decide the framing from the beat, actual blocking and source locks, then confirm
+the size. These options are not required coverage or authority to add clips.
 
 | Beat | Framing | Why |
 | --- | --- | --- |
 | One character's private reaction | Single, close-up | Isolation and readable cues |
 | Confrontation, one side dominates | Dirty single on the weaker side; over-the-hip instead when their heights differ | The pressure stays in frame |
 | Two people playing a joke or an intimate moment | Two-shot, held | The timing needs both in the same take |
-| A small group reacts together | Three-shot | Avoids three equal singles |
+| A small group reacts together | Three-shot | Can preserve simultaneous responses in one frame |
 | A character discovers something | Looker, POV, reaction | The viewer shares the discovery |
 | A detail the characters cannot see | Insert | Dramatic irony |
 | Orienting a new space with its people | Group shot or wide | Places everyone |
 
-Size follows importance as a default: the more a subject matters to the beat,
-the larger it is in frame. Scale contrast and reveal patterns break this on
-purpose.
+Size follows the evidence the audience needs. An important subject may stay
+small in a purposeful wide that reveals isolation, geography or a relationship.
+Do not enlarge it merely to signal importance or change actual blocking to
+fit a framing label.
 
 ## Framing in the plan
 
 - Every shot in a scene with two or more characters carries a `framing` value
   and its `featured` subjects. Other scenes may omit it.
-- Framing type is checked by V10 and adds no V1 contrast of its own: a single
-  and a two-shot at the same size, angle, move and key side count as no V1
-  contrast. A dirty single, over-the-shoulder and over-the-hip framing record
+- Framing type is checked by V10 for readable evidence, not a contrast count.
+  A dirty single, over-the-shoulder and over-the-hip framing record
   `angle: over-the-shoulder` and a point-of-view framing records `angle:
-  first-person`, so each counts once, through the angle class.
-- Keep a POV shot adjacent to its looker and its reaction shot, or record why it
-  stands alone (an object POV, a cold open).
+  first-person`; these compatibility labels do not impose angle variety.
+- Establish POV ownership through the available context; a looker/reaction
+  sequence is optional. Do not add generated clips without authorization.
 - Use an unbalanced frame on purpose and record it in `composition`.
 
 ## Failure shapes
 
 | Shape | Why it reads as flat or confusing | Repair |
 | --- | --- | --- |
-| Every dialogue shot is a clean single | The relationship disappears between lines | Mix in a dirty single or OTS, and release with a two-shot |
-| A two-shot where one subject faces away and is not featured | It reads as a dirty single with a dead foreground | Name the intended framing and soften the foreground subject |
-| POV with no looker before it | The viewer cannot tell whose view it is | Add the looker shot, or name the POV owner in the prompt |
-| Three singles for a trio | Costs three shots and breaks the group | One three-shot, then one single on the turn |
-| An OTH between two characters at the same height | It gives no power imbalance | Use an OTS, or stage the height difference |
-| Important subject small and centered in a wide for the whole scene | Size says the subject does not matter | Step the size up at the beat that matters |
+| Clean singles lose a required relationship cue | The intended interaction is unclear | Repair the cue in existing coverage; a shared frame is optional |
+| Framing label disagrees with actual featured subjects | Plan and prompt describe different evidence | Correct the label without forcing a face reveal or softening a relevant listener |
+| POV ownership is unclear in context | The viewer cannot identify the viewpoint | Clarify ownership; propose extra coverage only within authorization |
+| Separate singles hide a required simultaneous reaction | The timing cannot be read | Propose a shared frame or preserve the interaction in existing coverage |
+| An OTH label does not match actual blocking | The label encourages invented staging | Describe the actual hip/subject relationship or choose another framing; preserve heights and positions |
+| A wide hides a required detail | The critical evidence is unreadable, not unimportant | Adjust the cue or propose coverage while preserving purposeful wide framing and locks |

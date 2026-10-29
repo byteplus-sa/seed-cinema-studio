@@ -168,9 +168,10 @@ Only for an explicit micro-drama format or an existing micro-drama workflow:
 
 - Market-neutral: names, settings, wardrobe and dialogue come from the project's
   optional market card or confirmed brief, never from the reference series.
-- Default episode structure is Hook, Turn, Cliffhanger, 45 to 60 s, three scenes,
-  9:16 and a to-be-continued card. Confirmed brief or market-card choices override
-  these defaults. General narrative production inherits none of them.
+- The profile retains Hook, Turn, Cliffhanger, 45 to 60 s, three scenes,
+  9:16 and a to-be-continued card as a disclosed optional template, not artistic
+  acceptance gates. Settle its use under the existing approval mode; confirmed
+  brief or market-card choices override it. General narrative inherits none of it.
 
 ## Shared scene and assembly practice
 
@@ -193,6 +194,14 @@ Only for an explicit micro-drama format or an existing micro-drama workflow:
 - Plan each shot with duration, size, angle, move, lens intent and a named light
   source. Preserve quiet held shots and wordless scenes when the brief calls for
   them; record their directing rationale.
+- Body energy follows approved intent, separately from camera energy and edit
+  rhythm. Speech needs readable performance, not a kinetic cap. Coverage may
+  repeat framing, eye level and equal lengths without turn or standout-image
+  quotas. Preserve actual blocking and coherent requested camera paths.
+- Resolve audience response, attention and ending only when the premise is open.
+  Plan sound/editorial intent before generation and evaluate actual takes and
+  the final cut against project-specific criteria with timestamped playback and
+  listening evidence. Optional coverage never authorizes additional generated clips.
 - Blocking: use `blocking-map` for planning when needed, preserving the
   approved medium. Maps are analysis-only by default; translate staging into
   prompt text and follow the current reference contract and verified tool

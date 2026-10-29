@@ -104,6 +104,14 @@ State the creative spine in one sentence: **For [audience/context], show
 not mandatory output syntax. A static asset can use a visual contrast rather
 than a narrative event; a sound-only brief can use a sonic idea.
 
+For new or materially revised moving-image work with an unresolved premise,
+settle a compact premise: intended audience response, what carries attention,
+and why the ending matters. Attention may come from curiosity, texture,
+recognition or sustained observation, not necessarily conflict or a reversal.
+Use supplied writing first. If the idea is genuinely open, offer two different
+mechanisms with tradeoffs or ask one focused question; label them proposals.
+Do not reopen a settled premise for a single-prompt edit.
+
 ## 2. Settle the production-critical defaults early
 
 Three choices change how footage is generated, so record them in the first
@@ -124,11 +132,13 @@ question; static images and sound-only briefs skip the ones that do not apply.
   halation or vignette. Record a grade or a capture-format look (camcorder,
   film stock) only when the brief asks for one, and treat it as a post
   treatment rather than a prompt word.
-- **Cinematic bar for ads and TVCs.** Unless the format is static by design
-  (selfie UGC, talking head), propose a sequence structure: about six 5 s
-  sequences of 2–3 shots for a 30 s spot, one action per shot, each shot with a
-  camera move, a motivated light and depth, and one standout "wow" image per
-  sequence. A single pass carrying many beats reads as stock footage.
+- **Sound and editorial intent.** Before generation, name a few picture-and-sound
+  beats: what the edit reveals, withholds or emphasizes, and whether sound leads,
+  accompanies, contrasts or falls silent. These are provisional intentions,
+  not final cue times or a requirement to acquire audio early. Conform final
+  cues to the measured edit and verify by actual playback/listening.
+  For ads and TVCs too, choose coverage from the idea, not five-second
+  sequences, mandatory moves or a standout-image quota.
 
 Also list the on-screen copy as post overlays: generated footage stays
 text-free, and no "AI-generated" or "fictional" label is added unless the user,
@@ -141,7 +151,8 @@ platform or brief requires it.
   treatment always includes a camera and light stance, an energy level
   (restrained, standard or kinetic), the audio route and the look, because
   those carry the reaction and decide how footage is generated. Do not
-  produce alternatives or a questionnaire merely because a project is new.
+  produce alternatives or a questionnaire merely because a project is new;
+  resolve an open premise as above before treating a direction as settled.
 - **Exploration:** when the user asks for directions, alternatives, or help
   choosing a concept, offer two materially different treatments. Distinguish
   them by central idea, viewpoint, or emotional strategy, not a lens or palette
@@ -169,7 +180,7 @@ a format that is static by design), not a neutral default.
 | --- | --- | --- |
 | Structure | Narrative development needs an event and progression; one-off static assets do not | `scene-craft` |
 | Acting | Specify an observable reaction/tactic only if a performer matters; match detail to framing | `seedance-acting-console` |
-| Camera | Choose viewpoint, framing, and the movement that reveals the central idea; vary size and angle across a scene | `seedance-shot-design`, then `seedance-camera-presets` |
+| Camera | Choose viewpoint, framing, movement or stillness that reveals the central idea; repetition and variety are both available | `seedance-shot-design`, then `seedance-camera-presets` |
 | Lens | Describe perspective, separation, and context; add optical terms only when useful | `seedance-lens-presets` |
 | Lighting | Motivate a source and its direction, and let it change meaning across the scene | `seedance-shot-design`, then `seedance-lighting-presets` |
 | Grade | Default ungraded original colours; propose a grade or look only when requested or when reference fidelity needs it, as a post treatment | `color-grade-palettes` |
@@ -259,7 +270,8 @@ These are hypothetical teaching cases, not measured generation outcomes.
 Before returning, check that the proposal serves the stated reaction, names a
 specific idea, says where the feeling lives, respects constraints, accepted
 choices and any source bible, records the audio route and look for moving
-images, and omits irrelevant axes. Two treatments appear only when exploration is wanted, and differ in
-mechanism. Unknowns remain labeled; recommendations remain unapproved until a
+images, and omits irrelevant axes. Resolve audience response, attention and
+ending when open; alternatives differ in mechanism, not palette alone.
+Unknowns remain labeled; recommendations remain unapproved until a
 mode-authorized decision is recorded. Evaluate the reasoning and usefulness,
 not exact headings.

@@ -83,9 +83,12 @@ and threatening."
 **Hypothetical failure:** Several fast verbs produce a smeared, jittery move
 with no clear end position.
 
-**Smallest change:** One burst with holds: "She sits coiled and still. Then she
-lunges forward in one fast movement and stops dead with the needle a finger's
-width from his neck. She holds there, motionless."
+**Smallest change:** Preserve the requested lunge and final needle hold:
+"She lunges forward in one fast movement and stops with the needle at his
+neck. She holds there, motionless."
 
-**Tradeoff:** One movement instead of a struggle. If the burst still smears,
-keep the end position and cut to it in the edit.
+**Tradeoff:** A pre-lunge hold is an optional repair for a demonstrated failure
+and needs approval if not supplied; it can change the suddenness and timing.
+Do not add it automatically. If the burst still smears, propose an edit for
+approval while preserving the requested lunge, end position and timing; do not
+automatically cut away the action.

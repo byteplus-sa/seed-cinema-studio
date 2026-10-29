@@ -7,8 +7,8 @@ they are prompt-composition only and never call the API themselves.
 
 | Axis | Skill | Notes |
 |---|---|---|
-| Shot plan: coverage, per-shot camera, lens intent and light | `seedance-shot-design` | Decides shot count, each shot's job, size, angle, move and light source, and checks neighbor contrast, angle range and light per shot; the preset skills below resolve each decision into canonical wording |
-| Camera movement & camera styles | `seedance-camera-presets` | Moves, techniques (dolly zoom, FPV, bullet-time orbit, one-take), and 10 camera styles; keep ≤2 moves per shot |
+| Shot plan: coverage, per-shot camera, lens intent and light | `seedance-shot-design` | Decides shot count, purpose, size, angle, move or hold and light source from approved intent and readable evidence; repetition and equal durations are valid |
+| Camera movement & camera styles | `seedance-camera-presets` | Moves, techniques (dolly zoom, FPV, bullet-time orbit, one-take), and 10 camera styles; preserve coherent requested paths without a move-count gate |
 | Lens / focal length / aperture / sensor | `seedance-lens-presets` | Always pairs numeric optics with the visible result; resolve requested 4K against current model capabilities |
 | Lighting | `seedance-lighting-presets` | Causal lighting presets; emit both the Seedream `Lighting:` recipe (elements) and the Seedance visual-style phrase so image + video share one lighting intent |
 | Color grading | `color-grade-palettes` | Named palettes + film looks in the Visual Style slot; keep one project-wide palette; optional FFmpeg match graphs in the mix step |
@@ -66,8 +66,9 @@ carried.
 
 Do not let two skills fight: exactly one grade per clip, one dominant lighting
 direction per shot with the same physical light source across the cuts of a
-scene, and 1–2 camera moves per shot. Record the plan and the chosen canonical
-phrases in `shot.md` alongside the prompt snapshot.
+scene, and a coherent camera path or hold. Clarify competing directions without
+discarding requested compound paths by count. Record the plan and the chosen
+canonical phrases in `shot.md` alongside the prompt snapshot.
 
 Load `seedance-lighting-presets` / `color-grade-palettes` alongside
 `seedream-prompt` when generating matching element sheets. For animation

@@ -32,20 +32,18 @@ flattest default.
 
 ## Building a spot from sequences
 
-Flat video has recurring causes: a single camera setup for the whole clip, no
-camera-move statement, soft verbs ("enjoys", "walks around") instead of
-dynamic ones, and presets added without a plan. Build longer pieces from short
-sequences instead of one long pass:
+Coverage follows the approved idea and audience attention, not a duration
+recipe. A held setup or repeated framing is not evidence of flatness.
 
-- A 30 s spot is about six 5 s sequences of 2-3 shots each, generated as
-  separate clips and assembled. A single 30 s pass with nine or more beats
-  reads as stock footage.
-- Each shot carries one action, a lens intent, a camera move, a motivated
-  light and at least two depth layers (foreground frame, subject, background).
-- Each sequence has one image worth stopping on: a reveal, a silhouette against
-  a practical, a low angle through foreground detail.
-- Shots under about 0.8 s merge; blink cuts, intercuts and vision flashes are
-  cut in assembly from separately generated sides.
+- Choose natural clip boundaries from performance, editorial intent and verified
+  model limits. Short sequences are optional; no five-second or shot-count quota.
+- Each shot carries its action, lens intent, move or hold and motivated light;
+  depth layers are useful when they serve the composition.
+- A standout image is optional, not a required substitute for an effective scene.
+  Additional generated clips require authorization within the caller's budget.
+- Density estimates are provisional; preserve requested rhythm within verified
+  request limits. Exact cuts or demonstrated merging may need assembly using
+  suitable footage, not automatic additional generation.
 
 Presets refine timing and holds; they do not create energy on their own.
 
@@ -73,9 +71,10 @@ Rules:
 1. Open each shot line with the camera facts, then the action, then the light.
    Camera moves use the vocabulary in
    [Camera language](audio-performance-camera.md#camera-language).
-2. One primary camera move per shot, plus at most one secondary move. The clip
-   as a whole is limited by its shot count (about 7 shots at most, none shorter
-   than about 0.8 s), not by a move count.
+2. Prefer a clear primary camera path; compatible compound paths are valid
+   when requested, ordered and readable. Reject contradictory simultaneous
+   directions, not move count alone. Preserve the planned rhythm without a
+   fixed shot-count ceiling or duration floor.
 3. Name the scene's light sources once, then give each shot a source and a key
    side. A cut changes which side of a source the camera sees, or a stated event
    adds a source; it never introduces a source the scene did not declare.
@@ -106,24 +105,25 @@ from the plan or the user's request.
 ## Dialogue inside shots
 
 Place a spoken line inside the shot that frames the speaker, and budget it
-(`dialogue.speech_budget`). Typical timing:
+(`dialogue.speech_budget`) from delivery and required response:
 
-- Speech starts 0.5-1.5 s after the shot or cue begins, later after long
-  pre-line action, so a line should not follow a busy action beat.
+- Derive onset from the performed cue and action, not a compulsory delay.
+  Busy action is valid when speech and the required response remain readable.
 - About 2.2 words per second is an English planning estimate, not a universal
   gate. Budget measured delivery or a native-language-informed read, including
   pauses, onset and tail; without delivery evidence, timing is provisional.
-- Speech tends to fill to the clip end. End the last line at least 0.4 s before
-  the end, and keep the final 3 s to at most two state changes (for example a
-  line and a reaction, not a line, a turn and an exit).
+- Derive the tail from the intended ending and required response, without a
+  fixed margin or final-state-change quota. A readable abrupt ending is valid.
 - Opening hook words are short and transcribe cleanly; a mumbled first word
   costs the hook.
-- Trimming the clip head in assembly does not lengthen the tail; fix timing in
-  the prompt, before the draft. Preserve requested language and locked words;
-  propose a longer shot or split before an authorized wording revision.
+- Trimming the clip head in assembly does not lengthen the tail. Resolve
+  demonstrated timing conflicts while preserving requested language and locked
+  words; propose retiming or splitting before an authorized wording revision.
+  Additional generated clips require authorization.
 
-Vary size and angle between speakers, and keep moves slow while a line is
-spoken so lips and eyes stay readable. For non-English or multilingual lines, compose with the dialogue partner skill
+Choose framing and movement for readable words, speaking assignments and
+performance at the intended speed. Speech does not impose a kinetic cap;
+actor energy, camera energy and edit rhythm remain separate. For non-English or multilingual lines, compose with the dialogue partner skill
 (`seedance-prompt-25-dialogue`, or an explicitly selected market pack) for
 the delivery direction.
 
@@ -172,7 +172,7 @@ Before submitting a cutting clip, confirm:
 
 1. Every shot line carries size, angle, a move or a recorded static hold, and a
    light fact from a declared source, matching the shot plan.
-2. The shot count and lengths fit the duration and the shot ceiling; a single shot
+2. The shot count and lengths fit requested rhythm and verified request limits; a single shot
    across a long clip is a recorded one-take or hold choice.
 3. Every spoken line fits inside its shot with the speech budget above.
 4. No shot stacks competing moves.

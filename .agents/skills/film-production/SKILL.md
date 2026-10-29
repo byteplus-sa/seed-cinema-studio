@@ -225,6 +225,9 @@ brief must also record the audio route, the look intent (ungraded original
 colours unless a look is requested), the on-screen copy that will be added in
 post, and the script-led structure and delivery choices. Persist the
 mode-authorized confirmed set as a `locked` block in `project.md`.
+When the premise is unresolved, settle audience response, attention and ending
+without reopening supplied writing or a scoped edit. Record early sound and
+editorial intent before generation; final cues follow the measured edit.
 Sequence `story-development` for source inventories and script-led breakdown,
 and `series-continuity` for state/knowledge evidence. Do not require redundant
 new writing when a supplied locked script already contains it.
@@ -247,9 +250,10 @@ plan stays `draft` until the scene's locations are approved, then is
 revalidated before shot generation. An exempt scene records its
 `static_reason`. The plan carries the project's confirmed camera, lens,
 lighting, pacing and energy axes into the shot lines or records a scene
-override. At shot generation, inspect each take against its plan: a missing
-planned cut, move or light change is a soft defect to record, and a missing
-move or light on the turn shot is a hard-gate failure.
+override. At shot generation, inspect each take against project-specific
+artistic criteria: a lost critical event or required response is a hard failure,
+not a missing optional move or turn label. Record less material differences.
+Coverage suggestions never authorize extra generated clips or spending.
 
 ## Approval and spending gates
 

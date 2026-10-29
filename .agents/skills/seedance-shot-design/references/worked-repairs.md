@@ -5,6 +5,9 @@ for the procedure and the variety rules.
 
 All cases are **hypothetical**. The failure descriptions are simulated editorial
 judgments drawn from recurring prompt shapes, not measured generation outcomes.
+The alternatives below are proposals, not coverage quotas. Preserve source
+locks, actual blocking and purposeful wide shots. Extra generated clips need
+authorization; a repeated frame or equal duration is not itself a defect.
 
 ## Equal-length size ladder with no move or light change
 
@@ -13,10 +16,10 @@ judgments drawn from recurring prompt shapes, not measured generation outcomes.
 - **Initial prompt shape:** Shot 1 (0-3 s) wide shot of the room. Shot 2 (3-6 s)
   medium shot at the door. Shot 3 (6-9 s) medium two-shot. Shot 4 (9-12 s) wide
   shot. One lighting sentence at the top: "soft late-afternoon daylight".
-- **Simulated failure:** Every shot is eye level and static, the shots are the
-  same length, and the light never changes. The scene plays as one framing cut
-  four times.
-- **Hypothesis:** Only size varies, and the cuts carry no other change.
+- **Simulated failure:** The handle and tap are obscured at the chosen scale,
+  and the cut leaves too little time to register the smile.
+- **Hypothesis:** Coverage and timing hide the event; equal lengths and
+  eye-level stillness are not the cause by themselves.
 - **Smallest repair:** Keep the four beats and plan them with two declared
   sources (the window at screen-left, the front door that opens at about 5 s) and
   uneven lengths. Shot a (3.0 s): high wide, slow crane down, window sun from
@@ -28,9 +31,9 @@ judgments drawn from recurring prompt shapes, not measured generation outcomes.
 - **Tradeoff:** More facts for the model to honor in 12 seconds. One primary move
   per shot, one room and two fixed sources keep the plan within what a clip can
   hold.
-- **Acceptance:** Adjacent shots differ in at least two of size family, angle
-  class, move and key side; lengths are uneven; the child's tap lands on the one
-  shot flagged as the turn; no shot uses a source the scene did not declare.
+- **Acceptance:** The handle, tap and smile are readable in their intended
+  order and no shot invents a light source. Equal lengths or a held alternative
+  can pass without a turn marker.
 
 ## A recorded axis that never reaches the shots
 
@@ -60,9 +63,9 @@ judgments drawn from recurring prompt shapes, not measured generation outcomes.
   answers {Wouldn't miss it.}
 - **Initial prompt shape:** "Hold a steady medium shot at eye level" for the whole
   clip, with "natural light".
-- **Simulated failure:** The brief's calm is honored, but the clip is one framing
-  for twelve seconds and the light is flat.
-- **Hypothesis:** The restrained level was read as "no variety".
+- **Simulated failure:** The neighbor's recognition cannot be seen behind the
+  shopper at the chosen camera side.
+- **Hypothesis:** Occlusion, not the held frame itself, hides the response.
 - **Smallest repair:** Keep restrained energy and declare two sources: cool light
   from the freezer doors above the aisle, and warm shop-floor fill. Shot a (4 s):
   medium two-shot at eye level, very slow drift left to right, the shopper's line
@@ -73,9 +76,8 @@ judgments drawn from recurring prompt shapes, not measured generation outcomes.
   `contrast_hold` after the push, warm floor fill rising on her face.
 - **Tradeoff:** More cuts than a single hold; every move stays slow, and each
   line sits inside one shot with room for the late start of speech.
-- **Acceptance:** Size family, angle class and key side change between shots
-  while every move stays slow and motivated, each line fits its shot, and no
-  large move lands during speech. For this fictional English exchange only,
+- **Acceptance:** Recognition and both lines remain readable with the requested
+  calm, without requiring changes of size, angle or key side. For this fictional English exchange only,
   words / 2.2 plus 1 s onset and 0.4 s tail is a provisional planning estimate,
   not a rejection threshold. Measured or native-language-informed delivery
   determines fit; retime or split if needed, without rewriting approved text.
@@ -95,9 +97,9 @@ judgments drawn from recurring prompt shapes, not measured generation outcomes.
   a short insert before the key line, and light both speakers from the same
   declared dinner lamp seen from opposite camera sides.
 - **Tradeoff:** Less kinetic feel; clearer speech and a visible power shift.
-- **Acceptance:** No large move is planned during a spoken line, the key line
-  sits in a single shot, and the speakers' lit sides differ without a second
-  source appearing.
+- **Acceptance:** Words, speaking assignments and the key response are readable.
+  A fast moving alternative may also pass; reduced speed is a remedy for this
+  simulated occlusion, not a speech rule. No new light source is invented.
 
 ## A 30-second spot written as one pass
 
@@ -106,20 +108,18 @@ judgments drawn from recurring prompt shapes, not measured generation outcomes.
 - **Initial prompt shape:** One 30-second prompt with nine timestamped beats
   (street, traffic, rain, close-up, product, wind, arrival, smile, pack shot),
   one global "cinematic lighting" sentence and no camera move per beat.
-- **Typical shape:** A single 30-second pass like this tends to read as stock
-  footage: each beat gets about three seconds, the camera defaults to neutral
-  framing, and nothing is designed to be remembered.
+- **Simulated failure:** The arrival is rushed and the product event is unclear;
+  the piece loses its intended audience response.
 - **Hypothesis:** Too many beats per clip, no per-shot camera or light, and no
   image built to land.
-- **Smallest repair:** Six sequences of about 5 s, each its own clip of 2-3
-  shots with one action per shot. Sequence 1: a low tracking shot beside the
+- **Possible repair:** Choose natural clip boundaries for travel and arrival
+  within authorization, without a fixed sequence count. One option: a low tracking shot beside the
   wheel through puddles, then a crash zoom onto her eyes under the helmet
   visor, magenta sign light from frame-right, rain in the foreground, the
-  street receding behind. The `wow` shot of each sequence is planned first
-  (sequence 3: her hair lifting in slow motion against a wall of signs). The
+  street receding behind. A standout image is optional
+  (her hair lifting against a wall of signs). The
   pack shot and all copy are post layers.
-- **Tradeoff:** Six generations and an assembly instead of one; each clip can
-  be drafted, reviewed and replaced alone.
-- **Acceptance:** Each sequence has 2-3 shots with a lens intent, a move, a
-  named source and depth layers, one `wow` shot, and lengths that vary between
-  sequences; the edit, not one prompt, carries the 30-second structure.
+- **Tradeoff:** Separate generations add cost and assembly work; obtain
+  authorization before adding clips.
+- **Acceptance:** Travel and arrival read as one intended experience within
+  30 seconds. Lens, camera and light serve it; no duration or `wow` quota.

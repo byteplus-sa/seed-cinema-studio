@@ -24,13 +24,13 @@
       "source": "./local",
       "sourceType": "local",
       "skillPath": ".agents/skills/editorial-review/SKILL.md",
-      "computedHash": "15519ba3ef068f83e606e6c57b1687a4b4397938b31f55425fcd3fcc959a89c7"
+      "computedHash": "c762dac1854ffe01d63043c59df88a24a620743bcb5978fd24c7b5121a94a79f"
     },
     "sound-post": {
       "source": "./local",
       "sourceType": "local",
       "skillPath": ".agents/skills/sound-post/SKILL.md",
-      "computedHash": "6bdbcf1b4ce7cf8eeb3c3f92414ef8dbbcc077737907f14947d0a92fe1849503"
+      "computedHash": "d2330f0125ea656d3d942273165e298bbf77fb80db33f58f1527e4d0614641e8"
     },
     "subtitle-sidecars": {
       "source": "./local",
@@ -54,7 +54,7 @@
       "source": "./local",
       "sourceType": "local",
       "skillPath": ".agents/skills/brief-intake/SKILL.md",
-      "computedHash": "e6dd0439bf668f363a0202b90903b3ee99adb3501731ef195120d24a74f4adfa"
+      "computedHash": "a688a50de254e72631d49f5204d2eb52b8b5566a7b33cb8d3bfa4c132047b91a"
     },
     "color-grade-palettes": {
       "source": "./local",
@@ -78,7 +78,7 @@
       "source": "./local",
       "sourceType": "local",
       "skillPath": ".agents/skills/film-production/SKILL.md",
-      "computedHash": "d30c9b18ef07efcdc1b2165c97e351f8545a7ece5143438f085406bce6b1fd09"
+      "computedHash": "20caad7c04f26b32564612c6f89ed7454fd5071347c12479e1cb5c8a606b0466"
     },
     "html-graphic-render": {
       "source": "./local",
@@ -150,7 +150,7 @@
       "source": "./local",
       "sourceType": "local",
       "skillPath": ".agents/skills/micro-drama/SKILL.md",
-      "computedHash": "eab61f231bcd4124a9dafa7f9fb3a36af3ca28728624a29c05a808e5d919f0e2"
+      "computedHash": "e886d676196b9262579a2e6c38ad62bd35589fe6da74bbdc89c320fb28796bc0"
     },
     "microdrama-localize": {
       "source": "./local",
@@ -186,13 +186,13 @@
       "source": "./local",
       "sourceType": "local",
       "skillPath": ".agents/skills/seedance-acting-console/SKILL.md",
-      "computedHash": "b5048913dbae4b468eb42e2ed969005cac4a4c25593dfc2a91e2116e4d8778d0"
+      "computedHash": "b5a9b4d850c32866d19cf26fd35b5be224d2dffbd8b3f832404d196f12e84183"
     },
     "seedance-camera-presets": {
       "source": "./local",
       "sourceType": "local",
       "skillPath": ".agents/skills/seedance-camera-presets/SKILL.md",
-      "computedHash": "0970d0fd13ab56aaa5679ae44c3ae83b9292c817cf0f29951d507ca9640df7c6"
+      "computedHash": "d73fb6b6f6ca3d889a8770cb60b40fa308e48539aa3100f71e2cacd2c634679f"
     },
     "seedance-fight-choreography": {
       "source": "./local",
@@ -229,19 +229,19 @@
       "source": "./local",
       "sourceType": "local",
       "skillPath": ".agents/skills/seedance-pacing-presets/SKILL.md",
-      "computedHash": "9da436217be2567460fe1f67cf3ada84c2443db188691d852e46ec7601f9be5e"
+      "computedHash": "68402a355fdb967ea5734321d9bd59e001a5c794caa788c4a495187d3dbd601b"
     },
     "seedance-prompt-20": {
       "source": "./local",
       "sourceType": "local",
       "skillPath": ".agents/skills/seedance-prompt-20/SKILL.md",
-      "computedHash": "3cd2b561d7f011fbb8acf337a4523eaa322e11d114675137f0f92fc4655da83c"
+      "computedHash": "e1da706008edbe5706dd651d2c99d48b93f5db9b1b0146a0a5d4c78d481eb186"
     },
     "seedance-prompt-25": {
       "source": "./local",
       "sourceType": "local",
       "skillPath": ".agents/skills/seedance-prompt-25/SKILL.md",
-      "computedHash": "b5cfa6149d0e799438b760f81fe15758b11357a512704d5f8719449d5f32b0f5"
+      "computedHash": "8102b799d80d67fdfbf7833942992f78cdceb520df2b39252390384561b8032e"
     },
     "seedance-prompt-25-dialogue": {
       "source": "./local",
@@ -265,7 +265,7 @@
       "source": "./local",
       "sourceType": "local",
       "skillPath": ".agents/skills/seedance-shot-design/SKILL.md",
-      "computedHash": "1290f805f1244eaaaab7f7705b0b1e4f54e5ac2e417a7c53e315271ef1306fa8"
+      "computedHash": "d2dbe3712bdb1e87ba00ee3aa1314ed921955bcbe72e791f844d496b9dc1156b"
     },
     "seedance-virtual-portrait": {
       "source": "./local",
@@ -349,7 +349,7 @@
       "source": "./local",
       "sourceType": "local",
       "skillPath": ".agents/skills/scene-board-sheet/SKILL.md",
-      "computedHash": "912061595dd2285e7c235d24309976354aa15f25a59b3f3285f06e9f837c4013"
+      "computedHash": "b2c524a5457a760a481f0f1ffb91b09eee9c48fe967b39a1caae25ca4c5575cd"
     }
   }
 }

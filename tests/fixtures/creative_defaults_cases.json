@@ -1,0 +1,95 @@
+{
+  "schema_version": 1,
+  "scope": "offline_creative_defaults_walkthroughs",
+  "rubric_revision": 1,
+  "cases": [
+    {
+      "id": "opposing_intentions_kinetic_dialogue",
+      "prompt": "Two siblings hurry through a station. One tries to stop the other leaving; the other keeps moving. Keep the English line 'Wait, hear me out.' and the fast tracking camera. No generation.",
+      "criteria": {
+        "intent": "Distinct intentions survive; do not turn the exchange into mutual concealment or soften urgent reaching.",
+        "readability": "Words, pursuit and listener response remain readable at the planned speed; no blanket speech-energy cap.",
+        "preservation": "Keep the words, blocking and requested camera path; unresolved delivery fit is not a pass."
+      },
+      "walkthrough": "Retain the fast track and urgent reach, grounded in planted feet and forward momentum. The leaving sibling registers the appeal without stopping or agreeing. Budget measured delivery and response time; if the camera hides the reach, propose a local framing adjustment without silently slowing the actors or adding clips. Actual full-speed playback with sound must establish the appeal and non-agreement.",
+      "evidence_status": "hypothetical; no media generated"
+    },
+    {
+      "id": "quiet_equal_holds",
+      "prompt": "Four equal four-second eye-level wide holds show a worker waiting beside an empty platform. Preserve the small figure, repeated framing and unresolved ending. No new plot or sound.",
+      "criteria": {
+        "intent": "Sustained attention and absence carry the scene without a reversal or reaction close-up.",
+        "coverage": "Repeated performance_hold reasons, eye level and equal duration pass when purposeful.",
+        "preservation": "No enlarged subject, mandatory angle, turn, wow image or added audio."
+      },
+      "walkthrough": "Record repeated performance_hold rationale: the unchanged empty space keeps attention on waiting. The worker remains small because the environment carries the isolation. Keep all four equal durations and the open ending. Review temporal attention in the actual cut, not a count of moves; sound is intentionally not applicable.",
+      "evidence_status": "hypothetical; no media generated"
+    },
+    {
+      "id": "physical_comedy_repeated_bursts",
+      "prompt": "In one held wide shot, a stagehand makes three abrupt attempts to catch a rolling spool, misses twice, then catches it. Keep all attempts and the comic recovery. No generation.",
+      "criteria": {
+        "action": "Preserve all three attempts with momentum, contact, interruptions and recovery.",
+        "readability": "No universal single burst or inserted holds; attempts remain legible within the available duration.",
+        "authorization": "An overfull timing budget returns a question or proposal, not extra generated clips."
+      },
+      "walkthrough": "Encode the two misses and final catch as ordered grounded actions while the camera holds. Do not replace them with one slow reach or add still holds between attempts. If timing is too tight, return the conflict without deleting a miss or changing duration. Playback must show each miss, the catch and recovery; this text alone does not prove comic timing.",
+      "evidence_status": "hypothetical; no media generated"
+    },
+    {
+      "id": "wordless_product_attention",
+      "prompt": "A 30-second wordless tabletop demonstration shows a folding lamp opening and lighting a notebook. Preserve product geometry. Choose a calm useful tone; no claims or generated labels.",
+      "criteria": {
+        "premise": "The viewer understands usefulness through opening and illumination, not a generic wow frame.",
+        "coverage": "Natural demonstration timing, including held or equal-length shots; no six-by-five-second recipe.",
+        "sound": "Plan hinge sound and room tone early without requiring audio assets before picture."
+      },
+      "walkthrough": "Use the opening mechanism and pool of light as attention carriers, ending on the usable notebook area. Choose coverage that shows the hinge and light clearly. Record picture_only with post hinge/room sound intent before generation; final cue positions follow the measured edit. Reject geometry drift and listen for distracting cue timing, with no invented dialogue gate.",
+      "evidence_status": "hypothetical; no media generated"
+    },
+    {
+      "id": "locked_presenter",
+      "prompt": "A presenter explains a safety step in one locked camera shot. Preserve approved dialogue and framing. The presenter can speak energetically. Only improve the performance cues.",
+      "criteria": {
+        "scope": "No new concept exploration, camera moves or extra coverage.",
+        "performance": "A fixed camera does not require passive acting; direction serves the supplied explanation.",
+        "acceptance": "Exact words plus actual delivery/readability evidence, not transcript-only approval."
+      },
+      "walkthrough": "Keep the settled premise and static camera lock. Direct the presenter to make the safety step clear through purposeful emphasis and readable demonstration within the existing frame. Do not add a reaction shot or slow the body because speech is present. Review the actual words, delivery and demonstration; missing playback/listening remains unresolved.",
+      "evidence_status": "hypothetical; no media generated"
+    },
+    {
+      "id": "sound_led_reveal",
+      "prompt": "A child hears a familiar bicycle bell before a parent enters the courtyard. The viewer should anticipate a reunion. Keep the source ending as the child runs toward the doorway, before contact.",
+      "criteria": {
+        "sound": "Bell anticipation and release are planned before shots; silence and picture/sound order have a purpose.",
+        "ending": "Preserve the pre-contact ending rather than inventing a hug or cliffhanger.",
+        "evidence": "Final measured cue timing and full-cut playback/listening are required."
+      },
+      "walkthrough": "Plan the offscreen bell before the entrance, the child's registration and the run as the emotional release. Keep the ending before contact. Early sound intent carries no pretend asset or measured timestamp. At assembly, align the bell to the actual edit and listen through the lead-in and ending; a valid cue JSON without listening cannot approve the cut.",
+      "evidence_status": "hypothetical; no media generated"
+    },
+    {
+      "id": "open_premise_microdrama",
+      "prompt": "Someone receives a rejection and says 'I'm fine' to a friend. Make it emotional. Format and intended reading are undecided; no generation.",
+      "criteria": {
+        "premise": "Resolve audience response, attention and ending through a focused question or distinct proposed mechanisms.",
+        "authority": "Do not silently choose deception, mutual concealment, microdrama or a new ending.",
+        "template": "Hook/Turn/Cliffhanger is optional only within explicit microdrama selection; neither approval mode grants spend or consent."
+      },
+      "walkthrough": "Offer two provisional readings: sincere reassurance, or an attempt to end the friend's questions while the friend keeps contact open. Ask which audience response and ending are wanted before treating either as settled. A vertical canvas alone does not select microdrama. If that format is later selected, disclose its compatibility template and settle use under the existing approval mode without overriding source choices.",
+      "evidence_status": "hypothetical; no media generated"
+    },
+    {
+      "id": "source_timing_and_compound_camera",
+      "prompt": "Edit only the cloak material as a performer strides through an arch in a readable 0.8-second crossing. Preserve source timing, equal-height blocking and the camera's ordered dive, bank and climb. No added looker or reaction clips.",
+      "criteria": {
+        "timing": "No mandatory 1.5-second slowdown or inserted burst holds on readable source action.",
+        "camera": "Coherent compound path survives; no count-based camera rejection.",
+        "blocking": "No invented height difference for OTH, enlarged subject or extra POV coverage."
+      },
+      "walkthrough": "Treat source motion, camera, timing and blocking as locks and change only the material. Keep the crossing at its readable source pace; a 1.5-second remedy is unavailable without an observed failure and authorized timing change. Describe actual foreground geometry rather than staging a height difference. Review preservation against the source; no new performance arc or extra generated clips.",
+      "evidence_status": "hypothetical; no media generated"
+    }
+  ]
+}

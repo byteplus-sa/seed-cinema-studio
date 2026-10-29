@@ -214,6 +214,11 @@ remain binding in both modes. Neither mode changes rights, budget or approvals.
 
 Profile defaults contain creative settings only. No profile can waive rights,
 review, locks, cost boundaries or durable submission.
+Micro-drama's compatibility defaults are optional template proposals, not
+artistic acceptance gates. Before creative execution, disclose and settle their
+use against the premise under the existing approval mode. Preserve explicit
+source choices, including empty scenes/beats/cards lists; do not treat resolver
+output alone as an approved formula. This changes no resolver API or schema.
 
 ## Active Context And Studio Adapter
 

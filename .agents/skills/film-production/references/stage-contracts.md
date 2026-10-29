@@ -93,8 +93,11 @@ brief also records:
   capture-format look is requested, in which case it is a post treatment;
 - the **on-screen copy** (titles, captions, CTA, end card) that post will add,
   and any label the user or platform requires;
-- for ads and TVCs, the **cinematic bar**: sequence count and length, one action
-  per shot, and the wow image each sequence must deliver.
+- the **creative premise**, when unresolved: intended audience response, what
+  carries attention and why the ending matters, drawn from supplied material;
+- early **sound and editorial intent**: a few picture/sound beats naming what
+  is revealed, withheld or emphasized, including deliberate silence. Final
+  assets and cue times are not required at intake.
 
 Use `story-development` for source-preserving treatment, outline and scene-list
 artifacts, and compose `scene-craft` separately for dramatic craft.
@@ -145,9 +148,12 @@ For every narrative, ad, micro-drama, music-video or showcase scene it also
 requires a shot plan from `seedance-shot-design` in the scene file's
 `## Shot plan` section: per shot, duration, size, angle, camera move, lens
 intent and a named light source with key side, the energy level, and where each
-confirmed project axis appears. Ads and TVCs group shots into sequences of
-about 5 s with 2–3 shots each; no planned shot is shorter than about 0.8 s, and
-faster cuts, flashes or intercuts are marked as edit work. A long action with
+confirmed project axis appears. All formats choose coverage from the idea,
+not angle, turn, standout-image or five-second quotas. Additional generated
+clips require authorization within the declared budget. Shot-density estimates
+are provisional: preserve requested rhythm within verified request limits.
+Plan exact cuts in assembly where needed, reusing suitable footage; short
+durations alone do not require more generation. A long action with
 people that would need extension is planned as short single passes held by a
 blocking map unless `asset://` Virtual Portrait identities are available. The plan is `draft` until the scene's locations
 are approved in Stage 3 and is revalidated before Stage 6. A scene that is exempt
@@ -254,7 +260,9 @@ directly to shot generation. Seedance's native audio handles dialogue by
 default. A music track that the cut must follow (music video, beat-led spot)
 may be prepared here so shot durations can be planned to it. Score and ambience
 for a picture-only project are otherwise built after picture lock, at
-assembly, to the cut's measured length.
+assembly, to the cut's measured length. This does not defer sound intent:
+planned silence, entrances and picture/sound relationships originate in the
+brief and breakdown and are tested against the actual edit.
 
 ## 6. Shot generation
 
@@ -326,7 +334,11 @@ exact-length intermediates encoded once; post beds for picture-only projects
 are built here to the measured cut. Audio defects are fixed word by word, and
 re-voicing keeps the source soundtrack (see
 [production defaults](production-defaults.md)). The `assembly-review` stage
-keeps its approved inputs and comparison renders together.
+keeps its approved inputs and comparison renders together. Review what the edit
+reveals, withholds and emphasizes against a small set of project-specific
+artistic criteria. Cite timestamped evidence from actual full-speed playback
+and listening, including the opening and ending; technical assembly alone
+does not satisfy those criteria.
 
 In strict or explicitly requested editorial review, export the actual edit with
 `editorial.py export`, run `check`, then explicitly

@@ -112,9 +112,9 @@
         "narrative_video"
       ],
       "owner_path": ".agents/skills/seedance-shot-design/SKILL.md",
-      "summary": "Adjacent shots in a cutting clip differ in at least two of size family, angle class, camera move and key side; each scene has a non-eye-level angle, a motivated move at its energy level and uneven shot lengths, or a recorded reason.",
+      "summary": "Coverage and duration serve approved action, audience attention and readable response. Repeated framing, eye-level scenes, equal durations and sustained holds are valid; no angle, turn, standout-image or sequence quota applies.",
       "exceptions": [
-        "A single continuous take records its camera path and light progression instead of neighbor contrast.",
+        "A single continuous take records its motivated hold or camera path and declared light instead of neighbor contrast.",
         "A shot plan derived from another skill's camera plan treats these checks as advisory."
       ]
     },
@@ -564,7 +564,7 @@
         "narrative_video"
       ],
       "owner_path": ".agents/skills/seedance-prompt-25/references/shot-staging.md",
-      "summary": "Each spoken line fits its shot using measured delivery or a native-language-informed read, including pauses and a 0.5-1.5 s late start; the last line ends at least 0.4 s before the clip end with at most two state changes in the final 3 s. About 2.2 words per second is an English planning estimate, not a universal gate; without delivery evidence, timing is provisional. Preserve requested language and locked words; propose retiming or splitting before an authorized wording revision.",
+      "summary": "Each spoken line fits its intended window using measured delivery or a native-language-informed read, including pauses and the required response. Onset and tail follow the performance and ending, without fixed margins or a final-state-change quota. About 2.2 words per second is an English planning estimate, not a universal gate; without delivery evidence, timing is provisional. Preserve requested language and locked words; propose retiming or splitting before an authorized wording revision. Additional generated clips require authorization.",
       "exceptions": []
     },
     {
