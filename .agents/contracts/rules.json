@@ -187,7 +187,7 @@
         "preflight"
       ],
       "owner_path": ".agents/contracts/production-policy.md",
-      "summary": "All applicable checks have complete request-bound evidence.",
+      "summary": "Strict or explicitly required checks have complete request-bound evidence. Default needs no report unless required rules are explicit; any supplied report must be current, complete and passing.",
       "exceptions": []
     },
     {
@@ -227,7 +227,7 @@
         "stage_exit"
       ],
       "owner_path": ".agents/contracts/production-policy.md",
-      "summary": "For `shot-generation`, `assembly-review` and `delivery`, the pinned `hyperframes check` passes and every shot has a placed take; `delivery` also requires the newest `studio_project.py render` record at a delivery-level quality (drafts and manual records are ignored) to match its file, the current Studio tree and the placed takes.",
+      "summary": "Every shot has a placed take at shot-generation, assembly-review and delivery. Strict runs the pinned hyperframes check at all three stages; default defers it to delivery, recording check_ran/check_ok false when skipped. Delivery retains current render, tree, selection and explicit named-output validation.",
       "exceptions": []
     },
     {

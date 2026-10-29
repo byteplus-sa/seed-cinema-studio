@@ -47,6 +47,7 @@ lookup keys.
 | `profile` | Complete profile record, including revision and disclosed defaults |
 | `production` | Normalized effective creative settings |
 | `delivery` | Editorial delivery settings, not provider request parameters |
+| `review_mode` | Retained only when explicit in shared/unit metadata; absent means default behavior without adding a fingerprint field |
 
 Other metadata is retained, including optional `market`, legacy `episode`,
 creative intent and evidence. No missing market or episode block is invented.
@@ -79,6 +80,7 @@ explicit mirror instead; a lock is never silently discarded during selection.
 `project.md` owns shared settings; a unit brief may provide creative overrides:
 
 ```yaml
+review_mode: default
 production:
   genre: historical drama
   medium: ink animation
@@ -195,6 +197,21 @@ No allocation resets spending or grants permission to spend. Actual aggregation,
 reservation reconciliation and concurrent enforcement remain the operation
 registry's responsibility; this resolver is not an accounting ledger.
 
+`review_mode` is an independent review-depth setting, not approval authority.
+Only `default` and `strict` are valid; absent shared mode resolves to `default`
+for new actions. Explicit null, empty, non-string and unknown values fail in
+either source, even when another source would override them. An explicit unit
+value overrides shared review depth for that unit only; omitted unit mode
+inherits shared mode. Production-scoped canon uses shared mode. Do not put
+review mode in `locked`, a profile default or `approval_mode`.
+An absent key stays absent in normalized settings, preserving existing v3
+fingerprints. Explicit mode additions or changes invalidate dependent context.
+Default requires minimal inline preflight and final-output sanity, not a full
+prompt-review report/checklist or three-image set. Native Seedance 2.5 Draft-first
+and applicable performance checks remain required in both modes.
+Strict retains the full workflow. Explicit required rules and supplied reports
+remain binding in both modes. Neither mode changes rights, budget or approvals.
+
 Profile defaults contain creative settings only. No profile can waive rights,
 review, locks, cost boundaries or durable submission.
 
@@ -228,7 +245,7 @@ root composition dimensions remain authoritative after initialization, so a
 brief change is not automatic retiming or reframing.
 
 Operational request v3 and decision v2 bind normalized shared project identity
-and typed scope, while adapter provenance records raw source hashes.
+and typed scope, including review mode, while adapter provenance records raw source hashes.
 Historical request v1/v2 hashing is unchanged. See
 [production versions](production-versions.md) for the exact distinction and
 dependency invalidation. Normalized identity never overrides an explicit raw

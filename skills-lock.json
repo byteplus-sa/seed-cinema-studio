@@ -54,7 +54,7 @@
       "source": "./local",
       "sourceType": "local",
       "skillPath": ".agents/skills/brief-intake/SKILL.md",
-      "computedHash": "bfc81201d9bbabeb117bca17d08b73a0dc236b534ffeacb90cc50a82f28cc22f"
+      "computedHash": "e6dd0439bf668f363a0202b90903b3ee99adb3501731ef195120d24a74f4adfa"
     },
     "color-grade-palettes": {
       "source": "./local",
@@ -78,7 +78,7 @@
       "source": "./local",
       "sourceType": "local",
       "skillPath": ".agents/skills/film-production/SKILL.md",
-      "computedHash": "1cdf7efecfe4ea47b8a70c4c094f915d921ec73e6acd2f82079b880a0240fb66"
+      "computedHash": "d30c9b18ef07efcdc1b2165c97e351f8545a7ece5143438f085406bce6b1fd09"
     },
     "html-graphic-render": {
       "source": "./local",
@@ -150,7 +150,7 @@
       "source": "./local",
       "sourceType": "local",
       "skillPath": ".agents/skills/micro-drama/SKILL.md",
-      "computedHash": "8c96f4a49a31ab19adb56bf8cfeb0be98774a6db91b492e4b07dffc35ac677df"
+      "computedHash": "eab61f231bcd4124a9dafa7f9fb3a36af3ca28728624a29c05a808e5d919f0e2"
     },
     "microdrama-localize": {
       "source": "./local",
@@ -174,7 +174,7 @@
       "source": "./local",
       "sourceType": "local",
       "skillPath": ".agents/skills/prompt-review/SKILL.md",
-      "computedHash": "88811acad348c2ebc403d82a16cb93bc0371cb1fcf4967a29154c730efe66069"
+      "computedHash": "b75ac8db6456b978e3583244b95dd93c0b7fde6db5ce09814cc715ab65621e6a"
     },
     "seed-audio-prompt": {
       "source": "./local",
@@ -241,7 +241,7 @@
       "source": "./local",
       "sourceType": "local",
       "skillPath": ".agents/skills/seedance-prompt-25/SKILL.md",
-      "computedHash": "d33cd543ef8462704cf7ed63b4ec3cb4ed2c4d50ea04c7de0cf923b747a54d64"
+      "computedHash": "b5cfa6149d0e799438b760f81fe15758b11357a512704d5f8719449d5f32b0f5"
     },
     "seedance-prompt-25-dialogue": {
       "source": "./local",
@@ -319,7 +319,7 @@
       "source": "./local",
       "sourceType": "local",
       "skillPath": ".agents/skills/seedream-storyboard/SKILL.md",
-      "computedHash": "14cdab9dfae82bfa8ee202388d15db8a38a184dd78f2996f6ae41bddbd9eb267"
+      "computedHash": "de75463fdf4e1ff0fd9434fcf60fe45504e15ebbae6b342bd99dc9b203fe1ce6"
     },
     "showcase-html": {
       "source": "./local",

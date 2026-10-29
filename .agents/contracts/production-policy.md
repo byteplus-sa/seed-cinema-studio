@@ -1,5 +1,46 @@
 # Production policy
 
+## Independent Review Mode
+
+`project.md` YAML `review_mode` is `default` or `strict`, independently of
+`approval_mode` (`approve_for_me` or `ask_for_approval`). Missing means `default`
+for new actions, without rewriting historical records. Invalid, null or
+unreadable values fail closed. Read at start/resume and recheck under writer
+locks before registration and submission.
+
+- **Default:** minimal inline preflight for intent, supported parameters,
+  references, rights, scope and budget; final-output sanity for usable output,
+  requested content and obvious defects. No mandatory prompt-review report,
+  full checklist pass or three-image comparison unless required checks apply.
+  Generate one image unless another count is requested. Native Seedance 2.5
+  Draft-first, selection and applicable performance checks remain required.
+- **Strict:** retain the full applicable prompt-review/checklist, candidate QA,
+  three-image selection and draft-first workflow below, subject to explicit
+  user overrides and verified capability constraints.
+- Explicit `--required-rule` values need truthful, passing, request-matching
+  report evidence in either mode. Any supplied report is validated, never
+  ignored because it is optional. Stale, incomplete or failing reports block.
+  Explicitly requested review runs only the requested scope; it does not
+  silently switch the whole project to strict.
+
+For active manifests, an explicit unit-brief `review_mode` overrides shared
+mode only for that resolved unit. Omission inherits shared mode; shared canon
+uses shared mode. Both source values are validated, even if overridden.
+Mode participates in normalized shared identity and effective unit context,
+so changes invalidate v3 requests. Legacy v1/v2 hash algorithms remain unchanged;
+explicit review mode requires at least v2 for unscoped new work. V1 is not a
+mode bypass.
+
+The full review/checklist instructions in skills and recipes apply to strict
+mode or explicitly requested checks, not automatically to default. Apply
+`acting.plan_bound` and `fight.readable_exchange` checks where required in both
+modes under the performance contract. Keep minimal
+truthful hash-bound candidate/final sanity records where validated selections
+and locks need them. Neither mode invents listening, approval, consent or
+creative proof. Unavailable required perception remains unresolved. All modes
+retain capabilities, hashes, rights, spending, registration, idempotency, unit
+selection, manual edit order, locked choices and explicit named delivery IDs.
+
 ## Stage evidence and authorization
 
 Draft brief and scene breakdown can identify assets before canon exists. Before dependent production generation, require the appropriate approved recurring/critical elements and declared reference roles. Canon may be created by static sheet generation, deterministic HTML-entrypoint rendering, **or** by acquiring and approving real brand/product/logo assets; prompt-only authoring may deliver a draft without generating or downloading assets. When the brief borrows visual or motion grammar from cited footage, obtain actual watchable media first. Inspect it with native video tools when available; if those tools cannot cover the required temporal or audio criteria, use a supported analysis route. Provider analysis through `seed_understand` needs a usable HTTPS video URL, or a local download followed by upload. Honor explicitly requested provider analysis and the declared `template-factory` workflow. Scripts, transcripts, article text and frame samples alone do not establish motion grammar.
@@ -120,11 +161,18 @@ table describes machine gates, not automatic creative evaluation.
 
 | Stage | Requires |
 | --- | --- |
-| `brief-development` | Valid shared approval mode and optional market/episode fields. Active context resolution also validates the manifest, unit brief and effective settings; no screenplay quality is inferred. |
+| `brief-development` | Valid independent approval and review modes and optional market/episode fields. Active context resolution also validates the manifest, unit brief and effective settings; no screenplay quality is inferred. |
 | `scene-breakdown` through `audio-preparation` | Selected Studio has no blocking status issue. Active units additionally check declared required canon and its current copies from `canon-elements` onward. |
-| `shot-generation` | The above, a placed take for every shot, and a passing `check`. |
+| `shot-generation` | The above and a placed take for every shot; strict additionally requires a passing `check`. Default defers that expensive check to delivery. |
 | `assembly-review` | The `shot-generation` requirements, no pending selection, a `picture` lock, and an `audio` lock unless `audio-preparation` was skipped. |
 | `delivery` | Placed scoped takes, clean selection status and passing `check`. Units with named definitions require exactly one `primary: true` index entry and its current binding and named lock, validated against the current spec, output, review and dependencies. Legacy root projects and units without named definitions retain the newest eligible render in their Studio context and a matching `final_master` ledger lock. Active units also revalidate their assembly locks. |
+
+Default skips only the expensive HyperFrames `check` at `shot-generation` and
+`assembly-review`, recording `check_ran: false` and `check_ok: false`.
+Lightweight status, provenance hashes, placed takes and locks remain required.
+Strict runs the check at both intermediate stages; delivery runs it in both
+modes. Resolve effective selected-unit review mode, failing on invalid values.
+Output render validation is unchanged.
 
 Audio review follows actual scope even when `audio-preparation` was skipped
 because dialogue was native or sound was built in post. The skip-sensitive
@@ -291,7 +339,9 @@ evidence across turns within scope. Unknown rights, real-person identity, and
 consent facts require their own authorization and cannot be supplied by the
 creative decision mode. A generation request does not approve its result.
 
-Provider success sets `review`. In `approve_for_me`, inspect every candidate
+Provider success sets `review`. Review depth follows `review_mode`; default
+uses output sanity and minimal truthful integrity records, not the full strict
+checklist. In `approve_for_me`, inspect every generated candidate
 with modality-appropriate evidence, reject hard-gate failures, rank passing
 candidates against recorded criteria, and save a hash-bound review and agent
 decision before a validated writer sets `selected_variant` and `approved`. If
@@ -326,7 +376,7 @@ holds and source-preserving edits; static assets do not require acting plans.
 
 Narrative, ad, micro-drama, music-video and showcase shots also need a recorded shot plan before prompt authoring: for each shot, duration, size, angle, camera move, lens intent, and a named light source with its key side, produced by `seedance-shot-design` and stored with the scene. A static camera or an unchanging light needs a recorded `static_reason`. Exemptions are recorded, never assumed: a user lock, a static-by-design format (the `ugc`, `ugc-how-to`, `ugc-unboxing`, `product-review` and `ugc-virtual-try-on` modes, named UGC presets with a locked camera block, talking-head, avatar and news takes, frame-break), an explicit per-shot camera plan from another skill (a pin plan; a music-video genre lock is vocabulary, not an exemption), a plate for cutdown, a source-preserving edit, an extension continuation, or no video shot at all. A confirmed (`agent_confirmed` or `user_confirmed`) camera, lens, lighting, pacing or energy axis recorded in `directorial_axes` or the `locked` block must reach the shot prompts, or the scene records an override with its reason; `proposed` and `defaulted` axes may be revised freely. A user-confirmed lock is never replaced by the plan.
 
-Inspect each take against its plan. A planned cut, camera move or light change that is missing is a soft defect to record; a missing move or light on the shot flagged as the turn is a hard-gate failure. A 480p draft is the default way to check shot structure before final-resolution generation. A project whose scene breakdown is already complete plans only new or revised shots, proposes a migration preview for older scenes, and never invents a plan for takes that already exist.
+Inspect each take against its plan at the selected review depth. A planned cut, camera move or light change that is missing is a soft defect to record; a missing move or light on the shot flagged as the turn is a hard-gate failure in strict review. A native 480p draft is required in both review modes before final-resolution generation. A project whose scene breakdown is already complete plans only new or revised shots, proposes a migration preview for older scenes, and never invents a plan for takes that already exist.
 
 Choose the static-graphics route by fidelity requirement. Exact copy,
 typography, logos, screen/UI layouts, title cards, posters, product lineups,
@@ -352,9 +402,9 @@ An explicitly selected supported conditioning input is a promoted composition or
 
 ## Request preflight and review
 
-Before submitting a **generation-bound** request, freeze the exact prompt beside its intended asset, compute hashes, verify ordered bindings/roles, check reference approval and current hashes, and resolve current model/mode capabilities. Run prompt-review for generation-bound prompts, inline by default. Sub-agent prompt review is optional and used only when the user explicitly requests it for the project or specific generation; general parallel-production guidance does not authorize it. Both modes require the same hash-bound review evidence, and CRITICAL/MAJOR findings must be resolved. Editing a manifest or documentation alone does not trigger generation review. A changed worked example is reviewed offline without buying media.
+Before submitting a **generation-bound** request, freeze the exact prompt beside its intended asset, compute hashes, verify ordered bindings/roles, check reference approval and current hashes, and resolve current model/mode capabilities. Default uses minimal inline preflight without a report or full checklist. Run prompt-review in strict mode, when explicitly requested, or for explicit required rules. Review is inline; delegation requires an explicit user request for the project or generation. General parallel-production guidance does not authorize it. Resolve reported CRITICAL/MAJOR findings. Editing a manifest or documentation alone does not trigger generation review. A changed worked example is checked offline without buying media.
 
-Acquired brand, logo, packshot, or other `generation: none` elements do not run prompt-review or the default three-sample image set. They still require local persistence, content SHA-256, manifest entry, visible inspection, and mode-authorized `selected_variant` / `approved` before dependent production use. See [element-identification.md](element-identification.md).
+Acquired brand, logo, packshot, or other `generation: none` elements do not run prompt-review or the strict three-sample image set. They still require local persistence, content SHA-256, manifest entry, visible inspection, and mode-authorized `selected_variant` / `approved` before dependent production use. See [element-identification.md](element-identification.md).
 
 Deterministic static assets (`generation: deterministic_html`) also skip
 prompt-review, provider task registration, and the default stochastic sample
@@ -363,7 +413,7 @@ entrypoint, resolved CSS/SVG/asset and font hashes, viewport and renderer metada
 background/alpha mode, output properties, and render record. Exact-copy, font,
 overflow, dimension, alpha, thumbnail-legibility, visible-design, provenance, and
 mode-authorized selection checks still apply. Generative layers inside a hybrid retain
-their own prompt-review and provider task evidence.
+their own mode-appropriate preflight and provider task evidence.
 
 Every render record must conform to the bundled
 [deterministic render-record schema](../skills/html-graphic-render/references/render-record.schema.json)
@@ -377,7 +427,7 @@ context and the normalized shared project digest; historical v1/v2 algorithms
 are unchanged. Decision v2 uses current scoped identity and actual upstream file
 hashes. See [production versions](production-versions.md). Credentials, expiring
 URLs and timestamps are excluded from request identity. Changed request content
-requires a new review.
+requires new preflight and, when strict or explicitly required, a new review.
 
 ## Durable operations
 
@@ -417,7 +467,8 @@ Provider moderation errors remain moderation_rejected with original error eviden
 
 ## Generation and review defaults
 
-**Seedance 2.5 is 480p draft-first.** Set `resolution: "480p"` explicitly for
+**Seedance 2.5 is native 480p Draft-first in both review modes.**
+Set `resolution: "480p"` and boolean `draft: true` explicitly for
 initial video generations and revised drafts, including edits, extensions and
 independent variants when the selected live operation supports it. Keep the
 intended aspect, natural duration, approved inputs and requested audio behavior.
@@ -454,14 +505,14 @@ record every draft task ID in `drafts.json` with `draft_ledger.py`, and verify t
 current tool schema once per project. Where native promotion is unavailable or the
 Draft has expired, final-resolution generation is a new paid request using the
 selected prompt and approved inputs; it can change the picture, timing or audio. Every final request has its own prepared registry
-entry and complete hash-bound request review, including changed parameters and
+entry and mode-appropriate preflight (complete hash-bound review in strict), including changed parameters and
 references, even when prompt text is unchanged. Inspect and select the final
 output again before replacing draft takes in Studio and rendering the master.
 Upscaling or a delivery-quality export alone does not establish final-take QA.
 
 Generate scenes at natural duration, then chain supported frame modes or assemble approved takes. Continuous single-take/native extension is exceptional; verify every seam. Separate lip-sync audio remains opt-in; follow [audio-video-alignment.md](audio-video-alignment.md).
 
-Use the lowest suitable cost/resolution within the requested behavior. For **Seedream (or other generative) image** selection sets, default to three samples. Sampling variations keep prompt, references, model and effective parameters identical except supported stochastic seed differences. Creative alternatives change only explicitly requested variables with distinct provenance. Explicit requested count wins. Watermark false is the default only for tools that support that parameter. Acquired web/user brand assets are not sampling variants; promote one download as the selected file unless the user asks to compare multiple acquired sources. Deterministic graphics produce one render per versioned source/specification and never inherit the three-sample default.
+Use the lowest suitable cost/resolution within the requested behavior. For **Seedream (or other generative) image** selection sets, default mode uses one image; strict uses three samples. Sampling variations keep prompt, references, model and effective parameters identical except supported stochastic seed differences. Creative alternatives change only explicitly requested variables with distinct provenance. Explicit requested count wins. Watermark false is the default only for tools that support that parameter. Acquired web/user brand assets are not sampling variants; promote one download as the selected file unless the user asks to compare multiple acquired sources. Deterministic graphics produce one render per versioned source/specification and never inherit the strict three-sample default.
 
 Record estimated cost separately from confirmed billing and provider usage. Do not infer billed cost or creative correctness from successful task status. Verify decode, actual streams/duration, opening/transitions/ending, and audible sound arc. Use native playback and listening tools when available and capable of covering the required criteria; otherwise use supported analysis tools and record their coverage and limits. Provider analysis is required when explicitly requested or specified by the active workflow. Contact sheets and model summaries support but do not replace temporal and listening review; unavailable checks remain unresolved. Preserve high-quality masters and separately named review proxies.
 
@@ -476,9 +527,19 @@ The manifest is authoritative; selection.json is derived and selection.log is an
 
 ## Local preflight tooling
 
-Run validate_request.py with --project, --request, --capabilities, --review and applicable --required-rule values. For a generation-bound narrative, ad, micro-drama, music-video or showcase shot with no recorded exemption, pass `shot.plan_bound`, `shot.variety` and `shot.axis_carry`; for an exempt shot, omit them and let the reviewer record `not_applicable` with the exemption as the reason. When a required shot rule has nothing to check (no confirmed axis, a one-take), the reviewer records `pass` with that evidence, because a required rule cannot be `not_applicable`. It is read-only and never submits a provider task. Capability evidence uses capability-evidence.schema.json and self-contained parameter schemas; external schema URLs are rejected.
+Run validate_request.py with --project, --request and --capabilities. `--review`
+is optional in default mode, mandatory in strict or with `--required-rule`.
+In strict mode, for a generation-bound narrative, ad, micro-drama, music-video
+or showcase shot with no recorded exemption, pass `shot.plan_bound`,
+`shot.variety` and `shot.axis_carry`; do not add this full check set in default.
+An exempt shot records `not_applicable` with its reason unless the rule was
+explicitly required. A required rule needs a truthful `pass`, never fabricated
+evidence. The command is read-only and never submits a provider task.
+Capability evidence uses capability-evidence.schema.json and self-contained
+parameter schemas; external schema URLs are rejected.
 
-`operation_store.prepare_operation` accepts request, capabilities, review,
+`operation_store.prepare_operation` accepts request, capabilities, review (`None`
+only in default with no explicit required rules),
 required rules and keyword `unit_id`/`production_scope`; transition uses the
 registered identity. Only explicit adoption of an already submitted job permits
 historical board references. Prepare after the immutable snapshot exists;

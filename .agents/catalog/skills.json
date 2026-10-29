@@ -220,7 +220,7 @@
     "micro-drama": {
       "kind": "orchestrator",
       "description": "Produce vertical short-form micro-drama episodes end to end for any market: a hook in the first seconds, a mid-episode reveal or confrontation, and a close-up cliffhanger, delivered as 9:16 episodes with a to-be-continued card. Orchestrates a market story writer when one exists (for example filipino-micro-drama) or the market-neutral microdrama-story-formats, then canon sheets, planning-only storyboards, Seedance 2.5 scene clips with native dialogue, dialogue-accuracy QA, assembly, loudness-matched delivery, and an optional full-episode showreel, all in a HyperFrames Studio project. Use for micro-dramas, vertical dramas, ReelShort/DramaBox-style series, TikTok drama episodes, or batches of several independent episodes produced in parallel. Do not use for a single prompt, a non-episodic ad, a music video, or long-form film; use film-production for general multi-scene work.",
-      "readme_summary": "Produce vertical micro-drama episodes for any market with planning-only scene boards, draft-first clips, dialogue QA, multilingual subtitles and Studio delivery.",
+      "readme_summary": "Produce vertical micro-drama episodes with mode-aware review, native drafts, multilingual subtitles and Studio delivery; strict retains full QA.",
       "dependencies": [],
       "source_revision": "workspace",
       "upstream_hash": null,
@@ -255,8 +255,8 @@
     },
     "prompt-review": {
       "kind": "orchestrator",
-      "description": "Review BytePlus Seedance, Seedream, and Seed Audio prompts inline by default, with sub-agent review only when the user explicitly requests it for a project or specific generation. Use explicit model, operation, change contract, and request hash. Return rule findings and complete or incomplete status; fix and re-review changed prompts before generation. Use for video, VFX, multilingual dialogue (any language, with market packs), image/character/location/prop/UI/card/storyboard prompts, music, SFX, or ambience. Trigger when asked to review, QA, validate, or lint prompts, or before submitting newly authored generation prompts. Exclude manifest-only edits, generated-media review, and frozen snapshots unless re-review is explicitly requested.",
-      "readme_summary": "Review and fix BytePlus Seedance, Seed Audio, and Seedream prompts against the repo's best practices inline by default; use a sub-agent only when explicitly requested for a project or specific generation.",
+      "description": "Review BytePlus prompts for strict review_mode, explicit prompt QA or required rules. Default generation uses minimal inline preflight without this full checklist workflow. Never reviews generated media.",
+      "readme_summary": "Review BytePlus prompts in strict review_mode or for explicit review/required rules; default generation uses minimal inline preflight without full checklists.",
       "dependencies": [],
       "source_revision": "workspace",
       "upstream_hash": null,
@@ -354,7 +354,7 @@
     },
     "seedance-prompt-25": {
       "kind": "leaf",
-      "description": "Write production-grade Seedance 2.5 video prompts with the flexible six-part formula, per-shot camera, lens and light lines, 50-material multimodal referencing, variable-duration scene staging (4-30s), timestamp pacing and dialogue timing, structured video editing (subject replacement, background replacement, audio editing), forward and backward video extension, keyframe sequences, coarse and fine blockout references, one-click video, seamless transitions, audio bracket syntax, dialogue language reinforcement, emotional direction, camera language, and draft-first request packaging. Use this skill for Seedance 2.5 prompts, multi-reference asset orchestration, scene staging, video editing, extension, and corrections to generated motion or continuity. For legacy Seedance 2.0 prompts, 4K output through 2.0, or the Fast/Mini speed variants, use seedance-prompt-20; whitelist-only 2.5 Premium (4K) uses this skill.",
+      "description": "Write production-grade Seedance 2.5 video prompts with the flexible six-part formula, per-shot camera, lens and light lines, 50-material multimodal referencing, variable-duration scene staging (4-30s), timestamp pacing and dialogue timing, structured video editing (subject replacement, background replacement, audio editing), forward and backward video extension, keyframe sequences, coarse and fine blockout references, one-click video, seamless transitions, audio bracket syntax, dialogue language reinforcement, emotional direction, camera language, and mode-aware request packaging. Use this skill for Seedance 2.5 prompts, multi-reference asset orchestration, scene staging, video editing, extension, and corrections to generated motion or continuity. For legacy Seedance 2.0 prompts, 4K output through 2.0, or the Fast/Mini speed variants, use seedance-prompt-20; whitelist-only 2.5 Premium (4K) uses this skill.",
       "readme_summary": "Write Seedance 2.5 prompts from shot plans and canonical elements, with native 480p drafts, approved promotion, language-aware dialogue and planning-only storyboards.",
       "dependencies": [],
       "source_revision": "workspace",

@@ -869,6 +869,10 @@ class StudioProjectTests(unittest.TestCase):
         studio.complete_stage(self.project, "scene-breakdown")
 
     def test_shot_generation_needs_a_placed_take_per_shot_and_a_clean_check(self):
+        project_path = self.project / "project.md"
+        project_path.write_text(
+            project_path.read_text().replace("---\n", "---\nreview_mode: strict\n", 1)
+        )
         self.add_shot()
         studio.sync(self.project)
         self.complete_through("audio-preparation")
@@ -1281,6 +1285,10 @@ class StudioProjectTests(unittest.TestCase):
             studio.read_stages(self.project)
 
     def test_check_must_report_ok_and_actually_run_the_browser(self):
+        brief = self.project / "project.md"
+        brief.write_text(
+            brief.read_text().replace("---\n", "---\nreview_mode: strict\n", 1)
+        )
         self.add_shot(selected="s01_sh010_t01_v01.mp4")
         studio.sync(self.project)
         self.complete_through("audio-preparation")

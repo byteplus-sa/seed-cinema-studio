@@ -54,6 +54,8 @@ historical projects or immutable prompt snapshots automatically.
 
 ## Prompt review
 
+Apply these checks in both review modes; default limits review to applicable
+requirements without loading unrelated strict checklists.
 Apply `acting.plan_bound` to applicable performance prompts and
 `fight.readable_exchange` to staged-fight prompts. The caller includes those
 IDs through the existing `--required-rule` review/registration interface.

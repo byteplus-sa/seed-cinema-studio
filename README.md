@@ -172,8 +172,8 @@ Edit skills only under `.agents/skills/`.
 | **microdrama-story-formats** | Offer micro-drama story formats for the requested market and language; preserve custom structures, confirmed scripts and subtitle choices. |
 | **microdrama-localize** | Orchestrates localizing a delivered episode to another language: register-preserving translation, subtitles, route choice (subtitles only, line-scoped re-voice, full regenerate), and approval, reconciliation and QA gates. |
 | **microdrama-subtitles** | Writes per-language SRT/WebVTT sidecars from locked dialogue and measured timing, with CJK and right-to-left safe wrapping, reading-speed and cue-length limits, and episode offsets. |
-| **micro-drama** | Produce vertical micro-drama episodes for any market with planning-only scene boards, draft-first clips, dialogue QA, multilingual subtitles and Studio delivery. |
-| **prompt-review** | Review and fix BytePlus Seedance, Seed Audio, and Seedream prompts against the repo's best practices inline by default; use a sub-agent only when explicitly requested for a project or specific generation. |
+| **micro-drama** | Produce vertical micro-drama episodes with mode-aware review, native drafts, multilingual subtitles and Studio delivery; strict retains full QA. |
+| **prompt-review** | Review BytePlus prompts in strict review_mode or for explicit review/required rules; default generation uses minimal inline preflight without full checklists. |
 | **scene-board-sheet** | Derive a scene's storyboard record from its shot plan at L1, L2 (default) or L3, register generated and edited panels, plan panel-only repairs, and build annotated sheets, an animatic and a static review page. |
 | **seed-audio-prompt** | Write structured Seed Audio 1.0 prompts for full-soundscape audio generation including dialogue, music, SFX, and ambience. |
 | **seedance-acting-console** | Encode supplied performance plans as concise Seedance intent, trigger and response cues; preserve framing, restraint and dialogue locks. |

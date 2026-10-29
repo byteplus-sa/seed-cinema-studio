@@ -94,7 +94,7 @@ Load only the contract relevant to the current stage:
 
 | Need | Source |
 | --- | --- |
-| Stages, approval, review, durable submission, Studio gates and QA | [Production policy](.agents/contracts/production-policy.md) |
+| Stages, independent approval/review modes, durable submission, Studio gates and QA | [Production policy](.agents/contracts/production-policy.md) |
 | Scoped requests, decisions and legacy hash compatibility | [Production versions](.agents/contracts/production-versions.md) |
 | Source-preserving story and continuity evidence | [Development](.agents/contracts/production-development.md) |
 | Editorial snapshots and sound evidence | [Post evidence](.agents/contracts/production-post.md), plus the Studio integration in [Production policy](.agents/contracts/production-policy.md) |
@@ -125,6 +125,13 @@ schemas live in `.agents/contracts/schemas/`.
   unchanged. Keep decision upstream hashes tied to real production-relative files.
 - Canon first: approve recurring characters, locations and story-critical props
   before dependent shot generation. Elements define identity.
+- Review depth: read `review_mode: default|strict` independently of
+  `approval_mode`. Missing means `default` for new actions; invalid values fail.
+  Default uses minimal inline preflight and final-output sanity, one image unless
+  another count is requested, without a full prompt-review report/checklist
+  unless required checks apply. Strict retains the full review workflow.
+  Explicit required rules always need truthful matching reports; supplied stale
+  or failing reports always block. Never fabricate approval or listening.
 - Draft first: every new Seedance 2.5 generation, including edits, extensions
   and retries, uses explicit `resolution: "480p"` and boolean `draft: true`.
   This applies in every review mode and overrides conflicting skill defaults.
@@ -134,14 +141,16 @@ schemas live in `.agents/contracts/schemas/`.
   Record each native draft task ID in
   `drafts.json` (`draft_ledger.py`) so the approved draft can be promoted to the
   final with `draft_task_id` within 7 days (see the draft and promotion contract).
-  A final is a new paid request with its own review, and its output is inspected
+  A final is a new paid request with mode-appropriate review, and its output is inspected
   before it replaces the draft take.
 - Persist every prepared operation in `task_ids.json` before submission
   (`prepare_request.py --register`); never submit the same paid generation twice or
   through two transports. A prepared but never submitted operation is closed
   terminal and re-registered under a new version.
-- Run prompt review inline for every generation-bound prompt and resolve CRITICAL
-  and MAJOR findings. Changed inputs invalidate review.
+- Run `prompt-review` for strict generation, an explicit prompt-review request,
+  or explicitly required rules. Default preflight does not load full checklists
+  or create a report automatically. Resolve reported CRITICAL and MAJOR findings;
+  changed inputs invalidate any supplied review.
 - Do not bake captions, taglines or overlay text into generated video; add text in
   post with FFmpeg or HyperFrames.
 - Storyboards are planning and review artifacts. Never bind panels, grids, sheets or

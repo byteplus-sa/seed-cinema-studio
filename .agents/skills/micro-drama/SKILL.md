@@ -29,6 +29,15 @@ Confirmed scripts and custom episode formats override the creative defaults in
 this skill and its recipes, including hook timing, casting, scene count, ending
 and cards. They do not override approval, rights, review or submission gates.
 
+Resolve `review_mode` separately from `approval_mode`. Missing is `default`;
+invalid fails. Default uses minimal inline preflight and final-output sanity,
+one image unless requested otherwise, and no full prompt-review report/checklist
+unless required checks apply. Native Seedance 2.5 Draft-first and applicable
+performance checks remain required in both modes. Strict retains
+the full workflow below. Explicit required rules need matching truthful reports
+in either mode; supplied stale/failing reports block. Keep minimal hash-bound
+sanity records for selections and locks, never fabricated listening or approval.
+
 ## Inputs and outputs
 
 Input: optionally a market card (user-defined, free-form; see
@@ -58,7 +67,7 @@ Candidate validation does not authorize activation or migration.
    scene within the word budget in [episode structure](references/episode-structure.md).
    Default to at most three recurring characters and one or two locations unless
    the confirmed episode plan specifies otherwise.
-   Record `approval_mode`, format, run budget, the native-dialogue audio route and
+   Record independent `approval_mode` and `review_mode`, format, run budget, the native-dialogue audio route and
    look intent in `project.md`,
    run `brief-intake` with a fast proposal, then run `studio_project.py init <project>` (see the
    [production policy](../../contracts/production-policy.md)) (pre-Studio canvas projects with
@@ -76,7 +85,8 @@ Candidate validation does not authorize activation or migration.
    shots without spoken lines. Walk every beat against the element-identification
    contract.
 3. **Canon.** Character sheets, location plates and threshold props as
-   three-sample Seedream sets. Preserve the approved casting and medium;
+   one-image Seedream sets in default, three-sample sets in strict unless a
+   count is explicitly requested. Preserve the approved casting and medium;
    make identities visually distinct within those choices. Inspect every image
    and select with hash-bound decisions.
 4. **Storyboard.** Optional planning and review boards bound to selected canon.
@@ -96,11 +106,12 @@ Candidate validation does not authorize activation or migration.
    dialogue partner skill (`seedance-prompt-25-dialogue` for any language; a
    market pack such as `seedance-prompt-25-filipino` adds language depth). Apply
    the prompt, dialogue-timing and QA rules in the
-   [production recipe](references/production-recipe.md). Run `prompt-review`
-   inline by default; use a sub-agent only when the user explicitly requests
+   [production recipe](references/production-recipe.md) at the selected review
+   depth. Run `prompt-review` in strict or for explicit review/required rules,
+   inline; use a sub-agent only when the user explicitly requests
    sub-agent prompt review for the project or specific generation. Register the
    operation for each clip, submit independent planned clips in parallel within
-   the run budget as native 480p drafts
+   the run budget as native 480p drafts in both review modes
    (`draft: true`), record each draft task ID with `draft_ledger.py`, and QA each
    take. Promote approved drafts to the final resolution with `draft_task_id`
    within 7 days, as the [draft and promotion contract](../../contracts/draft-promotion.md)
@@ -135,11 +146,11 @@ legacy-only for existing series without a manifest.
 - When the default hook formula is selected, the hook lands within the first
   3 s and a title card does not consume that window. A confirmed script's
   opening and timing take precedence.
-- Every spoken line is checked word by word against the locked dialogue with
+- In strict, every spoken line is checked word by word against locked dialogue with
   speech-to-text before a take can pass. A model's own summary of what was
   said is not sufficient.
-- Retakes fix hard-gate failures only, within the declared budget, as a new native
-  Draft. Dialogue repairs patch only the wrong word windows. Record
+- Retakes fix failures within the declared budget as a new native
+  Draft in both review modes. Dialogue repairs patch only the wrong word windows. Record
   residual defects instead of silently promoting a flawed take.
 - Provider success is `review`, never approval. Never resubmit an ambiguous
   paid operation; reconcile it from the task registry.
