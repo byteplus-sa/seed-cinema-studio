@@ -113,6 +113,6 @@ Never bind it as a Seedance reference in any mode or role. Carry the approved
 staging into the shot prompt as text and bind only the element references the panel
 used.
 
-A separately approved `tig-blocking-map` position map remains a dedicated control
+A separately approved `blocking-map` position map remains a dedicated control
 reference under the workspace blocking contract. A scene-board overview, panel or
 sheet never substitutes for that map.

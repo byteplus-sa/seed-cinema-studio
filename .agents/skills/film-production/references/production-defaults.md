@@ -13,13 +13,11 @@ Default (including absent mode) uses minimal inline preflight and final-output
 sanity, not the full checks below. Strict retains them. Explicit requested checks
 and supplied reports remain binding; never claim unavailable listening.
 
-## 1. Draft First In Strict Mode
+## 1. Draft First In Both Modes
 
-Default permits direct final generation within approved scope, with no compulsory
-draft or draft assembly. In strict, plan each new Seedance 2.5 shot as a 480p
-Draft followed by a promotion unless explicitly overridden. If a draft or
-promotion is requested in either mode, retain all source-selection, task-ID,
-expiry, capability and registry safeguards below.
+Plan each new Seedance 2.5 shot as a native 480p Draft with boolean `draft: true`,
+followed by selected promotion. Review mode never waives Draft-first or the
+source-selection, task-ID, expiry, capability and registry safeguards below.
 
 1. Freeze and review the full request (prompt, ordered references, duration,
    ratio, `generate_audio`, task type) and submit it with `draft: true` when

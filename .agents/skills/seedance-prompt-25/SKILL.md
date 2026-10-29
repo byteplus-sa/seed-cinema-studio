@@ -32,6 +32,10 @@ space, so sound direction in the prompt shapes the final result.
 Input: a video brief, resolved model/operation, duration policy, ordered input
 roles, approved relevant Elements, and any current motion/blockout manifest
 selected for intentional conditioning.
+For new or revised character performances, also consume the caller's
+performance plan and encoded beat cues. For staged fights, consume the
+choreography ledger. Missing intentions, listener tasks, critical triggers
+or end states stay unresolved, not replaced by emotion adjectives.
 
 Output: a six-part prompt, reference bindings, applicable mode parameters,
 explicit appearance and motion authorities, and observable acceptance criteria
@@ -46,9 +50,9 @@ Add audio-performance-camera only for applicable dialogue, sound, acting, UI, or
 camera detail.
 
 When packaging generation parameters, read the parameter reference. Independent
-`review_mode: default` permits direct finals within approved scope, with minimal
-inline preflight and final-output sanity, no mandatory report/full checklist.
-Strict uses draft-first (`draft: true`, 480p) unless explicitly overridden.
+`review_mode: default` uses minimal inline preflight and final-output sanity,
+without a full report/checklist unless required checks apply.
+Both modes use native Draft-first (`draft: true`, explicit 480p).
 When promotion is requested, freeze inputs before the draft and promote only a
 selected draft by `draft_task_id`. Honor verified operation constraints.
 
@@ -267,7 +271,12 @@ capability, reference, rights, budget, registry and locked-choice safeguards.
    references are selected by scene.
 3. Every shot or stage carries its planned size, angle, move and named light,
    or a recorded static reason; shot count and lengths fit the duration.
-4. Emotions and cinematography terms are paired with visible or audible cues.
+4. Performance intentions, triggers, registration and listener responses from
+   the supplied plan reach the prompt with framing-readable consequences
+   (`acting.plan_bound`). Staged fights retain actor/prop state and readable
+   action/contact-or-avoidance/reaction chains (`fight.readable_exchange`).
+   Stillness and deliberate non-response remain valid; mood labels alone do not
+   establish a production-ready performance.
 5. The hygiene items above hold: positive wording, counts, frame-side hands,
    text-free frames, no parameters in the text.
 6. Spoken lines fit the speech budget; the audio route matches the piece.
@@ -276,7 +285,7 @@ capability, reference, rights, budget, registry and locked-choice safeguards.
 8. For blockouts, coarse, fine or video-lock is identified and a manifest's
    hashes match the package; camera movement cannot stand in for required
    subject movement.
-9. In strict, the request is a draft (`draft: true`, 480p) unless a recorded override
+9. In both modes, the request is a draft (`draft: true`, 480p) unless a recorded override
    applies, and the final will be promoted from the selected draft.
 
 ## Usage limitations

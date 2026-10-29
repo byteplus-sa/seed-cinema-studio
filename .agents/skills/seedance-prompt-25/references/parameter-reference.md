@@ -71,9 +71,8 @@ mode selection and caller responsibilities.
 - Multi-round extensions up to 180s (beta).
 
 ### Cost ladder
-- In strict review mode, draft first, then promote the selected draft
-  (see [Draft mode](#draft-mode)). Default permits direct finals within approved
-  scope without a compulsory draft pass.
+- In both review modes, use native Draft-first, then promote the selected draft
+  (see [Draft mode](#draft-mode)).
   Explicit user instructions override the default; record verified operation
   constraints when a draft is unsupported.
 - Keep resolution in request parameters, separate from prompt text and Studio
@@ -130,8 +129,7 @@ approval states in the shot manifest before submission.
 
 The Seedance 2.5 tool documents a two-step draft (`draft`, `draft_task_id`;
 checked 2026-10-17). Confirm the current tool schema before relying on it.
-This sequence applies to strict draft-first work or an actually requested draft
-or promotion. Default direct finals do not require it.
+This sequence applies to new Seedance 2.5 generation in both review modes.
 
 1. **Draft.** Submit the full request with `draft: true` and an explicit
    `resolution: "480p"`. Prompt, references, duration, ratio, `generate_audio` and task type

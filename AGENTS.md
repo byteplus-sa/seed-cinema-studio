@@ -9,7 +9,7 @@ genre, medium, audience, language and delivery are independent choices.
 
 - Use `film-production` for general narrative production, including an unspecified
   format. Route source-preserving development to `story-development` and compose
-  `tig-scene-engine` for scene craft. Use `series-continuity` for shared state
+  `scene-craft` for scene craft. Use `series-continuity` for shared state
   and character knowledge. Do not use micro-drama formulas as a generic fallback.
 - Use `micro-drama` only for an explicit micro-drama format or an already selected
   micro-drama workflow. A vertical aspect alone does not select that format.
@@ -106,6 +106,7 @@ Load only the contract relevant to the current stage:
 | Seedance 480p drafts, draft task IDs and later promotion | [Draft and promotion](.agents/contracts/draft-promotion.md) |
 | Video-to-video inputs | [Video-to-video inputs](.agents/contracts/video-to-video-inputs.md) |
 | Shot plan, camera, lens, lighting, acting and other axes | [Directorial axes](.agents/contracts/seedance-reference.md) |
+| Acting plans, choreography, prompt handoff and take acceptance | [Performance direction](.agents/contracts/performance-direction.md) |
 
 Rule IDs live in `.agents/contracts/rules.json`; request, registry and review
 schemas live in `.agents/contracts/schemas/`.
@@ -127,13 +128,17 @@ schemas live in `.agents/contracts/schemas/`.
 - Review depth: read `review_mode: default|strict` independently of
   `approval_mode`. Missing means `default` for new actions; invalid values fail.
   Default uses minimal inline preflight and final-output sanity, one image unless
-  another count is requested, no mandatory prompt-review report/checklists and no
-  compulsory draft-first pass. Strict retains the full review workflow.
+  another count is requested, without a full prompt-review report/checklist
+  unless required checks apply. Strict retains the full review workflow.
   Explicit required rules always need truthful matching reports; supplied stale
   or failing reports always block. Never fabricate approval or listening.
-- Draft first in strict mode: Seedance 2.5 shots start as native 480p drafts
-  (`draft: true`) unless explicitly overridden. Default permits direct final
-  generation within approved scope. When a draft is requested, record its task ID in
+- Draft first: every new Seedance 2.5 generation, including edits, extensions
+  and retries, uses explicit `resolution: "480p"` and boolean `draft: true`.
+  This applies in every review mode and overrides conflicting skill defaults.
+  Plain 480p is not native Draft mode; resolve missing tool controls rather than
+  dropping `draft`. Other models without native Draft support use ordinary
+  480p tests. Review and select before any final-resolution generation.
+  Record each native draft task ID in
   `drafts.json` (`draft_ledger.py`) so the approved draft can be promoted to the
   final with `draft_task_id` within 7 days (see the draft and promotion contract).
   A final is a new paid request with mode-appropriate review, and its output is inspected
@@ -169,10 +174,26 @@ Only for an explicit micro-drama format or an existing micro-drama workflow:
 
 ## Shared scene and assembly practice
 
+- For new or materially revised character-performance scenes, run
+  `acting-direction` before shot design, record `## Performance plan` in the
+  scene, then use `seedance-acting-console` to encode its relevant beats.
+  Both `film-production` and `micro-drama` enforce the
+  [performance contract](.agents/contracts/performance-direction.md).
+  Review `acting.plan_bound` before submission and inspect actual registration,
+  listening, response and delivery before take selection or promotion.
+  A camera move or correct transcript does not prove convincing acting.
+- For staged fights, use `seedance-fight-choreography` and review
+  `fight.readable_exchange`: stable participants, action/reaction, readable
+  interactions, prop ownership and end-state continuity. Style is selected,
+  never a compulsory JKD default. Preserve the approved outcome and medium.
+- `scene-craft` owns scene writing/auditing; its five-element engine remains
+  explicitly selected. Quiet, wordless and observational work need not gain
+  a reversal, emotion change or reaction close-up to pass. Preservation-only
+  edits inherit acting; static assets do not acquire performance requirements.
 - Plan each shot with duration, size, angle, move, lens intent and a named light
   source. Preserve quiet held shots and wordless scenes when the brief calls for
   them; record their directing rationale.
-- Blocking: use `tig-blocking-map` for planning when needed, preserving the
+- Blocking: use `blocking-map` for planning when needed, preserving the
   approved medium. Maps are analysis-only by default; translate staging into
   prompt text and follow the current reference contract and verified tool
   capabilities. Do not infer a reference role from a prior production.

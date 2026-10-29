@@ -207,7 +207,8 @@ review mode in `locked`, a profile default or `approval_mode`.
 An absent key stays absent in normalized settings, preserving existing v3
 fingerprints. Explicit mode additions or changes invalidate dependent context.
 Default requires minimal inline preflight and final-output sanity, not a full
-prompt-review report/checklist, three-image set or draft-first generation.
+prompt-review report/checklist or three-image set. Native Seedance 2.5 Draft-first
+and applicable performance checks remain required in both modes.
 Strict retains the full workflow. Explicit required rules and supplied reports
 remain binding in both modes. Neither mode changes rights, budget or approvals.
 

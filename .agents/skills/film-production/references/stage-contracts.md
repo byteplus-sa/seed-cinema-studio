@@ -6,9 +6,9 @@ explicit gaps rather than fabricating their outputs.
 
 Resolve `review_mode` separately from `approval_mode`. Missing mode is `default`:
 minimal inline preflight and final-output sanity, no mandatory full reports or
-checklists, one image unless requested otherwise, and direct finals within
-approved scope. Strict retains the full QA/report and draft-first requirements
-below. Explicit checks and supplied reports remain binding in either mode.
+checklists, and one image unless requested otherwise. Strict retains full
+QA/reports. Native Seedance 2.5 Draft-first and applicable performance checks
+remain required in both modes. Explicit checks and supplied reports remain binding.
 Stage integrity, truthful candidate/final records, unit selection, locked
 choices and explicit named delivery bindings remain required in both.
 Default defers expensive HyperFrames checks at shot-generation and assembly-review
@@ -97,7 +97,7 @@ brief also records:
   per shot, and the wow image each sequence must deliver.
 
 Use `story-development` for source-preserving treatment, outline and scene-list
-artifacts, and compose `tig-scene-engine` separately for dramatic craft.
+artifacts, and compose `scene-craft` separately for dramatic craft.
 Supplied scripts need faithful extraction, not an unsolicited rewrite. Profile
 planning outputs guide evidence; they do not force duplicate artifacts.
 
@@ -132,6 +132,12 @@ assist; local-only tools are not required.
 
 Required output: scene list, cast, locations, props, dialogue, sound needs,
 continuity states, delivery assumptions, and scene-level acceptance criteria.
+For character-performance scenes, also require `## Performance plan` from
+`acting-direction` with source evidence, per-character intentions and a
+trigger/registration/response ledger. Apply
+[Performance direction](../../../contracts/performance-direction.md).
+For staged fights, include the `seedance-fight-choreography` state and exchange
+ledger. Feed readability needs into shot design and reconcile any conflicts.
 Use `series-continuity` to distinguish identity from mutable state and character
 knowledge, with source hashes and scripted/observed/unknown status. Unit scene
 membership follows the manifest; machine IDs remain globally unique.
@@ -252,6 +258,12 @@ assembly, to the cut's measured length.
 
 ## 6. Shot generation
 
+For applicable new or revised character performances, entry also requires the
+current performance plan and its `seedance-acting-console` encoding, with
+`acting.plan_bound` and applicable `fight.readable_exchange` prompt checks.
+Missing material context leaves review incomplete. Preservation-only edits
+retain source acting rather than acquiring a new performance arc.
+
 Entry: shot objective, the scene's revalidated shot plan (or recorded exemption), selected
 video mode, approved inputs, reference roles, prompt snapshot target, duration,
 and any requested audio (if Stage 5 was completed) exist. Before submission,
@@ -275,8 +287,7 @@ line when dialogue exists, and `review` status. Wordless work does not invent a
 transcript gate; audible ambience/music still needs listening.
 Scoped operations use request v3 and decisions v2 bound to the normalized shared
 project digest and selected unit context, with real unit-brief upstream hashes.
-Production canon is not unit-scoped. Default permits direct final generation
-without a draft or draft assembly. In strict, resolution is raised only after the current
+Production canon is not unit-scoped. In both modes, resolution is raised only after the current
 pass is approved (final-candidate gate); a native Draft is promoted by its
 `draft_task_id` without changing its inputs. For multi-shot productions, review the draft
 assembly and record picture/audio decisions before generating final takes.
@@ -296,6 +307,10 @@ project instead lists them in one `kind: "takes"` group using
 `showcase-html` production-canvas and schema.
 
 Exit: a passing take has a hash-bound, mode-authorized selection. In
+addition to technical QA, playback/listening must demonstrate the declared
+critical performance beats, listener responses and fighting continuity where
+applicable. Record beat IDs and timestamps under the performance contract;
+unavailable inspection remains unresolved. In
 `ask_for_approval`, the recommendation remains pending until the user chooses.
 If no take passes, make a bounded correction within the run budget or leave the
 shot blocked.

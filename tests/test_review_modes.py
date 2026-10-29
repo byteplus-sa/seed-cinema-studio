@@ -39,6 +39,29 @@ def validate_cli(root, request, capabilities, *extra):
 
 
 class ReviewModeTests(unittest.TestCase):
+    def test_review_depth_does_not_waive_native_drafts_or_performance_checks(self):
+        root = Path(__file__).resolve().parents[1]
+        paths = [
+            root / "AGENTS.md",
+            root / ".agents/contracts/draft-promotion.md",
+            root / ".agents/contracts/production-policy.md",
+            root / ".agents/contracts/production-brief.md",
+            root / ".agents/contracts/rules.json",
+        ]
+        for name in ("brief-intake", "film-production", "micro-drama", "seedance-prompt-25"):
+            paths.extend((root / ".agents/skills" / name).rglob("*.md"))
+        for path in paths:
+            with self.subTest(path=path.relative_to(root)):
+                text = " ".join(path.read_text().split()).lower()
+                self.assertNotRegex(
+                    text,
+                    r"default permits direct final|default direct finals|"
+                    r"direct final generation is (?:permitted|allowed)|"
+                    r"no compulsory draft|no mandatory.{0,70}draft-first",
+                )
+        contract = (root / ".agents/contracts/performance-direction.md").read_text()
+        self.assertIn("in both review modes", contract)
+
     def setUp(self):
         fixture = prepare_fixtures.PrepareRequestTests()
         fixture.setUp()
@@ -232,11 +255,12 @@ class ReviewModeTests(unittest.TestCase):
         )
         self.assertEqual(checked.returncode, 1, checked.stdout + checked.stderr)
 
-    def test_default_direct_final_keeps_capability_and_promotion_guards(self):
+    def test_default_native_draft_keeps_capability_and_promotion_guards(self):
         self.mode("default")
         request = self.request()
-        request["params"]["resolution"] = "1080p"
-        self.caps["parameters"]["resolution"]["enum"].append("1080p")
+        request["params"].update(resolution="480p", draft=True)
+        self.caps["parameters"]["resolution"]["enum"].append("480p")
+        self.caps["parameters"]["draft"] = {"type": "boolean"}
         request["request_sha256"] = validation.compute_request_hash(
             (self.root / request["prompt_file"]).read_bytes(), [],
             request["model"], request["operation"], request["params"],

@@ -1,12 +1,11 @@
 # Draft and promotion
 
-In `review_mode: strict`, Seedance 2.5 generates a cheap 480p **Draft** first and renders the approved Draft
+In both review modes, Seedance 2.5 generates a native 480p **Draft** first and renders the approved Draft
 as the higher-resolution **final** later, reusing the Draft's seed and inputs. The
 Draft task ID is the handle for that later render, so it is recorded the moment
-the provider acknowledges it. In `review_mode: default` (also when absent),
-direct final generation is permitted within approved scope and budget; no draft
-or draft-assembly pass is compulsory. This contract applies when a draft or
-promotion is actually requested, not as a prerequisite to direct finals;
+the provider acknowledges it. Review depth does not waive native Draft-first
+generation, source selection or promotion checks. This contract applies to
+every new Seedance 2.5 generation;
 `production-policy.md` owns approval, review and registry rules.
 
 ## Verified provider behavior

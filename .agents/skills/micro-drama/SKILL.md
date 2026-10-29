@@ -31,8 +31,9 @@ and cards. They do not override approval, rights, review or submission gates.
 
 Resolve `review_mode` separately from `approval_mode`. Missing is `default`;
 invalid fails. Default uses minimal inline preflight and final-output sanity,
-one image unless requested otherwise, no mandatory prompt-review report/full
-checklist, and no compulsory draft-first or draft-assembly pass. Strict retains
+one image unless requested otherwise, and no full prompt-review report/checklist
+unless required checks apply. Native Seedance 2.5 Draft-first and applicable
+performance checks remain required in both modes. Strict retains
 the full workflow below. Explicit required rules need matching truthful reports
 in either mode; supplied stale/failing reports block. Keep minimal hash-bound
 sanity records for selections and locks, never fabricated listening or approval.
@@ -72,6 +73,11 @@ Candidate validation does not authorize activation or migration.
    [production policy](../../contracts/production-policy.md)) (pre-Studio canvas projects with
    `showcase.json` keep the `showcase-html` canvas).
 2. **Breakdown.** Follow the confirmed episode or market-card scene plan.
+   For new or revised character performances, run `acting-direction` and
+   record `## Performance plan` before shot design under the
+   [performance contract](../../contracts/performance-direction.md).
+   Use `scene-craft` for the selected scene framework, without forcing its
+   five-element engine. Coordinate `seedance-fight-choreography` for fights.
    Default to three scenes: Hook (about 15 s), Turn (about 20 s), Cliffhanger
    (about 15 s). Split scenes into clips as needed for verified model limits and
    dialogue timing. Each scene gets a shot plan (size, angle, move and light per
@@ -92,7 +98,11 @@ Candidate validation does not authorize activation or migration.
    available under the blocking-map contract.
 5. **Audio preparation.** Mark it skipped unless the user requests a separate
    lip-sync track. Native Seedance audio carries the dialogue.
-6. **Shots.** Write each clip prompt from its shot plan with `seedance-prompt-25` and the market's
+6. **Shots.** Encode the performance plan with `seedance-acting-console`.
+   Require `acting.plan_bound` and applicable `fight.readable_exchange` checks.
+   Inspect actual registration, listening, response and delivery before
+   selecting or promoting takes; a correct transcript alone is insufficient.
+   Write each clip prompt from its shot plan with `seedance-prompt-25` and the market's
    dialogue partner skill (`seedance-prompt-25-dialogue` for any language; a
    market pack such as `seedance-prompt-25-filipino` adds language depth). Apply
    the prompt, dialogue-timing and QA rules in the
@@ -101,8 +111,7 @@ Candidate validation does not authorize activation or migration.
    inline; use a sub-agent only when the user explicitly requests
    sub-agent prompt review for the project or specific generation. Register the
    operation for each clip, submit independent planned clips in parallel within
-   the run budget. Default permits direct final generation within approved
-   scope. Strict starts as native 480p drafts
+   the run budget as native 480p drafts in both review modes
    (`draft: true`), record each draft task ID with `draft_ledger.py`, and QA each
    take. Promote approved drafts to the final resolution with `draft_task_id`
    within 7 days, as the [draft and promotion contract](../../contracts/draft-promotion.md)
@@ -140,8 +149,8 @@ legacy-only for existing series without a manifest.
 - In strict, every spoken line is checked word by word against locked dialogue with
   speech-to-text before a take can pass. A model's own summary of what was
   said is not sufficient.
-- Retakes fix failures within the declared budget; strict uses a new native
-  Draft, default follows the approved scope. Dialogue repairs patch only the wrong word windows. Record
+- Retakes fix failures within the declared budget as a new native
+  Draft in both review modes. Dialogue repairs patch only the wrong word windows. Record
   residual defects instead of silently promoting a flawed take.
 - Provider success is `review`, never approval. Never resubmit an ambiguous
   paid operation; reconcile it from the task registry.

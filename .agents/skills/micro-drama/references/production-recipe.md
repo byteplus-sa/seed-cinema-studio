@@ -85,9 +85,8 @@ fills to the clip end. Budget for it:
 
 ## Draft, review, promote
 
-Default permits direct final generation within approved scope, without this
-draft-first pass or draft assembly. Use this sequence in strict or when a draft
-is actually requested; retain promotion source safety in either mode.
+Use this native Seedance 2.5 Draft-first sequence in both review modes.
+Review depth does not waive draft selection, assembly or promotion source safety.
 
 1. Submit each clip as a 480p native Draft (`draft: true`) with its frozen,
    reviewed request. Draft the three clips of an episode in parallel.
@@ -162,7 +161,7 @@ estimated_cost = clips x seconds_per_clip x price_per_second(model, resolution)
 - `draft_to_final_multiplier` is 1 plus the draft cost over the final cost,
   when a shot is generated first as a 480p draft and then as a final:
   `1 + price_per_second(model, draft resolution) / price_per_second(model, final resolution)`.
-  Use 1 for default direct finals or when the user skips drafts. A promoted Draft is billed again at the
+  A promoted Draft is billed again at the
   final resolution (see the draft and promotion contract).
 - Illustrative only, with made-up numbers: 3 clips of 15 s at a price of 0.10 per
   second, a 0.15 retake allowance and a draft ratio of 0.25 give

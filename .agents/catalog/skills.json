@@ -1,6 +1,15 @@
 {
   "schema_version": 1,
   "skills": {
+    "acting-direction": {
+      "kind": "leaf",
+      "description": "Direct character objectives, tactics, listening and performance beats. Use for scene acting, dialogue delivery or flat performances. Not for generation or model-specific cue encoding.",
+      "readme_summary": "Plan character intentions, listening and performance beats before shot design; prompt-only direction, with no generation or take approval.",
+      "dependencies": [],
+      "source_revision": "workspace",
+      "upstream_hash": null,
+      "overlay_notes": null
+    },
     "story-development": {
       "kind": "leaf",
       "description": "Prepare premises, treatments, outlines and script-led scene lists. Use for narrative development or adapting supplied material. Do not use for generation or production orchestration.",
@@ -211,7 +220,7 @@
     "micro-drama": {
       "kind": "orchestrator",
       "description": "Produce vertical short-form micro-drama episodes end to end for any market: a hook in the first seconds, a mid-episode reveal or confrontation, and a close-up cliffhanger, delivered as 9:16 episodes with a to-be-continued card. Orchestrates a market story writer when one exists (for example filipino-micro-drama) or the market-neutral microdrama-story-formats, then canon sheets, planning-only storyboards, Seedance 2.5 scene clips with native dialogue, dialogue-accuracy QA, assembly, loudness-matched delivery, and an optional full-episode showreel, all in a HyperFrames Studio project. Use for micro-dramas, vertical dramas, ReelShort/DramaBox-style series, TikTok drama episodes, or batches of several independent episodes produced in parallel. Do not use for a single prompt, a non-episodic ad, a music video, or long-form film; use film-production for general multi-scene work.",
-      "readme_summary": "Produce vertical micro-drama episodes with mode-aware review, optional drafts, multilingual subtitles and Studio delivery; strict retains full QA.",
+      "readme_summary": "Produce vertical micro-drama episodes with mode-aware review, native drafts, multilingual subtitles and Studio delivery; strict retains full QA.",
       "dependencies": [],
       "source_revision": "workspace",
       "upstream_hash": null,
@@ -264,8 +273,8 @@
     },
     "seedance-acting-console": {
       "kind": "leaf",
-      "description": "Turn a directing directive into a production-grade Seedance acting block. Two layers: (1) Scene-level acting analysis \u2014 read the whole scene, find the shared direction, each character's motive, goal, obstacle, and tactic with eye-work as purposeful action. (2) Cue encoding \u2014 map the tactic's visible footprint to directly observable physical cues at three intensity levels using a six-emotion bank. Use this skill when directing the performance, acting, emotional intensity, mood of the scene, facial expression, delivering a line, or when a character reads dead, glassy, flat, or over-acted. Composes with seedance-prompt-25 and optionally with seed-audio-prompt for dialogue reinforcement. Never calls generation tools itself.",
-      "readme_summary": "Turn playable motives and tactics into observable acting cues appropriate to framing, visibility and intensity.",
+      "description": "Encode supplied performance intent as Seedance cues. Use for acting blocks, delivery or cue repairs. Not for whole-scene analysis or generation.",
+      "readme_summary": "Encode supplied performance plans as concise Seedance intent, trigger and response cues; preserve framing, restraint and dialogue locks.",
       "dependencies": [],
       "source_revision": "workspace",
       "upstream_hash": null,
@@ -275,6 +284,15 @@
       "kind": "leaf",
       "description": "Turn a named camera move or preset \u2014 dolly, pan, tilt, orbit, crane, jib, tracking, handheld, FPV, aerial, bullet time, dolly zoom, crash zoom, whip pan, optical zoom, Dutch angle, one-take, or static \u2014 or a shot framing (single, two-shot, over-the-shoulder, over-the-hip, point of view, insert) \u2014 into a canonical, drop-in Camera block for the Seedance 2.5 six-part prompt formula. Use when the user asks for a camera preset, camera movement style, shot framing, or a shot's camera treatment, and when a shot plan names a move or framing to word. Bullet time here is the camera-orbit technique (freeze + orbit); speed-ramp and slow-mo timing belong to seedance-pacing-presets. One-take here is the pass-through camera path; single-shot no-cuts pacing belongs to seedance-pacing-presets. Lens and focal-length optics belong to seedance-lens-presets.",
       "readme_summary": "Compose prompt-only camera moves and framing, including optical zoom, Dutch angle, dolly, orbit, FPV, whip pan, and single, two-shot, over-the-shoulder, point-of-view and insert framing.",
+      "dependencies": [],
+      "source_revision": "workspace",
+      "upstream_hash": null,
+      "overlay_notes": null
+    },
+    "seedance-fight-choreography": {
+      "kind": "leaf",
+      "description": "Plan fictional screen fights with readable action and continuity. Use for fight choreography, brawls or staged combat prompts. Not for real-world combat instruction or generation.",
+      "readme_summary": "Plan fictional screen-fight beats with stable participants, readable reactions and prop continuity; prompt-only, with style explicitly selected and outcome locks preserved.",
       "dependencies": [],
       "source_revision": "workspace",
       "upstream_hash": null,
@@ -478,7 +496,7 @@
       "upstream_hash": null,
       "overlay_notes": "Selective native-analysis port from byteplus-sa/ark-director PR #47 at 391d5c67718c9c8b0606368ee4ad552fea79678b. Preserve selected-unit scope, source scripts, draft ledger and promotion window, shared canon, named deliveries and legacy layouts. Portability overlay: preserve current-brief language, market, identity and project scope; remove prior-run assumptions and keep explicit localization examples opt-in."
     },
-    "tig-blocking-map": {
+    "blocking-map": {
       "kind": "leaf",
       "description": "Project-agnostic method for giving Seedance character DISPOSITION via a color-coded outline schematic \u2014 a \"staging reference\" (blocking map). Use WHENEVER a user attaches a frame/still and asks for a blocking map / staging reference, whenever a video prompt needs precise multi-character staging (who is where, facing which way), whenever characters jump seats or swap places between shot sizes, when a clip with people must continue but Seedance cannot extend it, or when these terms clearly refer to cinematic staging. Do not trigger for generic software diagrams, architecture, charts, or maps. Figures are ALWAYS bound to letters A, B, C, D... in PROMPT TEXT ONLY \u2014 no letters are drawn on the map. The map is GEOMETRY ONLY \u2014 it must never bleed style, colors, wardrobe, or location into the shot.",
       "readme_summary": "Tigran's project-agnostic method for giving Seedance character DISPOSITION via a color-coded outline schematic \u2014 a \"staging reference\" (blocking map).",
@@ -487,7 +505,7 @@
       "upstream_hash": null,
       "overlay_notes": "Portability overlay: preserve current-brief language, market, identity and project scope; remove prior-run assumptions and keep explicit localization examples opt-in."
     },
-    "tig-scene-engine": {
+    "scene-craft": {
       "kind": "leaf",
       "description": "Write and audit screenplay scenes using an explicitly selected craft framework. Use for scene drafts or structural feedback; the bespoke five-element engine is an option, not a universal defect gate.",
       "readme_summary": "Apply the five-element dramatic engine when selected, preserving supplied scripts, alternative narrative structures and intended shot duration.",

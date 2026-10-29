@@ -72,6 +72,28 @@
       "exceptions": []
     },
     {
+      "id": "acting.plan_bound",
+      "severity": "error",
+      "applies_to": ["narrative_video"],
+      "owner_path": ".agents/contracts/performance-direction.md",
+      "summary": "Character-performance prompts carry source-bound intentions, triggers, registration, listening and readable consequences from the performance plan or equivalent isolated-prompt input.",
+      "exceptions": [
+        "Static assets, empty plates and non-performance work record not_applicable.",
+        "Preservation-only edits inherit performance and use the edit-preservation checks."
+      ]
+    },
+    {
+      "id": "fight.readable_exchange",
+      "severity": "error",
+      "applies_to": ["narrative_video"],
+      "owner_path": ".agents/contracts/performance-direction.md",
+      "summary": "Staged-fight prompts preserve actor and prop identity through readable action, apparent contact or avoidance, reaction and settled state within the shot's framing and timing.",
+      "exceptions": [
+        "Non-fight work records not_applicable.",
+        "Preservation-only edits retain the source exchange and use the edit-preservation checks."
+      ]
+    },
+    {
       "id": "shot.plan_bound",
       "severity": "error",
       "applies_to": [
@@ -448,8 +470,7 @@
       "summary": "A Seedance 2.5 draft is a draft-mode 480p request, and its final is promoted by draft_task_id carrying only output settings; prompt, references, duration, ratio and audio change only before the draft, and the final's audio is checked again.",
       "exceptions": [
         "An operation without native Draft support records capability evidence and runs the final as a new reviewed request.",
-        "An explicit user instruction to skip the draft.",
-        "Default review_mode permits direct final generation within approved scope; promotion source safety still applies whenever draft_task_id is requested."
+        "An explicit user instruction to skip the draft."
       ]
     },
     {
