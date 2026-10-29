@@ -138,7 +138,7 @@ line → white sand"), and repeat the invariants that matter in every shot.
 
 Per shot, in this order:
 
-1. Camera movement or transition (one primary move), with any `@Video N`.
+1. Coherent camera path, hold or transition, with any `@Video N`.
 2. Subject action at body-part level, with the subject's `@Image N`.
 3. Position or spatial change, with the environment's `@Image N`.
 4. Light: the plan's source and key side ("warm dusk window light from
@@ -154,11 +154,11 @@ shot; the asset list does not replace shot-level binding. Never leave a bare
 multi-shot clips; add second-level ranges such as `Shot 1 (0-4s):` only when
 requested, contiguous and consistent with the duration.
 
-**Complexity budget.** A 15 s generation holds at most about 3 major action
-beats or 4 tightly related shots when continuity must be exact. A scene with
-several cuts, close encounters, a location change and a precise end pose is
-split into generated shots chained from an approved last frame. Camera variety
-never reverses the travel direction.
+**Complexity budget.** Density estimates are provisional, not action-count
+ceilings or shot-duration floors. Preserve requested rhythm within verified
+request limits. If actual cuts or continuity fail, propose assembly or
+authorized additional clips, using an approved last frame when appropriate.
+Camera variety never reverses the travel direction.
 
 **Dialogue.** Put spoken lines in `{curly braces}` (or quotes) when
 `generate_audio` is true, with speaker labels for several speakers:
@@ -166,9 +166,12 @@ never reverses the travel direction.
 
 **Action.** Describe actions at body-part level (hands, legs, head, shoulders)
 with range, speed and force, and link them ("using the turn's momentum, she
-raises a hand"). The official 2.0 guide prefers slow, continuous motion
-("slowly raises a hand", "gently lowers her head") over high-burst actions such
-as sprints, big jumps or violent rolls.
+raises a hand"). Workspace direction derives body speed, amplitude,
+interruptions and recovery from approved intent. Slower motion or fewer bursts
+is an optional remedy for an observed failure, not a default or universal
+limit. Keep actor energy separate from camera energy and edit rhythm; speech
+requires readable delivery rather than automatic restraint. Preserve source
+action and timing, returning conflicts before retiming or adding clips.
 
 **Emotion.** Externalize feelings as visible physical detail, never "very sad":
 
@@ -184,8 +187,10 @@ as sprints, big jumps or violent rolls.
 delta` (the one behavior that changes), `Acceptance criteria` and `Known
 rejections`; carry the locks into the new prompt and change only one of prompt
 wording, reference bundle or motion design per retry when practical.
-Budget about 2.2 words per second after a late start of up to 1.5 s, and end
-the last line at least 0.4 s before the clip end.
+Budget speech from measured delivery or a native-language-informed read,
+including pauses and required response. About 2.2 words per second is a
+provisional English estimate, not a gate. Onset and tail follow the intended
+performance and ending without fixed margins or final-state quotas.
 
 ### 5. Quality and constraints
 

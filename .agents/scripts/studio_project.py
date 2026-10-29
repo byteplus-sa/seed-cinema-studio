@@ -24,11 +24,13 @@ from urllib.parse import quote
 import production_context
 from production_context import ProductionContext, discover_unit_shots, resolve_context
 from production_profiles import resolve_brief
+from ruamel.yaml.error import YAMLError
 from validate_request import (
     contained_path,
     parse_frontmatter,
     project_market_card_problems,
     project_mode_snapshot,
+    project_review_mode,
     schema_findings,
 )
 
@@ -1993,6 +1995,10 @@ def stage_gate(
         "provenance_sha256": None,
         "index_sha256": None,
     }
+    try:
+        review_mode = project_review_mode(production_root(project), context=project)
+    except (ValueError, TypeError, OSError, YAMLError) as error:
+        return [f"project.md is not a valid review_mode record: {error}"], evidence
     if stage_id == "brief-development":
         try:
             project_mode_snapshot(production_root(project))
@@ -2019,12 +2025,13 @@ def stage_gate(
             for shot in shots
             if shot.shot_id not in on_timeline
         ]
-        evidence["check_ran"] = True
-        evidence["check_ok"] = check_passed(
-            run_hyperframes(project, ["check", "--json"], runner)
-        )
-        if not evidence["check_ok"]:
-            failures.append("hyperframes check failed")
+        if review_mode == "strict" or stage_id == "delivery":
+            evidence["check_ran"] = True
+            evidence["check_ok"] = check_passed(
+                run_hyperframes(project, ["check", "--json"], runner)
+            )
+            if not evidence["check_ok"]:
+                failures.append("hyperframes check failed")
     provenance_path = root / "provenance.json"
     if provenance_path.is_file():
         evidence["provenance_sha256"] = sha256_file(provenance_path)

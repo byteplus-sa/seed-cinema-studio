@@ -197,8 +197,8 @@ After each panel passes review, look at the scene as a sequence:
 | C3 Eyelines | Looks match across adjacent panels |
 | C4 Light continuity | One declared source set; key sides follow the plan |
 | C5 State continuity | Props, wardrobe and damage carry correctly |
-| C6 Rhythm | Animatic timing matches the energy level; the turn shot differs in length |
-| C7 Variety | The shot plan's variety rules still pass when seen as images |
+| C6 Rhythm | Animatic timing preserves the approved plan and required perception time; equal lengths and absent turns are valid |
+| C7 Coverage | Required evidence remains readable without imposing angle, framing or move quotas; still panels do not prove temporal performance |
 | C8 Hygiene | No numbers, labels, borders or sketch texture in anything that goes to video |
 
 ## Repair

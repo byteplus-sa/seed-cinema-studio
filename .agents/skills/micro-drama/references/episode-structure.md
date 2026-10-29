@@ -5,7 +5,9 @@ checking an episode brief, or when no market writer skill supplies one.
 
 ## Format
 
-Defaults apply only when the user states no preference. The confirmed script,
+The format and beat tables are optional template proposals, not automatic
+requirements when preference is missing. Select their use against the premise
+under the existing approval mode. The confirmed script,
 custom format or market card overrides aspect, runtime, scene split, casting,
 dialogue, ending and cards throughout this reference. Adapt the brief fields
 to those choices; do not invent a cliffhanger or dialogue for a wordless script.
@@ -14,12 +16,13 @@ to those choices; do not invent a cliffhanger or dialogue for a wordless script.
 - Cast of at most three recurring characters per episode; incidental extras are
   described in scene direction, not canonized.
 - One or two locations. One location per scene keeps geography stable.
-- Dialogue carries the plot. Aim for 3–5 short lines per clip; a clip with more
-  than about 12 spoken seconds rushes delivery and invites word errors.
-- Word budget: about 2.2 spoken words per second of the time the lines can
-  occupy, remembering that speech starts 0.5–1.5 s after its cue. A 15 s clip
-  carries roughly 20–25 words; the last line ends at least 0.4 s before the
-  clip ends.
+- Let dialogue serve the approved story without a fixed line or word quota.
+  Budget measured delivery or a native-language-informed read, pauses and the
+  required response. About 2.2 words per second is a provisional English
+  estimate, not a rejection gate. Derive onset and tail from performance and
+  the intended ending, without fixed margins or final-state quotas.
+  Preserve locked words; propose retiming or splitting before authorized
+  rewrites, and obtain authorization for additional generated clips.
 - The hook line uses plain, common words that speech-to-text transcribes
   cleanly, spoken at normal volume.
 
@@ -48,8 +51,9 @@ action may set other limits in the card.
 - The victim is revealed to have an agenda of their own.
 - A supernatural tell seen only by the audience (a shadow, a reflection).
 
-End on a held close-up of at least 1.5 s before the card. Do not resolve the
-question inside the episode.
+For the selected cliffhanger template, a held close-up before a card is one
+option. Choose its duration by readable response; no close-up or 1.5 s quota.
+A resolved or deliberately ambiguous ending may instead serve the approved brief.
 
 ## Cards
 
@@ -68,8 +72,8 @@ A market writer skill or the author supplies:
 3. Cast table: name, age, look, wardrobe, always-worn items, role.
 4. Locations: layout, light, time of day, geography-critical landmarks.
 5. Props that pass the threshold: story-critical or identity-critical only.
-6. Three scenes, each with duration, action beats, exact locked dialogue in
-   `{braces}` with speaker, the spoken word count, the turn or proof beat, and
+6. The selected scenes, each with duration, action beats, exact locked dialogue when present in
+   `{braces}` with speaker, the spoken word count, any supplied turn or proof beat, and
    the final visible state.
 7. Subtitle translations for any non-English words.
 8. Content limits: fictional characters only, no real brands, plain unlettered

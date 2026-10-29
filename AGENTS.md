@@ -94,7 +94,7 @@ Load only the contract relevant to the current stage:
 
 | Need | Source |
 | --- | --- |
-| Stages, approval, review, durable submission, Studio gates and QA | [Production policy](.agents/contracts/production-policy.md) |
+| Stages, independent approval/review modes, durable submission, Studio gates and QA | [Production policy](.agents/contracts/production-policy.md) |
 | Scoped requests, decisions and legacy hash compatibility | [Production versions](.agents/contracts/production-versions.md) |
 | Source-preserving story and continuity evidence | [Development](.agents/contracts/production-development.md) |
 | Editorial snapshots and sound evidence | [Post evidence](.agents/contracts/production-post.md), plus the Studio integration in [Production policy](.agents/contracts/production-policy.md) |
@@ -128,6 +128,13 @@ schemas live in `.agents/contracts/schemas/`.
   rehashed for new submissions; re-prepare those requests with current review.
 - Canon first: approve recurring characters, locations and story-critical props
   before dependent shot generation. Elements define identity.
+- Review depth: read `review_mode: default|strict` independently of
+  `approval_mode`. Missing means `default` for new actions; invalid values fail.
+  Default uses minimal inline preflight and final-output sanity, one image unless
+  another count is requested, without a full prompt-review report/checklist
+  unless required checks apply. Strict retains the full review workflow.
+  Explicit required rules always need truthful matching reports; supplied stale
+  or failing reports always block. Never fabricate approval or listening.
 - Draft first: every new Seedance 2.5 generation, including edits, extensions
   and retries, uses explicit `resolution: "480p"` and boolean `draft: true`.
   This applies in every review mode and overrides conflicting skill defaults.
@@ -137,7 +144,7 @@ schemas live in `.agents/contracts/schemas/`.
   Record each native draft task ID in
   `drafts.json` (`draft_ledger.py`) so the approved draft can be promoted to the
   final with `draft_task_id` within 7 days (see the draft and promotion contract).
-  A final is a new paid request with its own review, and its output is inspected
+  A final is a new paid request with mode-appropriate review, and its output is inspected
   before it replaces the draft take.
 - Persist every prepared operation in `task_ids.json` before submission
   (`prepare_request.py --register`); never submit the same paid generation twice or
@@ -148,8 +155,10 @@ schemas live in `.agents/contracts/schemas/`.
   spending approvals or stop for missing estimates or legacy budget metadata.
   Report estimated and confirmed costs separately when available. Preserve
   provider/API limits, rights, consent, creative approvals and operation locks.
-- Run prompt review inline for every generation-bound prompt and resolve CRITICAL
-  and MAJOR findings. Changed inputs invalidate review.
+- Run `prompt-review` for strict generation, an explicit prompt-review request,
+  or explicitly required rules. Default preflight does not load full checklists
+  or create a report automatically. Resolve reported CRITICAL and MAJOR findings;
+  changed inputs invalidate any supplied review.
 - Do not bake captions, taglines or overlay text into generated video; add text in
   post with FFmpeg or HyperFrames.
 - Storyboards are planning and review artifacts. Never bind panels, grids, sheets or
@@ -167,9 +176,10 @@ Only for an explicit micro-drama format or an existing micro-drama workflow:
 
 - Market-neutral: names, settings, wardrobe and dialogue come from the project's
   optional market card or confirmed brief, never from the reference series.
-- Default episode structure is Hook, Turn, Cliffhanger, 45 to 60 s, three scenes,
-  9:16 and a to-be-continued card. Confirmed brief or market-card choices override
-  these defaults. General narrative production inherits none of them.
+- The profile retains Hook, Turn, Cliffhanger, 45 to 60 s, three scenes,
+  9:16 and a to-be-continued card as a disclosed optional template, not artistic
+  acceptance gates. Settle its use under the existing approval mode; confirmed
+  brief or market-card choices override it. General narrative inherits none of it.
 
 ## Shared scene and assembly practice
 
@@ -192,6 +202,14 @@ Only for an explicit micro-drama format or an existing micro-drama workflow:
 - Plan each shot with duration, size, angle, move, lens intent and a named light
   source. Preserve quiet held shots and wordless scenes when the brief calls for
   them; record their directing rationale.
+- Body energy follows approved intent, separately from camera energy and edit
+  rhythm. Speech needs readable performance, not a kinetic cap. Coverage may
+  repeat framing, eye level and equal lengths without turn or standout-image
+  quotas. Preserve actual blocking and coherent requested camera paths.
+- Resolve audience response, attention and ending only when the premise is open.
+  Plan sound/editorial intent before generation and evaluate actual takes and
+  the final cut against project-specific criteria with timestamped playback and
+  listening evidence. Optional coverage never authorizes additional generated clips.
 - Blocking: use `blocking-map` for planning when needed, preserving the
   approved medium. Maps are analysis-only by default; translate staging into
   prompt text and follow the current reference contract and verified tool

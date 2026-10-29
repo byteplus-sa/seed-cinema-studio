@@ -9,7 +9,7 @@ Neither path automatically migrates an existing project or authorizes providers.
 
 | Record or layout | Read-only validation | Operational behavior |
 | --- | --- | --- |
-| Historical canvas/request v1 | Original schema and hash algorithm | Existing compatibility remains; explicit approval modes require request v2 |
+| Historical canvas/request v1 | Original schema and hash algorithm | Existing compatibility remains; explicit approval or review modes require request v2 for new work |
 | Root Studio or versioned canvas/request v2 | Original schema, hash and decision evidence | Existing preparation, registration, adoption, transition and promotion rules remain |
 | Decision v1 | Historical unscoped evidence | Existing root/canvas approval rules remain; not reinterpreted as a unit decision |
 | Active unit/request v3 | Typed unit context and normalized shared project digest | Scoped preparation, registration, adoption, transitions and same-context draft promotion |
@@ -50,8 +50,13 @@ historical behavior.
   are parity-tested against the context schema.
 
 New context version 2 includes shared creative/authorization inputs and prose-body
-hash, selected format/profile revision and effective settings. Unit identity
-also includes the selected unit ID, normalized unit-brief hash and ordered scene IDs.
+hash, selected format/profile revision and effective settings. Review mode is
+included in shared inputs and resolved effective settings; missing mode is
+`default` for new actions. Changing shared mode invalidates v3 requests and
+dependent contexts. An explicit unit override changes that unit's identity,
+not another unit or shared canon. No v1/v2 hash algorithm changes follow.
+Unit identity also includes the selected unit ID, normalized unit-brief hash
+and ordered scene IDs.
 Production canon identity omits unit membership. Normalization excludes the
 defined operational metadata paths and all root `budget`, `unit_budget` and
 `spending_cap` values, including budget-only lock entries. Unit-brief hashing

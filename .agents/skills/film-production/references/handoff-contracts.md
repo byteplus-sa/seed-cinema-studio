@@ -70,6 +70,12 @@ unless the brief records a look.
 
 ## Draft to final generation
 
+This handoff is required for Seedance 2.5 draft/promotion in both review modes.
+Review depth is independent of
+approval mode. Default uses minimal inline preflight and final-output sanity;
+strict retains the full checks. Explicit required rules and supplied reports
+remain binding in either mode.
+
 Pass the selected 480p draft paths and hashes, its provider task ID, passing
 review and selection records, exact prompt snapshot, ordered approved reference
 hashes, requested audio behavior and delivery resolution. For multi-shot work,
@@ -86,8 +92,9 @@ user override or verified operation constraint.
 Record the native draft task ID with `draft_ledger.py` and promote within the
 7-day window under the [draft and promotion contract](../../../contracts/draft-promotion.md).
 
-Either way, register and review the final request as a new operation, then
-inspect its output again (playback, speech-to-text, listening) and select it
+Either way, register and preflight the final request as a new operation, with a
+matching report in strict or when explicitly required. Inspect its output at
+the chosen depth, record only actual playback/listening evidence, and select it
 before updating placed takes.
 
 ## Dependency invalidation

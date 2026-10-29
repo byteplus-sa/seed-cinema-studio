@@ -28,8 +28,10 @@ a picture replacement, not a subject morph. A whip pan is both a camera move
 and a boundary: use the camera preset skill's whip-pan template (trigger time,
 direction, full-frame occluder, continuing movement) and resolve the camera
 path once in the complete prompt rather than duplicating contradictory camera
-blocks. A cut that must last less than about 0.8 s, or a blink, intercut or
-vision flash, is an assembly cut, not a prompt boundary.
+blocks. Density estimates are provisional; preserve requested rhythm within
+verified request limits. Use assembly for exact blink, intercut or flash timing,
+or demonstrated merging, rather than imposing a duration floor. Reuse suitable
+footage; additional generated clips require authorization.
 
 ## Audio bridges
 

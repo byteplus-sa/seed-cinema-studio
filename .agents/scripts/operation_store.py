@@ -23,10 +23,10 @@ from validate_request import (
     production_context_module,
     project_mode_findings,
     record_scope_findings,
+    request_review_findings,
     schema_findings,
     studio_project,
     validate_request,
-    validate_review,
 )
 
 TRANSITIONS = {
@@ -238,6 +238,9 @@ def require_current_approval_contract(
     )
     if scope:
         raise ValueError("; ".join(finding.message for finding in scope))
+    mode_findings = project_mode_findings(root, record)
+    if mode_findings:
+        raise ValueError("; ".join(finding.message for finding in mode_findings))
     version = record.get("schema_version")
     if version == 3:
         if not studio_project(root, record["context"]):
@@ -309,7 +312,7 @@ def prepare_operation(
     root: Path,
     request: dict[str, Any],
     capabilities: dict[str, Any],
-    review: dict[str, Any],
+    review: dict[str, Any] | None,
     required_rule_ids: list[str],
     allow_board_references: bool = False,
     *, unit_id: str | None = None, production_scope: bool = False,
@@ -322,7 +325,7 @@ def prepare_operation(
 
 def _register_operation(
     root: Path, request: dict[str, Any], capabilities: dict[str, Any],
-    review: dict[str, Any], required_rule_ids: list[str],
+    review: dict[str, Any] | None, required_rule_ids: list[str],
     allow_board_references: bool, *, unit_id: str | None,
     production_scope: bool, adoption: tuple[str, str, bool] | None = None,
 ) -> None:
@@ -331,7 +334,7 @@ def _register_operation(
         unit_id=unit_id, production_scope=production_scope,
     )
     findings.extend(
-        validate_review(review, request.get("request_sha256", ""), required_rule_ids)
+        request_review_findings(root, request, review, required_rule_ids)
     )
     if findings:
         raise ValueError("; ".join(finding.message for finding in findings))
@@ -343,6 +346,7 @@ def _register_operation(
             root, request, allow_board_references, unit_id=unit_id,
             production_scope=production_scope,
         )
+        current.extend(request_review_findings(root, request, review, required_rule_ids))
         if current:
             raise ValueError("; ".join(finding.message for finding in current))
         mode_findings = project_mode_findings(root, request)
@@ -374,7 +378,7 @@ def adopt_submitted_operation(
     root: Path,
     request: dict[str, Any],
     capabilities: dict[str, Any],
-    review: dict[str, Any],
+    review: dict[str, Any] | None,
     required_rule_ids: list[str],
     provider_task_id: str,
     provider_status: str,

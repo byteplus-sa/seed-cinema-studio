@@ -54,6 +54,8 @@ historical projects or immutable prompt snapshots automatically.
 
 ## Prompt review
 
+Apply these checks in both review modes; default limits review to applicable
+requirements without loading unrelated strict checklists.
 Apply `acting.plan_bound` to applicable performance prompts and
 `fight.readable_exchange` to staged-fight prompts. The caller includes those
 IDs through the existing `--required-rule` review/registration interface.
@@ -82,6 +84,13 @@ review's checks without adding that ID to the required-rule list.
 
 Before selecting or promoting a take, inspect playback and, when sound is in
 scope, listen. Cite timestamps and the relevant beat IDs:
+
+Choose a small set of project-specific artistic criteria before evaluating
+takes: the intended audience response, what sustains attention and what the
+ending leaves with the viewer. Derive them from the approved premise, not
+generic movement or emotion counts. Record the actual artifact/hash, playback
+method, covered ranges and timestamped observations, separating technical
+validity from artistic judgment. Unavailable perception remains unresolved.
 
 - Does the character register the intended event and pursue the intended
   task? Is persistence, adjustment or deliberate non-response legible?

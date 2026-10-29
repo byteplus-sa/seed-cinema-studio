@@ -2,8 +2,7 @@
 name: micro-drama
 description: >-
   Produce vertical short-form micro-drama episodes end to end for any market:
-  a hook in the first seconds, a mid-episode reveal or confrontation, and a
-  close-up cliffhanger, delivered as 9:16 episodes with a to-be-continued card.
+  with optional hook, reveal and cliffhanger templates and source-led delivery.
   Orchestrates a market story writer when one exists (for example
   filipino-micro-drama) or the market-neutral microdrama-story-formats, then canon sheets, planning-only storyboards,
   Seedance 2.5 scene clips with native dialogue, dialogue-accuracy QA,
@@ -18,8 +17,9 @@ description: >-
 # Micro-Drama
 
 Produce one or more vertical micro-drama episodes for any market, language and
-genre the user chooses. Unless the user specifies another format, each episode
-is a complete, reviewable 45–60 s unit built from three Seedance scene clips. This skill owns
+genre the user chooses. The 45–60 s, three-scene structure is an optional
+disclosed template, not an artistic gate. Select it under the existing approval
+mode only when it serves the premise. This skill owns
 the episode format and its production sequencing. Market story craft, such as
 tropes, dialogue register and cultural signifiers, belongs to a market writer
 skill. Stage, approval, Studio and submission rules come from `AGENTS.md` and
@@ -28,6 +28,15 @@ the production contracts; this skill does not relax them.
 Confirmed scripts and custom episode formats override the creative defaults in
 this skill and its recipes, including hook timing, casting, scene count, ending
 and cards. They do not override approval, rights, review or submission gates.
+
+Resolve `review_mode` separately from `approval_mode`. Missing is `default`;
+invalid fails. Default uses minimal inline preflight and final-output sanity,
+one image unless requested otherwise, and no full prompt-review report/checklist
+unless required checks apply. Native Seedance 2.5 Draft-first and applicable
+performance checks remain required in both modes. Strict retains
+the full workflow below. Explicit required rules need matching truthful reports
+in either mode; supplied stale/failing reports block. Keep minimal hash-bound
+sanity records for selections and locks, never fabricated listening or approval.
 
 ## Inputs and outputs
 
@@ -58,7 +67,7 @@ Candidate validation does not authorize activation or migration.
    scene within the word budget in [episode structure](references/episode-structure.md).
    Default to at most three recurring characters and one or two locations unless
    the confirmed episode plan specifies otherwise.
-   Record `approval_mode`, format, the native-dialogue audio route and
+   Record independent `approval_mode` and `review_mode`, format, the native-dialogue audio route and
    look intent in `project.md`,
    run `brief-intake` with a fast proposal, then run `studio_project.py init <project>` (see the
    [production policy](../../contracts/production-policy.md)) (pre-Studio canvas projects with
@@ -69,14 +78,16 @@ Candidate validation does not authorize activation or migration.
    [performance contract](../../contracts/performance-direction.md).
    Use `scene-craft` for the selected scene framework, without forcing its
    five-element engine. Coordinate `seedance-fight-choreography` for fights.
-   Default to three scenes: Hook (about 15 s), Turn (about 20 s), Cliffhanger
-   (about 15 s). Split scenes into clips as needed for verified model limits and
+   When selected, the template uses Hook (about 15 s), Turn (about 20 s),
+   Cliffhanger (about 15 s). Split scenes into clips as needed for verified model limits and
    dialogue timing. Each scene gets a shot plan (size, angle, move and light per
-   shot) from `seedance-shot-design` at standard energy by default; kinetic is for
-   shots without spoken lines. Walk every beat against the element-identification
+   shot) from `seedance-shot-design` with energy derived from intent. Kinetic
+   dialogue is valid when speech and performance remain readable. Keep actor
+   energy, camera energy and edit rhythm separate. Walk every beat against the element-identification
    contract.
 3. **Canon.** Character sheets, location plates and threshold props as
-   three-sample Seedream sets. Preserve the approved casting and medium;
+   one-image Seedream sets in default, three-sample sets in strict unless a
+   count is explicitly requested. Preserve the approved casting and medium;
    make identities visually distinct within those choices. Inspect every image
    and select with hash-bound decisions.
 4. **Storyboard.** Optional planning and review boards bound to selected canon.
@@ -96,17 +107,18 @@ Candidate validation does not authorize activation or migration.
    dialogue partner skill (`seedance-prompt-25-dialogue` for any language; a
    market pack such as `seedance-prompt-25-filipino` adds language depth). Apply
    the prompt, dialogue-timing and QA rules in the
-   [production recipe](references/production-recipe.md). Run `prompt-review`
-   inline by default; use a sub-agent only when the user explicitly requests
+   [production recipe](references/production-recipe.md) at the selected review
+   depth. Run `prompt-review` in strict or for explicit review/required rules,
+   inline; use a sub-agent only when the user explicitly requests
    sub-agent prompt review for the project or specific generation. Register the
    operation for each clip, submit independent planned clips in parallel within
-   provider concurrency limits as native 480p drafts
+   provider concurrency limits as native 480p drafts in both review modes
    (`draft: true`), record each draft task ID with `draft_ledger.py`, and QA each
    take. Promote approved drafts to the final resolution with `draft_task_id`
    within 7 days, as the [draft and promotion contract](../../contracts/draft-promotion.md)
    describes, and inspect each final before it replaces the draft in Studio.
 7. **Assembly.** In Studio, follow the confirmed episode order and transition
-   plan. The default is a cold open, title card, three scene clips with short
+   plan. An optional template is a cold open, title card, three scene clips with short
    dissolves, and a to-be-continued card; a confirmed format overrides these
    cards, scene count and transitions. Keep original
    colours unless the brief records a look. Fix wrong words with word-scoped audio
@@ -117,6 +129,12 @@ Candidate validation does not authorize activation or migration.
    master from `studio_project.py render`; FFmpeg assembly, subtitle and
    loudness work is placed in Studio as a clip or overlay and rendered, not
    delivered directly (pre-Studio canvas: `--check --stage delivery`).
+
+Resolve audience response, attention and ending only when the premise remains
+open; preserve settled scripts. Plan sound and editorial intent before shots,
+then conform cues to the measured edit. Require project-specific artistic
+criteria and timestamped actual playback/listening evidence for takes and the
+final cut. Optional templates and coverage never authorize extra generated clips.
 
 For a batch of independent episodes, follow
 [batch production](references/batch-production.md): one agent per episode with
@@ -135,11 +153,11 @@ legacy-only for existing series without a manifest.
 - When the default hook formula is selected, the hook lands within the first
   3 s and a title card does not consume that window. A confirmed script's
   opening and timing take precedence.
-- Every spoken line is checked word by word against the locked dialogue with
+- In strict, every spoken line is checked word by word against locked dialogue with
   speech-to-text before a take can pass. A model's own summary of what was
   said is not sufficient.
-- Retakes fix hard-gate failures only, without budget-related caps, as a new native
-  Draft. Dialogue repairs patch only the wrong word windows. Record
+- Retakes fix failures without budget-related caps as a new native
+  Draft in both review modes. Dialogue repairs patch only the wrong word windows. Record
   residual defects instead of silently promoting a flawed take.
 - Provider success is `review`, never approval. Never resubmit an ambiguous
   paid operation; reconcile it from the task registry.

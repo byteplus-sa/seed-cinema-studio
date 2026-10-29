@@ -17,6 +17,11 @@ loudness/peak specification. Ask for a missing delivery specification rather
 than assuming every format has the same target. No audio input means planning
 only, not a listening pass.
 
+Consume early sound/editorial intent from the brief: what sound leads, reveals,
+withholds or emphasizes and where silence matters. Early planning needs no
+finished assets or invented cue times. Once the edit exists, conform final
+cues to measured timing and assess their intended effect by actual listening.
+
 ## Procedure
 
 1. Map each cue to measured edit time with ID, kind, start/end, narrative intent,
@@ -34,6 +39,9 @@ only, not a listening pass.
    available. Evidence records exact media paths/hashes, method, observer,
    covered ranges, findings and limits. Transcripts do not certify accent,
    pronunciation, timbre, music balance or splice quality.
+   Judge the project-specific attention and ending criteria as well as
+   intelligibility and loudness. Record timestamped evidence; technical
+   measurements alone do not establish the intended artistic response.
 5. Keep `listening.status` as `unverified` until actual listening evidence
    exists. Wordless footage may still have sound and requires listening.
    `not_applicable` needs an intentionally silent cut and a rationale, not a

@@ -33,6 +33,10 @@ Record the unit, primary cut `main` and exact artifact reviewed.
    direction, state continuity, entrances/exits, pacing, transitions and
    opening/ending intent. Evaluate a quiet hold by its purpose; do not
    prescribe extra cuts merely because the camera is static.
+   Compare what the edit reveals, withholds and emphasizes with the brief's
+   project-specific artistic criteria for audience response, attention and
+   ending. Repeated framing and equal durations can pass. A technical conform
+   alone is not acceptance; extra generated coverage requires authorization.
    For character performances, compare the cut with the supplied performance
    beat IDs and critical criteria under
    [Performance direction](../../contracts/performance-direction.md).

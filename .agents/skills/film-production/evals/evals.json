@@ -4,12 +4,12 @@
     {
       "id": 1,
       "prompt": "Make a cinematic 30-second TVC for a running shoe: dawn city streets, one runner, a score. Take it to the first Seedance drafts.",
-      "expected_output": "A staged plan that records the audio route, look and cinematic bar in the brief, plans sequences, and submits 480p native Drafts with picture-only generation.",
+      "expected_output": "A staged plan that resolves the open premise, records early sound/editorial intent, and submits authorized 480p native Drafts with picture-only generation after existing gates.",
       "files": [],
       "expectations": [
         "Runs brief-intake first and records a picture_only audio route, ungraded original colours and the logo/end card as post overlays in project.md.",
-        "Plans about six 5 s sequences of 2-3 shots with one action per shot, each shot carrying lens intent, camera move, a named light and depth, and one wow image per sequence.",
-        "Submits each sequence as a 480p native Draft with generate_audio false after prompt-review and registration, without requiring a budget or estimate.",
+        "Chooses coverage and duration for audience response, attention and ending; no sequence, angle, turn or wow quota and no extra generated clips without authorization.",
+        "Submits each sequence as a 480p native Draft with generate_audio false after mode-appropriate review and registration, without requiring a budget or estimate.",
         "Does not bind any storyboard image as a Seedance reference."
       ]
     },
@@ -32,7 +32,8 @@
       "expectations": [
         "Keeps original Seedance colours and asks or records before adding any grade, grain, halation or vignette, because no look is locked in the brief.",
         "Builds exact-length lossless intermediates, joins with the concat demuxer, encodes once and decodes HEVC finals as limited-range BT.709.",
-        "Places the result in Studio and renders the master with studio_project.py render; adds no AI label."
+        "Places the result in Studio and renders the master with studio_project.py render; adds no AI label.",
+        "Reviews what the cut reveals, withholds and emphasizes against project-specific criteria, using timestamped actual playback/listening evidence; technical validation is not artistic proof."
       ]
     },
     {

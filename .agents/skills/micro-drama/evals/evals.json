@@ -4,10 +4,10 @@
     {
       "id": 1,
       "prompt": "Make three vertical micro-drama episodes for the US market, 1080p, fully produced.",
-      "expected_output": "A per-episode brief and production plan using the three-scene structure, with parallel ownership and no budget prerequisite.",
+      "expected_output": "A per-episode brief and production plan with a premise-led structure, parallel ownership and no budget prerequisite; the three-scene template is optional.",
       "files": [],
       "expectations": [
-        "Uses three scene clips of about 15/20/15 s with a hook in the first 3 s and a close-up cliffhanger.",
+        "Discloses the optional three-scene template and settles its use under the existing approval mode, without timing or close-up cliffhanger quotas.",
         "Assigns one production agent per episode with exclusive project ownership and a shared playbook.",
         "Does not declare a spending cap, require an estimate or ask for budget approval before submission.",
         "Keeps generated footage text-free and adds cards and subtitles in post.",
@@ -31,12 +31,12 @@
     {
       "id": 3,
       "prompt": "The take looks great and the model summary says the dialogue is correct. Approve it.",
-      "expected_output": "Refuses to approve without a word-level speech-to-text diff against the locked lines.",
+      "expected_output": "Keeps approval unresolved without word-level dialogue comparison and actual playback/listening against project-specific performance criteria.",
       "files": [],
       "expectations": [
         "Requires a speech-to-text comparison of every locked line and speaker.",
         "Treats the model summary as insufficient evidence.",
-        "Keeps the take in review until the dialogue gate passes."
+        "Keeps the take in review until dialogue and relevant artistic criteria pass with timestamped actual playback/listening evidence."
       ]
     },
     {
@@ -65,12 +65,12 @@
     {
       "id": 6,
       "prompt": "The episode's 15 s hook scene has six lines totalling 48 words, and the last line ends at 14.8 s. Write the clip prompt.",
-      "expected_output": "Flags the dialogue as over budget and proposes a trimmed set before writing the prompt.",
+      "expected_output": "Checks measured delivery or a native-language-informed read and the required response before declaring a timing conflict; preserves the supplied words and treats estimates as provisional.",
       "files": [],
       "expectations": [
-        "Applies a budget of about 2.2 spoken words per second and the 0.5-1.5 s late speech start.",
-        "Ends the last line at least 0.4 s before the clip end and avoids three state changes in the last 3 s.",
-        "Keeps the trimmed wording as a draft for the writer or user to accept rather than silently changing locked lines."
+        "Treats 2.2 words per second as a provisional English estimate, not proof that the supplied delivery cannot fit.",
+        "Checks whether the supplied 14.8-second ending preserves intelligibility and required response, without mandatory onset, tail or final-state-change quotas.",
+        "If delivery evidence demonstrates a conflict, proposes retiming or splitting before an authorized wording revision; additional generated clips require authorization."
       ]
     },
     {

@@ -32,14 +32,20 @@ mentioned in prose are relative to this skill directory unless a link says other
 
 ## Submission boundary and failure behavior
 
-The caller owns production authorization, the exact request preflight, and the
-complete hash-bound prompt review. The caller reviews inline by default and
+The caller owns production authorization and exact request preflight.
+`review_mode: default` (also when absent) uses minimal inline preflight and
+final-output sanity, one image per requested panel/grid unless another sample
+count is requested, and no mandatory prompt-review report/full checklist.
+Strict retains full review and three samples. Panel count and sheet/grid layout
+are independent of sample count; do not change a three-panel sheet into one panel.
+Explicit required rules and any supplied report must pass in either mode.
+The caller reviews inline and
 uses a sub-agent only when the user explicitly requests sub-agent prompt review
 for the project or specific generation. A leaf returns its prompt package without
 loading sibling skills. An explicitly declared orchestrator may coordinate the
 review and submission stages. Missing required inputs remain unresolved; a draft
 or technical success does not establish approval. Preserve optional timing,
-the three-image sampling default where applicable, and the requested delta.
+the mode-appropriate sample count and the requested delta.
 
 ## Source authority
 
@@ -220,7 +226,9 @@ and continuity are accepted.
 
 ## Default response structure
 
-For a one-panel request, return a compact hero-beat decision, one `p010` panel
+Default returns the requested plan/prompt or actual outputs, minimal sanity
+findings and any unresolved selection. Do not add a full checklist or extra
+variant records. In strict, for a one-panel request, return a compact hero-beat decision, one `p010` panel
 plan, reference inventory, exact prompt, three variant records, video-handoff
 notes (staging text plus the element references to bind), review checklist,
 and selection needed. For a multi-panel plan

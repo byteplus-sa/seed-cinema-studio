@@ -1,15 +1,19 @@
 # Assembly-only cuts
 
-Some cuts are too short or too structural for one Seedance clip. A shot under
-about 0.8 s is merged or dropped by the model, and a single prompt cannot make the picture skip an
-action it describes. These presets therefore live in the edit: each side is
-generated as its own clip at a natural length, and the cut is made in
-assembly (FFmpeg or HyperFrames Studio). This reference plans the cut and
+Exact cut timing and omitted action can be controlled in assembly. Density
+estimates are provisional, not a minimum shot duration or maximum shot count.
+Preserve requested rhythm within verified request limits; describe visible
+states rather than asking to show and omit the same action. These edit recipes
+reuse suitable footage or propose authorized additional clips, with the cut made
+in assembly (FFmpeg or HyperFrames Studio). This reference plans the cut and
 writes the per-clip prompt lines; it does not run generation or edit media.
 
 ## Presets
 
-| Preset | Use when | Clips to generate | Cut made in assembly |
+These are optional edit recipes. Frame counts, slice lengths and visual contrast
+below are examples, not acceptance quotas; use the requested rhythm and ending.
+
+| Preset | Use when | Footage to reuse or propose | Cut made in assembly |
 |---|---|---|---|
 | Blink cut | A character loses a moment: compulsion, fainting, shock. The missing action would look silly or slow | A: the moment control slips (often a push-in with a light cue going out; any defocus is added in post). B: the end state, already reached (the character kneeling, waking, standing elsewhere) | Trim A just as it darkens or softens; insert 4-8 frames of near-black or the softest frame of A; open B on its end state with no establishing beat |
 | Intercut | Two places share one moment and the cut must state a relationship (a sailor adrift at sea, his wife waiting ashore) | One clip per place, each long enough to give two or three slices. Each place keeps its own palette and light, such as cold and dark at sea and warm amber ashore | Alternate slices of 1-3 s; carry one continuous sound line (a spoken line, a score cue) across every cut as a J-cut or L-cut |

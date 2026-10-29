@@ -8,10 +8,18 @@ mode selection and caller responsibilities.
 
 ### 12. Review the board
 
+Default review mode uses minimal sanity on actual output for requested content
+and obvious defects, with a truthful hash-bound record where selection needs it.
+Do not load or run the full checklist below in default unless explicitly
+requested. Strict retains it. Explicit required rules and supplied reports
+remain binding in either mode; approval authority is separate.
+
 Evaluate every individual panel. For multi-panel separate-images boards, also
 evaluate the ordered contact sheet. For multi-panel single-image grid boards,
 evaluate the whole grid image for both per-panel quality and cross-panel flow.
-For a one-panel board, compare its three variants side by side; a comparison
+In strict, compare a one-panel board's three samples side by side unless another
+count was requested. Default uses one image unless alternatives were requested.
+Sample count never changes the requested panel count or sheet layout. A comparison
 sheet is a review artifact, not another storyboard panel and never a video
 input.
 

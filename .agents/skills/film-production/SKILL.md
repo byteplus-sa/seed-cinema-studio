@@ -16,6 +16,16 @@ Studio commands, stage gates, prompt review, registration and submission
 recovery. This skill owns the sequencing: which stage comes next, which
 specialist runs it, and which production defaults make the result better.
 
+Read `review_mode` separately from `approval_mode`: absent means `default`,
+invalid fails, and an explicit selected-unit brief override applies only there.
+Default uses minimal inline preflight and final-output sanity, one image unless
+requested otherwise, and no full prompt-review report/checklist unless required
+checks apply. Native Seedance 2.5 Draft-first and applicable performance checks
+remain required in both modes. Strict retains the full workflow
+below. Explicit required rules need truthful matching reports in either mode;
+provided stale/failing reports block. Keep minimal hash-bound sanity records
+needed for selections and locks; never fabricate listening or approval.
+
 ## Format and brief authority
 
 Use the [production brief](../../contracts/production-brief.md) and
@@ -61,7 +71,8 @@ Record capacity gaps and require measured trials; alternate cuts remain deferred
   review and handoff. A project with a `showcase.json` is a pre-Studio canvas
   project and keeps its canvas checkpoint instead.
 - Delegate modality work to the narrowest applicable specialist skill. Run
-  prompt review inline unless the user explicitly asks for a sub-agent review.
+  prompt review only in strict mode or for explicit review/required rules,
+  inline unless the user explicitly asks for a sub-agent review.
 - Prefer a deterministic workflow when the next action is known. Use agentic
   judgment for creative choices, contradiction resolution, and review.
 - Provider success is `review`, never approval. A poll timeout resumes the
@@ -78,7 +89,8 @@ Record capacity gaps and require measured trials; alternate cuts remain deferred
    (`showcase.json` for a pre-Studio canvas project),
    relevant element, scene and shot manifests, prompt snapshots, and the latest
    review decisions. Manifests and the registry win over `handoff.md`. A new
-   Studio project starts with `approval_mode: approve_for_me` in `project.md`,
+   Studio project starts with `approval_mode: approve_for_me` and
+   `review_mode: default` in `project.md`,
    `studio_project.py init <project> [--unit ID]`, then
    `studio_project.py stage <project> [--unit ID] start brief-development`.
 3. **Never hand-write Studio state** (`stages.json`, `provenance.json`,
@@ -88,8 +100,8 @@ Record capacity gaps and require measured trials; alternate cuts remain deferred
 4. Determine the current stage from recorded artifacts and lifecycle states,
    not from filenames.
 5. Identify contradictions, missing inputs, stale dependencies, pending provider
-   tasks, and decision gates. Recheck the effective approval mode before each
-   decision.
+   tasks, and decision gates. Recheck approval mode before each decision and
+   review mode before generation; neither setting implies the other.
 6. Carry the selected context into every unit command, request and decision.
    New scoped requests use v3; scoped decisions use v2 with the actual unit-brief
    upstream hash. Shared canon uses explicit production scope, not the unit.
@@ -152,7 +164,8 @@ department workflow.
 Read [production defaults](references/production-defaults.md) before the first
 paid video submission and again at assembly. In short:
 
-1. **Draft first.** Every new Seedance 2.5 shot is a 480p Draft, reviewed and
+1. **Draft first in both modes.** Every new Seedance 2.5 shot is a native
+   480p Draft with boolean `draft: true`, reviewed and
    selected, then promoted to the delivery target. Edit inputs only before the
    Draft; re-check audio on the final. Record each provider draft task ID with
    `draft_ledger.py` and follow the [draft and promotion contract](../../contracts/draft-promotion.md).
@@ -187,7 +200,8 @@ For the active stage:
 4. Persist exact prompts beside generated media and update the owning manifest.
    Deterministic static graphics persist their editable HTML entrypoint, local
    dependencies, input/font hashes, render record and PNG instead.
-5. Inspect every actual output: images visibly, video temporally, audio by
+5. Inspect every actual output at the chosen review depth: default sanity,
+   strict full QA. Images visibly, video temporally, audio by
    listening plus speech-to-text where words matter. Reject hard-gate failures
    and rank passing candidates against the brief's recorded criteria.
 6. Record the decision under the project's approval mode: an agent decision in
@@ -211,6 +225,9 @@ brief must also record the audio route, the look intent (ungraded original
 colours unless a look is requested), the on-screen copy that will be added in
 post, and the script-led structure and delivery choices. Persist the
 mode-authorized confirmed set as a `locked` block in `project.md`.
+When the premise is unresolved, settle audience response, attention and ending
+without reopening supplied writing or a scoped edit. Record early sound and
+editorial intent before generation; final cues follow the measured edit.
 Sequence `story-development` for source inventories and script-led breakdown,
 and `series-continuity` for state/knowledge evidence. Do not require redundant
 new writing when a supplied locked script already contains it.
@@ -233,9 +250,10 @@ plan stays `draft` until the scene's locations are approved, then is
 revalidated before shot generation. An exempt scene records its
 `static_reason`. The plan carries the project's confirmed camera, lens,
 lighting, pacing and energy axes into the shot lines or records a scene
-override. At shot generation, inspect each take against its plan: a missing
-planned cut, move or light change is a soft defect to record, and a missing
-move or light on the turn shot is a hard-gate failure.
+override. At shot generation, inspect each take against project-specific
+artistic criteria: a lost critical event or required response is a hard failure,
+not a missing optional move or turn label. Record less material differences.
+Coverage suggestions never authorize extra generated clips or spending.
 
 ## Approval and cost reporting
 
@@ -269,12 +287,14 @@ Preserve rejected history and never overwrite source media.
 
 ## Finish the run
 
-At assembly, export the actual Studio edit with `editorial.py export`, check it
+In strict mode or when explicitly requested, export the actual Studio edit with `editorial.py export`, check it
 and explicitly reconcile the snapshot with an expected revision when accepting
 it as `editorial/<unit>/main.json`. These commands never apply order or trims.
 Unsupported edit constructs remain in Studio with a recorded coverage gap.
 Use `editorial-review` and `sound-post` for actual playback/listening evidence,
-not merely successful JSON validation.
+not merely successful JSON validation. Default does not require these full
+editorial/sound reports; retain actual output sanity and required integrity
+records, with honest listening coverage and limitations.
 
 For an indexed named delivery, use `deliverables.py validate/status`, bind an
 explicit current unit render with `bind --render-record --expected-revision`,

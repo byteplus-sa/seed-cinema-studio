@@ -8,9 +8,16 @@ approval, review or durable-submission gates.
 Exact tool parameters live in the `ark-mcp` Seedance reference; this file says
 when to use them.
 
-## 1. Draft first, then promote
+Review depth follows `review_mode`, independently of approval authority.
+Default (including absent mode) uses minimal inline preflight and final-output
+sanity, not the full checks below. Strict retains them. Explicit requested checks
+and supplied reports remain binding; never claim unavailable listening.
 
-Plan every new Seedance 2.5 shot as a 480p Draft followed by a promotion.
+## 1. Draft First In Both Modes
+
+Plan each new Seedance 2.5 shot as a native 480p Draft with boolean `draft: true`,
+followed by selected promotion. Review mode never waives Draft-first or the
+source-selection, task-ID, expiry, capability and registry safeguards below.
 
 1. Freeze and review the full request (prompt, ordered references, duration,
    ratio, `generate_audio`, task type) and submit it with `draft: true` when
@@ -28,7 +35,7 @@ Plan every new Seedance 2.5 shot as a 480p Draft followed by a promotion.
 
 A plain 480p request without `draft: true` cannot be promoted; its final is a
 new paid request that may change picture, timing or audio, and it needs its
-own registration and review. When a fix requires a prompt change, write a new
+own registration and mode-appropriate preflight. When a fix requires a prompt change, write a new
 Draft rather than promoting the old one.
 
 ## 2. Choose the audio route at the brief
@@ -56,8 +63,10 @@ and [profiles](../../../catalog/production-profiles.json) for disclosed defaults
 do not infer format from aspect, genre or medium.
 
 Only an explicit micro-drama format or an existing selected micro-drama workflow
-inherits Hook/Turn/Cliffhanger, 45-60 s, three scenes, 9:16 and a to-be-continued
-card as defaults. Its confirmed brief or market card can override them.
+offers Hook/Turn/Cliffhanger, 45-60 s, three scenes, 9:16 and a to-be-continued
+card as an optional disclosed template. The resolver retains these compatibility
+defaults, not artistic acceptance gates; settle template use under the existing
+approval mode. Its confirmed brief or market card can override them.
 General narrative production requires none of those choices. Do not impose
 advertising cadence, a dramatic payoff image per scene or an arbitrary shot
 count on a supplied script. Quiet held shots, wordless passages and resolved or
@@ -66,19 +75,25 @@ intentionally open endings are valid when they serve the brief.
 - Derive clip count and duration from the scene plan and verified model limits.
   Give each shot **one primary action** and a clear end state. Split an
   overpacked scene into planned clips rather than compressing its dialogue.
-- Give every shot a lens intent, a camera move, a motivated named light source
-  and depth layers (foreground, subject, background), carried from the
-  `seedance-shot-design` plan.
+- Give every shot a lens intent, a camera move or hold and a motivated named light
+  source, carried from the `seedance-shot-design` plan. Describe depth layers
+  only when useful; preserve intentional minimal framing and source composition.
 - Give each scene a purpose and observable progression from the supplied
   material. Let its visual emphasis follow that purpose.
 - Use dynamic verbs over soft mood words, and state the camera move for every
   shot. A static shot carries its recorded reason.
-- Keep every planned shot at least about 0.8 s; Seedance merges shorter shots.
-  Blink cuts, intercuts and vision flashes are built in the edit, not the
-  prompt.
+- Shot-density estimates are provisional, not duration floors or count ceilings.
+  Preserve requested rhythm within verified request limits. Use assembly for
+  exact cuts or demonstrated merging, reusing footage where possible; extra
+  generated clips require authorization.
 - Keep delivery dimensions separate from generation parameters. Set a supported
   ratio as a request parameter, never as a sentence in the prompt; verify
   current model capabilities rather than inferring them from the Studio canvas.
+
+Resolve a compact premise only when open: audience response, attention and ending.
+Plan sound and editorial intent before generation, including what is revealed,
+withheld or emphasized and where silence matters. Do not require final audio
+assets early or add generated clips without authorization.
 
 ## 4. Storyboards are planning and review only
 
@@ -86,8 +101,8 @@ Never bind a storyboard grid, contact sheet or board panel as a Seedance
 reference: panel numbers, corner labels and the sketch or watercolour look can
 leak into the video. Translate the board's staging into prompt
 text and bind only element references (characters, locations, props, locked
-screens). Audit every take with frame samples plus top-left corner crops before
-selection.
+screens). Strict review audits frame samples and top-left corner crops; default
+uses output sanity without imposing that full checklist.
 
 ## 5. People in video inputs
 
@@ -114,6 +129,9 @@ brief requires it.
 
 Assemble to the confirmed edit and delivery choices: conform, trim, necessary
 reframes and mix. Add overlays and end cards only when the brief calls for them.
+Review the edit as a creative pass, not only a conform: compare its opening,
+attention, performance and ending with project-specific artistic criteria.
+Conform final sound cues to the measured edit and verify actual playback/listening.
 
 - **No grade unless the brief records a look.** Keep the original model colours
   that matched the approved drafts. Add a grade, grain, halation, vignette or a
@@ -134,7 +152,9 @@ reframes and mix. Add overlays and end cards only when the brief calls for them.
 
 ## 8. Review and fix loop
 
-Run these checks before a take passes, and use the narrowest fix.
+Run these full checks in strict mode or when explicitly requested, and use the
+narrowest fix. Default uses minimal actual-output sanity; a known defect still
+needs resolution or a recorded decision, not a fabricated pass.
 
 Wordless work needs temporal and sound review where applicable, not a fabricated
 spoken-dialogue transcript or pronunciation gate. A silent deliverable records
@@ -145,10 +165,11 @@ that sound is intentionally absent.
   not a transcript. Accent and pronunciation verdicts need
   a native listener; `seed_audio_understand` cannot judge accent and can
   mislabel music.
-- **Speech timing:** lines land 0.5–1.5 s late and later after long pre-line
-  action, and speech fills to the clip end. Trimming a clip's head does not
-  lengthen the tail after the last word; fix a short tail with a retake that
-  shortens pre-line action, a freeze-hold, or a recorded waiver.
+- **Speech timing:** measure delivery, pauses and the required response in actual
+  playback. Onset and tail estimates are provisional, without fixed margins or
+  final-state quotas. Preserve a readable abrupt ending when intended.
+  Trimming the head cannot lengthen a missing response at the tail; propose an
+  appropriate edit or authorized retake only when the required response is lost.
 - **Word-scoped audio fixes:** patch only the wrong word windows; never re-dub a
   whole track. Transcribe with word times, splice pitch- and loudness-matched
   replacements with short fades, and prove that samples outside each window are
