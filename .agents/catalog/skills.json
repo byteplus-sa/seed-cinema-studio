@@ -415,6 +415,15 @@
       "upstream_hash": null,
       "overlay_notes": null
     },
+    "seedance-character-reference-video": {
+      "kind": "leaf",
+      "description": "Write Seedance prompts for video character sheets from approved images and required authorized voice audio. Use for animated identity references. Not for still sheets or generation.",
+      "readme_summary": "Write animated character-sheet prompts with required approved images and authorized voice performance, timed split-panel or continuous coverage, and visual/audio acceptance checks; no generation or video-canon changes.",
+      "dependencies": [],
+      "source_revision": "workspace",
+      "upstream_hash": null,
+      "overlay_notes": null
+    },
     "seedream-character-sheet": {
       "kind": "leaf",
       "description": "Write structured Seedream prompts for three-panel character sheets and identity references. Invoke when the user asks for character sheets, model sheets, turnaround sheets, or Seedance-facing identity anchors.",

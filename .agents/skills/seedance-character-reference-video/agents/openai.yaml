@@ -1,0 +1,4 @@
+interface:
+  display_name: "Seedance Character Reference Video"
+  short_description: "Animate approved identity sheets with required voice audio"
+  default_prompt: "Use $seedance-character-reference-video to write a prompt-only animated character reference from my approved character sheet and required authorized voice recording. Preserve the selected audio excerpt, exact words and timing, resolve image/audio bindings, and return gaps or a timed layout with draft handoff and visual/listening checks. Do not generate, register assets or change canon."
