@@ -57,14 +57,18 @@ judgments, not observed generated-media results.
 - **Initial proposal:** One 30 s pass following a cyclist through the city in
   the rain, native audio with "no music, rain only", warm teal grade.
 - **Simulated failure:** The rushed hood action and arrival obscure how the
-  storm becomes play; native audio may add a score or voices the
-  edit cannot remove; the grade was never requested.
+  storm becomes play; audio ownership is unresolved, and native exclusions
+  cannot guarantee rain-only sound; the grade has no stated creative purpose or selection.
 - **Smallest repair:** Give the hood action and arrival readable time, with
   coverage chosen for the transition from discomfort to play. Equal lengths,
   a held frame or an optional standout image are available, not quotas.
   Plan rain sound closing in under the hood, then opening into splashes at play.
-  Audio route `picture_only`: generate silent picture and build rain, footsteps
-  and score in post. Keep original colours; list the logo end card as a post
+  Ask about audio ownership. When separate sound control is wanted, propose
+  `picture_only` and build rain, footsteps and any requested score in post;
+  preserve requested native diegetic sound in this wordless scene.
+  Propose original colours for this treatment because the
+  rain and practical light already carry it; delegated authorship could instead
+  propose a justified custom look. List the logo end card as a post
   overlay.
 - **Tradeoff:** A post sound pass needs measured cue timing and listening.
   Any additional generated clips require authorization.
