@@ -54,13 +54,13 @@
       "source": "./local",
       "sourceType": "local",
       "skillPath": ".agents/skills/brief-intake/SKILL.md",
-      "computedHash": "274d62ac1d5f1a4ba3ef7531cf90cb587f6b57c58d22ae0e2bbc79ffbbe718ab"
+      "computedHash": "aa0a40df55c11624ba49d3180c2abf7237d87f172d0682a5b7bed1b928d34f00"
     },
     "color-grade-palettes": {
       "source": "./local",
       "sourceType": "local",
       "skillPath": ".agents/skills/color-grade-palettes/SKILL.md",
-      "computedHash": "98a937a46bc8094c2d4d16e91123b1cfe57bda9f320534ebfd5475cf930e265e"
+      "computedHash": "9472082f3cebef3b63716c9083f237c1e3fb449435f6d3d7ff4b68207b85852b"
     },
     "ffmpeg": {
       "source": "digitalsamba/claude-code-video-toolkit",
@@ -192,7 +192,7 @@
       "source": "./local",
       "sourceType": "local",
       "skillPath": ".agents/skills/seedance-camera-presets/SKILL.md",
-      "computedHash": "d73fb6b6f6ca3d889a8770cb60b40fa308e48539aa3100f71e2cacd2c634679f"
+      "computedHash": "24537d79d8e2409a7e598d463daed84f1e624ad52463df98d1fa4090ea6a75d5"
     },
     "seedance-fight-choreography": {
       "source": "./local",
@@ -205,13 +205,13 @@
       "source": "./local",
       "sourceType": "local",
       "skillPath": ".agents/skills/seedance-lens-presets/SKILL.md",
-      "computedHash": "8a98d43d58832b36b2503439d5d271661419b934784fbb1a317b7c02171b3262"
+      "computedHash": "5812b8569a8c79408b152aab50615eac9d55fa3b9aa8fba497240bf1d09b4f2f"
     },
     "seedance-lighting-presets": {
       "source": "./local",
       "sourceType": "local",
       "skillPath": ".agents/skills/seedance-lighting-presets/SKILL.md",
-      "computedHash": "9a8eea7ad5253806760cf51fa4373143bc1fecec18a266531cf3be1fd60d00d9"
+      "computedHash": "65873b8d8b71bcc6f952319ecdc1b81ea122377e74fa7c70fb4e529e50e11911"
     },
     "seedance-motion-recast": {
       "source": "./local",
@@ -241,7 +241,7 @@
       "source": "./local",
       "sourceType": "local",
       "skillPath": ".agents/skills/seedance-prompt-25/SKILL.md",
-      "computedHash": "f048ecb16b37f303206dac1750b7cd90b5fc87639133310ad047b884f3724b25"
+      "computedHash": "585f6a4e85572a67d3315977d22a6a257d7e0640925dab8382ab5d42bfe38f3a"
     },
     "seedance-prompt-25-dialogue": {
       "source": "./local",

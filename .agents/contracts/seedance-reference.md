@@ -8,10 +8,10 @@ they are prompt-composition only and never call the API themselves.
 | Axis | Skill | Notes |
 |---|---|---|
 | Shot plan: coverage, per-shot camera, lens intent and light | `seedance-shot-design` | Decides shot count, purpose, size, angle, move or hold and light source from approved intent and readable evidence; repetition and equal durations are valid |
-| Camera movement & camera styles | `seedance-camera-presets` | Moves, techniques (dolly zoom, FPV, bullet-time orbit, one-take), and 10 camera styles; preserve coherent requested paths without a move-count gate |
+| Camera movement & camera styles | `seedance-camera-presets` | Named or custom paths, compatible components and ordered style transitions; move simplicity is a heuristic, not a cap on requested or delegated choreography |
 | Lens / focal length / aperture / sensor | `seedance-lens-presets` | Always pairs numeric optics with the visible result; resolve requested 4K against current model capabilities |
 | Lighting | `seedance-lighting-presets` | Causal lighting presets; emit both the Seedream `Lighting:` recipe (elements) and the Seedance visual-style phrase so image + video share one lighting intent |
-| Color grading | `color-grade-palettes` | Named palettes + film looks in the Visual Style slot; keep one project-wide palette; optional FFmpeg match graphs in the mix step |
+| Color grading | `color-grade-palettes` | Named or custom looks in the Visual Style slot, including compatible combinations and ordered palette transitions; preserve approved look scope; optional FFmpeg match graphs in the mix step |
 | Performance intentions and listening | `acting-direction` | Scene-level motives, goals, tactics and trigger/registration/response ledger; source-bound performance plan before shot design |
 | Seedance performance encoding | `seedance-acting-console` | Encode supplied intentions with readable cues; emotion bank optional, no repeated scene analysis |
 | Staged fighting | `seedance-fight-choreography` | Stable participants and props, readable exchanges, reactions and settled end states |
@@ -25,6 +25,18 @@ they are prompt-composition only and never call the API themselves.
 | Storyboard, full multi-scene production | `seedream-storyboard`, `scene-board-sheet`, `film-production` | Boards are planning and review artifacts, never Seedance references (`board.animatic_review_only`): their staging goes into prompt text. Scene boards run at L1, L2 (default) or L3 per scene, repair failed panels by editing, and assemble into a sheet and animatic; `film-production` orchestrates across scenes |
 
 ## Composition rules
+
+Delegated creative authorship permits custom looks, fictional staging and
+camera, lens, lighting and palette proposals without user-specified preset or
+technical axis names. Choose only what serves the brief; recipes are optional,
+and quiet, ungraded or unchanged treatments remain valid. Label inventions as
+proposals, not source facts or user approvals. Preserve explicit locks, supplied
+scripts, identities, factual claims, rights and consent. Source-preserving
+edits and technical conform change only the authorized `may_change` scope;
+delegation does not reopen protected optics, palettes or ungraded delivery.
+Keep existing approval, generation and capability checks. Use only installed
+skills and available tools; missing departments remain gaps, not new installs.
+Keep proposals within the selected production/unit scope and preserve shared canon.
 
 For character-performance scenes, follow
 [Performance direction](performance-direction.md): establish the performance
@@ -64,11 +76,14 @@ Studio edit, and a sonic motif reaches the Audio block or the separate Seed
 Audio prompt. When one of them is confirmed, the scene records where it is
 carried.
 
-Do not let two skills fight: exactly one grade per clip, one dominant lighting
-direction per shot with the same physical light source across the cuts of a
-scene, and a coherent camera path or hold. Clarify competing directions without
-discarding requested compound paths by count. Record the plan and the chosen
-canonical phrases in `shot.md` alongside the prompt snapshot.
+Compose compatible looks, motivated light sources and camera paths within the
+same interval. Ordered transitions may change palette, light or camera style
+across a shot or scene; state boundaries and endpoints and preserve locked
+continuity. A sustained source is a choice, not a universal lighting rule.
+One or two camera moves is a simplicity heuristic, not a cap on requested or
+delegated choreography. Return genuine simultaneous contradictions or verified
+capability conflicts; do not drop choices by count or require style purity.
+Record the plan and resolved phrases in `shot.md` alongside the prompt snapshot.
 
 Load `seedance-lighting-presets` / `color-grade-palettes` alongside
 `seedream-prompt` when generating matching element sheets. For animation
