@@ -1,5 +1,10 @@
 # Tool and skill routing
 
+Apply [Generation access](generation-access.md) before these routes or any
+production setup. No usable MCP means prompt handoff unless the user explicitly
+selects a usable alternative generation transport. Connection alone never
+authorizes generation; older automatic fallback recipes do not apply.
+
 ## Production format routing
 
 Apply these workspace routes before the vendored HyperFrames creation table or
@@ -71,9 +76,10 @@ authorization follows from choosing one of these routes.
 
 | Intent | Route |
 | --- | --- |
-| Platform administration, catalog, pricing, billing, interactive generation | Available Ark CLI skills and current CLI help |
-| In-agent durable generation | `ark-mcp` preferred; persist project-local media and request/task evidence |
-| MCP unavailable before submission | Equivalent Ark CLI transport if it supports the same required contract and authorized operation |
+| Platform administration, catalog, pricing, billing | Available Ark CLI skills and current CLI help for requested operations |
+| Explicit in-agent generation with usable MCP | `ark-mcp`; persist project-local media and request/task evidence |
+| MCP unavailable or unusable before submission | Prompt handoff in chat; no automatic Ark CLI fallback or production setup |
+| User explicitly requests Ark CLI generation | Usable Ark CLI transport with the same authorization, review, registry, persistence and reconciliation gates; otherwise prompt handoff |
 | User explicitly requests direct HTTP/curl generation | Use the documented endpoint and exact API contract; resolve credentials from runtime configuration, record `curl` as the transport, and preserve the same review, registry, persistence and reconciliation gates |
 | Timeout after possible submission | Reconcile the existing operation; changing transport is not permission to submit twice |
 | Prompt composition only | Relevant independent prompt skill; no asset-generation or production-lock ceremony for a writing-only task |

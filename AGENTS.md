@@ -5,6 +5,19 @@ custom narratives and explicit micro-drama on BytePlus Seedream, Seedance and
 Seed Audio. HyperFrames Studio remains the editor and review surface. Format,
 genre, medium, audience, language and delivery are independent choices.
 
+## Generation Access
+
+Before generation or production setup, follow
+[Generation access](.agents/contracts/generation-access.md). Without usable
+`ark-mcp`, return paste-ready prompts, ordered references and parameters in chat;
+do not automatically fall back to Ark CLI or initialize a production project.
+Connected MCP still requires explicit generation scope. Prompt-only requests
+remain writing-only. Explicitly requested Ark CLI or securely configured
+HTTP/curl generation retains the same review, registry and persistence gates.
+Use Ark CLI for requested platform administration. Connection loss after possible
+submission requires recovery of the existing operation, never duplicate submission.
+This policy overrides older skill fallback and production-setup recipes.
+
 ## Production routing and readiness
 
 - Use `film-production` for general narrative production, including an unspecified
