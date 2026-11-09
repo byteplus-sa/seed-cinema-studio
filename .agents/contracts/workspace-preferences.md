@@ -11,6 +11,9 @@ Never follow symlinked preference files or parents.
 Use the trusted `.agents/scripts/workspace_preferences.py show` command when
 Python 3.11+ is already available, or read the same JSON through native file
 tools. No Git, uv, MCP, authentication or dependency installation is needed.
+The hardened helper also needs no-follow, descriptor-relative filesystem
+operations. Unsupported runtimes, including standard Windows Python, must use
+the native-file-tool fallback below rather than weaker automatic writes.
 Do not create a Studio, production manifest or `projects/` directory for setup.
 `configured: false` means onboarding has not been saved; `agent` in the helper's
 unsaved defaults preserves the existing capability-and-intent policy. A first
@@ -101,8 +104,14 @@ The helper uses an expected file revision, a shared preference writer lock,
 private files and atomic replacement. Re-read on a stale revision; never steal
 a lock or overwrite a newer choice. Keep `.agents/local/` gitignored. No commits,
 global rules or MCP configuration are changed by saving preferences.
+The lock coordinates helper writers, not arbitrary editors. Pause concurrent
+directory changes: a last-instant rename can update the original pinned
+directory before rejection, but not a redirected target. This is not a
+multi-file rollback or crash-durable directory transaction. Save results
+describe the locked snapshot; a subsequent read can observe newer choices.
 Native-file-tool fallback must enforce the same shape, scope and symlink checks,
 preserve unknown local files and serialize edits. If atomic replacement or
 concurrency checks are unavailable, disclose that limitation; never claim the
-helper's write guarantees. If no file-writing tool is available, continue
-chat-only and report that durable memory was not saved.
+helper's write guarantees. If safe path containment cannot be established or
+no file-writing tool is available, continue chat-only and report that durable
+memory was not saved.

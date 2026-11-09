@@ -15,6 +15,7 @@ import urllib.parse
 import urllib.request
 import uuid
 import zipfile
+import zlib
 from collections.abc import Iterator
 from contextlib import contextmanager
 from pathlib import Path, PurePosixPath
@@ -350,7 +351,19 @@ def inventory(
         with directory_handle(root, relative) as handle, os.scandir(handle) as children:
             for child in sorted(children, key=lambda item: item.name):
                 name = f"{relative}/{child.name}" if relative else child.name
-                if name in excluded or (protect_local and protected(name)):
+                if name in excluded:
+                    continue
+                if protect_local and protected(name):
+                    mode = child.stat(follow_symlinks=False).st_mode
+                    if stat.S_ISDIR(mode):
+                        kind = "directory"
+                    elif stat.S_ISLNK(mode):
+                        kind = "alias"
+                    elif stat.S_ISREG(mode):
+                        kind = "file"
+                    else:
+                        kind = "special"
+                    result[name] = {"kind": kind}
                     continue
                 entry = snapshot_entry(root, name)
                 if entry is None:
@@ -614,6 +627,7 @@ def extract_archive(archive: Path, stage: Path) -> Inventory:
         RuntimeError,
         OSError,
         EOFError,
+        zlib.error,
     ) as error:
         raise UpdateError("Malformed or unreadable ZIP archive") from error
     validate_alias_targets(entries)
@@ -712,7 +726,11 @@ def preview_paths(
         for name, entry in sorted(entries.items())
     ]
     for name in sorted(set(workspace) | set(base)):
-        if name in entries or workspace.get(name, {}).get("kind") == "directory":
+        if (
+            protected(name)
+            or name in entries
+            or workspace.get(name, {}).get("kind") == "directory"
+        ):
             continue
         rows.append(
             {
@@ -862,14 +880,29 @@ def verify_plan(plan_path: Path, expected_hash: str) -> tuple[dict[str, Any], Pa
     return cast(dict[str, Any], plan), root
 
 
+def verify_workspace(root: Path, expected: Inventory, entries: Inventory) -> None:
+    workspace = inventory(root)
+    managed = {name: entry for name, entry in workspace.items() if not protected(name)}
+    expected_managed = {
+        name: entry for name, entry in expected.items() if not protected(name)
+    }
+    if managed != expected_managed:
+        raise UpdateError("Stale workspace snapshot; preview again")
+    folded: dict[str, list[str]] = {}
+    for name in workspace:
+        folded.setdefault(name.casefold(), []).append(name)
+    for name in entries:
+        if not protected(name) and blocked_path(name, workspace, folded):
+            raise UpdateError(f"Structurally blocked path: {name}; preview again")
+
+
 def verify_snapshots(root: Path, stage: Path, plan: dict[str, Any]) -> None:
     if (
         directory_identity(root) != plan["workspace_identity"]
         or directory_identity(stage) != plan["staging_identity"]
     ):
         raise UpdateError("Workspace or staging root changed; preview again")
-    if inventory(root) != plan["workspace_snapshot"]:
-        raise UpdateError("Stale workspace snapshot; preview again")
+    verify_workspace(root, plan["workspace_snapshot"], plan["entries"])
     state, snapshot = read_state(root)
     if snapshot != plan["base_snapshot"] or state != plan["base"]:
         raise UpdateError("Stale installed base snapshot; preview again")
@@ -1133,8 +1166,7 @@ def transact(
         for name in [*changes, STATE_PATH]:
             if name == STATE_PATH:
                 verify_review(stage, plan, expected_hash)
-                if inventory(root) != expected_workspace:
-                    raise UpdateError("Workspace changed during apply")
+                verify_workspace(root, expected_workspace, plan["entries"])
             if snapshot_entry(root, name) != journal["previous"][name]:
                 raise UpdateError(f"Workspace changed before replacement: {name}")
             make_parents(root, name, created)
@@ -1156,8 +1188,7 @@ def transact(
                         Descriptor, snapshot_entry(root, directory_name)
                     )
         verify_review(stage, plan, expected_hash)
-        if inventory(root) != expected_workspace:
-            raise UpdateError("Workspace changed during apply")
+        verify_workspace(root, expected_workspace, plan["entries"])
         if descriptor(snapshot_entry(root, STATE_PATH)) != state_entry:
             raise UpdateError("Installed state changed during apply")
         journal["status"] = "applied"

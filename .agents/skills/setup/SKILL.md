@@ -23,8 +23,11 @@ python3 -B .agents/scripts/workspace_preferences.py show --project <project-id>
 
 Commands run from the workspace root; `--root <absolute-workspace>` belongs
 before `show` or `set`. The helper needs the standard library only, not uv,
-Git or MCP. Native-file-tool fallback uses the exact contract format; never
-install Python or dependencies without a separate request.
+Git or MCP, plus no-follow descriptor-relative filesystem operations.
+Unsupported runtimes, including standard Windows Python, use the native-file-tool
+fallback with the exact contract format and explicit write-guarantee limits.
+If safe containment cannot be established, remain chat-only and report that
+nothing was saved. Never install Python or dependencies without a separate request.
 
 If preferences already exist, summarize them and ask what to change rather
 than repeating onboarding. A user who already supplies clear choices need

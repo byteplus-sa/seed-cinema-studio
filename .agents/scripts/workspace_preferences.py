@@ -2,15 +2,21 @@ from __future__ import annotations
 
 import argparse
 import hashlib
+import inspect
 import json
 import os
 import re
+import secrets
 import stat
-import tempfile
+from collections.abc import Iterator
+from contextlib import contextmanager
 from pathlib import Path
 from typing import Any
 
 MAX_BYTES = 32768
+DESCRIPTOR_APIS = {os.open, os.stat, os.mkdir, os.unlink, os.rename}
+REPLACE_API = os.replace
+STAT_API = os.stat
 PROJECT_PATTERN = re.compile(r"[a-z0-9]+(?:-[a-z0-9]+)*")
 CUSTOM_PATTERN = re.compile(r"[a-z][a-z0-9_]{0,63}")
 SENSITIVE_PATTERN = re.compile(
@@ -108,38 +114,202 @@ def validate_preferences(value: Any, patch: bool = False) -> dict[str, Any]:
     return value
 
 
-def safe_path(root: Path, relative: str) -> Path:
-    current = root
-    if root.is_symlink() or not root.is_dir():
-        raise ValueError("Workspace must be a real directory")
-    parts = Path(relative).parts
-    for index, part in enumerate(parts):
-        current = current / part
-        if current.is_symlink():
-            raise ValueError("Preference paths cannot contain symlinks")
-        if current.exists():
-            mode = current.stat().st_mode
-            if index < len(parts) - 1 and not stat.S_ISDIR(mode):
-                raise ValueError("Preference parent must be a directory")
-            if index == len(parts) - 1 and not stat.S_ISREG(mode):
-                raise ValueError("Preference state must be a regular file")
-    return current
+def require_descriptor_runtime() -> None:
+    if (
+        os.name != "posix"
+        or not all(
+            getattr(os, flag, 0) for flag in ("O_NOFOLLOW", "O_DIRECTORY", "O_NONBLOCK")
+        )
+        or not DESCRIPTOR_APIS.issubset(os.supports_dir_fd)
+        or STAT_API not in os.supports_follow_symlinks
+        or not {"src_dir_fd", "dst_dir_fd"}.issubset(
+            inspect.signature(REPLACE_API).parameters
+        )
+    ):
+        raise ValueError(
+            "Required no-follow descriptor APIs unavailable; use a safe native "
+            "file-tool fallback or supported POSIX runtime; otherwise remain chat-only"
+        )
+
+
+def identity(info: os.stat_result) -> tuple[int, int]:
+    return info.st_dev, info.st_ino
+
+
+def file_version(info: os.stat_result | None) -> tuple[int, ...] | None:
+    if info is None:
+        return None
+    return (*identity(info), info.st_size, info.st_mtime_ns, info.st_ctime_ns)
+
+
+class PinnedWorkspace:
+    def __init__(self, root: Path) -> None:
+        require_descriptor_runtime()
+        self.root = root.absolute()
+        self.root_info = self.root.lstat()
+        if not stat.S_ISDIR(self.root_info.st_mode):
+            raise ValueError("Workspace must be a real directory")
+        self.descriptors: list[int] = []
+        self.bindings: list[tuple[int, str, int]] = []
+        self.directories: dict[tuple[str, ...], int] = {}
+
+    @contextmanager
+    def opened(self) -> Iterator[PinnedWorkspace]:
+        try:
+            canonical = self.root.resolve(strict=True)
+            descriptor = os.open(
+                canonical.anchor, os.O_RDONLY | os.O_DIRECTORY | os.O_NOFOLLOW
+            )
+            self.descriptors.append(descriptor)
+            for part in canonical.parts[1:]:
+                descriptor = self.open_child(descriptor, part)
+            self.directories[()] = descriptor
+            self.validate()
+            yield self
+        finally:
+            for descriptor in reversed(self.descriptors):
+                os.close(descriptor)
+
+    def open_child(self, parent: int, name: str) -> int:
+        before = os.stat(name, dir_fd=parent, follow_symlinks=False)
+        if not stat.S_ISDIR(before.st_mode):
+            raise ValueError("Preference parents must be real directories")
+        descriptor = os.open(
+            name, os.O_RDONLY | os.O_DIRECTORY | os.O_NOFOLLOW, dir_fd=parent
+        )
+        self.descriptors.append(descriptor)
+        if identity(before) != identity(os.fstat(descriptor)):
+            raise ValueError("Preference directory identity changed")
+        self.bindings.append((parent, name, descriptor))
+        return descriptor
+
+    def validate(self) -> None:
+        root_descriptor = self.directories.get(())
+        if root_descriptor is not None and (
+            identity(self.root.lstat()) != identity(self.root_info)
+            or identity(os.fstat(root_descriptor)) != identity(self.root_info)
+        ):
+            raise ValueError("Workspace identity changed")
+        for parent, name, descriptor in self.bindings:
+            info = os.stat(name, dir_fd=parent, follow_symlinks=False)
+            if not stat.S_ISDIR(info.st_mode) or identity(info) != identity(
+                os.fstat(descriptor)
+            ):
+                raise ValueError("Preference directory identity changed")
+
+    def parent(self, path: Path, create: bool = False) -> int | None:
+        parts = path.absolute().relative_to(self.root).parts
+        if not parts or ".." in parts:
+            raise ValueError("Preference path must remain inside the workspace")
+        descriptor = self.directories[()]
+        for index, part in enumerate(parts[:-1]):
+            self.validate()
+            key = parts[: index + 1]
+            if key not in self.directories:
+                try:
+                    child = self.open_child(descriptor, part)
+                except FileNotFoundError:
+                    self.validate()
+                    if not create:
+                        return None
+                    try:
+                        os.mkdir(part, 0o700, dir_fd=descriptor)
+                    except FileExistsError:
+                        pass
+                    self.validate()
+                    child = self.open_child(descriptor, part)
+                self.directories[key] = child
+            descriptor = self.directories[key]
+        self.validate()
+        return descriptor
+
+    def file_info(self, parent: int, name: str) -> os.stat_result | None:
+        try:
+            info = os.stat(name, dir_fd=parent, follow_symlinks=False)
+        except FileNotFoundError:
+            return None
+        if not stat.S_ISREG(info.st_mode):
+            raise ValueError("Preference state must be a regular non-symlink file")
+        return info
+
+    def read(self, path: Path) -> bytes | None:
+        parent = self.parent(path)
+        if parent is None:
+            return None
+        before = self.file_info(parent, path.name)
+        self.validate()
+        if before is None:
+            return None
+        if before.st_size > MAX_BYTES:
+            raise ValueError("Preferences exceed size limit")
+        descriptor = os.open(
+            path.name, os.O_RDONLY | os.O_NOFOLLOW | os.O_NONBLOCK, dir_fd=parent
+        )
+        with os.fdopen(descriptor, "rb") as stream:
+            opened = os.fstat(stream.fileno())
+            if not stat.S_ISREG(opened.st_mode) or file_version(opened) != file_version(
+                before
+            ):
+                raise ValueError("Preference file identity changed")
+            self.validate()
+            data = stream.read(MAX_BYTES + 1)
+            if len(data) > MAX_BYTES:
+                raise ValueError("Preferences exceed size limit")
+            if file_version(os.fstat(stream.fileno())) != file_version(before):
+                raise ValueError("Preference file changed during read")
+            if file_version(self.file_info(parent, path.name)) != file_version(before):
+                raise ValueError("Preference file identity changed")
+            self.validate()
+        return data
+
+
+def unlink_owned(parent: int, name: str, owned: os.stat_result) -> None:
+    try:
+        current = os.stat(name, dir_fd=parent, follow_symlinks=False)
+    except FileNotFoundError:
+        return
+    if identity(current) != identity(owned):
+        raise ValueError("Preference cleanup identity changed; file left untouched")
+    os.unlink(name, dir_fd=parent)
+
+
+@contextmanager
+def writer_lock(files: PinnedWorkspace) -> Iterator[None]:
+    parent = files.parent(files.root / ".agents/local/preferences.lock", create=True)
+    assert parent is not None
+    files.validate()
+    try:
+        descriptor = os.open(
+            "preferences.lock",
+            os.O_WRONLY | os.O_CREAT | os.O_EXCL | os.O_NOFOLLOW,
+            0o600,
+            dir_fd=parent,
+        )
+    except FileExistsError as error:
+        raise ValueError("Preference writer lock exists; do not steal it") from error
+    owned = os.fstat(descriptor)
+    try:
+        with os.fdopen(descriptor, "w") as stream:
+            files.validate()
+            json.dump({"pid": os.getpid()}, stream)
+        files.validate()
+        yield
+    finally:
+        unlink_owned(parent, "preferences.lock", owned)
 
 
 def preference_path(root: Path, project: str | None = None) -> Path:
     if project is None:
-        return safe_path(root, ".agents/local/preferences.json")
+        return root / ".agents/local/preferences.json"
     if len(project) > 100 or not PROJECT_PATTERN.fullmatch(project):
         raise ValueError("Project must be a lowercase kebab-case identifier")
-    return safe_path(root, f".agents/local/projects/{project}/preferences.json")
+    return root / f".agents/local/projects/{project}/preferences.json"
 
 
-def read_state(path: Path) -> tuple[dict[str, Any], str]:
-    if not path.exists():
+def read_state(files: PinnedWorkspace, path: Path) -> tuple[dict[str, Any], str]:
+    data = files.read(path)
+    if data is None:
         return {}, "absent"
-    if path.stat().st_size > MAX_BYTES:
-        raise ValueError("Preferences exceed size limit")
-    data = path.read_bytes()
     try:
         document = decode_json(data.decode("utf-8"))
     except UnicodeError as error:
@@ -174,13 +344,13 @@ def merge_preferences(current: dict[str, Any], patch: dict[str, Any]) -> dict[st
     return result
 
 
-def show(root: Path, project: str | None = None) -> dict[str, Any]:
-    workspace, workspace_revision = read_state(preference_path(root))
-    overrides, revision = (
-        read_state(preference_path(root, project))
-        if project is not None
-        else (workspace, workspace_revision)
-    )
+def preference_result(
+    workspace: dict[str, Any],
+    workspace_revision: str,
+    overrides: dict[str, Any],
+    revision: str,
+    project: str | None,
+) -> dict[str, Any]:
     effective = merge_preferences(DEFAULTS, workspace)
     if project is not None:
         effective = merge_preferences(effective, overrides)
@@ -194,19 +364,73 @@ def show(root: Path, project: str | None = None) -> dict[str, Any]:
     }
 
 
-def atomic_write(root: Path, path: Path, contents: bytes) -> None:
-    relative = str(path.relative_to(root))
-    safe_path(root, relative)
-    descriptor, temporary = tempfile.mkstemp(prefix=".preferences-", dir=path.parent)
+def show(root: Path, project: str | None = None) -> dict[str, Any]:
+    with PinnedWorkspace(root).opened() as files:
+        workspace, workspace_revision = read_state(files, preference_path(root))
+        overrides, revision = (
+            read_state(files, preference_path(root, project))
+            if project is not None
+            else (workspace, workspace_revision)
+        )
+        files.validate()
+        return preference_result(
+            workspace, workspace_revision, overrides, revision, project
+        )
+
+
+def atomic_write(
+    root: Path, path: Path, contents: bytes, files: PinnedWorkspace | None = None
+) -> None:
+    if files is None:
+        with PinnedWorkspace(root).opened() as pinned:
+            atomic_write(root, path, contents, pinned)
+        return
+    parent = files.parent(path)
+    if parent is None:
+        raise ValueError("Preference parent does not exist")
+    before = files.file_info(parent, path.name)
+    files.validate()
+    temporary = ".preferences-" + secrets.token_hex(16)
+    descriptor = os.open(
+        temporary,
+        os.O_WRONLY | os.O_CREAT | os.O_EXCL | os.O_NOFOLLOW,
+        0o600,
+        dir_fd=parent,
+    )
+    owned = os.fstat(descriptor)
     try:
         with os.fdopen(descriptor, "wb") as stream:
+            files.validate()
             stream.write(contents)
             stream.flush()
             os.fsync(stream.fileno())
-        safe_path(root, relative)
-        os.replace(temporary, path)
+            written = os.fstat(stream.fileno())
+        files.validate()
+        if file_version(files.file_info(parent, path.name)) != file_version(before):
+            raise ValueError("Preference destination changed before replacement")
+        if file_version(files.file_info(parent, temporary)) != file_version(written):
+            raise ValueError("Preference temporary identity changed")
+        os.replace(temporary, path.name, src_dir_fd=parent, dst_dir_fd=parent)
+        files.validate()
     finally:
-        Path(temporary).unlink(missing_ok=True)
+        unlink_owned(parent, temporary, owned)
+
+
+def proposed_state(
+    current: dict[str, Any],
+    patch: dict[str, Any],
+    revision: str,
+    expected_revision: str,
+) -> tuple[dict[str, Any], bytes]:
+    if revision != expected_revision:
+        raise ValueError("Preference revision changed; re-read before saving")
+    proposed = validate_preferences(merge_preferences(current, patch))
+    contents = (
+        json.dumps({"schema_version": 1, "preferences": proposed}, indent=2) + "\n"
+    ).encode("utf-8")
+    if len(contents) > MAX_BYTES:
+        raise ValueError("Preferences exceed size limit")
+    return proposed, contents
 
 
 def save(
@@ -220,42 +444,43 @@ def save(
         r"[0-9a-f]{64}", expected_revision
     ):
         raise ValueError("Invalid expected preference revision")
-    path = preference_path(root, project)
-    current, revision = read_state(path)
-    if revision != expected_revision:
-        raise ValueError("Preference revision changed; re-read before saving")
-    proposed = validate_preferences(merge_preferences(current, patch))
-    contents = (
-        json.dumps({"schema_version": 1, "preferences": proposed}, indent=2) + "\n"
-    ).encode("utf-8")
-    if len(contents) > MAX_BYTES:
-        raise ValueError("Preferences exceed size limit")
-    local = root / ".agents/local"
-    local.mkdir(parents=True, exist_ok=True, mode=0o700)
-    lock = safe_path(root, ".agents/local/preferences.lock")
-    try:
-        descriptor = os.open(lock, os.O_WRONLY | os.O_CREAT | os.O_EXCL, 0o600)
-    except FileExistsError as error:
-        raise ValueError("Preference writer lock exists; do not steal it") from error
-    try:
-        with os.fdopen(descriptor, "w") as stream:
-            json.dump({"pid": os.getpid()}, stream)
-        if read_state(preference_path(root, project))[1] != expected_revision:
-            raise ValueError("Preference revision changed; re-read before saving")
-        ignore = safe_path(root, ".agents/local/.gitignore")
-        if not ignore.exists():
-            atomic_write(root, ignore, b"*\n")
-        else:
-            ignore_text = ignore.read_text(encoding="utf-8")
+    with PinnedWorkspace(root).opened() as files:
+        path = preference_path(root, project)
+        read_state(files, preference_path(root))
+        current, revision = read_state(files, path)
+        proposed_state(current, patch, revision, expected_revision)
+        with writer_lock(files):
+            workspace, workspace_revision = read_state(files, preference_path(root))
+            current, revision = (
+                read_state(files, path)
+                if project is not None
+                else (workspace, workspace_revision)
+            )
+            proposed, contents = proposed_state(
+                current, patch, revision, expected_revision
+            )
+            ignore = root / ".agents/local/.gitignore"
+            ignore_data = files.read(ignore)
+            ignore_text = "" if ignore_data is None else ignore_data.decode("utf-8")
             if not ignore_text.splitlines() or ignore_text.splitlines()[-1] != "*":
-                atomic_write(
-                    root, ignore, (ignore_text.rstrip("\n") + "\n*\n").encode("utf-8")
+                ignore_contents = (
+                    b"*\n"
+                    if ignore_data is None
+                    else (ignore_text.rstrip("\n") + "\n*\n").encode("utf-8")
                 )
-        path.parent.mkdir(parents=True, exist_ok=True, mode=0o700)
-        atomic_write(root, path, contents)
-    finally:
-        lock.unlink()
-    return show(root, project)
+                if len(ignore_contents) > MAX_BYTES:
+                    raise ValueError("Local ignore rules exceed size limit")
+                atomic_write(root, ignore, ignore_contents, files)
+            files.parent(path, create=True)
+            atomic_write(root, path, contents, files)
+            saved_revision = hashlib.sha256(contents).hexdigest()
+            return preference_result(
+                workspace if project is not None else proposed,
+                workspace_revision if project is not None else saved_revision,
+                proposed,
+                saved_revision,
+                project,
+            )
 
 
 def main() -> int:

@@ -326,7 +326,7 @@
       "sourceType": "local",
       "skillPath": ".agents/skills/setup/SKILL.md",
       "sourceNotes": "Project-local preference onboarding, not global configuration or production authorization.",
-      "computedHash": "626632c7a78efb950135b0974399faddf9930478db744dc83333654b5dfe933e"
+      "computedHash": "ae09aacc23008922706f6d27217788a1f1ccb3b01c2d962826b074a2fb6ba2ab"
     },
     "update": {
       "source": "./local",

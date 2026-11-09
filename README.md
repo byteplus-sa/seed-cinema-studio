@@ -168,6 +168,9 @@ the summary. Preferences live in ignored `.agents/local/` files and are read in
 future sessions. "Use agent mode for this task" leaves a saved prompt-only default
 unchanged. Preferences never grant generation permission or bypass native drafts.
 Existing production and unit briefs are not rewritten by setup.
+The hardened preference helper needs no-follow descriptor-relative file APIs;
+unsupported runtimes, including standard Windows Python, use native file tools
+with disclosed limitations or chat-only setup when safe writes are unavailable.
 
 Run **`/update`** (or "update this repo") with either a Git checkout or a ZIP
 download. Git updates preview incoming commits before an approved fast-forward.

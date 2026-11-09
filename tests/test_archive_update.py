@@ -3,6 +3,7 @@ import io
 import json
 import os
 import stat
+import struct
 import subprocess
 import sys
 import tempfile
@@ -27,7 +28,7 @@ class ArchiveUpdateTests(unittest.TestCase):
     def setUp(self):
         self.temp = tempfile.TemporaryDirectory()
         self.addCleanup(self.temp.cleanup)
-        self.area = Path(self.temp.name)
+        self.area = Path(self.temp.name).resolve()
         self.root = self.area / "workspace"
         self.root.mkdir()
         self.write(".agents/contracts/update-source.json", json.dumps(SOURCE))
@@ -188,6 +189,150 @@ class ArchiveUpdateTests(unittest.TestCase):
         self.apply(result)
         for name in protected:
             self.assertEqual((self.root / name).read_text(), "local")
+
+    def test_protected_inventory_retains_only_boundary_names_and_types(self):
+        self.write(".env", "private contents")
+        self.write("docs/nested/note.txt", "private contents")
+        self.write(".agents/settings.json", "private contents")
+        (self.root / ".CLAUDE-LOCAL").mkdir()
+        (self.root / ".CLAUDE").symlink_to(".CLAUDE-LOCAL")
+        os.mkfifo(self.root / "preferences.pipe")
+        original = updater.snapshot_entry
+
+        def refuse_protected_snapshot(root, name):
+            if root == self.root and updater.protected(name):
+                self.fail(f"Protected contents were inspected: {name}")
+            return original(root, name)
+
+        with patch.object(
+            updater, "snapshot_entry", side_effect=refuse_protected_snapshot
+        ):
+            workspace = updater.inventory(self.root)
+        for name, kind in (
+            (".env", "file"),
+            ("docs", "directory"),
+            (".agents/settings.json", "file"),
+            (".CLAUDE", "alias"),
+            ("preferences.pipe", "special"),
+        ):
+            self.assertEqual(workspace.get(name), {"kind": kind})
+        self.assertNotIn("docs/nested", workspace)
+
+    def test_protected_claude_case_collisions_block_before_any_replacement(self):
+        local = self.root / ".CLAUDE"
+        external = self.write("external.txt", "local")
+        for kind in ("file", "directory", "alias", "special"):
+            with self.subTest(kind=kind):
+                if kind == "file":
+                    local.write_text("local")
+                elif kind == "directory":
+                    local.mkdir()
+                elif kind == "alias":
+                    local.symlink_to(external)
+                else:
+                    os.mkfifo(local)
+                try:
+                    before = local.lstat()
+                    result = self.preview(
+                        {".claude": ".agents", ".agents/scripts/tool.py": "pass"}
+                    )
+                    self.assertEqual(self.classes(result)[".claude"], "blocked")
+                    self.assertNotIn(".CLAUDE", self.classes(result))
+                    with patch.object(updater, "install_entry") as install:
+                        for resolutions in ({}, {".claude": "upstream"}):
+                            with self.assertRaises(updater.UpdateError):
+                                self.apply(result, resolutions)
+                        install.assert_not_called()
+                    self.assertEqual(local.lstat(), before)
+                finally:
+                    if kind == "directory":
+                        local.rmdir()
+                    else:
+                        local.unlink()
+
+    def test_protected_claude_parent_collision_blocks_nested_alias(self):
+        self.write(".CLAUDE/settings.json", "local")
+        result = self.preview(
+            {
+                ".claude/scripts": "../.agents/scripts",
+                ".agents/scripts/tool.py": "pass",
+            }
+        )
+        self.assertEqual(self.classes(result)[".claude/scripts"], "blocked")
+        with patch.object(updater, "install_entry") as install:
+            with self.assertRaises(updater.UpdateError):
+                self.apply(result)
+            install.assert_not_called()
+        self.assertEqual((self.root / ".CLAUDE/settings.json").read_text(), "local")
+
+    def test_new_protected_collision_after_preview_refuses_without_reading_it(self):
+        result = self.preview(
+            {".claude": ".agents", ".agents/scripts/tool.py": "pass"}
+        )
+        self.assertEqual(self.classes(result)[".claude"], "upstream-only")
+        local = self.write(".CLAUDE", "local")
+        before = local.lstat()
+        original = updater.snapshot_entry
+
+        def refuse_colliding_snapshot(root, name):
+            if root == self.root and name.casefold() == ".claude":
+                self.fail("Protected collision was read before rejection")
+            return original(root, name)
+
+        with (
+            patch.object(
+                updater, "snapshot_entry", side_effect=refuse_colliding_snapshot
+            ),
+            patch.object(updater, "install_entry") as install,
+        ):
+            with self.assertRaises(updater.UpdateError):
+                self.apply(result)
+            install.assert_not_called()
+        self.assertEqual(local.lstat(), before)
+        self.assertFalse((self.root / ".agents/scripts/tool.py").exists())
+        self.assertFalse((self.root / updater.STATE_PATH).exists())
+        self.assertFalse((self.root / updater.LOCK_PATH).exists())
+
+    def test_preference_content_changes_remain_excluded_from_freshness_and_state(self):
+        names = (".agents/local/preferences.json", ".agents/preferences.json", ".env")
+        for name in names:
+            self.write(name, "local preference")
+        result = self.preview(
+            {"a.txt": "new", **{name: "upstream preference" for name in names}}
+        )
+        for name in names:
+            updater.atomic_file(self.root / name, b"edited after preview", 0o600)
+        original = updater.install_entry
+
+        def edit_preferences(root, name, entry, contents):
+            original(root, name, entry, contents)
+            if name == "a.txt":
+                for preference in names:
+                    self.write(preference, "edited during apply")
+                self.write(".agents/local/new.local.json", "new preference")
+
+        with patch.object(updater, "install_entry", side_effect=edit_preferences):
+            self.apply(result)
+        self.assertEqual((self.root / "a.txt").read_text(), "new")
+        for name in names:
+            self.assertEqual((self.root / name).read_text(), "edited during apply")
+        state, _ = updater.read_state(self.root)
+        self.assertEqual(set(state["hashes"]), {"a.txt"})
+
+    def test_preference_exclusion_does_not_hide_installed_base_changes(self):
+        self.apply(self.preview({"a.txt": "base"}))
+        result = self.preview({"a.txt": "new"}, "revision-2")
+        self.write(".agents/local/preferences.json", "benign edit")
+        state, _ = updater.read_state(self.root)
+        state["transaction"] = "another-transaction"
+        updater.atomic_file(
+            self.root / updater.STATE_PATH, updater.encode_json(state), 0o600
+        )
+        with patch.object(updater, "install_entry") as install:
+            with self.assertRaisesRegex(updater.UpdateError, "Stale installed base"):
+                self.apply(result)
+            install.assert_not_called()
+        self.assertEqual((self.root / "a.txt").read_text(), "base")
 
     def test_workspace_staging_manifest_base_and_plan_changes_are_refused(self):
         for change in ("workspace", "stage", "source", "base", "plan"):
@@ -412,6 +557,64 @@ class ArchiveUpdateTests(unittest.TestCase):
             bundle.writestr(info, "x")
         with self.assertRaises(updater.UpdateError):
             updater.preview(self.root, archive, REPOSITORY, "rev")
+
+    def malformed_deflate_archive(self):
+        archive = self.archive({"good.txt": "valid", "bad.txt": "invalid block"})
+        contents = bytearray(archive.read_bytes())
+        with zipfile.ZipFile(archive) as bundle:
+            member = bundle.infolist()[1]
+        name_size, extra_size = struct.unpack_from(
+            "<HH", contents, member.header_offset + 26
+        )
+        payload = member.header_offset + 30 + name_size + extra_size
+        contents[payload] = (contents[payload] & 0xF8) | 7
+        archive.write_bytes(contents)
+        return archive
+
+    def test_malformed_deflate_is_normalized_and_partial_stage_is_removed(self):
+        archive = self.malformed_deflate_archive()
+        before = updater.inventory(self.root, protect_local=False)
+        stage = self.area / "seed-update-stage-malformed"
+        stage.mkdir()
+        try:
+            with self.assertRaisesRegex(updater.UpdateError, "Malformed.*ZIP"):
+                updater.preview(self.root, archive, REPOSITORY, "rev", stage)
+        finally:
+            self.assertFalse(stage.exists())
+            self.assertEqual(updater.inventory(self.root, protect_local=False), before)
+
+    def test_cli_malformed_deflate_returns_json_exit_two_and_cleans_stage(self):
+        archive = self.malformed_deflate_archive()
+        before = updater.inventory(self.root, protect_local=False)
+        failed = subprocess.run(
+            [
+                sys.executable,
+                "-B",
+                str(SCRIPT),
+                "preview",
+                "--workspace",
+                str(self.root),
+                "--zip",
+                str(archive),
+                "--source",
+                REPOSITORY,
+                "--revision",
+                "rev",
+            ],
+            capture_output=True,
+            text=True,
+            env={**os.environ, "PATH": "", "TMPDIR": str(self.area)},
+            check=False,
+            timeout=10,
+        )
+        self.assertEqual(updater.inventory(self.root, protect_local=False), before)
+        self.assertEqual(list(self.area.glob("seed-update-stage-*")), [])
+        self.assertEqual(failed.stdout, "")
+        self.assertEqual(failed.returncode, 2)
+        self.assertEqual(
+            json.loads(failed.stderr),
+            {"status": "error", "error": "Malformed or unreadable ZIP archive"},
+        )
 
     def test_workspace_case_collision_cannot_be_forced(self):
         self.write("Local/file.txt", "mine")
