@@ -1,5 +1,13 @@
 # Production policy
 
+Apply [Generation access](generation-access.md) before starting this lifecycle.
+Without usable MCP or an explicitly requested usable alternative transport,
+deliver prompts in chat instead of initiating generation or production setup.
+Prompt handoff does not require Studio, manifests, registration or production
+locks. Existing submitted jobs retain their recovery and reconciliation rules.
+The production requirements below apply to authorized production, not to a
+writing-only handoff.
+
 ## Independent Review Mode
 
 `project.md` YAML `review_mode` is `default` or `strict`, independently of

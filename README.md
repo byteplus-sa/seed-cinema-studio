@@ -5,6 +5,24 @@ and micro-drama with BytePlus Seedream, Seedance and Seed Audio. HyperFrames Stu
 remains the editor and review surface; this is not a new standalone application.
 Format, genre, medium, audience, language and delivery are independent choices.
 
+## Prompts Without MCP
+
+No usable `ark-mcp` connected? Describe the content you want and receive
+paste-ready prompts, ordered reference bindings and separate model parameters
+in chat. No generation credentials, Studio project, asset locks or production
+setup are required; prompt files are saved only when requested.
+
+With usable MCP connected, say **"Generate this video"** to authorize generation
+for that task, or **"Prompts only"** to keep writing-only delivery. Connection
+alone does not authorize generation. To use an alternative, explicitly say
+**"Generate this with Ark CLI"**; the CLI must support the required operation
+and existing safeguards. There is no automatic CLI fallback, new mode flag or
+persistent toggle. After an interrupted submission, recover the same task
+instead of resubmitting. See [Generation access](.agents/contracts/generation-access.md).
+
+The production APIs and workflows below apply only to authorized production;
+prompt handoff does not initialize a root or unit Studio project.
+
 The local implementation of `PLAN_SEED_CINEMA_STUDIO.md` supports validated
 `production.json` manifests, scoped request/decision lifecycles, independent unit
 Studio stages, explicit editorial snapshots and named delivery bindings. This
