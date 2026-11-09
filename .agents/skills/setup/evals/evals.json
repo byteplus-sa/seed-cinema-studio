@@ -1,0 +1,27 @@
+{
+  "skill_name": "setup",
+  "evals": [
+    {
+      "id": 1,
+      "prompt": "/setup. This is my first time using this Studio. I have not chosen any preferences yet.",
+      "expected_output": "Begin a short interview with two or three questions, including scope and prompt-only versus agent assistance. Offer defaults and skipping without saving or starting production.",
+      "files": [],
+      "assertions": [
+        "The first response asks two or three questions rather than the whole questionnaire.",
+        "The user can choose prompt-only mode and workspace-wide or production-specific scope.",
+        "No preferences, production files, credentials or media are created before confirmation."
+      ]
+    },
+    {
+      "id": 2,
+      "prompt": "Remember prompt-only mode, faster results, concise English prompts for this workspace. Save those preferences, but keep my existing detailed review preference.",
+      "expected_output": "Save only the explicitly authorized preferences, retain strict review and unrelated settings, read them back and explain fast/prompt-only safety boundaries. No repeat interview, generation or global edits.",
+      "files": [],
+      "assertions": [
+        "Persisted preferences contain prompt_only, fast, concise and English while preserving review_mode strict and unrelated custom preferences.",
+        "A fresh read returns the saved preferences and no production directory or global configuration was changed.",
+        "Fast priority does not change model policy, grant generation permission or bypass native drafts."
+      ]
+    }
+  ]
+}

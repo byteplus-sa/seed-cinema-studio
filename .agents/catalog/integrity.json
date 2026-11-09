@@ -46,7 +46,7 @@
     ".agents/skills/filipino-micro-drama/references/series-bible.md": "5557fe8ff792b43e5c7c9c2d146ade985e7f7e250bc9af3285e4ad7e05cbd80e",
     ".agents/skills/filipino-micro-drama/references/taglish-dialogue.md": "9aa880b9a8d5e9488483699c65127c7c682ebc1f6823c9a4d99692ddad280887",
     ".agents/skills/filipino-micro-drama/references/visual-signifiers.md": "ae1e88bff25ff456748590ecd168a56431b9725e9ec4daa84ed0a619809dfa00",
-    ".agents/skills/film-production/SKILL.md": "3ee74cc980824f235c008a06171a9eedb4059771f825f8aca11ff93f1b5b4d51",
+    ".agents/skills/film-production/SKILL.md": "83e11c406258eaa8f7e0d519ff4a99ea538034c13d1a5e9222782a7e5609032f",
     ".agents/skills/film-production/agents/openai.yaml": "2b219efe3f66c0bd66485ccd80c770e0a571226f67f87e2ce48b9aecf700cedb",
     ".agents/skills/film-production/evals/evals.json": "7ce07cbc1e2a567d639ca25709e5ba181ad10b4501bba786714bcac480c4ec17",
     ".agents/skills/film-production/references/handoff-contracts.md": "7505b138b0326caff1dcf3452d0608e56d79f17c9e1f9335e59ed0d3c3e5c165",
@@ -542,6 +542,8 @@
     ".agents/skills/seedream-storyboard/references/review-and-selection.md": "a921e48af15eb15c0966fcd6126ba587c1caf69ad0388836e2b92eaff9dc02a9",
     ".agents/skills/seedream-storyboard/references/scene-board.md": "ff58aad028a12c0ce10b0e4d317e77585e33dc9123068c7f25b24cd225951664",
     ".agents/skills/series-continuity/SKILL.md": "215ecef60aba85d7f62fe00999f389c0775c4e13afab4f49091f556cc63e0ce4",
+    ".agents/skills/setup/SKILL.md": "626632c7a78efb950135b0974399faddf9930478db744dc83333654b5dfe933e",
+    ".agents/skills/setup/evals/evals.json": "3e6e9b3777fd92287381aeedf9119a23f0f1210e5c5617d3609020078c3d5ba6",
     ".agents/skills/showcase-html/SKILL.md": "a4b19d91ae785d8320a9f569e3844296a41ca402971e8f01dc17322cb5ea633d",
     ".agents/skills/showcase-html/agents/openai.yaml": "8be865e104ec97475b96d879abc81fa2daf9ff797da4fb3fd9f24ddb53f00853",
     ".agents/skills/showcase-html/assets/byteplus-logo.svg": "a54ca43ac374a519e2889f90375a9ebce8da048c9b78af07321e874b1adeae95",
@@ -574,6 +576,8 @@
     ".agents/skills/template-factory/references/templates/index.json": "9f514e4884348b045bcb2f02fc2922f35718437a88eb5f954611ffc75ea0e895",
     ".agents/skills/template-factory/references/templates/psychedelic-neon-cosmic/template.json": "9fb038fef076b2f8a067a81c71c991caa8347ec4d2ad959991170d637a259ec8",
     ".agents/skills/template-factory/references/templates/psychedelic-neon-cosmic/template.md": "38cbbea99269dd4235d4c9383a1bfad79fee785bd6ba152223e350f6ca15a7d0",
-    ".agents/skills/template-factory/scripts/validate_breakdown.py": "af039a0ee8c6dbe837436280a20706f5ec1b0a03a38cef386efaea60d41e1b5c"
+    ".agents/skills/template-factory/scripts/validate_breakdown.py": "af039a0ee8c6dbe837436280a20706f5ec1b0a03a38cef386efaea60d41e1b5c",
+    ".agents/skills/update/SKILL.md": "84bad9faed61b7a4d0082c1ee2c05fc791bd60612d3bf76c683c0f7d9fb601d6",
+    ".agents/skills/update/evals/evals.json": "cd53060a15b832fd51e1d62aac1f95b0e90d6530b85857a9477b07b7183e4d8f"
   }
 }

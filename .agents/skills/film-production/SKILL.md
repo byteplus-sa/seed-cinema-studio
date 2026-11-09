@@ -89,8 +89,10 @@ Record capacity gaps and require measured trials; alternate cuts remain deferred
    (`showcase.json` for a pre-Studio canvas project),
    relevant element, scene and shot manifests, prompt snapshots, and the latest
    review decisions. Manifests and the registry win over `handoff.md`. A new
-   Studio project starts with `approval_mode: approve_for_me` and
-   `review_mode: default` in `project.md`,
+   Studio project initializes review and approval from confirmed
+   [workspace preferences](../../contracts/workspace-preferences.md), unless
+   the task specifies otherwise. Without applicable saved choices, use
+   `approval_mode: approve_for_me` and `review_mode: default` in `project.md`,
    `studio_project.py init <project> [--unit ID]`, then
    `studio_project.py stage <project> [--unit ID] start brief-development`.
 3. **Never hand-write Studio state** (`stages.json`, `provenance.json`,

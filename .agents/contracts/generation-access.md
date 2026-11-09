@@ -31,6 +31,15 @@ selection; neither enables generation or authorizes a transport fallback.
 | Any | Explicit Ark CLI generation | Ark CLI generation if usable; otherwise prompt handoff |
 | Any | Explicit HTTP/curl generation | HTTP generation if securely configured; otherwise prompt handoff |
 
+Read [Workspace preferences](workspace-preferences.md) before applying this
+table. Saved `execution_mode: prompt_only` uses the prompt-only row even with
+usable MCP. A conflicting generic generation request needs clarification;
+"Use agent mode for this task" explicitly overrides the saved mode only for
+that task, without changing the saved default or bypassing this table's
+capability, transport and consent requirements. Saved `agent`, fast priority,
+review and approval preferences never grant generation permission. Production
+briefs and required safeguards remain authoritative.
+
 Never automatically fall back to Ark CLI, direct HTTP/curl or another generation
 service when MCP is missing or unusable. A generic "generate this" or "use agent
 mode" does not select an alternative transport. "Generate this with Ark CLI"
