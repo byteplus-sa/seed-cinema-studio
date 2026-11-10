@@ -5,6 +5,24 @@ custom narratives and explicit micro-drama on BytePlus Seedream, Seedance and
 Seed Audio. HyperFrames Studio remains the editor and review surface. Format,
 genre, medium, audience, language and delivery are independent choices.
 
+## Local Preferences And Maintenance
+
+At session start and resume, read
+[Workspace preferences](.agents/contracts/workspace-preferences.md) and any
+existing `.agents/local/preferences.json`, plus overrides for an explicitly
+selected production. Missing settings retain existing policy; invalid settings
+require repair, not silent reset. Saved prompt-only mode applies even with MCP.
+Task-only agent-mode overrides do not change the saved preference or authorize
+generation outside explicit scope. Active project and selected unit brief
+choices and all safety contracts remain authoritative.
+
+Route `/setup`, "run setup" and explicit durable-preference requests to `setup`.
+Interview in small batches, confirm changes and remember only safe, scoped
+preferences. Route `/update`, "update this repo" and ZIP-install updates to
+`update`. Keep `.agents/local/`, production assets and unrelated work untouched
+by repository updates. No Git, MCP or production setup is required for
+preferences; ZIP update tooling has its own documented runtime requirements.
+
 ## Generation Access
 
 Before generation or production setup, follow

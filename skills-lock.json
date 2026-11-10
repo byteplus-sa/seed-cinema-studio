@@ -78,7 +78,7 @@
       "source": "./local",
       "sourceType": "local",
       "skillPath": ".agents/skills/film-production/SKILL.md",
-      "computedHash": "3ee74cc980824f235c008a06171a9eedb4059771f825f8aca11ff93f1b5b4d51"
+      "computedHash": "83e11c406258eaa8f7e0d519ff4a99ea538034c13d1a5e9222782a7e5609032f"
     },
     "html-graphic-render": {
       "source": "./local",
@@ -320,6 +320,20 @@
       "sourceType": "local",
       "skillPath": ".agents/skills/seedream-storyboard/SKILL.md",
       "computedHash": "de75463fdf4e1ff0fd9434fcf60fe45504e15ebbae6b342bd99dc9b203fe1ce6"
+    },
+    "setup": {
+      "source": "./local",
+      "sourceType": "local",
+      "skillPath": ".agents/skills/setup/SKILL.md",
+      "sourceNotes": "Project-local preference onboarding, not global configuration or production authorization.",
+      "computedHash": "ae09aacc23008922706f6d27217788a1f1ccb3b01c2d962826b074a2fb6ba2ab"
+    },
+    "update": {
+      "source": "./local",
+      "sourceType": "local",
+      "skillPath": ".agents/skills/update/SKILL.md",
+      "sourceNotes": "Staged archive updates and preview-first Git integration for this repository, preserving production and preference state.",
+      "computedHash": "84bad9faed61b7a4d0082c1ee2c05fc791bd60612d3bf76c683c0f7d9fb601d6"
     },
     "showcase-html": {
       "source": "./local",

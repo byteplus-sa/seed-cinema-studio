@@ -12,13 +12,15 @@ paste-ready prompts, ordered reference bindings and separate model parameters
 in chat. No generation credentials, Studio project, asset locks or production
 setup are required; prompt files are saved only when requested.
 
-With usable MCP connected, say **"Generate this video"** to authorize generation
-for that task, or **"Prompts only"** to keep writing-only delivery. Connection
+With usable MCP connected and no saved prompt-only default, say
+**"Generate this video"** to authorize generation for that task, or **"Prompts
+only"** to keep writing-only delivery. Connection
 alone does not authorize generation. To use an alternative, explicitly say
 **"Generate this with Ark CLI"**; the CLI must support the required operation
-and existing safeguards. There is no automatic CLI fallback, new mode flag or
-persistent toggle. After an interrupted submission, recover the same task
-instead of resubmitting. See [Generation access](.agents/contracts/generation-access.md).
+and existing safeguards. There is no automatic CLI fallback. Use `/setup` to
+remember prompt-only mode and other local preferences. After an interrupted
+submission, recover the same task instead of resubmitting. See
+[Generation access](.agents/contracts/generation-access.md).
 
 The production APIs and workflows below apply only to authorized production;
 prompt handoff does not initialize a root or unit Studio project.
@@ -156,6 +158,31 @@ approval, provider generation or publishing follows from these commands.
 
 Seedance 2.5 speaks Chinese, English, Spanish, Indonesian, Malay, Thai, Arabic, Portuguese, Vietnamese, Japanese and Korean natively; other languages need an annotation, subtitle or audio-first route, which the dialogue skill records.
 
+## Setup And Updates
+
+Run **`/setup`** (or "run setup") for a short interview about prompt-only versus
+agent assistance, speed versus quality, verified model alternatives, independent
+review/approval preferences, prompt detail, language and creative style.
+Save workspace-wide defaults or overrides for a named production after confirming
+the summary. Preferences live in ignored `.agents/local/` files and are read in
+future sessions. "Use agent mode for this task" leaves a saved prompt-only default
+unchanged. Preferences never grant generation permission or bypass native drafts.
+Existing production and unit briefs are not rewritten by setup.
+The hardened preference helper needs no-follow descriptor-relative file APIs;
+unsupported runtimes, including standard Windows Python, use native file tools
+with disclosed limitations or chat-only setup when safe writes are unavailable.
+
+Run **`/update`** (or "update this repo") with either a Git checkout or a ZIP
+download. Git updates preview incoming commits before an approved fast-forward.
+ZIP updates use a pinned HTTPS download or a user-supplied local archive, staged
+outside the workspace. Preview conflicts before applying; first-time differing
+files without a baseline are conflicts. Preferences, production assets and local
+customizations are preserved, with replacement backups and revision tracking.
+The automated ZIP helper needs macOS/Linux Python 3.11+, not Git or uv;
+unsupported environments use the manual side-by-side fallback in the skill.
+No dependency installation, execution of received code, commits or pushes are
+implicit. Slash-command discovery depends on the host agent.
+
 ## Layout
 
 | Path | Contents |
@@ -229,6 +256,8 @@ Edit skills only under `.agents/skills/`.
 | **seedream-storyboard** | Create, revise, and optionally generate production-ready cinematic storyboards—from one hero panel with alternatives to a multi-panel continuity sequence—with BytePlus Seedream. Boards are planning and review artifacts, never Seedance references. |
 | **showcase-html** | Maintain the HTML production canvas of pre-Studio canvas projects and build ad-hoc comparison pages (optional for Studio projects). |
 | **template-factory** | Native-first narrative reference recipes with permitted tool fallbacks; preserve selected units, script-led format and draft-ledger contracts. |
+| **setup** | Interview users and remember safe workspace or production preferences across sessions without starting generation. |
+| **update** | Preview Git or staged ZIP updates, preserve local work and preferences, and apply only reviewed changes with backups. |
 | **blocking-map** | Tigran's project-agnostic method for giving Seedance character DISPOSITION via a color-coded outline schematic — a "staging reference" (blocking map). |
 | **scene-craft** | Apply the five-element dramatic engine when selected, preserving supplied scripts, alternative narrative structures and intended shot duration. |
 
