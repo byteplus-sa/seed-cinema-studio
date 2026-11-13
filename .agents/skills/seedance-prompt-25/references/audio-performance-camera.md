@@ -230,14 +230,15 @@ Rack focus: shift focus smoothly from the leaves in the foreground to the person
 background. The leaves gradually blur while the person's face changes from soft to sharp.
 ```
 
-Hypothesis: a rack that ends on the subject is the safer direction; probe it
-at 480p (focus wording is owned by `seedance-lens-presets`). "Focus left
-behind" (subject sharp, then focus moves to the background) mostly fails
-because the model keeps the face sharp; add that defocus in post.
+Rack focus wording is owned by `seedance-lens-presets`. Preserve the requested
+sharp plane and focus-loss endpoint. Any failure observation needs exact model,
+operation, transport and evidence; it does not establish a family inability.
+An authorized post defocus or retake is optional, not automatic. A paid probe
+requires explicit authorization and verified preview mechanics.
 
-A timed light change on a declared source tends to be honoured closely: "at 3.2 s the overhead lamp clicks off and the room drops to the blue
-window light". Plain wording already produces a light going off or a lunge;
-presets add timing and holds, not the effect.
+A timed light change such as "at 3.2 s the overhead lamp clicks off and the room
+drops to the blue window light" is authored intent, not guaranteed timing.
+Inspect its actual result and keep any timing observation scoped to its binding.
 
 For a precise transition, also state the **trigger time**, **occluding object**,
 **camera direction**, **transition method**, and the **composition or motion

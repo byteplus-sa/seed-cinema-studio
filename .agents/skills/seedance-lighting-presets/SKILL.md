@@ -13,6 +13,11 @@ description: >
 
 # Seedance Lighting Presets
 
+Compose general craft with `seedance-prompt`; the caller uses the retained
+2.0/2.5 adapter only for the selected model and operation. Lighting phrases
+express intent, not guaranteed controls. Scope observations to exact model,
+operation, transport and evidence; post repairs require authorized change scope.
+
 Write prompt-side lighting direction that maps a named lighting setup into two
 canonical forms: a **Seedream `Lighting:` recipe** (for element sheets,
 location sheets, and storyboard keyframes) and a **Seedance visual-style
@@ -144,11 +149,10 @@ records its time, change and trigger.
 | Dim | `From <N>s to <M>s, <declared source> fades down to <visible result>.` |
 | Flicker | `At <N>s, <declared source> flickers <twice / rapidly for about one second>, then <holds steady / goes out>.` |
 
-A stated cue time tends to be honoured closely, and an `off` cue switches the
-source instantly, so write a fade as a time range and check the timing in a
-draft. Plain wording ("the lamp goes out") already produces the change; the
-timestamp adds control of when it lands and of the hold after it. An untimed
-"partway through" lands at an unplanned moment. Name the source the scene
+A stated cue time expresses a target, not frame-accurate control. Write a fade
+as a time range and inspect actual timing in the selected binding's supported
+preview. No historical observation establishes family-wide timing accuracy;
+missing evidence stays unresolved. Name the source the scene
 already declared, and say what the frame looks like after the change.
 
 ## Parameter schema

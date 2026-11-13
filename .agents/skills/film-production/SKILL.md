@@ -146,7 +146,7 @@ between modalities.
 | Scene geography and crowd blocking | `blocking-map` |
 | Score, ambience, SFX or dialogue audio | `seed-audio-prompt` |
 | Per-shot coverage, camera, lens intent and light for a scene | `seedance-shot-design` |
-| Seedance 2.5 video prompt | `seedance-prompt-25` |
+| General Seedance creative prompt | `seedance-prompt`; retained `seedance-prompt-20` / `seedance-prompt-25` only for their selected bindings |
 | Spoken dialogue in any language | `seedance-prompt-25-dialogue` with `seedance-prompt-25` |
 | Market-specific video dialogue (for example Filipino or Taglish) | The market's dialogue skill, such as `seedance-prompt-25-filipino`, with `seedance-prompt-25` |
 | Seedance 2.0 video prompt | `seedance-prompt-20` |
@@ -166,15 +166,19 @@ department workflow.
 Read [production defaults](references/production-defaults.md) before the first
 paid video submission and again at assembly. In short:
 
-1. **Draft first in both modes.** Every new Seedance 2.5 shot is a native
+1. **Draft first in both modes.** Exact standard 2.5 and Premium shots require native
    480p Draft with boolean `draft: true`, reviewed and
    selected, then promoted to the delivery target. Edit inputs only before the
    Draft; re-check audio on the final. Record each provider draft task ID with
    `draft_ledger.py` and follow the [draft and promotion contract](../../contracts/draft-promotion.md).
-2. **Audio route from the brief.** Native dialogue keeps native audio.
-   Ambience-only, score-driven and wordless pieces generate picture with
-   `generate_audio: false` and build the bed in post, because a "no music" line
-   does not reliably hold.
+   Other exact selected model/operation/transport bindings use verified profiles;
+   ordinary previews are non-promotable and unknown support blocks execution.
+2. **Audio route from the brief.** Requested native dialogue, wordless action
+   and diegetic ambience retain native sound. Post-owned layers use supported
+   picture-only controls; preserve an exact master. Mixed ownership names each
+   layer. Purposeful silence adds no bed. Inspect actual sound; reject unwanted
+   audio or propose an authorized repair, never silently change ownership.
+   Lip-sync importance alone does not authorize separate audio generation.
 3. **Structure from the confirmed brief.** Derive scenes, duration, ending,
    aspect and coverage from the script or treatment and disclosed profile.
    Preserve held shots and wordless passages. Advertising cadence and

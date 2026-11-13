@@ -10,7 +10,7 @@ description: >-
   music-video and showcase clips when camera and light are not already locked,
   when a scene reads flat or static, or when the user asks for a shot list,
   coverage, shot framing, or more dynamic camera work and lighting. Returns a
-  shot plan record and the per-shot facts a Seedance 2.5 prompt carries. Not
+  shot plan record and the per-shot facts a Seedance prompt carries. Not
   for static assets, source-preserving edits (object swap, restyle, recast), or
   task submission.
 ---
@@ -59,7 +59,7 @@ Record each shot's purpose, lens intent, move or hold and motivated light.
 | Dramatic structure of the scene | `scene-craft` |
 | Performance intentions, triggers and listening | `acting-direction`; consume the supplied plan |
 | Readable staged-fight exchanges and actor/prop states | `seedance-fight-choreography`; consume its ledger |
-| Six-part formula, per-shot prompt block, references, audio syntax | `seedance-prompt-25` |
+| Neutral per-shot craft, references and sound ownership | `seedance-prompt`; selected model and operation use their retained 2.0/2.5 adapter for syntax |
 
 These are prose pointers for the calling agent. This skill decides *which*
 choices a shot needs; the preset skills decide *how* each one is worded.
@@ -151,9 +151,10 @@ timing locks instead of silently changing them.
    an angle, a move with start and end, a lens intent as a visible result, and
    where useful its depth layers. Dialogue coverage may repeat or vary framing;
    choose movement by intent and speech/performance readability, not a speed cap.
-   Plan an attention shift inside one frame with staging or a move, not a
-   prompted rack focus: Seedance drafts keep a face sharp, so a focus pull away
-   from a face is added in post (see the lens preset skill).
+   Plan an attention shift with the requested staging, move or rack focus.
+   Distinguish intent from measured model/operation/transport evidence; preserve
+   requested defocus. A demonstrated failure may justify an authorized post
+   option, not a universal prohibition (see the lens preset skill).
 6. **Run the coverage checks below.** Explain how choices serve the brief.
    Mark a turn only when the approved scene contains one and the label helps.
 7. **Tell one light story per scene.** The sources stay fixed in the room. A cut
@@ -226,7 +227,8 @@ Before returning a plan, confirm:
    Short cuts alone do not require separate generation or slower rhythm.
 7. Clip boundaries follow the approved idea and verified limits, not a cadence
    or standout-image quota.
-8. No shot relies on a prompted focus pull away from a face; that defocus is
+8. Requested focus changes preserve intent; model, operation, transport and
+   evidence scope any observed failure. An authorized post defocus is
    planned for post.
 9. The plan names where it is stored and which prompt carries it.
 

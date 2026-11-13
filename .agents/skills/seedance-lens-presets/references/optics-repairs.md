@@ -4,6 +4,10 @@ Use these **HYPOTHETICAL** invented examples only for ambiguity or conflicting
 optical direction. They are not measured renders or approved project changes.
 Read [the entrypoint](../SKILL.md) for evidence classes and model boundaries.
 
+Record exact model, operation, transport and evidence for any actual observed
+failure. These hypothetical examples establish no measured family capability;
+post changes require authorized scope.
+
 ## Unclear depth target
 
 Brief: “85mm, f/1.4, the person and the sign should read clearly.” The person is
@@ -47,9 +51,9 @@ of every preset cue.
 Brief: a push-in on a character falling under a compelling voice, with the face
 drifting out of focus. The draft keeps the face sharp all the way in.
 
-Do not spend more tries on the wording: the model tends to keep the face sharp
-whatever the focus wording (focus fixed on the starting spot, focus locked on a
-sharp object behind the face, or the subject leaning through a fixed plane).
-Keep the sharp take and add a defocus ramp in post, or
-carry the loss of control with light and the edit. Do not stack extra blur or a
-second move in the prompt.
+Keep the requested focus loss as the acceptance target. The hypothetical
+failure does not establish that all models or operations keep faces sharp.
+For a measured take, record its exact binding and observed interval, then offer
+an authorized retake, a post defocus ramp or a changed attention cue. Do not
+silently keep the sharp take or change its light, move or edit. No extra paid
+probe or post operation follows from this example alone.

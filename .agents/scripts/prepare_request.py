@@ -3,6 +3,7 @@ from __future__ import annotations
 import argparse
 import hashlib
 import json
+import math
 import re
 import sys
 from dataclasses import asdict
@@ -273,6 +274,38 @@ def build_request(root: Path, args: argparse.Namespace) -> dict[str, Any]:
             datetime.now(UTC).strftime("%Y%m%d"),
         )
     )
+    profile = None
+    if args.capabilities:
+        evidence = load_json(root, args.capabilities)
+        if isinstance(evidence, dict) and evidence.get("schema_version") == 2:
+            if not args.provider or not args.tool_schema_revision:
+                raise ValueError("Version 2 evidence requires independently supplied --provider and --tool-schema-revision")
+            profile = {
+                "destination": {
+                    "provider": args.provider, "model": args.model,
+                    "operation": args.operation, "transport": args.transport,
+                    "tool_schema_revision": args.tool_schema_revision,
+                },
+                "evidence": evidence,
+            }
+            durations = {}
+            for measurement in args.ref_duration:
+                path, separator, value = measurement.rpartition("=")
+                matches = [ref for ref in references if ref["path"] == path]
+                if not separator or len(matches) != 1:
+                    raise ValueError("--ref-duration must name one reference path=measured_seconds")
+                seconds = float(value)
+                if not math.isfinite(seconds) or seconds <= 0:
+                    raise ValueError("Reference duration must be finite and positive")
+                durations[matches[0]["sha256"]] = seconds
+            if durations:
+                profile["reference_durations"] = durations
+        elif args.provider or args.tool_schema_revision:
+            raise ValueError("Destination binding requires version 2 capability evidence")
+    elif args.provider or args.tool_schema_revision:
+        raise ValueError("Destination binding requires --capabilities")
+    if args.ref_duration and profile is None:
+        raise ValueError("--ref-duration requires version 2 capability evidence")
     return {
         "schema_version": version,
         "operation_id": operation_id,
@@ -284,7 +317,7 @@ def build_request(root: Path, args: argparse.Namespace) -> dict[str, Any]:
         "prompt_sha256": hashlib.sha256(prompt_bytes).hexdigest(),
         "request_sha256": compute_request_hash(
             prompt_bytes, references, args.model, args.operation, params,
-            schema_version=version, **mode, **scope,
+            schema_version=version, execution_profile=profile, **mode, **scope,
         ),
         "references": references,
         "params": params,
@@ -293,7 +326,10 @@ def build_request(root: Path, args: argparse.Namespace) -> dict[str, Any]:
         "provider_status": None,
         "review_status": "not_started",
         "cost": {"estimated": estimated_cost, "confirmed": None, "currency": currency},
-        "extensions": {"expected_output": relative_path(args.expected_output)},
+        "extensions": {
+            "expected_output": relative_path(args.expected_output),
+            **({"execution_profile": profile} if profile is not None else {}),
+        },
         **mode,
         **scope,
     }
@@ -408,6 +444,9 @@ def parser() -> argparse.ArgumentParser:
     parser.add_argument("--asset", required=True)
     parser.add_argument("--prompt", required=True)
     parser.add_argument("--model", required=True)
+    parser.add_argument("--provider", help="Independently intended provider for version 2 evidence")
+    parser.add_argument("--tool-schema-revision", help="Independently intended destination tool revision")
+    parser.add_argument("--ref-duration", action="append", default=[], help="Measured reference path=seconds, bound to its content hash")
     parser.add_argument("--operation", required=True)
     parser.add_argument("--param", action="append", default=[])
     parser.add_argument("--ref", action="append", default=[])

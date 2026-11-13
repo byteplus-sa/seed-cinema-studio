@@ -110,6 +110,17 @@ exact graphic layer.
 
 Resolve the actual tool schema/model binding before selecting operation, resolution, duration, reference roles/counts, or optional flags. A capability record contains model, source, verified_at, operations, parameter JSON Schemas, required_parameters, reference_roles, max_references, and supports_first_frame_with_reference_images. Recheck when the tool, binding, or operation changes; cached evidence is historical, not a live guarantee.
 
+General craft composes with `seedance-prompt`; retained 2.0/2.5 entrypoints
+remain explicit adapters. Resolve review applicability by selected model and
+operation before genre or language. Opt-in version 2 evidence binds an
+independently intended provider/model/operation/transport/tool revision,
+validity, modality limits and conditional schemas. Persist and hash the
+snapshot before registration and revalidate it on submission; legacy
+profile-free request/context hashes remain unchanged. Follow
+[execution profiles](seedance-execution-profiles.md): exact standard
+2.5/Premium policy requires native Draft, ordinary previews are non-promotable,
+unknown profiles block execution and no model substring establishes support.
+
 The workspace default remains Seedance 2.5; legacy 2.0 may be selected for a verified capability such as an available lower-cost variant. Requested 4K needs 2.0 or, when the operator has enabled it, the whitelist-only 2.5 Premium model (the 2.5 feature set plus 4K); standard 2.5 tops out at 1080p. Skills defer to this paragraph for 4K routing. A face in a shot is a QA concern, not an automatic model switch. Chaining does not override unsupported mixed frame/reference inputs.
 
 Credential names are BYTEPLUS_MODELARK_API_KEY and BYTEPLUS_SEED_AUDIO_API_KEY. A transport may document compatibility aliases. Resolve secrets, region, and base URL at runtime; never serialize credentials into requests, fixtures, snapshots, or logs.

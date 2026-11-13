@@ -83,12 +83,12 @@
     {
       "id": 7,
       "prompt": "This pin is a wordless perfume ad carried by an orchestral score and room ambience. Rebuild it for our fragrance with matching sound.",
-      "expected_output": "A picture-only generation plan with the score and ambience rebuilt in post from the verified audio grammar.",
+      "expected_output": "A sound-ownership decision preserving requested wordless native sound when selected; a separately authorized post route rebuilds grammar without copying the recording.",
       "files": [],
       "assertions": [
-        "Generates picture with generate_audio false instead of relying on a negative 'no speech' line in native audio.",
-        "Maps the verified sound grammar (arc, accents, silences) to a Seed Audio post bed, without copying the source recording or melody.",
-        "Records rejected music samples and measures the bed's timing, padding or splicing it to the cut in assembly.",
+        "Does not infer picture-only or post ownership merely because the ad is wordless; negative no-speech prose is not a supported mute control.",
+        "Preserves native score and ambience if native-owned; separate Seed Audio generation requires explicit authorization and does not copy source recording or melody.",
+        "Measures actual sound timing and tail; padding, splicing or retiming needs authorization and preserves any exact supplied master.",
         "Assembles in the takes' original colours from exact-length intermediates."
       ]
     },

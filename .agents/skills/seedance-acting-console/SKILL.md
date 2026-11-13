@@ -11,7 +11,7 @@ plan; do not repeat it in every prompt.
 
 This skill is **prompt-composition only**. It never generates media, invokes
 sibling skills, changes production state or approves a take. The caller owns
-composition with `acting-direction`, `seedance-prompt-25` and any requested
+composition with `acting-direction`, `seedance-prompt` and any requested
 audio workflow.
 
 ---
@@ -221,7 +221,9 @@ Dialogue language: English. B says as a quiet invitation: {There is one corner l
 
 For the full scene prompt, the caller places this block in the six-part formula
 (Subject + Action + Scene + Visual Style + Camera + Audio) as the subject/action
-section, per `seedance-prompt-25`.
+section, using `seedance-prompt` for craft and the selected model's retained
+`seedance-prompt-20` or `seedance-prompt-25` adapter for syntax. The caller owns
+composition; this leaf does not select or execute a model.
 
 ---
 

@@ -282,7 +282,7 @@
     },
     "seedance-camera-presets": {
       "kind": "leaf",
-      "description": "Turn a named camera move or preset \u2014 dolly, pan, tilt, orbit, crane, jib, tracking, handheld, FPV, aerial, bullet time, dolly zoom, crash zoom, whip pan, optical zoom, Dutch angle, one-take, or static \u2014 or a shot framing (single, two-shot, over-the-shoulder, over-the-hip, point of view, insert) \u2014 into a canonical, drop-in Camera block for the Seedance 2.5 six-part prompt formula. Use when the user asks for a camera preset, camera movement style, shot framing, or a shot's camera treatment, and when a shot plan names a move or framing to word. Bullet time here is the camera-orbit technique (freeze + orbit); speed-ramp and slow-mo timing belong to seedance-pacing-presets. One-take here is the pass-through camera path; single-shot no-cuts pacing belongs to seedance-pacing-presets. Lens and focal-length optics belong to seedance-lens-presets.",
+      "description": "Turn a named camera move or preset \u2014 dolly, pan, tilt, orbit, crane, jib, tracking, handheld, FPV, aerial, bullet time, dolly zoom, crash zoom, whip pan, optical zoom, Dutch angle, one-take, or static \u2014 or a shot framing (single, two-shot, over-the-shoulder, over-the-hip, point of view, insert) \u2014 into a canonical, drop-in Camera block for a Seedance prompt formula. Use when the user asks for a camera preset, camera movement style, shot framing, or a shot's camera treatment, and when a shot plan names a move or framing to word. Bullet time here is the camera-orbit technique (freeze + orbit); speed-ramp and slow-mo timing belong to seedance-pacing-presets. One-take here is the pass-through camera path; single-shot no-cuts pacing belongs to seedance-pacing-presets. Lens and focal-length optics belong to seedance-lens-presets.",
       "readme_summary": "Compose prompt-only camera moves and framing, including optical zoom, Dutch angle, dolly, orbit, FPV, whip pan, and single, two-shot, over-the-shoulder, point-of-view and insert framing.",
       "dependencies": [],
       "source_revision": "workspace",
@@ -300,8 +300,8 @@
     },
     "seedance-lens-presets": {
       "kind": "leaf",
-      "description": "Turns a lens, focal length, aperture, focus or sensor request into a canonical visible-result phrase for Seedance 2.5 prompts or the Seedream style. Trigger words: lens, focal length, 35mm, 50mm, 85mm, wide angle, telephoto, anamorphic, fisheye, macro, aperture, f-stop, f/1.4, depth of field, bokeh, shallow DOF, deep focus, rack focus, focus pull, or a lens intent from a shot plan. Keep optical look separate from supported output parameters; preserve the selected model and send unresolved resolution needs to the caller rather than switching models automatically.",
-      "readme_summary": "Translates a lens, focal length, aperture, focus or sensor request into a canonical visible-result phrase for Seedance prompts or Seedream style, and routes unreliable focus pulls and tape looks to post.",
+      "description": "Turns a lens, focal length, aperture, focus or sensor request into a canonical visible-result phrase for Seedance prompts or the Seedream style. Trigger words: lens, focal length, 35mm, 50mm, 85mm, wide angle, telephoto, anamorphic, fisheye, macro, aperture, f-stop, f/1.4, depth of field, bokeh, shallow DOF, deep focus, rack focus, focus pull, or a lens intent from a shot plan. Keep optical look separate from supported output parameters; preserve the selected model and send unresolved resolution needs to the caller rather than switching models automatically.",
+      "readme_summary": "Compose lens, focus and sensor intent as visible targets; scope reliability evidence and offer authorized post alternatives without changing the selected model.",
       "dependencies": [],
       "source_revision": "workspace",
       "upstream_hash": null,
@@ -336,17 +336,26 @@
     },
     "seedance-pacing-presets": {
       "kind": "leaf",
-      "description": "Turn a named pacing or rhythm preset \u2014 speed ramp, slow motion, slow-mo, bullet time, ramp up, flash in/out, impact moment, montage, montage pacing, cut rhythm, time-lapse, freeze frame, progressive or partial change (an outfit or material changing part by part), named cuts or transitions, timing, or speed up \u2014 into a canonical, timestamped motion, cut, and pacing block for the Seedance 2.5 prompt. Use when the user or a shot plan asks to direct a scene's rhythm, tempo, or editing energy rather than only its content. Bullet time here is the freeze/slow-mo speed ramp; the camera-orbit technique belongs to seedance-camera-presets. Single Shot here is no-cuts pacing; the one-take pass-through camera path belongs to seedance-camera-presets.",
+      "description": "Turn a named pacing or rhythm preset \u2014 speed ramp, slow motion, slow-mo, bullet time, ramp up, flash in/out, impact moment, montage, montage pacing, cut rhythm, time-lapse, freeze frame, progressive or partial change (an outfit or material changing part by part), named cuts or transitions, timing, or speed up \u2014 into a canonical, timestamped motion, cut, and pacing block for a Seedance prompt. Use when the user or a shot plan asks to direct a scene's rhythm, tempo, or editing energy rather than only its content. Bullet time here is the freeze/slow-mo speed ramp; the camera-orbit technique belongs to seedance-camera-presets. Single Shot here is no-cuts pacing; the one-take pass-through camera path belongs to seedance-camera-presets.",
       "readme_summary": "Compose prompt-only rhythm, speed ramps, time-lapse, freeze frame, progressive part-by-part changes and named picture/audio transitions, including match cuts, dissolves, wipes and J/L cuts.",
       "dependencies": [],
       "source_revision": "workspace",
       "upstream_hash": null,
       "overlay_notes": null
     },
+    "seedance-prompt": {
+      "kind": "leaf",
+      "description": "Compose model-neutral video prompts. Use for generic Seedance prompt writing or refinement. Do not use for image prompts, media execution, source-video edits or version-specific API syntax.",
+      "readme_summary": "Write model-neutral Seedance creative prompts; preserve intent and selected model, with caller-owned adapters, execution and approval.",
+      "dependencies": [],
+      "source_revision": "workspace",
+      "upstream_hash": null,
+      "overlay_notes": "Model-neutral creative leaf; retained versioned adapters own serialization. No provider capabilities inferred."
+    },
     "seedance-prompt-20": {
       "kind": "leaf",
       "description": "Write and revise Seedance 2.0 video prompts, the legacy model used for 4K output and the Fast/Mini speed variants: asset preparation within the 2.0 reference limits, Define subject definitions, task-type declaration, shot-by-shot sequencing with inline reference binding, spatial continuity for chase or action blocking, native audio, and inline constraints. Use for Seedance 2.0 prompts, shot lists, 4K or Fast/Mini requests, and corrections to 2.0 generations. For Seedance 2.5 prompts, use seedance-prompt-25 instead.",
-      "readme_summary": "Legacy Seedance 2.0 prompt skill. Use when you need 4K output (unsupported by 2.5), Fast/Mini speed variants, or lower cost per generation. Provides reference-role classification, subject definitions, spatial continuity, shot sequencing, and native audio direction.",
+      "readme_summary": "Retained Seedance 2.0 adapter with reference roles, subject definitions, continuity and native audio; verify exact output capabilities without automatic model switching.",
       "dependencies": [],
       "source_revision": "workspace",
       "upstream_hash": null,
@@ -355,7 +364,7 @@
     "seedance-prompt-25": {
       "kind": "leaf",
       "description": "Write production-grade Seedance 2.5 video prompts with the flexible six-part formula, per-shot camera, lens and light lines, 50-material multimodal referencing, variable-duration scene staging (4-30s), timestamp pacing and dialogue timing, structured video editing (subject replacement, background replacement, audio editing), forward and backward video extension, keyframe sequences, coarse and fine blockout references, one-click video, seamless transitions, audio bracket syntax, dialogue language reinforcement, emotional direction, camera language, and mode-aware request packaging. Use this skill for Seedance 2.5 prompts, multi-reference asset orchestration, scene staging, video editing, extension, and corrections to generated motion or continuity. For legacy Seedance 2.0 prompts, 4K output through 2.0, or the Fast/Mini speed variants, use seedance-prompt-20; whitelist-only 2.5 Premium (4K) uses this skill.",
-      "readme_summary": "Write Seedance 2.5 prompts from shot plans and canonical elements, with native 480p drafts, approved promotion, language-aware dialogue and planning-only storyboards.",
+      "readme_summary": "Retained 2.5 adapter with exact standard/Premium native Draft-first policy, verified mechanics, approved promotion and language-aware dialogue.",
       "dependencies": [],
       "source_revision": "workspace",
       "upstream_hash": null,
@@ -386,11 +395,11 @@
       "upstream_hash": null,
       "overlay_notes": "Portability overlay: preserve current-brief language, market, identity and project scope; remove prior-run assumptions and keep explicit localization examples opt-in.",
       "description": "Write Seedance 2.5 Restyle prompts that redraw an entire existing clip in a new visual style (2D cel anime, watercolor, claymation, needle felt, toy miniature, stylized 3D, pixel art, woodblock, film noir and 20+ more, or a custom style reference image) while keeping its performance, subject positions, motion, camera path, cuts and timing. Covers the style catalog, the style-only reference role, medium-matched Virtual Portrait identity anchors, an environment-image recipe that restyles the background while keeping the same place, edit and reference routes, a muted source master with audio added in post, a 480p test ladder, and restyle QA. Use to turn live action into animation, change the medium of an animated clip, or match a house style. Not for replacing the cast or world (seedance-motion-recast), swapping one element (seedance-object-swap), grading or relighting the original look (not covered here), or task submission.",
-      "readme_summary": "Write Seedance 2.5 Restyle prompts that redraw a whole clip in one of 24 visual styles or a custom style reference while keeping its content, motion, camera and cuts, with medium-matched Virtual Portrait anchors, an environment-image recipe that keeps the same place and restyles the background too, a muted source with post audio and a 480p probe ladder."
+      "readme_summary": "Restyle whole-frame intent while preserving source motion, cuts and fractional timeline; review optional same-place imagery and explicitly authorized, capability-verified probes."
     },
     "seedance-shot-design": {
       "kind": "leaf",
-      "description": "Design the shot plan for a Seedance scene before any prompt is written: shot count and duration, the job of each shot, size, framing (single, two-shot, group, over-the-shoulder, over-the-hip, point of view, insert), angle, camera move, lens intent, named light sources and key side, the contrast between neighboring shots, and a variety check (V1-V10) at a chosen energy level (restrained, standard, kinetic). Use for narrative, ad, micro-drama, music-video and showcase clips when camera and light are not already locked, when a scene reads flat or static, or when the user asks for a shot list, coverage, shot framing, or more dynamic camera work and lighting. Returns a shot plan record and the per-shot facts a Seedance 2.5 prompt carries. Not for static assets, source-preserving edits (object swap, restyle, recast), or task submission.",
+      "description": "Design the shot plan for a Seedance scene before any prompt is written: shot count and duration, the job of each shot, size, framing (single, two-shot, group, over-the-shoulder, over-the-hip, point of view, insert), angle, camera move, lens intent, named light sources and key side, the contrast between neighboring shots, and a variety check (V1-V10) at a chosen energy level (restrained, standard, kinetic). Use for narrative, ad, micro-drama, music-video and showcase clips when camera and light are not already locked, when a scene reads flat or static, or when the user asks for a shot list, coverage, shot framing, or more dynamic camera work and lighting. Returns a shot plan record and the per-shot facts a Seedance prompt carries. Not for static assets, source-preserving edits (object swap, restyle, recast), or task submission.",
       "readme_summary": "Plan per-shot coverage for Seedance scenes: shot count and jobs, size, framing, angle, camera move, lens intent and light per shot, with variety rules and an energy level.",
       "dependencies": [],
       "source_revision": "workspace",

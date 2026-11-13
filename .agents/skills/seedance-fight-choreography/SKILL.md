@@ -29,9 +29,10 @@ it does not supply a new winner, emotional arc or compulsory fighting style.
 - The caller owns authorization, canon, reference selection, rights and
   likeness handling, generation, request registration, draft tracking, prompt
   review, media inspection and approval. This skill grants none of them.
-  For new Seedance 2.5 requests, the caller must use native Draft mode with
+  For exact standard 2.5/Premium requests, the caller must use native Draft mode with
   explicit `resolution: "480p"` and boolean `draft: true`, including edits and
   retries. Never fall back to ordinary 480p or promise a final from this plan.
+  Other selected model/operation bindings require verified execution profiles.
 - Do not bind storyboards, panels, sheets or animatics as video references.
   Blocking maps are analysis-only by default; carry geometry in text.
   Caller-selected conditioning requires separate approval and live support.
@@ -94,7 +95,7 @@ substitute a different craft framework.
 | `seedance-shot-design` | Shot IDs, durations, size, angle, move, lens intent, named light sources and locks | Visibility needs, action windows and proposed coverage changes for its owner to resolve |
 | `seedance-acting-console` | Supplied tactic and framing-readable cue block | Beat triggers and visible reaction channels; no replacement emotion template |
 | `blocking-map` | Actor-to-mark mapping, facing, paths, crops, obstacles and camera axis | Start/end geometry and occlusion questions, not a reference attachment |
-| `seedance-prompt-25` | Prompt operation, subject bindings, approved shot facts and locked audio context | One action block per shot/stage, state invariants and observable acceptance criteria for its six-part grammar |
+| `seedance-prompt` | Selected model and operation, subject bindings, approved shot facts and locked audio context | Neutral action blocks, state invariants and observable acceptance criteria; caller applies the selected 2.0/2.5 adapter for syntax |
 
 Keep supplied actor IDs stable across all contracts. Diagram letters are text
 handles, not wardrobe, on-screen text or newly approved identities.
@@ -108,7 +109,7 @@ Use the compact record in the choreography contract. Always return:
 3. Paste-ready action text grouped by existing shot or stage. Describe each
    action once, carry the selected medium, and retain supplied dialogue
    verbatim when included. Leave final reference tokens, parameter packaging
-   and audio grammar to `seedance-prompt-25`.
+   and audio grammar to `seedance-prompt` plus the selected versioned adapter.
 4. Text QA findings and caller acceptance checks, with evidence limits.
 
 For a repair, identify the failed beat, its prior state and the smallest

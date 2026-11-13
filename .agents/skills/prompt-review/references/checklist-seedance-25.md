@@ -6,6 +6,11 @@ For an edit, swap, recast or restyle use [Seedance edits](checklist-seedance-edi
 instead of the generation-only items below. Default severity is MAJOR; an item
 states CRITICAL or MINOR when it differs.
 
+Resolve the selected model and operation before genre or language. The tables
+and syntax here are a 2.5 adapter snapshot, not evidence for a newer model or
+transport. General craft comes from `seedance-prompt`; execution uses the exact
+profile in `.agents/contracts/seedance-execution-profiles.md`.
+
 ## Request and parameters
 
 Record every native draft task ID with `draft_ledger.py` in `drafts.json` and
@@ -13,9 +18,12 @@ follow `.agents/contracts/draft-promotion.md` before promotion. Resolution alone
 does not create a native draft; confirm the live tool supports `draft: true`.
 
 1. **Draft first and promotion (`seedance.draft_promotion`).** An initial or
-   revised draft is `draft: true` at 480p (or an explicit `resolution: "480p"`
-   where native Draft is unavailable), unless a recorded user override or
-   verified operation constraint applies. A final is promoted with
+   revised draft is `draft: true` at 480p. Exact standard
+   `dreamina-seedance-2-5-260628` and Premium
+   `dreamina-seedance-2-5-premium-260915` retain mandatory native Draft policy in
+   both review modes; unsupported mechanics block execution, not a dropped-draft
+   fallback. Other exact profiles may support an ordinary, non-promotable preview.
+   A final is promoted with
    `draft_task_id` from a passing, hash-bound draft selection under the
    project's approval mode, and carries only output settings (resolution,
    watermark, return_last_frame, expiry, priority). A final call that also
@@ -141,8 +149,9 @@ does not create a native draft; confirm the live tool supports `draft: true`.
 19. **Light sources declared (`shot.plan_bound`).** One set of declared sources
     across the scene's cuts; a new source has a motivating event. A light that
     changes inside a shot is a timed cue on a declared source ("at 3.2 s the
-    overhead lamp clicks off"); timed cues are honoured closely, vague ones
-    drift. Check required cue visibility in silhouette; speech alone does not
+    overhead lamp clicks off"). This is authored intent, not guaranteed timing;
+    any observation is scoped to its exact model, operation, transport and
+    evidence. Check required cue visibility in silhouette; speech alone does not
     prohibit it or authorize uncovering a locked concealed face.
 
 20. **Axis carried (`shot.axis_carry`).** Each confirmed camera, lens, lighting,
@@ -161,9 +170,9 @@ does not create a native draft; confirm the live tool supports `draft: true`.
     intercut or flash timing, or demonstrated merging, without rejecting short
     shots solely by duration. Reuse suitable footage; additional generated
     clips require authorization. Asking to show and omit the same action is
-    contradictory. A rack focus that leaves the subject soft ("focus left
-    behind", subject sharp to background) mostly fails because the model keeps
-    the face sharp: plan the defocus in post (MINOR). Single-burst holds or slow
+    contradictory. Preserve requested rack focus and subject defocus. A measured
+    failure applies only to its model, operation, transport and evidence; an
+    authorized post defocus is an option, not a compulsory substitution. Single-burst holds or slow
     motion are optional repairs for demonstrated failures, not acceptance
     conditions. Preserve source action, interruptions and recovery.
 

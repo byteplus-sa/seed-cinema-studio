@@ -15,8 +15,11 @@ and supplied reports remain binding; never claim unavailable listening.
 
 ## 1. Draft First In Both Modes
 
-Plan each new Seedance 2.5 shot as a native 480p Draft with boolean `draft: true`,
-followed by selected promotion. Review mode never waives Draft-first or the
+Exact standard `dreamina-seedance-2-5-260628` and Premium
+`dreamina-seedance-2-5-premium-260915` shots require native 480p Draft with
+boolean `draft: true`, followed by selected promotion. Other selected models
+use only verified execution profiles; ordinary previews are non-promotable,
+unknown support blocks execution and no Flash support is inferred. Review mode never waives Draft-first or the
 source-selection, task-ID, expiry, capability and registry safeguards below.
 
 1. Freeze and review the full request (prompt, ordered references, duration,
@@ -44,16 +47,20 @@ Record one audio route in the brief and carry it into every shot request:
 
 | Route | When | Request setting | Sound built |
 | --- | --- | --- | --- |
-| Native dialogue | Characters speak on camera and lip sync matters | `generate_audio: true` | In the clip; patch words in post when needed |
-| Picture only, post audio | Ambience-only, score-driven, music-video or wordless spots | `generate_audio: false` | Seed Audio score, ambience and SFX in post |
+| Native sound | Requested native dialogue, wordless diegetic action or ambience | Supported native audio enabled | In the clip; inspect actual sound and sync |
+| Picture only, post audio | Sound explicitly owned by post | Supported native audio disabled | Authorized score, ambience and SFX in post |
+| Exact master | A supplied exact master must remain unchanged | Picture-only where supported | Preserve the exact master and align the picture to it |
+| Mixed | Each native, master and post layer is named | Verified controls for that mix | Preserve each layer's authority and sync |
 | Separate lip-sync audio | Only when the user asks for it | Audio reference bound per the alignment contract | Before the shot |
 | Silent | The deliverable is silent | `generate_audio: false` | None |
 
 With native audio on, a "no music, no spoken words" line does not reliably
 hold: speech, chants or score can leak into clips. Do not rely on a negative audio line for a piece whose sound
-must stay ambient or score-led; generate the picture silent and build the bed
-in post. Say in the brief that post beds are laid to the cut and are not
-frame-synced to on-screen action unless SFX are placed by timestamp.
+must stay ambient or score-led. Requested native sound remains native even
+when wordless; reject noncompliance or offer an authorized repair, never
+automatically mute it. Silence adds no bed. Lip-sync importance does not
+authorize a separate generated track. Say when post beds are laid to the cut
+and not frame-synced unless SFX are placed by timestamp. Preserve an exact master.
 
 ## 3. Structure from the confirmed brief
 
@@ -136,13 +143,18 @@ Conform final sound cues to the measured edit and verify actual playback/listeni
 - **No grade unless the brief records a look.** Keep the original model colours
   that matched the approved drafts. Add a grade, grain, halation, vignette or a
   capture-format look only when the brief records one. A capture-format look
-  (for example camcorder) is a post treatment; a prompt word alone does not
-  reliably produce it.
-- Decode 10-bit HEVC finals as limited-range BT.709, tag outputs BT.709 and
-  dither to 8-bit. Avoid FFmpeg `vignette` inside a high-bit-depth chain; it
-  drops to 8-bit YUV and shifts hues.
+  (for example camcorder) expresses visible intent, not guaranteed control;
+  an authorized post treatment is an alternative after scoped inspection.
+- Run `ffprobe` and record actual `pix_fmt`, `color_range`, `color_primaries`,
+  `color_transfer` and `color_space`, with source hash and delivery target.
+  Matching 8-bit SDR needs no bit-depth reduction; measured 10-bit limited
+  BT.709 may use the retained 10-to-8-bit dither recipe only for 8-bit delivery.
+  HDR or different primaries/transfer/range needs an explicit approved conversion,
+  not relabeling. Missing, unknown or conflicting metadata requires resolution
+  from authoritative source information or inspection before conform.
 - Render each clip to an **exact-length lossless intermediate** in whole frames,
-  pad or trim its audio to the same length, join with the concat demuxer and
+  preserve fractional source timing, cuts, frame count and audio tail. Any
+  pad or trim needs authorization; join with the concat demuxer and
   encode once. The concat filter needs `setsar=1`. Read the video-stream
   duration, not the container duration.
 - Check frame edges: the model sometimes draws rounded black side bars; a small

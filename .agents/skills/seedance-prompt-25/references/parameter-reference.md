@@ -3,6 +3,10 @@
 Focused reference for `seedance-prompt-25`. Read [the entrypoint](../SKILL.md) for
 mode selection and caller responsibilities.
 
+This is a historical 2.5 adapter snapshot, not family-wide evidence. Bind exact
+provider/model/operation/transport/tool revision and current validity before
+execution. No Flash support is inferred; general craft uses `seedance-prompt`.
+
 - [Quick reference card](#quick-reference-card)
 - [Draft mode](#draft-mode)
 - [Guide disclaimer](#guide-disclaimer)
@@ -14,6 +18,7 @@ mode selection and caller responsibilities.
 | Variant | Model ID |
 |---|---|
 | Seedance 2.5 | `dreamina-seedance-2-5-260628` |
+| Seedance 2.5 Premium (whitelist only) | `dreamina-seedance-2-5-premium-260915` |
 | Seedance 2.0 Standard (legacy) | `dreamina-seedance-2-0-260128` |
 | Seedance 2.0 Fast (legacy) | `dreamina-seedance-2-0-fast-260128` |
 | Seedance 2.0 Mini (legacy) | `dreamina-seedance-2-0-mini-260615` |
@@ -73,8 +78,8 @@ mode selection and caller responsibilities.
 ### Cost ladder
 - In both review modes, use native Draft-first, then promote the selected draft
   (see [Draft mode](#draft-mode)).
-  Explicit user instructions override the default; record verified operation
-  constraints when a draft is unsupported.
+  Exact standard 2.5/Premium retain mandatory native Draft policy; unsupported
+  mechanics block execution, never a dropped-draft fallback.
 - Keep resolution in request parameters, separate from prompt text and Studio
   canvas dimensions. A 480p request is not itself a native Draft: use `draft: true` and later
   `draft_task_id` as described in the workspace draft and promotion contract
@@ -129,7 +134,7 @@ approval states in the shot manifest before submission.
 
 The Seedance 2.5 tool documents a two-step draft (`draft`, `draft_task_id`;
 checked 2026-10-17). Confirm the current tool schema before relying on it.
-This sequence applies to new Seedance 2.5 generation in both review modes.
+This sequence applies to exact standard 2.5/Premium bindings in both review modes.
 
 1. **Draft.** Submit the full request with `draft: true` and an explicit
    `resolution: "480p"`. Prompt, references, duration, ratio, `generate_audio` and task type
@@ -145,9 +150,10 @@ This sequence applies to new Seedance 2.5 generation in both review modes.
 4. **Re-check the final.** Picture and soundtrack are not byte-identical to the
    draft; inspect playback, dialogue words and audio again before placing it.
 
-Without native draft support (another model or operation), a 480p request is
-an ordinary paid generation, and the final is a new reviewed request that may
-change picture, timing or audio.
+For another exact model/operation profile with verified ordinary preview
+support, a 480p request is a non-promotable paid generation and the final is a
+new reviewed/registered request. Unknown preview or promotion support blocks
+execution. Ordinary previews cannot satisfy mandatory native Draft policy.
 
 ## Guide disclaimer
 

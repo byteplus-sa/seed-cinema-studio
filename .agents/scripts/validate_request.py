@@ -4,9 +4,11 @@ import argparse
 import hashlib
 import importlib
 import json
+import math
 import re
 import sys
 from dataclasses import asdict, dataclass
+from datetime import UTC, datetime
 from pathlib import Path
 from types import ModuleType
 from typing import Any
@@ -32,6 +34,10 @@ BOARD_FILE = re.compile(
 )
 BOARD_EXEMPT_MODEL = re.compile(r"(?:^|-)seedream(?:-|$)")
 SEEDANCE_25_MODEL = re.compile(r"(?:^|-)seedance-2-5(?:-|$)")
+NATIVE_DRAFT_MODELS = frozenset((
+    "dreamina-seedance-2-5-260628", "dreamina-seedance-2-5-premium-260915",
+))
+DESTINATION_FIELDS = ("provider", "model", "operation", "transport", "tool_schema_revision")
 
 
 def is_board_artifact(path: str) -> bool:
@@ -235,6 +241,7 @@ def compute_request_hash(
     project_sha256: str | None = None,
     schema_version: int | None = None,
     context: dict[str, Any] | None = None,
+    execution_profile: Any = None,
 ) -> str:
     if schema_version is not None and schema_version not in (1, 2, 3):
         raise ValueError("Unsupported request hash version")
@@ -267,6 +274,8 @@ def compute_request_hash(
         ]
     if schema_version == 3:
         body["context"] = context
+    if execution_profile is not None:
+        body["execution_profile"] = execution_profile
     return hashlib.sha256(
         json.dumps(
             body,
@@ -835,7 +844,16 @@ def draft_selected(
     scoped = draft.get("schema_version") == 3
     if scoped and record_scope_findings(root, draft, context=draft.get("context")):
         return False
-    if draft["review_status"] == "approved" and not require_decision and not scoped:
+    profile_request = None
+    if execution_profile(draft) is not None:
+        try:
+            profile_request = contained_path(root, f"requests/request_{draft['asset_id']}.json")
+            recorded = json.loads(profile_request.read_text())
+            if not isinstance(recorded, dict) or recorded.get("request_sha256") != draft["request_sha256"]:
+                return False
+        except (ValueError, KeyError, OSError, UnicodeError):
+            return False
+    if draft["review_status"] == "approved" and not require_decision and not scoped and profile_request is None:
         project = root / "project.md"
         project_text = (
             contained_path(root, "project.md").read_text()
@@ -857,6 +875,13 @@ def draft_selected(
             isinstance(decision, dict)
             and decision.get("decision_type") == "variant_selection"
             and decision.get("subject_path") == output
+            and (
+                profile_request is None or (
+                    isinstance(decision.get("upstream_sha256"), dict)
+                    and decision["upstream_sha256"].get(profile_request.relative_to(root.resolve()).as_posix())
+                    == hashlib.sha256(profile_request.read_bytes()).hexdigest()
+                )
+            )
             and not decision_findings(
                 root, decision, require_current_project=True, context=draft.get("context"),
             )
@@ -871,10 +896,10 @@ def draft_promotion_findings(root: Path, request: dict[str, Any]) -> list[Findin
         registry = json.loads(contained_path(root, "task_ids.json").read_text())
         if schema_findings(registry, "task-registry.schema.json"):
             raise ValueError("Task registry is invalid")
-        draft = next(
-            (task for task in registry["tasks"] if task["provider_task_id"] == task_id),
-            None,
-        )
+        matches = [task for task in registry["tasks"] if task["provider_task_id"] == task_id]
+        if len(matches) > 1:
+            raise ValueError("Provider draft task identity is not unique")
+        draft = matches[0] if matches else None
         if draft is None:
             message = f"draft_task_id {task_id} names no registered operation"
         elif draft.get("context") != request.get("context"):
@@ -885,10 +910,9 @@ def draft_promotion_findings(root: Path, request: dict[str, Any]) -> list[Findin
         ):
             message = "Draft production context is stale or invalid"
         elif not (
-            SEEDANCE_25_MODEL.search(draft["model"].lower())
+            native_task_supported(draft)
             and draft["model"] == request["model"]
-            and draft["params"].get("draft") is True
-            and draft["params"].get("resolution") == "480p"
+            and draft["operation"] == request["operation"]
         ):
             message = f"{draft['operation_id']} is not a 480p draft of this model"
         elif (
@@ -904,10 +928,35 @@ def draft_promotion_findings(root: Path, request: dict[str, Any]) -> list[Findin
             message = f"{draft['operation_id']} has no approved review or selection"
         elif draft["prompt_sha256"] != request["prompt_sha256"]:
             message = f"Prompt differs from the prompt of {draft['operation_id']}"
-        elif request["schema_version"] == 3 and draft["transport"] != request["transport"]:
+        elif draft["transport"] != request["transport"]:
             message = "Native promotion must use the draft transport"
+        elif execution_profile(draft) != execution_profile(request):
+            message = "Native promotion must preserve the exact hash-bound execution profile"
+        elif (draft["schema_version"] == 3 or execution_profile(draft) is not None) and (
+            request_hash_findings(root, draft)
+            or reference_findings(
+                root, draft["references"], contained_path(root, draft["prompt_file"]).read_text(),
+                draft["schema_version"], model=draft["model"], context=draft.get("context"),
+            )
+        ):
+            message = "Native draft creative or reference evidence is stale"
+        elif request["references"] and [
+            {key: ref.get(key) for key in ("sha256", "role", "binding")} for ref in request["references"]
+        ] != [
+            {key: ref.get(key) for key in ("sha256", "role", "binding")} for ref in draft["references"]
+        ]:
+            message = "Promotion must inherit or preserve all ordered reference hashes"
+        elif any(
+            value != draft["params"].get(key)
+            for key, value in request["params"].items()
+            if key not in (
+                "draft_task_id", "resolution", "draft", "watermark",
+                "return_last_frame", "expiry", "priority",
+            )
+        ):
+            message = "Promotion must not change native draft creative parameters"
         else:
-            if request["schema_version"] == 3:
+            if request["schema_version"] == 3 or execution_profile(request) is not None or (root / "drafts.json").exists():
                 ledger = importlib.import_module("draft_ledger")
                 ledger.require_promotable_draft(root, draft, request["operation_id"])
             return []
@@ -1015,13 +1064,90 @@ def external_schema_references(value: Any) -> bool:
     return False
 
 
+def execution_profile(request: dict[str, Any]) -> Any:
+    return request.get("extensions", {}).get("execution_profile")
+
+
+def profile_binding_findings(request: dict[str, Any], evidence: dict[str, Any]) -> list[Finding]:
+    binding = execution_profile(request)
+    if not isinstance(binding, dict) or not {"destination", "evidence"}.issubset(binding) or set(binding) - {"destination", "evidence", "reference_durations"}:
+        return [Finding("model.execution_profile", "Version 2 requires an independently intended destination and persisted evidence")]
+    destination = binding["destination"]
+    if not isinstance(destination, dict) or set(destination) != set(DESTINATION_FIELDS):
+        return [Finding("model.execution_profile", "Destination requires provider, model, operation, transport and tool-schema revision")]
+    if any(not isinstance(destination[key], str) or not destination[key].strip() for key in DESTINATION_FIELDS):
+        return [Finding("model.execution_profile", "Destination fields must be nonempty strings")]
+    findings = []
+    if binding["evidence"] != evidence:
+        findings.append(Finding("model.execution_profile", "Capability evidence differs from the hash-bound snapshot"))
+    if any(evidence.get(key) != destination[key] for key in DESTINATION_FIELDS) or any(
+        request.get(key) != destination[key] for key in ("model", "operation", "transport")
+    ):
+        findings.append(Finding("model.execution_profile", "Evidence does not match the independently intended destination"))
+    if evidence["operations"] != [evidence["operation"]]:
+        findings.append(Finding("model.execution_profile", "A version 2 profile covers exactly one operation"))
+    try:
+        start = datetime.fromisoformat(evidence["valid_from"])
+        end = datetime.fromisoformat(evidence["expires_at"])
+        verified = datetime.fromisoformat(evidence["verified_at"])
+        if not start <= verified <= datetime.now(UTC) < end or start >= end:
+            raise ValueError("Profile evidence is expired, future-dated or has an invalid validity interval")
+    except (ValueError, TypeError) as error:
+        findings.append(Finding("model.execution_profile", str(error)))
+    return findings
+
+
+def native_draft_findings(request: dict[str, Any], evidence: Any = None) -> list[Finding]:
+    params = request.get("params", {})
+    promotion = is_draft_promotion(params)
+    draft = params.get("draft") is True
+    mandatory = request.get("model") in NATIVE_DRAFT_MODELS
+    binding = execution_profile(request)
+    if binding is not None:
+        if not isinstance(binding, dict):
+            return [Finding("model.execution_profile", "Invalid persisted execution profile")]
+        evidence = binding.get("evidence") if evidence is None else evidence
+        findings = capability_findings(request, evidence)
+        if findings:
+            return findings
+        if evidence.get("schema_version") != 2:
+            return [Finding("model.execution_profile", "Persisted execution profiles require version 2 evidence")]
+        preview = evidence["preview"]
+    else:
+        preview = {
+            "native_draft": "supported" if mandatory and request.get("transport") == "ark-mcp" else "unknown",
+            "promotion": "supported" if mandatory and request.get("transport") == "ark-mcp" else "unknown",
+            "ordinary_preview": "unknown",
+        }
+    message = None
+    if mandatory and not (draft or promotion):
+        message = "Exact standard 2.5 and Premium policy requires native 480p Draft before final promotion"
+    elif promotion and (draft or preview["promotion"] != "supported" or preview["native_draft"] != "supported"):
+        message = "Promotion requires verified native Draft and promotion mechanics, never an ordinary preview"
+    elif draft and (params.get("resolution") != "480p" or preview["native_draft"] != "supported"):
+        message = "Native Draft requires boolean draft=true, explicit 480p and verified native mechanics"
+    elif binding is not None and not (draft or promotion) and params.get("resolution") == "480p" and preview["ordinary_preview"] != "supported":
+        message = "Ordinary preview support is unknown or unsupported; do not drop draft as fallback"
+    elif "draft" in params and not isinstance(params["draft"], bool):
+        message = "Draft control must be a boolean"
+    return [Finding("seedance.native_draft", message)] if message else []
+
+
+def native_task_supported(task: dict[str, Any]) -> bool:
+    return (
+        task.get("params", {}).get("draft") is True
+        and task["params"].get("resolution") == "480p"
+        and not native_draft_findings(task)
+    )
+
+
 def capability_findings(request: dict[str, Any], evidence: Any) -> list[Finding]:
     malformed = schema_findings(evidence, "capability-evidence.schema.json")
     if malformed:
         return [
             Finding("model.supported_mode", finding.message) for finding in malformed
         ]
-    if external_schema_references(evidence["parameters"]):
+    if external_schema_references(evidence["parameters"]) or external_schema_references(evidence.get("parameter_constraints", [])):
         return [
             Finding(
                 "model.supported_mode",
@@ -1029,6 +1155,10 @@ def capability_findings(request: dict[str, Any], evidence: Any) -> list[Finding]
             )
         ]
     findings: list[Finding] = []
+    if evidence.get("schema_version") == 2:
+        findings.extend(profile_binding_findings(request, evidence))
+    elif execution_profile(request) is not None:
+        findings.append(Finding("model.execution_profile", "A persisted profile cannot use legacy capability evidence"))
     if evidence.get("model") != request["model"] or request[
         "operation"
     ] not in evidence.get("operations", []):
@@ -1051,6 +1181,8 @@ def capability_findings(request: dict[str, Any], evidence: Any) -> list[Finding]
         "additionalProperties": False,
         "required": evidence.get("required_parameters", []),
     }
+    if evidence.get("parameter_constraints"):
+        schema["allOf"] = evidence["parameter_constraints"]
     try:
         Draft202012Validator.check_schema(schema)
         for error in Draft202012Validator(schema).iter_errors(request["params"]):
@@ -1071,6 +1203,30 @@ def capability_findings(request: dict[str, Any], evidence: Any) -> list[Finding]
                 "model.supported_mode", "Reference count exceeds verified allowance"
             )
         )
+    if evidence.get("schema_version") == 2:
+        modalities = {
+            "first_frame": "image", "last_frame": "image", "reference_image": "image",
+            "reference_video": "video", "reference_audio": "audio",
+        }
+        for modality in ("image", "video", "audio"):
+            refs = [ref for ref in request["references"] if modalities.get(ref["role"]) == modality]
+            limits = evidence["modality_limits"].get(modality)
+            if refs and (limits is None or len(refs) > limits["max_count"]):
+                findings.append(Finding("model.supported_mode", f"{modality} count exceeds verified modality allowance"))
+            if refs and limits is not None and "max_duration_seconds" in limits:
+                binding = execution_profile(request)
+                measured = binding.get("reference_durations", {}) if isinstance(binding, dict) else {}
+                durations = [
+                    measured.get(ref.get("sha256"), ref.get("duration_seconds"))
+                    if isinstance(measured, dict) else None for ref in refs
+                ]
+                if any(
+                    isinstance(value, bool) or not isinstance(value, int | float)
+                    or not math.isfinite(value)
+                    or not 0 < value <= limits["max_duration_seconds"]
+                    for value in durations
+                ) or sum(value for value in durations if isinstance(value, int | float)) > limits["max_duration_seconds"]:
+                    findings.append(Finding("model.supported_mode", f"{modality} duration is missing, invalid or exceeds verified total"))
     if (
         "reference_image" in roles
         and any(role in roles for role in ("first_frame", "last_frame"))
@@ -1115,6 +1271,7 @@ def request_hash_findings(project_root: Path, request: Any) -> list[Finding]:
             project_sha256=request.get("project_sha256"),
             schema_version=request["schema_version"],
             context=request.get("context"),
+            execution_profile=execution_profile(request),
         )
         if digest != request["request_sha256"]:
             findings.append(
@@ -1134,6 +1291,7 @@ def candidate_request_findings(
     findings = request_hash_findings(project_root, request)
     if schema_findings(request, "generation-request.schema.json"):
         return findings
+    findings.extend(native_draft_findings(request))
     if request["schema_version"] != 3:
         return findings + [Finding("production.context_hash", "Candidate request must be version 3")]
     findings.extend(candidate_scope_findings(
@@ -1151,6 +1309,8 @@ def prepared_evidence_findings(
     findings = request_hash_findings(root, request)
     if schema_findings(request, "generation-request.schema.json"):
         return findings
+    if not allow_board_references or execution_profile(request) is not None:
+        findings.extend(native_draft_findings(request))
     scope = record_scope_findings(
         root, request, context=context, unit_id=unit_id, production_scope=production_scope,
     )

@@ -65,11 +65,18 @@ is a known limit of route B, not a defect to hide.
 
 New Seedance clips with dialogue in the target language.
 
-1. Pass the language check; write the dialogue layer with
-   `seedance-prompt-25-dialogue`; keep every canon binding, shot plan and
+1. Resolve the exact selected model, operation and transport before the language
+   check. A 2.5 language list is not evidence for a different profile. Compose
+   neutral craft with `seedance-prompt`; use `seedance-prompt-25-dialogue` only
+   for its applicable 2.5 binding. Keep every canon binding, shot plan and
    reference from the source clips.
-2. Prepare, review, register and submit as 480p drafts; select under the
-   approval mode; then request final resolution as a new paid request.
+2. Exact standard 2.5/Premium require verified native `draft: true` at 480p,
+   preparation, review, registration and submission. Select the successful exact
+   task under the approval mode, then promote by `draft_task_id` within expiry
+   using unchanged creative/reference identity and model/transport/profile.
+   A verified ordinary preview is non-promotable: final generation is a new
+   reviewed and registered paid request. It cannot substitute for mandatory
+   native Draft; unknown support blocks execution, not dialogue writing.
 3. Picture can change even with identical inputs. Treat the result as a new
    cut: re-run picture QA, continuity across clips, and the cold open window.
 4. Same dialogue QA gate as the source episode: word-by-word speech-to-text
