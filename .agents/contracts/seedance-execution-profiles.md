@@ -60,6 +60,9 @@ Preparation and registration validate before writes; the existing
 validity, destination and preview policy, not just a later capabilities file.
 Reconciliation of already-submitted profile-free historical jobs retains the
 existing adoption path; it does not authorize a new plain final or resubmission.
+Board-reference compatibility cannot skip native policy during new preparation
+or submission. Only the separate already-submitted adoption validator accepts
+historical requests, and adoption writes acknowledged or terminal state directly.
 
 ## Policy Is Not Mechanics
 
@@ -82,8 +85,15 @@ transport, profile and current production scope. Inputs are inherited or
 preserved, not replaced; changed creative parameters require a new Draft.
 The selected output and review evidence must remain current. Profile-aware
 selection includes `requests/request_<asset_id>.json` in `upstream_sha256`,
-with its exact file hash and registered `request_sha256`. An output-only
+with its exact file hash, valid request schema and recomputed applicable digest.
+The receipt must match its registered operation ID, take asset ID and immutable
+execution identity, including model, operation, transport and profile. The
+selection decision's shot asset ID may differ from the registered take asset ID.
+An output-only
 selection cannot authorize a changed profile-bearing request.
+Final-only `execution_expires_after` and `safety_identifier` controls, like
+resolution, watermark, return_last_frame and priority, require verified parameter
+value schemas. They never permit changed creative inputs.
 
 The ledger stays `schema_version: 1`; no migration occurs. New profile-bearing
 entries store exact model/operation/transport/profile beside immutable
@@ -91,5 +101,11 @@ request/prompt/context hashes. Profile-bearing promotion requires matching
 ledger identity, approved selection and the seven-day expiry window.
 Scoped historical checks remain active. Old records are readable but cannot
 be reinterpreted as native Draft by adding a new profile or model substring.
+Late nonauthorizing ID, expiry, take and expired-status bookkeeping validates
+the original native identity, schema and hashes without requiring evidence to
+remain unexpired today. The original validity interval and destination must still
+be valid, and a registered acknowledged provider ID is required. This historical
+check never authorizes approval, promotion or new execution; those retain current
+profile expiry, scope, selection and promotion-window checks.
 Final provider success is not artistic approval: inspect final playback and
 sound freshly, then select under the existing approval authority.

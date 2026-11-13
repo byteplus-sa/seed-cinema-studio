@@ -23,6 +23,7 @@ from operation_store import (
 from ruamel.yaml.error import YAMLError
 from validate_request import (
     Finding,
+    adoption_evidence_findings,
     compute_request_hash,
     contained_path,
     frontmatter,
@@ -33,6 +34,7 @@ from validate_request import (
     project_mode_snapshot,
     request_review_findings,
     schema_findings,
+    validate_adoption_request,
     validate_request,
     validate_review,
 )
@@ -387,7 +389,10 @@ def run(args: argparse.Namespace) -> tuple[dict[str, Any], list[Finding]]:
     adopting = bool(args.adopt_provider_task_id)
     findings = schema_findings(request, "generation-request.schema.json")
     if not findings:
-        findings = prepared_evidence_findings(root, request, adopting, **scope)
+        findings = (
+            adoption_evidence_findings(root, request, **scope) if adopting
+            else prepared_evidence_findings(root, request, **scope)
+        )
     result: dict[str, Any] = {"request_sha256": request["request_sha256"]}
     review = capabilities = None
     if args.review is not None:
@@ -397,7 +402,10 @@ def run(args: argparse.Namespace) -> tuple[dict[str, Any], list[Finding]]:
         findings.extend(request_review_findings(root, request, None, args.required_rule))
     if args.register and not findings:
         capabilities = load_json(root, args.capabilities)
-        findings = validate_request(root, request, capabilities, adopting, **scope)
+        findings = (
+            validate_adoption_request(root, request, capabilities, **scope) if adopting
+            else validate_request(root, request, capabilities, **scope)
+        )
         findings.extend(
             request_review_findings(root, request, review, args.required_rule)
         )

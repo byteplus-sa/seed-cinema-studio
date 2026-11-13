@@ -9,7 +9,7 @@ import subprocess
 import sys
 import tempfile
 import unittest
-from datetime import UTC, datetime
+from datetime import UTC, datetime, timedelta
 from pathlib import Path
 from typing import Any
 
@@ -30,7 +30,8 @@ CAPABILITIES = {
     "verified_at": "2026-09-24T00:00:00Z",
     "operations": ["generate"],
     "parameters": {
-        "resolution": {"enum": ["720p"]},
+        "resolution": {"enum": ["480p", "720p"]},
+        "draft": {"type": "boolean"},
         "ratio": {"enum": ["9:16"]},
         "duration": {"type": "integer", "minimum": 4, "maximum": 30},
         "generate_audio": {"type": "boolean"},
@@ -92,7 +93,9 @@ class PrepareRequestTests(unittest.TestCase):
             "--operation",
             "generate",
             "--param",
-            "resolution=720p",
+            "resolution=480p",
+            "--param",
+            "draft=true",
             "--param",
             "ratio=9:16",
             "--param",
@@ -166,6 +169,10 @@ class PrepareRequestTests(unittest.TestCase):
             review_status="approved",
         )
         draft.update(changes)
+        draft["request_sha256"] = validation.compute_request_hash(
+            (self.root / self.prompt).read_bytes(), draft["references"],
+            draft["model"], draft["operation"], draft["params"],
+        )
         (self.root / "task_ids.json").write_text(
             json.dumps({"schema_version": 1, "tasks": [draft]})
         )
@@ -221,10 +228,30 @@ class PrepareRequestTests(unittest.TestCase):
         self.assertIn("seedance.draft_promotion_source", self.promotion_rules(result))
 
     def test_explicit_curl_transport_is_recorded_in_request(self) -> None:
-        code, result = self.run_cli(self.argv("--transport", "curl"))
+        now = datetime.now(UTC)
+        evidence = {
+            **CAPABILITIES,
+            "schema_version": 2, "profile_id": "synthetic-curl-native",
+            "provider": "offline-provider", "operation": "generate",
+            "transport": "curl", "tool_schema_revision": "offline-curl-v1",
+            "source": "Complete offline synthetic curl fixture, not provider evidence",
+            "verified_at": (now - timedelta(hours=1)).isoformat(),
+            "valid_from": (now - timedelta(hours=2)).isoformat(),
+            "expires_at": (now + timedelta(hours=2)).isoformat(),
+            "parameter_constraints": [],
+            "modality_limits": {"image": {"max_count": 2}, "video": {"max_count": 1}},
+            "preview": {"native_draft": "supported", "promotion": "supported",
+                        "ordinary_preview": "unsupported"},
+        }
+        (self.root / "capabilities/curl.json").write_text(json.dumps(evidence))
+        code, result = self.run_cli(self.argv(
+            "--transport", "curl", "--capabilities", "capabilities/curl.json",
+            "--provider", "offline-provider", "--tool-schema-revision", "offline-curl-v1",
+        ))
         self.assertEqual(code, 0, result)
         request = result["request"]
         self.assertEqual(request["transport"], "curl")
+        self.assertEqual(validation.validate_request(self.root, request, evidence), [])
         self.assertEqual(
             validation.schema_findings(
                 {"schema_version": 1, "tasks": [request]},
@@ -232,6 +259,21 @@ class PrepareRequestTests(unittest.TestCase):
             ),
             [],
         )
+        self.write_review(request["request_sha256"])
+        code, result = self.run_cli(self.argv(
+            "--transport", "curl", "--capabilities", "capabilities/curl.json",
+            "--provider", "offline-provider", "--tool-schema-revision", "offline-curl-v1",
+            "--write", "--register", "--review", "reviews/review_s01_sh010_t01_v01.json",
+        ))
+        self.assertEqual(code, 0, result)
+        import operation_store
+
+        operation_store.transition_operation(
+            self.root, request["operation_id"], "prepared", "submitting",
+        )
+        stored = operation_store.read_registry(self.root / "task_ids.json")["tasks"][0]
+        self.assertEqual(stored["transport"], "curl")
+        self.assertEqual(stored["submission_status"], "submitting")
 
     def test_hash_is_deterministic_and_matches_validator(self) -> None:
         _, first = self.run_cli(self.argv())

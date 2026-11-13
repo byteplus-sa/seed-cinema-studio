@@ -142,8 +142,11 @@ This sequence applies to exact standard 2.5/Premium bindings in both review mode
 2. **Review and select** the draft under the project's approval mode: motion,
    shot plan, continuity, speech timing and audio.
 3. **Final.** Call again with only `draft_task_id` plus output settings
-   (resolution `1080p`, or `4k` on 2.5 Premium, or omitted, `watermark`, `return_last_frame`, expiry,
-   priority). The provider reuses the draft's model, prompt, media, duration,
+   (resolution `1080p`, or `4k` on 2.5 Premium, or omitted, `watermark`,
+   `return_last_frame`, `execution_expires_after`, `priority`, `safety_identifier`).
+   Verify each control's supported value schema for the selected operation and
+   destination; documentation alone does not authorize a value.
+   The provider reuses the draft's model, prompt, media, duration,
    ratio, seed, audio setting and task type, so those fields must be omitted.
    Omitted output settings take model defaults, not the draft's values, so set
    `watermark: false` again. A draft can be promoted for about seven days.

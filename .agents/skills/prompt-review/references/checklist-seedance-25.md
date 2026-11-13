@@ -26,7 +26,9 @@ does not create a native draft; confirm the live tool supports `draft: true`.
    A final is promoted with
    `draft_task_id` from a passing, hash-bound draft selection under the
    project's approval mode, and carries only output settings (resolution,
-   watermark, return_last_frame, expiry, priority). A final call that also
+   watermark, return_last_frame, execution_expires_after, priority,
+   safety_identifier). Every output control and value requires verified support
+   for the selected operation and destination. A final call that also
    sends prompt, references, duration, ratio, audio or task type is CRITICAL:
    those are reused from the draft and any change must happen before the
    draft. Without native Draft support the final is a new reviewed request with

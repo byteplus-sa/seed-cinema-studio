@@ -12,6 +12,7 @@ from pathlib import Path
 from unittest.mock import patch
 
 sys.path.insert(0, str(Path(__file__).resolve().parents[1] / ".agents/scripts"))
+import draft_ledger
 import operation_store
 import prepare_request
 import validate_request as validation
@@ -79,32 +80,6 @@ class CapabilityProfiles(unittest.TestCase):
         }
         candidate = {"model": "legacy", "operation": "generate", "params": {}, "references": []}
         self.assertEqual(validation.capability_findings(candidate, evidence), [])
-
-    def test_profile_selection_binds_exact_registered_request_file_hash(self):
-        with tempfile.TemporaryDirectory() as directory:
-            root = Path(directory)
-            (root / "requests").mkdir()
-            (root / "decisions").mkdir()
-            draft = {
-                **request(), "asset_id": "fixture", "review_status": "approved",
-                "request_sha256": "a" * 64,
-            }
-            draft["extensions"]["expected_output"] = "take.mp4"
-            source = root / "requests/request_fixture.json"
-            source.write_text(json.dumps(draft))
-            decision = {
-                "decision_type": "variant_selection", "subject_path": "take.mp4",
-                "upstream_sha256": {},
-            }
-            target = root / "decisions/select.json"
-            target.write_text(json.dumps(decision))
-            with patch.object(validation, "decision_findings", return_value=[]):
-                self.assertFalse(validation.draft_selected(root, draft, require_decision=True))
-                decision["upstream_sha256"][source.relative_to(root).as_posix()] = hashlib.sha256(source.read_bytes()).hexdigest()
-                target.write_text(json.dumps(decision))
-                self.assertTrue(validation.draft_selected(root, draft, require_decision=True))
-                source.write_text(json.dumps({**draft, "request_sha256": "b" * 64}))
-                self.assertFalse(validation.draft_selected(root, draft, require_decision=True))
 
     def test_verified_ordinary_preview_is_valid_and_not_native(self):
         evidence = profile()
@@ -323,6 +298,217 @@ class CapabilityProfiles(unittest.TestCase):
             b"prompt", [], "legacy", "video", {}, schema_version=3,
             approval_mode="approve_for_me", project_sha256="b" * 64, context=context,
         ), expected)
+
+
+class CinemaRepairTests(unittest.TestCase):
+    def setUp(self):
+        from test_scoped_lifecycle import ScopedLifecycleTests
+
+        self.fixture = ScopedLifecycleTests()
+        self.fixture.setUp()
+        self.addCleanup(self.fixture.doCleanups)
+        self.root = self.fixture.root
+        self.caps = profile()
+        self.caps.update(
+            model="dreamina-seedance-2-5-260628", operation="generate",
+            operations=["generate"], reference_roles=[], max_references=0,
+        )
+        self.caps["parameters"]["resolution"] = {"enum": ["480p", "1080p"]}
+        self.caps["parameters"].update({
+            "watermark": {"type": "boolean"}, "return_last_frame": {"type": "boolean"},
+            "priority": {"type": "integer", "minimum": 0, "maximum": 2},
+            "execution_expires_after": {"type": "integer", "minimum": 1, "maximum": 86400},
+            "safety_identifier": {"type": "string", "minLength": 1, "maxLength": 32},
+        })
+        self.caps["preview"].update(native_draft="supported", promotion="supported")
+        self.fixture.caps = self.caps
+        self.draft = self.fixture.request()
+        self.draft["extensions"]["execution_profile"] = request(self.caps)["extensions"]["execution_profile"]
+        self.fixture.rehash(self.draft)
+        self.source = self.root / f"requests/request_{self.draft['asset_id']}.json"
+        self.source.parent.mkdir()
+        self.source.write_text(json.dumps(self.draft))
+        self.fixture.complete(self.draft, "native-task")
+        self.registered = operation_store.read_registry(self.root / "task_ids.json")["tasks"][0]
+        self.decision = self.fixture.decision(self.draft)
+        self.decision["upstream_sha256"][self.source.relative_to(self.root).as_posix()] = hashlib.sha256(self.source.read_bytes()).hexdigest()
+        self.fixture.select(self.decision, "scenes/scene-001/s001_sh010/shot.md")
+        draft_ledger.record_draft(
+            self.root, self.draft["asset_id"], self.draft["operation_id"], "native-task",
+            draft_ledger.today(), status="approved",
+        )
+
+    def final(self, **controls):
+        final = copy.deepcopy(self.draft)
+        final["operation_id"] = final["asset_id"] = "final"
+        final["extensions"]["expected_output"] = "scenes/scene-001/final.mp4"
+        final["params"] = {"draft_task_id": "native-task", "resolution": "1080p", **controls}
+        self.fixture.rehash(final)
+        return final
+
+    def rebind_source(self, value):
+        self.source.write_text(json.dumps(value))
+        self.decision["upstream_sha256"][self.source.relative_to(self.root).as_posix()] = hashlib.sha256(self.source.read_bytes()).hexdigest()
+        self.fixture.write(
+            f"decisions/{self.decision['decision_id']}.json", json.dumps(self.decision),
+        )
+
+    def test_profile_selection_binds_exact_registered_request_file_hash(self):
+        self.assertNotEqual(self.decision["asset_id"], self.draft["asset_id"])
+        self.assertEqual(validation.decision_findings(
+            self.root, self.decision, context=self.draft["context"],
+        ), [])
+        self.assertTrue(validation.draft_selected(self.root, self.registered, require_decision=True))
+        self.assertEqual(validation.draft_promotion_findings(self.root, self.final()), [])
+        self.source.write_text(json.dumps({**self.draft, "request_sha256": "b" * 64}))
+        self.assertFalse(validation.draft_selected(self.root, self.registered, require_decision=True))
+
+    def test_rebound_source_body_schema_digest_and_registered_identity_block_submission(self):
+        for mutation in (
+            "operation_id", "asset_id", "model", "operation", "transport", "destination",
+            "params", "expected_output", "schema", "digest", "null",
+        ):
+            with self.subTest(mutation=mutation):
+                source = copy.deepcopy(self.draft)
+                if mutation in ("operation_id", "asset_id", "model", "operation"):
+                    source[mutation] = "other"
+                elif mutation == "transport":
+                    source[mutation] = "curl"
+                elif mutation == "destination":
+                    source["extensions"]["execution_profile"]["destination"]["provider"] = "other"
+                elif mutation == "params":
+                    source["params"]["duration"] = 9
+                elif mutation == "expected_output":
+                    source["extensions"]["expected_output"] = "scenes/scene-001/other.mp4"
+                elif mutation == "schema":
+                    del source["params"]
+                elif mutation == "digest":
+                    source["request_sha256"] = "b" * 64
+                else:
+                    source = None
+                self.rebind_source(source)
+                self.assertTrue(validation.decision_findings(
+                    self.root, self.decision, context=self.draft["context"],
+                ))
+                self.assertFalse(validation.draft_selected(self.root, self.registered, require_decision=True))
+                final = self.final()
+                before = (self.root / "task_ids.json").read_bytes()
+                with self.assertRaises(ValueError):
+                    self.fixture.register(final)
+                self.assertEqual((self.root / "task_ids.json").read_bytes(), before)
+                self.fixture.write("task_ids.json", json.dumps({
+                    "schema_version": 1, "tasks": [self.registered, final],
+                }))
+                before = (self.root / "task_ids.json").read_bytes()
+                with self.assertRaises(ValueError):
+                    operation_store.transition_operation(self.root, "final", "prepared", "submitting")
+                self.assertEqual((self.root / "task_ids.json").read_bytes(), before)
+                self.fixture.write("task_ids.json", json.dumps({
+                    "schema_version": 1, "tasks": [self.registered],
+                }))
+
+    def test_missing_malformed_and_stale_source_fail_closed(self):
+        for value in ("not json", "[]", "{}"):
+            self.source.write_text(value)
+            self.assertFalse(validation.draft_selected(self.root, self.registered, require_decision=True))
+        self.source.unlink()
+        self.assertFalse(validation.draft_selected(self.root, self.registered, require_decision=True))
+
+    def test_documented_final_controls_pass_verified_value_schemas_and_submission(self):
+        controls = {
+            "watermark": False, "return_last_frame": True, "priority": 1,
+            "execution_expires_after": 3600, "safety_identifier": "offline-fixture",
+        }
+        for control, value in controls.items():
+            with self.subTest(control=control):
+                final = self.final(**{control: value})
+                self.assertEqual(validation.capability_findings(final, self.caps), [])
+                self.assertEqual(validation.draft_promotion_findings(self.root, final), [])
+        final = self.final(**controls)
+        self.fixture.register(final)
+        operation_store.transition_operation(self.root, "final", "prepared", "submitting")
+        self.assertEqual(operation_store.read_registry(
+            self.root / "task_ids.json",
+        )["tasks"][1]["submission_status"], "submitting")
+
+    def test_invalid_unsupported_and_creative_final_controls_remain_blocked(self):
+        for controls in (
+            {"execution_expires_after": 0}, {"execution_expires_after": 86401},
+            {"execution_expires_after": True}, {"execution_expires_after": None},
+            {"safety_identifier": ""}, {"safety_identifier": "x" * 33},
+            {"safety_identifier": 1}, {"duration": 9}, {"unverified": True},
+        ):
+            with self.subTest(controls=controls):
+                before = (self.root / "task_ids.json").read_bytes()
+                with self.assertRaises(ValueError):
+                    self.fixture.register(self.final(**controls))
+                self.assertEqual((self.root / "task_ids.json").read_bytes(), before)
+        final = self.final(safety_identifier="offline-fixture")
+        unsupported = copy.deepcopy(self.caps)
+        del unsupported["parameters"]["safety_identifier"]
+        self.assertTrue(validation.capability_findings(final, unsupported))
+
+    def test_expired_profile_allows_only_historical_recording_and_take_updates(self):
+        (self.root / "drafts.json").unlink()
+        with patch.object(validation, "datetime", wraps=datetime) as clock:
+            clock.now.return_value = datetime.now(UTC) + timedelta(hours=3)
+            self.assertFalse(validation.native_task_supported(self.registered))
+            entry = draft_ledger.record_draft(
+                self.root, self.draft["asset_id"], self.draft["operation_id"],
+                "native-task", draft_ledger.today(),
+            )
+            self.assertEqual(entry["status"], "drafted")
+            entry = draft_ledger.record_draft(
+                self.root, self.draft["asset_id"], self.draft["operation_id"],
+                "native-task", draft_ledger.today(), take=self.decision["subject_path"],
+            )
+            self.assertEqual(entry["take"], self.decision["subject_path"])
+            document = draft_ledger.read_ledger(self.root)
+            document["drafts"][0]["status"] = "expired"
+            draft_ledger.validate_ledger_update(self.root, document)
+            draft_ledger.write_ledger(self.root, document)
+            before = (self.root / "drafts.json").read_bytes()
+            for status in ("approved", "promoted"):
+                with self.subTest(status=status), self.assertRaises(ValueError):
+                    draft_ledger.record_draft(
+                        self.root, self.draft["asset_id"], self.draft["operation_id"],
+                        "native-task", draft_ledger.today(), status=status,
+                    )
+                self.assertEqual((self.root / "drafts.json").read_bytes(), before)
+            self.assertTrue(validation.draft_promotion_findings(self.root, self.final()))
+            pending = copy.deepcopy(self.draft)
+            pending["operation_id"] = pending["asset_id"] = "pending"
+            self.assertTrue(validation.prepared_evidence_findings(
+                self.root, pending, unit_id="ep001",
+            ))
+            self.fixture.write("units/ep001/unit.md", "Changed creative brief.\n")
+            draft_ledger.record_draft(
+                self.root, self.draft["asset_id"], self.draft["operation_id"],
+                "native-task", draft_ledger.today(), status="expired",
+            )
+            self.assertEqual(draft_ledger.read_ledger(self.root)["drafts"][0]["context"], self.draft["context"])
+
+    def test_expired_history_cannot_relabel_plain_or_changed_native_identity(self):
+        (self.root / "drafts.json").unlink()
+        for mutation in ("draft", "provider_task_id", "profile", "digest"):
+            changed = copy.deepcopy(self.registered)
+            if mutation == "draft":
+                changed["params"].pop("draft")
+            elif mutation == "provider_task_id":
+                changed["provider_task_id"] = None
+            elif mutation == "profile":
+                changed["extensions"]["execution_profile"]["destination"]["provider"] = "other"
+            else:
+                changed["request_sha256"] = "b" * 64
+            self.fixture.write("task_ids.json", json.dumps({"schema_version": 1, "tasks": [changed]}))
+            with patch.object(validation, "datetime", wraps=datetime) as clock:
+                clock.now.return_value = datetime.now(UTC) + timedelta(hours=3)
+                with self.subTest(mutation=mutation), self.assertRaises(ValueError):
+                    draft_ledger.record_draft(
+                        self.root, self.draft["asset_id"], self.draft["operation_id"],
+                        "native-task", draft_ledger.today(),
+                    )
+                self.assertFalse((self.root / "drafts.json").exists())
 
 
 if __name__ == "__main__":

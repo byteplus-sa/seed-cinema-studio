@@ -40,7 +40,7 @@ class ScopedLifecycleTests(unittest.TestCase):
         self.write("scenes/scene-001/prompt.md", "A quiet held shot.\n")
         self.write("scenes/scene-002/prompt.md", "A quiet held shot.\n")
         self.caps = {
-            "model": "seedance-2-5", "source": "synthetic fixture",
+            "model": "dreamina-seedance-2-5-260628", "source": "synthetic fixture",
             "verified_at": "2026-10-19T00:00:00Z", "operations": ["generate"],
             "parameters": {"resolution": {"enum": ["480p", "1080p"]},
                            "draft": {"type": "boolean"},
@@ -54,7 +54,7 @@ class ScopedLifecycleTests(unittest.TestCase):
             self.write("elements/hero/prompt.md", "A portrait.\n")
         arguments = [
             "--project", str(self.root), "--asset", f"{unit}-draft",
-            "--operation-id", f"{unit}-draft", "--model", "seedance-2-5",
+            "--operation-id", f"{unit}-draft", "--model", self.caps["model"],
             "--operation", "generate", "--param", "resolution=480p",
             "--param", "draft=true", "--prompt",
             "elements/hero/prompt.md" if production else f"scenes/{scene}/prompt.md",
@@ -78,7 +78,7 @@ class ScopedLifecycleTests(unittest.TestCase):
             prompt, request["references"], request["model"], request["operation"],
             request["params"], approval_mode=request["approval_mode"],
             project_sha256=request["project_sha256"], schema_version=3,
-            context=request["context"])
+            context=request["context"], execution_profile=validation.execution_profile(request))
 
     def select(self, decision, manifest):
         registry = {decision["asset_id"]: {
@@ -460,6 +460,20 @@ class ScopedLifecycleTests(unittest.TestCase):
             draft_ledger.record_draft(
                 self.root, request["asset_id"], request["operation_id"], "invented",
                 date(2026, 10, 19))
+        self.assertFalse((self.root / "drafts.json").exists())
+
+    def test_late_native_history_requires_original_request_digest(self):
+        request = self.request()
+        self.complete(request, "known")
+        path = self.root / "task_ids.json"
+        registered = operation_store.read_registry(path)
+        registered["tasks"][0]["params"]["duration"] = 9
+        self.write("task_ids.json", json.dumps(registered))
+        with self.assertRaises(ValueError):
+            draft_ledger.record_draft(
+                self.root, request["asset_id"], request["operation_id"], "known",
+                date(2026, 10, 19),
+            )
         self.assertFalse((self.root / "drafts.json").exists())
 
     def test_scoped_draft_status_cannot_invent_approval_or_promotion(self):

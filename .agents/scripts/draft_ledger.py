@@ -19,6 +19,7 @@ from validate_request import (
     contained_path,
     draft_selected,
     execution_profile,
+    native_task_identity_supported,
     native_task_supported,
     record_scope_findings,
     request_hash_findings,
@@ -136,7 +137,10 @@ def validate_ledger_update(project: Path, ledger: dict[str, Any]) -> None:
         if task is None or entry.get("context") != task.get("context"):
             raise ValueError("Draft ledger must match its registered scoped operation")
         if schema_findings(task, "generation-request.schema.json") or (
-            not native_task_supported(task)
+            not (
+                native_task_identity_supported(task)
+                if entry["status"] in ("drafted", "expired") else native_task_supported(task)
+            )
             or task["params"].get("draft") is not True
             or task["params"].get("resolution") != "480p"
             or task["provider_task_id"] != entry["draft_task_id"]
@@ -149,9 +153,10 @@ def validate_ledger_update(project: Path, ledger: dict[str, Any]) -> None:
         if profiled and (
             entry.get("execution_profile") != execution_profile(task)
             or any(entry.get(key) != task[key] for key in ("model", "operation", "transport"))
-            or request_hash_findings(project, task)
         ):
             raise ValueError("Profile ledger requires unchanged hash-bound execution identity")
+        if request_hash_findings(project, task):
+            raise ValueError("Draft ledger requires the original request digest")
         if entry["take"] is not None:
             contained_path(project, entry["take"])
             if entry["take"] != task.get("extensions", {}).get("expected_output"):
@@ -288,13 +293,17 @@ def _record_draft(
     if task.get("schema_version") == 3 and schema_findings(task, "generation-request.schema.json"):
         raise ValueError("Invalid scoped draft registry record")
     if "model" in task and (
-        not native_task_supported(task)
+        not (
+            native_task_supported(task)
+            if status in ("approved", "promoted") or final_operation_id is not None
+            else native_task_identity_supported(task)
+        )
         or task["params"].get("resolution") != "480p"
         or task["provider_task_id"] != draft_task_id
     ):
         raise ValueError("Scoped drafts require a registered native 480p Seedance task")
-    if execution_profile(task) is not None and request_hash_findings(project, task):
-        raise ValueError("Profile-bearing draft request hash is stale")
+    if (task.get("schema_version") == 3 or execution_profile(task) is not None) and request_hash_findings(project, task):
+        raise ValueError("Registered draft request hash is stale")
     if task["params"].get("draft") is not True:
         raise ValueError(f"{operation_id} was not prepared with draft=true")
     if task["provider_task_id"] not in (None, draft_task_id):

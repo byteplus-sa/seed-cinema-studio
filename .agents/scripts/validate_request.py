@@ -629,6 +629,8 @@ def decision_findings(
                 },
             )
         )
+    if decision["decision_type"] == "variant_selection":
+        findings.extend(profile_selection_findings(root, decision))
     return findings
 
 
@@ -838,6 +840,55 @@ def is_draft_promotion(params: Any) -> bool:
     return isinstance(task_id, str) and bool(task_id.strip())
 
 
+def selected_profile_source(root: Path, task: dict[str, Any]) -> Path:
+    source = contained_path(root, f"requests/request_{task['asset_id']}.json")
+    recorded = json.loads(source.read_text())
+    findings = request_hash_findings(root, recorded)
+    if findings:
+        raise ValueError("; ".join(finding.message for finding in findings))
+    registry = json.loads(contained_path(root, "task_ids.json").read_text())
+    if schema_findings(registry, "task-registry.schema.json"):
+        raise ValueError("Selected request requires a valid registry")
+    matches = [
+        registered for registered in registry["tasks"]
+        if registered["operation_id"] == task["operation_id"]
+    ]
+    if len(matches) != 1 or matches[0] != task:
+        raise ValueError("Selected request requires its exact unique registered operation")
+    mutable = {"submission_status", "provider_task_id", "provider_status", "review_status", "cost"}
+    if (
+        {key: value for key, value in recorded.items() if key not in mutable}
+        != {key: value for key, value in task.items() if key not in mutable}
+    ):
+        raise ValueError("Selected receipt differs from the registered request identity")
+    return source
+
+
+def profile_selection_findings(root: Path, decision: dict[str, Any]) -> list[Finding]:
+    path = root / "task_ids.json"
+    if not path.exists() and not path.is_symlink():
+        return []
+    try:
+        registry = json.loads(contained_path(root, "task_ids.json").read_text())
+        if schema_findings(registry, "task-registry.schema.json"):
+            raise ValueError("Cannot verify selected source against an invalid registry")
+        subject = (root / decision["subject_path"]).resolve()
+        for task in registry["tasks"]:
+            output = task.get("extensions", {}).get("expected_output")
+            if (
+                execution_profile(task) is None or not isinstance(output, str)
+                or (root / output).resolve() != subject
+            ):
+                continue
+            source = selected_profile_source(root, task)
+            relative = source.relative_to(root.resolve()).as_posix()
+            if decision["upstream_sha256"].get(relative) != hashlib.sha256(source.read_bytes()).hexdigest():
+                raise ValueError("Profile selection requires the exact registered source receipt hash")
+    except (ValueError, KeyError, TypeError, OSError, UnicodeError) as error:
+        return [Finding("approval.upstream_hash", str(error), "task_ids.json")]
+    return []
+
+
 def draft_selected(
     root: Path, draft: dict[str, Any], *, require_decision: bool = False
 ) -> bool:
@@ -847,11 +898,8 @@ def draft_selected(
     profile_request = None
     if execution_profile(draft) is not None:
         try:
-            profile_request = contained_path(root, f"requests/request_{draft['asset_id']}.json")
-            recorded = json.loads(profile_request.read_text())
-            if not isinstance(recorded, dict) or recorded.get("request_sha256") != draft["request_sha256"]:
-                return False
-        except (ValueError, KeyError, OSError, UnicodeError):
+            profile_request = selected_profile_source(root, draft)
+        except (ValueError, KeyError, TypeError, OSError, UnicodeError):
             return False
     if draft["review_status"] == "approved" and not require_decision and not scoped and profile_request is None:
         project = root / "project.md"
@@ -891,6 +939,10 @@ def draft_selected(
 
 
 def draft_promotion_findings(root: Path, request: dict[str, Any]) -> list[Finding]:
+    if execution_profile(request) is not None:
+        findings = native_draft_findings(request)
+        if findings:
+            return findings
     task_id = request["params"]["draft_task_id"]
     try:
         registry = json.loads(contained_path(root, "task_ids.json").read_text())
@@ -952,6 +1004,7 @@ def draft_promotion_findings(root: Path, request: dict[str, Any]) -> list[Findin
             if key not in (
                 "draft_task_id", "resolution", "draft", "watermark",
                 "return_last_frame", "expiry", "priority",
+                "execution_expires_after", "safety_identifier",
             )
         ):
             message = "Promotion must not change native draft creative parameters"
@@ -1068,7 +1121,9 @@ def execution_profile(request: dict[str, Any]) -> Any:
     return request.get("extensions", {}).get("execution_profile")
 
 
-def profile_binding_findings(request: dict[str, Any], evidence: dict[str, Any]) -> list[Finding]:
+def profile_binding_findings(
+    request: dict[str, Any], evidence: dict[str, Any], *, historical: bool = False,
+) -> list[Finding]:
     binding = execution_profile(request)
     if not isinstance(binding, dict) or not {"destination", "evidence"}.issubset(binding) or set(binding) - {"destination", "evidence", "reference_durations"}:
         return [Finding("model.execution_profile", "Version 2 requires an independently intended destination and persisted evidence")]
@@ -1090,14 +1145,18 @@ def profile_binding_findings(request: dict[str, Any], evidence: dict[str, Any]) 
         start = datetime.fromisoformat(evidence["valid_from"])
         end = datetime.fromisoformat(evidence["expires_at"])
         verified = datetime.fromisoformat(evidence["verified_at"])
-        if not start <= verified <= datetime.now(UTC) < end or start >= end:
+        if not start <= verified < end or verified > datetime.now(UTC) or (
+            not historical and datetime.now(UTC) >= end
+        ):
             raise ValueError("Profile evidence is expired, future-dated or has an invalid validity interval")
     except (ValueError, TypeError) as error:
         findings.append(Finding("model.execution_profile", str(error)))
     return findings
 
 
-def native_draft_findings(request: dict[str, Any], evidence: Any = None) -> list[Finding]:
+def native_draft_findings(
+    request: dict[str, Any], evidence: Any = None, *, historical: bool = False,
+) -> list[Finding]:
     params = request.get("params", {})
     promotion = is_draft_promotion(params)
     draft = params.get("draft") is True
@@ -1107,7 +1166,7 @@ def native_draft_findings(request: dict[str, Any], evidence: Any = None) -> list
         if not isinstance(binding, dict):
             return [Finding("model.execution_profile", "Invalid persisted execution profile")]
         evidence = binding.get("evidence") if evidence is None else evidence
-        findings = capability_findings(request, evidence)
+        findings = capability_findings(request, evidence, historical=historical)
         if findings:
             return findings
         if evidence.get("schema_version") != 2:
@@ -1141,7 +1200,22 @@ def native_task_supported(task: dict[str, Any]) -> bool:
     )
 
 
-def capability_findings(request: dict[str, Any], evidence: Any) -> list[Finding]:
+def native_task_identity_supported(task: dict[str, Any]) -> bool:
+    if schema_findings(task, "generation-request.schema.json"):
+        return False
+    return (
+        task["submission_status"] in ("acknowledged", "terminal")
+        and isinstance(task["provider_task_id"], str)
+        and bool(task["provider_task_id"].strip())
+        and task["params"].get("draft") is True
+        and task["params"].get("resolution") == "480p"
+        and not native_draft_findings(task, historical=True)
+    )
+
+
+def capability_findings(
+    request: dict[str, Any], evidence: Any, *, historical: bool = False,
+) -> list[Finding]:
     malformed = schema_findings(evidence, "capability-evidence.schema.json")
     if malformed:
         return [
@@ -1156,7 +1230,7 @@ def capability_findings(request: dict[str, Any], evidence: Any) -> list[Finding]
         ]
     findings: list[Finding] = []
     if evidence.get("schema_version") == 2:
-        findings.extend(profile_binding_findings(request, evidence))
+        findings.extend(profile_binding_findings(request, evidence, historical=historical))
     elif execution_profile(request) is not None:
         findings.append(Finding("model.execution_profile", "A persisted profile cannot use legacy capability evidence"))
     if evidence.get("model") != request["model"] or request[
@@ -1305,11 +1379,32 @@ def prepared_evidence_findings(
     project_root: Path, request: Any, allow_board_references: bool = False, *,
     unit_id: str | None = None, production_scope: bool = False, context: Any = None,
 ) -> list[Finding]:
+    return _request_evidence_findings(
+        project_root, request, allow_board_references, unit_id=unit_id,
+        production_scope=production_scope, context=context,
+    )
+
+
+def adoption_evidence_findings(
+    project_root: Path, request: Any, *,
+    unit_id: str | None = None, production_scope: bool = False, context: Any = None,
+) -> list[Finding]:
+    return _request_evidence_findings(
+        project_root, request, True, unit_id=unit_id,
+        production_scope=production_scope, context=context, existing_submission=True,
+    )
+
+
+def _request_evidence_findings(
+    project_root: Path, request: Any, allow_board_references: bool, *,
+    unit_id: str | None = None, production_scope: bool = False, context: Any = None,
+    existing_submission: bool = False,
+) -> list[Finding]:
     root = Path(project_root).resolve()
     findings = request_hash_findings(root, request)
     if schema_findings(request, "generation-request.schema.json"):
         return findings
-    if not allow_board_references or execution_profile(request) is not None:
+    if not existing_submission:
         findings.extend(native_draft_findings(request))
     scope = record_scope_findings(
         root, request, context=context, unit_id=unit_id, production_scope=production_scope,
@@ -1371,6 +1466,20 @@ def validate_request(
     if schema_findings(request, "generation-request.schema.json"):
         return findings
     findings.extend(capability_findings(request, capability_evidence))
+    return findings
+
+
+def validate_adoption_request(
+    project_root: Path, request: Any, capability_evidence: Any, *,
+    unit_id: str | None = None, production_scope: bool = False, context: Any = None,
+) -> list[Finding]:
+    findings = adoption_evidence_findings(
+        project_root, request, unit_id=unit_id,
+        production_scope=production_scope, context=context,
+    )
+    if schema_findings(request, "generation-request.schema.json"):
+        return findings
+    findings.extend(capability_findings(request, capability_evidence, historical=True))
     return findings
 
 
