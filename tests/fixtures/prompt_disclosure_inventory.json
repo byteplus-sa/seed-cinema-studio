@@ -66,9 +66,9 @@
     {
       "skill": "seedream-prompt",
       "before_lines": 689,
-      "after_lines": 130,
+      "after_lines": 139,
       "before_bytes": 31538,
-      "entry_bytes": 7787,
+      "entry_bytes": 7796,
       "references": [
         ".agents/skills/seedream-prompt/references/image-editing.md",
         ".agents/skills/seedream-prompt/references/image-generation.md",
@@ -85,16 +85,16 @@
           ".agents/skills/seedream-prompt/SKILL.md",
           ".agents/skills/seedream-prompt/references/image-generation.md"
         ],
-        "loaded_bytes": 17534,
+        "loaded_bytes": 17543,
         "measurement": "Exact file bytes for a declared loading path, not measured agent tokens or behavior."
       }
     },
     {
       "skill": "seedream-storyboard",
       "before_lines": 963,
-      "after_lines": 244,
+      "after_lines": 266,
       "before_bytes": 41972,
-      "entry_bytes": 14519,
+      "entry_bytes": 16066,
       "references": [
         ".agents/skills/seedream-storyboard/references/context-and-preflight.md",
         ".agents/skills/seedream-storyboard/references/editing-failed-panels.md",
@@ -112,7 +112,7 @@
           ".agents/skills/seedream-storyboard/references/context-and-preflight.md",
           ".agents/skills/seedream-storyboard/references/panel-and-grid-prompts.md"
         ],
-        "loaded_bytes": 35812,
+        "loaded_bytes": 37833,
         "measurement": "Exact file bytes for a declared loading path, not measured agent tokens or behavior."
       }
     },
@@ -208,10 +208,10 @@
           ".agents/skills/seedream-location-asset/references/complex-architecture.md"
         ],
         "measurement": "Exact current file bytes for a declared loading path, not measured agent tokens or behavior.",
-        "loaded_bytes": 12176
+        "loaded_bytes": 12978
       },
-      "after_lines": 224,
-      "entry_bytes": 10360
+      "after_lines": 234,
+      "entry_bytes": 11162
     },
     {
       "skill": "seedream-prop-asset",
@@ -228,11 +228,11 @@
           ".agents/skills/seedream-prop-asset/references/body-continuity-marks.md"
         ],
         "measurement": "Exact current file bytes for a declared loading path, not measured agent tokens or behavior.",
-        "loaded_bytes": 24777
+        "loaded_bytes": 25579
       },
-      "after_lines": 466,
-      "entry_bytes": 24025
+      "after_lines": 476,
+      "entry_bytes": 24827
     }
   ],
-  "measurement_revision": "2026-10-19 installed workspace scope; historical before counts retained where available; current paths measured as file bytes, not agent tokens"
+  "measurement_revision": "2026-10-19 installed workspace scope; historical before counts retained where available; current paths measured as file bytes, not agent tokens; 2026-11-13 approved Seedream remediation remeasured changed bundles only, historical before counts retained"
 }
