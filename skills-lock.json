@@ -211,13 +211,13 @@
       "source": "./local",
       "sourceType": "local",
       "skillPath": ".agents/skills/seedance-lighting-presets/SKILL.md",
-      "computedHash": "65873b8d8b71bcc6f952319ecdc1b81ea122377e74fa7c70fb4e529e50e11911"
+      "computedHash": "f6027d36f34bb6cf07dd80004cf3795a50a96d2eb59458738728b75856b6010b"
     },
     "seedance-motion-recast": {
       "source": "./local",
       "sourceType": "local",
       "skillPath": ".agents/skills/seedance-motion-recast/SKILL.md",
-      "computedHash": "cf718a490648810ae60cc026ea7f915d40da5d3a39eba8c635bf10c74f9c01ae"
+      "computedHash": "c8b5af673b2571afa1877800aff003db4941746116932c37331baad88d4680ed"
     },
     "seedance-object-swap": {
       "source": "./local",
@@ -295,31 +295,31 @@
       "source": "./local",
       "sourceType": "local",
       "skillPath": ".agents/skills/seedream-edit/SKILL.md",
-      "computedHash": "228db5c024d69c9182d59e8c9260688b286520f166c2b06982c807c026e58411"
+      "computedHash": "02b73c027f3c4dd0a5f9a07acf064ea994ed99cd4a9d920aeba7f71250a7ffaa"
     },
     "seedream-location-asset": {
       "source": "./local",
       "sourceType": "local",
       "skillPath": ".agents/skills/seedream-location-asset/SKILL.md",
-      "computedHash": "cf47dcb5a29ada02e0ac7494e66d05b599aee20c514f7d30eb349a2036d5bfc2"
+      "computedHash": "97f8cefd66df005979d5324ddc1c4207487098273ab991073e61c269901afb45"
     },
     "seedream-prompt": {
       "source": "./local",
       "sourceType": "local",
       "skillPath": ".agents/skills/seedream-prompt/SKILL.md",
-      "computedHash": "b06c685db9fd072241a5e6143ee7f9db7e1a78b4336f8123e80f58f7855cecf6"
+      "computedHash": "b0d8f6ccab7207800968cf4d6e78e3aa9563a656422cb97f6707eb215f99d62e"
     },
     "seedream-prop-asset": {
       "source": "./local",
       "sourceType": "local",
       "skillPath": ".agents/skills/seedream-prop-asset/SKILL.md",
-      "computedHash": "2c7ab97e94c59ce7d3c4730c4b4df68e51ea7e5831619ccaae810c8238246b3b"
+      "computedHash": "9d2ed6f7d5b6d5408343ecbd3d6fda5a6720ce81f2b1bfe77b9c951aa6e39ceb"
     },
     "seedream-storyboard": {
       "source": "./local",
       "sourceType": "local",
       "skillPath": ".agents/skills/seedream-storyboard/SKILL.md",
-      "computedHash": "de75463fdf4e1ff0fd9434fcf60fe45504e15ebbae6b342bd99dc9b203fe1ce6"
+      "computedHash": "2578017db23a59fd61cac4093e9d1174192a080c044a5cd296aa579a472e3a26"
     },
     "setup": {
       "source": "./local",
