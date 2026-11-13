@@ -147,30 +147,25 @@
     {
       "skill": "ark-mcp",
       "references": [
-        ".agents/skills/ark-mcp/references/3d.md",
-        ".agents/skills/ark-mcp/references/assets-and-rights.md",
-        ".agents/skills/ark-mcp/references/audio.md",
         ".agents/skills/ark-mcp/references/background-job-output.md",
-        ".agents/skills/ark-mcp/references/object-storage.md",
-        ".agents/skills/ark-mcp/references/seedance-tasks.md",
-        ".agents/skills/ark-mcp/references/seedance.md",
-        ".agents/skills/ark-mcp/references/seedream.md",
-        ".agents/skills/ark-mcp/references/server-config.md",
-        ".agents/skills/ark-mcp/references/troubleshooting.md",
-        ".agents/skills/ark-mcp/references/understanding-and-stt.md",
-        ".agents/skills/ark-mcp/references/vod-mediakit.md"
+        ".agents/skills/ark-mcp/references/environment.md",
+        ".agents/skills/ark-mcp/references/models-and-limits.md",
+        ".agents/skills/ark-mcp/references/polling-and-artifacts.md",
+        ".agents/skills/ark-mcp/references/tool-reference.md",
+        ".agents/skills/ark-mcp/references/understanding-media-assets.md",
+        ".agents/skills/ark-mcp/references/workflows.md"
       ],
       "representative_path": {
         "scenario": "Focused capability or checklist loading",
         "files": [
           ".agents/skills/ark-mcp/SKILL.md",
-          ".agents/skills/ark-mcp/references/3d.md"
+          ".agents/skills/ark-mcp/references/tool-reference.md"
         ],
         "measurement": "Exact current file bytes for a declared loading path, not measured agent tokens or behavior.",
-        "loaded_bytes": 22096
+        "loaded_bytes": 41100
       },
-      "after_lines": 287,
-      "entry_bytes": 16185
+      "after_lines": 249,
+      "entry_bytes": 16056
     },
     {
       "skill": "prompt-review",
