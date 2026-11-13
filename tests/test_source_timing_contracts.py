@@ -168,6 +168,27 @@ class SourceTimingContractsTests(unittest.TestCase):
                     with self.subTest(skill=path.parent.name, case=case["id"], pattern=pattern):
                         self.assertNotRegex(text, pattern)
 
+    def test_multi_clip_delegate_preserves_independent_spans_offsets_and_tails(self) -> None:
+        path = SKILLS / "template-factory/references/long-pins-and-multi-clip.md"
+        text = path.read_text()
+        section = " ".join(text.split("## Assembling the clips", 1)[1].split("## ", 1)[0].lower().split())
+        scenarios = {
+            "fractional_picture": ("fractional", "frame count", "fps", "cuts", "timestamps"),
+            "independent_sound": ("independent sound and picture spans", "offsets", "final word", "audio tails"),
+            "whole_frame_control": ("whole frames", "lossless intermediates", "measured frame count"),
+            "denied_derivative": ("denied or missing", "unchanged", "no derivative"),
+            "approved_derivative": ("explicit derivative adaptation approval", "source sha-256", "derivative sha-256", "exact window", "timing delta", "audio consequences"),
+            "headroom_control": ("generation headroom", "separately authorized", "locked final timing"),
+            "unresolved_timing": ("missing or malformed", "stop", "never guess"),
+            "mismatch_control": ("output mismatch", "unresolved", "-shortest"),
+        }
+        for scenario, clauses in scenarios.items():
+            with self.subTest(scenario=scenario):
+                for clause in clauses:
+                    self.assertIn(clause, section)
+        self.assertNotIn("pad or trim its audio to the same length", text)
+        self.assertNotIn("trim any necessary rounding margin", text)
+
 
 if __name__ == "__main__":
     unittest.main()

@@ -18,6 +18,7 @@ class FamilyContracts(unittest.TestCase):
         for path in (
             "film-production/SKILL.md", "film-production/references/production-defaults.md",
             "template-factory/SKILL.md", "template-factory/references/slot-mapping.md",
+            "template-factory/references/long-pins-and-multi-clip.md",
         ):
             with self.subTest(path=path):
                 text = (ROOT / path).read_text()
@@ -26,6 +27,28 @@ class FamilyContracts(unittest.TestCase):
                 self.assertIn("exact master", text)
                 self.assertIn("silence", text)
                 self.assertNotIn("Native only for on-camera dialogue", text)
+
+    def test_actual_multi_clip_delegate_covers_selected_sound_scenarios(self):
+        text = (ROOT / "template-factory/references/long-pins-and-multi-clip.md").read_text()
+        rows = {
+            cells[1].strip(): " ".join(cells[2:]).lower()
+            for line in text.splitlines()
+            if line.startswith("| ") and len(cells := line.split("|")) >= 4
+        }
+        scenarios = {
+            "native": ("wordless", "contact", "ambience", "preserve", "no automatic muting"),
+            "post": ("supported", "picture-only", "supplied", "separate generation requires authorization"),
+            "exact master": ("unchanged", "hash", "offset", "tail", "no automatic"),
+            "mixed": ("each layer", "owner", "offset", "native", "post", "no duplicate bed"),
+            "silence": ("no bed", "inspect", "unwanted audio", "authorized repair"),
+        }
+        for owner, clauses in scenarios.items():
+            with self.subTest(owner=owner):
+                self.assertIn(owner, rows)
+                for clause in clauses:
+                    self.assertIn(clause, rows[owner])
+        self.assertIn("Speech absence does not select post audio", text)
+        self.assertNotIn("whose sound is score-led or ambient, generate picture", text)
 
     def test_pacing_keeps_native_dialogue_without_authorizing_audio_generation(self):
         text = (ROOT / "seedance-pacing-presets/SKILL.md").read_text()

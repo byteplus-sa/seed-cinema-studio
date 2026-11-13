@@ -12,10 +12,13 @@ from datetime import UTC, datetime
 from pathlib import Path
 from types import ModuleType
 from typing import Any
+from urllib.parse import unquote
 
 from jsonschema import Draft202012Validator, FormatChecker
 from jsonschema.exceptions import SchemaError
 from jsonschema.protocols import Validator
+from referencing import Registry
+from referencing.exceptions import Unresolvable
 from ruamel.yaml import YAML
 from ruamel.yaml.error import YAMLError
 
@@ -1105,16 +1108,84 @@ def reference_findings(
     return findings
 
 
-def external_schema_references(value: Any) -> bool:
-    if isinstance(value, dict):
-        return any(
-            (key in ("$ref", "$dynamicRef") and not str(child).startswith("#"))
-            or external_schema_references(child)
-            for key, child in value.items()
-        )
-    if isinstance(value, list):
-        return any(external_schema_references(child) for child in value)
-    return False
+def capability_schema_findings(schema: dict[str, Any]) -> list[Finding]:
+    visited = 0
+    active: set[int] = set()
+    mapping_keywords = (
+        "properties", "patternProperties", "$defs", "definitions", "dependentSchemas",
+    )
+    single_keywords = (
+        "additionalProperties", "unevaluatedProperties", "propertyNames", "items",
+        "contains", "unevaluatedItems", "not", "if", "then", "else",
+    )
+    array_keywords = ("allOf", "anyOf", "oneOf", "prefixItems")
+
+    def resolve(reference: Any) -> Any:
+        if not isinstance(reference, str) or not reference.startswith("#"):
+            raise ValueError("Capability schemas must be self-contained; remote references are not loaded")
+        pointer = unquote(reference[1:])
+        if not pointer:
+            return schema
+        if not pointer.startswith("/"):
+            raise ValueError("Unsupported local capability reference; expected a JSON pointer")
+        target: Any = schema
+        for encoded in pointer[1:].split("/"):
+            if re.search(r"~(?![01])", encoded):
+                raise ValueError("Invalid escaped local capability pointer")
+            segment = encoded.replace("~1", "/").replace("~0", "~")
+            if isinstance(target, dict) and segment in target:
+                target = target[segment]
+            elif isinstance(target, list) and re.fullmatch(r"0|[1-9][0-9]*", segment):
+                index = int(segment)
+                if index >= len(target):
+                    raise ValueError("Dangling local capability reference")
+                target = target[index]
+            else:
+                raise ValueError("Dangling local capability reference")
+        return target
+
+    def visit(value: Any, depth: int) -> None:
+        nonlocal visited
+        visited += 1
+        if depth > 64:
+            raise ValueError("Capability schema depth budget exceeded (64)")
+        if visited > 4096:
+            raise ValueError("Capability schema node budget exceeded (4096)")
+        if isinstance(value, bool):
+            return
+        if not isinstance(value, dict):
+            raise TypeError("Invalid capability schema target; expected an object or boolean")
+        identity = id(value)
+        if identity in active:
+            raise ValueError("Recursive local capability schema cannot be evaluated safely")
+        active.add(identity)
+        try:
+            for keyword in ("$ref", "$dynamicRef"):
+                if keyword in value:
+                    visit(resolve(value[keyword]), depth + 1)
+            for keyword in mapping_keywords:
+                children = value.get(keyword, {})
+                if not isinstance(children, dict):
+                    raise TypeError(f"Invalid capability schema mapping: {keyword}")
+                for child in children.values():
+                    visit(child, depth + 1)
+            for keyword in single_keywords:
+                if keyword in value:
+                    visit(value[keyword], depth + 1)
+            for keyword in array_keywords:
+                children = value.get(keyword, [])
+                if not isinstance(children, list):
+                    raise TypeError(f"Invalid capability schema array: {keyword}")
+                for child in children:
+                    visit(child, depth + 1)
+        finally:
+            active.remove(identity)
+
+    try:
+        visit(schema, 0)
+    except (ValueError, TypeError, RecursionError) as error:
+        return [Finding("model.supported_mode", str(error))]
+    return []
 
 
 def execution_profile(request: dict[str, Any]) -> Any:
@@ -1221,13 +1292,6 @@ def capability_findings(
         return [
             Finding("model.supported_mode", finding.message) for finding in malformed
         ]
-    if external_schema_references(evidence["parameters"]) or external_schema_references(evidence.get("parameter_constraints", [])):
-        return [
-            Finding(
-                "model.supported_mode",
-                "Capability schemas must be self-contained; remote references are not loaded",
-            )
-        ]
     findings: list[Finding] = []
     if evidence.get("schema_version") == 2:
         findings.extend(profile_binding_findings(request, evidence, historical=historical))
@@ -1257,11 +1321,14 @@ def capability_findings(
     }
     if evidence.get("parameter_constraints"):
         schema["allOf"] = evidence["parameter_constraints"]
+    schema_failures = capability_schema_findings(schema)
+    if schema_failures:
+        return findings + schema_failures
     try:
         Draft202012Validator.check_schema(schema)
-        for error in Draft202012Validator(schema).iter_errors(request["params"]):
+        for error in Draft202012Validator(schema, registry=Registry()).iter_errors(request["params"]):
             findings.append(Finding("model.supported_mode", error.message))
-    except (SchemaError, TypeError, ValueError) as error:
+    except (SchemaError, TypeError, ValueError, RecursionError, Unresolvable) as error:
         findings.append(
             Finding("model.supported_mode", f"Invalid capability schema: {error}")
         )

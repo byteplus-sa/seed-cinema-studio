@@ -300,6 +300,129 @@ class CapabilityProfiles(unittest.TestCase):
         ), expected)
 
 
+class RecursiveCapabilitySchemas(unittest.TestCase):
+    def findings(self, constraint):
+        evidence = profile()
+        evidence["parameter_constraints"] = constraint
+        return validation.capability_findings(request(evidence), evidence)
+
+    def test_recursive_local_root_and_conditional_target_return_findings(self):
+        for constraints in (
+            [{"$ref": "#"}],
+            [{"$ref": "#/allOf/0"}],
+            [{"if": {}, "then": {"$ref": "#"}}],
+        ):
+            with self.subTest(constraints=constraints):
+                findings = self.findings(constraints)
+                self.assertTrue(findings)
+                self.assertIn("recursive", findings[0].message.lower())
+
+    def test_empty_boolean_and_escaped_local_pointer_controls(self):
+        for constraints in ([], [{}], [True]):
+            self.assertEqual(self.findings(constraints), [])
+        self.assertTrue(self.findings([False]))
+        evidence = profile()
+        evidence["parameters"] = {"a/b~c": {"type": "string"}}
+        evidence["parameter_constraints"] = [{
+            "properties": {"a/b~c": {"$ref": "#/properties/a~1b~0c"}}
+        }]
+        candidate = request(evidence)
+        candidate["params"] = {"a/b~c": "valid"}
+        self.assertEqual(validation.capability_findings(candidate, evidence), [])
+        candidate["params"]["a/b~c"] = 1
+        self.assertTrue(validation.capability_findings(candidate, evidence))
+
+    def test_literal_remote_and_recursive_looking_data_remain_opaque(self):
+        literal = {"$ref": "https://invalid.example/no-fetch", "nested": {"$ref": "#"}}
+        evidence = profile()
+        evidence["parameters"]["payload"] = {
+            "const": literal, "enum": [literal], "examples": [literal],
+        }
+        candidate = request(evidence)
+        candidate["params"]["payload"] = literal
+        self.assertEqual(validation.capability_findings(candidate, evidence), [])
+        candidate["params"]["payload"] = {"changed": True}
+        self.assertTrue(validation.capability_findings(candidate, evidence))
+
+    def test_dangling_remote_and_invalid_local_targets_are_structured(self):
+        for constraints in (
+            [{"$ref": "#/missing"}], [{"$ref": "#/required"}],
+            [{"$ref": "https://invalid.example/no-fetch"}],
+        ):
+            with self.subTest(constraints=constraints):
+                findings = self.findings(constraints)
+                self.assertTrue(findings)
+                self.assertEqual(findings[0].rule_id, "model.supported_mode")
+
+    def test_schema_depth_and_node_budgets_are_explicit(self):
+        nested = {}
+        for _ in range(65):
+            nested = {"allOf": [nested]}
+        for constraints, budget in (([nested], "depth"), ([{}] * 4096, "node")):
+            with self.subTest(budget=budget):
+                findings = self.findings(constraints)
+                self.assertTrue(findings)
+                self.assertIn(budget, findings[0].message.lower())
+        self.assertEqual(self.findings([{}] * 32), [])
+
+    def test_real_validate_prepare_register_and_submitting_fail_without_writes(self):
+        with tempfile.TemporaryDirectory(prefix="cinema-recursive-") as directory:
+            root = Path(directory)
+            (root / "project.md").write_text("# Offline recursive fixture\n")
+            (root / "prompt.md").write_text("A performer waits.\n")
+            evidence = profile()
+            evidence["parameter_constraints"] = [{"$ref": "#"}]
+            (root / "caps.json").write_text(json.dumps(evidence))
+            arguments = [
+                "--project", str(root), "--asset", "recursive", "--prompt", "prompt.md",
+                "--model", "synthetic-video", "--operation", "text_to_video",
+                "--expected-output", "output.mp4", "--capabilities", "caps.json",
+                "--provider", "test-provider", "--tool-schema-revision", "test-revision",
+                "--param", "resolution=480p",
+            ]
+            candidate = prepare_request.build_request(
+                root, prepare_request.parser().parse_args(arguments),
+            )
+            (root / "candidate.json").write_text(json.dumps(candidate))
+            (root / "task_ids.json").write_text(json.dumps({"schema_version": 1, "tasks": []}))
+            before = (root / "task_ids.json").read_bytes()
+            commands = [
+                [sys.executable, "-B", str(Path(validation.__file__)),
+                 "--project", str(root), "--request", str(root / "candidate.json"),
+                 "--capabilities", str(root / "caps.json")],
+                [sys.executable, "-B", str(Path(prepare_request.__file__)),
+                 *arguments, "--write"],
+                [sys.executable, "-B", str(Path(prepare_request.__file__)),
+                 *arguments, "--write", "--register"],
+            ]
+            for command in commands:
+                with self.subTest(command=command):
+                    result = subprocess.run(
+                        command, capture_output=True, text=True, check=False, timeout=30,
+                    )
+                    self.assertEqual(result.returncode, 1, result.stdout + result.stderr)
+                    result_json = json.loads(result.stdout)
+                    self.assertFalse(result_json["ok"])
+                    self.assertIn("model.supported_mode", {
+                        finding["rule_id"] for finding in result_json["findings"]
+                    })
+                    self.assertNotIn("Traceback", result.stderr)
+                    self.assertFalse((root / "requests").exists())
+                    self.assertEqual((root / "task_ids.json").read_bytes(), before)
+            with self.assertRaises(ValueError):
+                operation_store.prepare_operation(root, candidate, evidence, None, [])
+            self.assertEqual((root / "task_ids.json").read_bytes(), before)
+            (root / "task_ids.json").write_text(json.dumps({
+                "schema_version": 1, "tasks": [candidate],
+            }))
+            before = (root / "task_ids.json").read_bytes()
+            with self.assertRaises(ValueError):
+                operation_store.transition_operation(
+                    root, candidate["operation_id"], "prepared", "submitting",
+                )
+            self.assertEqual((root / "task_ids.json").read_bytes(), before)
+
+
 class CinemaRepairTests(unittest.TestCase):
     def setUp(self):
         from test_scoped_lifecycle import ScopedLifecycleTests
