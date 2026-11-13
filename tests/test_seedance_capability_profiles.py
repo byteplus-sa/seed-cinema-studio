@@ -510,6 +510,294 @@ class CinemaRepairTests(unittest.TestCase):
                     )
                 self.assertFalse((self.root / "drafts.json").exists())
 
+    def record_take(self, **changes):
+        return draft_ledger.record_draft(
+            self.root, self.draft["asset_id"], self.draft["operation_id"],
+            "native-task", draft_ledger.today(),
+            take=self.decision["subject_path"], **changes,
+        )
+
+    def test_approved_null_take_bookkeeping_preserves_history_after_profile_expiry(self):
+        before = draft_ledger.read_ledger(self.root)
+        self.assertEqual(before["drafts"][0]["status"], "approved")
+        self.assertIsNone(before["drafts"][0]["take"])
+        registry_before = (self.root / "task_ids.json").read_bytes()
+        with patch.object(validation, "datetime", wraps=datetime) as clock:
+            clock.now.return_value = datetime.now(UTC) + timedelta(hours=3)
+            self.assertTrue(validation.native_task_identity_supported(self.registered))
+            self.assertFalse(validation.native_task_supported(self.registered))
+            self.assertEqual(validation.request_hash_findings(self.root, self.registered), [])
+            self.assertTrue(validation.draft_selected(self.root, self.registered, require_decision=True))
+            entry = self.record_take(status=None)
+            expected = {**before["drafts"][0], "take": self.decision["subject_path"]}
+            self.assertEqual(entry, expected)
+            self.assertEqual(draft_ledger.read_ledger(self.root), {
+                **before, "drafts": [expected],
+            })
+            self.assertEqual(self.record_take(status=None), expected)
+            self.assertTrue(validation.draft_promotion_findings(self.root, self.final()))
+        self.assertEqual((self.root / "task_ids.json").read_bytes(), registry_before)
+
+    def test_approved_whole_document_take_update_preserves_history_after_expiry(self):
+        expected = draft_ledger.read_ledger(self.root)
+        expected["drafts"][0]["take"] = self.decision["subject_path"]
+        with patch.object(validation, "datetime", wraps=datetime) as clock:
+            clock.now.return_value = datetime.now(UTC) + timedelta(hours=3)
+            draft_ledger.validate_ledger_update(self.root, expected)
+            draft_ledger.write_ledger(self.root, expected)
+            self.assertEqual(draft_ledger.read_ledger(self.root), expected)
+            draft_ledger.write_ledger(self.root, expected)
+
+    def test_approved_take_update_before_expiry_keeps_promotion_eligible(self):
+        self.assertTrue(validation.native_task_supported(self.registered))
+        self.record_take()
+        self.assertEqual(validation.draft_promotion_findings(self.root, self.final()), [])
+
+    def test_recorded_selected_take_cannot_be_cleared_or_replaced(self):
+        self.record_take()
+        before = (self.root / "drafts.json").read_bytes()
+        with patch.object(validation, "datetime", wraps=datetime) as clock:
+            clock.now.return_value = datetime.now(UTC) + timedelta(hours=3)
+            for take in (None, "", "scenes/scene-002/take.mp4"):
+                document = draft_ledger.read_ledger(self.root)
+                document["drafts"][0]["take"] = take
+                with self.subTest(take=take), self.assertRaises(ValueError):
+                    draft_ledger.write_ledger(self.root, document)
+                self.assertEqual((self.root / "drafts.json").read_bytes(), before)
+            self.assertEqual(self.record_take()["take"], self.decision["subject_path"])
+            for changes in (
+                {"asset": "foreign"}, {"operation_id": "foreign"},
+                {"draft_task_id": "foreign"}, {"take": "scenes/scene-002/take.mp4"},
+            ):
+                arguments = {
+                    "project": self.root, "asset": self.draft["asset_id"],
+                    "operation_id": self.draft["operation_id"],
+                    "draft_task_id": "native-task", "submitted": draft_ledger.today(),
+                    "take": self.decision["subject_path"],
+                }
+                arguments.update(changes)
+                with self.subTest(api=changes), self.assertRaises(ValueError):
+                    draft_ledger.record_draft(**arguments)
+                self.assertEqual((self.root / "drafts.json").read_bytes(), before)
+
+    def test_new_final_linkage_rejects_invalid_final_digest_and_controls_without_writes(self):
+        final = self.final()
+        self.fixture.register(final)
+        operation_store.transition_operation(self.root, "final", "prepared", "submitting")
+        operation_store.transition_operation(
+            self.root, "final", "submitting", "acknowledged",
+            provider_task_id="final-task", provider_status="running",
+        )
+        original = operation_store.read_registry(self.root / "task_ids.json")
+        before = (self.root / "drafts.json").read_bytes()
+        for mutation in ("digest", "creative_params", "invalid_control"):
+            registry = copy.deepcopy(original)
+            changed = registry["tasks"][1]
+            if mutation == "digest":
+                changed["request_sha256"] = "b" * 64
+            else:
+                changed["params"].update(
+                    {"duration": 9} if mutation == "creative_params"
+                    else {"execution_expires_after": 0},
+                )
+                self.fixture.rehash(changed)
+            self.fixture.write("task_ids.json", json.dumps(registry))
+            for writer in ("api", "document"):
+                with self.subTest(mutation=mutation, writer=writer), self.assertRaises(ValueError):
+                    if writer == "api":
+                        self.record_take(final_operation_id="final")
+                    else:
+                        document = draft_ledger.read_ledger(self.root)
+                        document["drafts"][0].update(
+                            status="promoted", final_operation_id="final",
+                            take=self.decision["subject_path"],
+                        )
+                        draft_ledger.write_ledger(self.root, document)
+                self.assertEqual((self.root / "drafts.json").read_bytes(), before)
+
+    def test_take_bookkeeping_cannot_grant_new_authority_after_profile_expiry(self):
+        final = self.final()
+        self.fixture.register(final)
+        operation_store.transition_operation(self.root, "final", "prepared", "submitting")
+        operation_store.transition_operation(
+            self.root, "final", "submitting", "acknowledged",
+            provider_task_id="final-task", provider_status="running",
+        )
+        registry_before = (self.root / "task_ids.json").read_bytes()
+        ledger_before = (self.root / "drafts.json").read_bytes()
+        with patch.object(validation, "datetime", wraps=datetime) as clock:
+            clock.now.return_value = datetime.now(UTC) + timedelta(hours=3)
+            for changes in (
+                {"status": "approved"}, {"status": "promoted"},
+                {"final_operation_id": "final"},
+                {"status": "approved", "final_operation_id": "final"},
+            ):
+                with self.subTest(api=changes), self.assertRaises(ValueError):
+                    self.record_take(**changes)
+                self.assertEqual((self.root / "drafts.json").read_bytes(), ledger_before)
+            for changes in (
+                {"status": "promoted"}, {"final_operation_id": "final"},
+                {"status": "promoted", "final_operation_id": "final"},
+                {"new_authority": True},
+            ):
+                document = draft_ledger.read_ledger(self.root)
+                document["drafts"][0].update(take=self.decision["subject_path"], **changes)
+                with self.subTest(document=changes), self.assertRaises(ValueError):
+                    draft_ledger.write_ledger(self.root, document)
+                self.assertEqual((self.root / "drafts.json").read_bytes(), ledger_before)
+            drafted = draft_ledger.read_ledger(self.root)
+            drafted["drafts"][0]["status"] = "drafted"
+            draft_ledger.write_ledger(self.root, drafted)
+            before = (self.root / "drafts.json").read_bytes()
+            document = copy.deepcopy(drafted)
+            document["drafts"][0].update(status="approved", take=self.decision["subject_path"])
+            with self.assertRaises(ValueError):
+                draft_ledger.write_ledger(self.root, document)
+            with self.assertRaises(ValueError):
+                self.record_take(status="approved")
+            self.assertEqual((self.root / "drafts.json").read_bytes(), before)
+            pending = copy.deepcopy(self.draft)
+            pending["operation_id"] = pending["asset_id"] = "pending"
+            self.fixture.write("task_ids.json", json.dumps({
+                "schema_version": 1, "tasks": [self.registered, pending],
+            }))
+            registry_before = (self.root / "task_ids.json").read_bytes()
+            with self.assertRaises(ValueError):
+                operation_store.transition_operation(
+                    self.root, "pending", "prepared", "submitting",
+                )
+            self.assertEqual((self.root / "task_ids.json").read_bytes(), registry_before)
+
+    def test_expired_approved_take_updates_reject_changed_ledger_identity_without_writes(self):
+        before = (self.root / "drafts.json").read_bytes()
+        with patch.object(validation, "datetime", wraps=datetime) as clock:
+            clock.now.return_value = datetime.now(UTC) + timedelta(hours=3)
+            for field, value in (
+                ("asset", "foreign"), ("operation_id", "foreign"),
+                ("draft_task_id", "foreign"), ("prompt_sha256", "a" * 64),
+                ("request_sha256", "b" * 64), ("context", {}),
+                ("submitted", "2026-10-20"), ("expires", "2026-10-27"),
+                ("model", "foreign"), ("operation", "foreign"), ("transport", "curl"),
+                ("execution_profile", None), ("take", "scenes/scene-002/take.mp4"),
+                ("take", "../escape.mp4"), ("final_operation_id", "foreign"),
+            ):
+                document = draft_ledger.read_ledger(self.root)
+                document["drafts"][0].update(take=self.decision["subject_path"])
+                document["drafts"][0][field] = value
+                with self.subTest(field=field, value=value), self.assertRaises(ValueError):
+                    draft_ledger.write_ledger(self.root, document)
+                self.assertEqual((self.root / "drafts.json").read_bytes(), before)
+
+    def test_expired_approved_take_updates_reject_changed_registered_identity_and_selection(self):
+        before = (self.root / "drafts.json").read_bytes()
+        for mutation in (
+            "provider_task_id", "model", "transport", "profile", "digest",
+            "params", "output", "source", "media", "decision", "review",
+        ):
+            changed = copy.deepcopy(self.registered)
+            if mutation in ("provider_task_id", "model", "transport"):
+                changed[mutation] = "foreign"
+            elif mutation == "profile":
+                changed["extensions"]["execution_profile"]["destination"]["provider"] = "foreign"
+            elif mutation == "digest":
+                changed["request_sha256"] = "b" * 64
+            elif mutation == "params":
+                changed["params"]["duration"] = 9
+            elif mutation == "output":
+                changed["extensions"]["expected_output"] = "scenes/scene-002/take.mp4"
+            paths = [
+                self.source, self.root / self.decision["subject_path"],
+                self.root / f"decisions/{self.decision['decision_id']}.json",
+                self.root / self.decision["review_path"],
+            ]
+            originals = [path.read_bytes() for path in paths]
+            if mutation in ("source", "media", "decision", "review"):
+                paths[("source", "media", "decision", "review").index(mutation)].write_text("Changed")
+            self.fixture.write("task_ids.json", json.dumps({
+                "schema_version": 1, "tasks": [changed],
+            }))
+            with patch.object(validation, "datetime", wraps=datetime) as clock:
+                clock.now.return_value = datetime.now(UTC) + timedelta(hours=3)
+                with self.subTest(api=mutation), self.assertRaises(ValueError):
+                    self.record_take()
+                document = draft_ledger.read_ledger(self.root)
+                document["drafts"][0]["take"] = self.decision["subject_path"]
+                with self.subTest(document=mutation), self.assertRaises(ValueError):
+                    draft_ledger.write_ledger(self.root, document)
+            self.assertEqual((self.root / "drafts.json").read_bytes(), before)
+            for path, original in zip(paths, originals, strict=True):
+                path.write_bytes(original)
+
+    def test_executable_cli_records_approved_history_with_expired_profile(self):
+        historical_now = datetime.now(UTC) - timedelta(days=1)
+        binding = self.draft["extensions"]["execution_profile"]
+        for field in ("verified_at", "valid_from", "expires_at"):
+            timestamp = datetime.fromisoformat(binding["evidence"][field])
+            binding["evidence"][field] = (timestamp - timedelta(days=1)).isoformat()
+        self.fixture.rehash(self.draft)
+        self.registered.update(
+            extensions=copy.deepcopy(self.draft["extensions"]),
+            request_sha256=self.draft["request_sha256"],
+        )
+        self.fixture.write("task_ids.json", json.dumps({
+            "schema_version": 1, "tasks": [self.registered],
+        }))
+        self.rebind_source(self.draft)
+        (self.root / "drafts.json").unlink()
+        with patch.object(validation, "datetime", wraps=datetime) as clock:
+            clock.now.return_value = historical_now
+            draft_ledger.record_draft(
+                self.root, self.draft["asset_id"], self.draft["operation_id"],
+                "native-task", draft_ledger.today(), status="approved",
+            )
+        before = draft_ledger.read_ledger(self.root)
+        command = [
+            sys.executable, "-B", str(Path(draft_ledger.__file__)), "record",
+            str(self.root), "--asset", self.draft["asset_id"],
+            "--operation-id", self.draft["operation_id"],
+            "--draft-task-id", "native-task", "--take", self.decision["subject_path"],
+        ]
+        result = subprocess.run(command, capture_output=True, text=True, check=False, timeout=30)
+        self.assertEqual(result.returncode, 0, result.stderr)
+        self.assertEqual(json.loads(result.stdout), {
+            **before["drafts"][0], "take": self.decision["subject_path"],
+        })
+        preserved = (self.root / "drafts.json").read_bytes()
+        for arguments in (
+            ["--status", "approved"], ["--status", "promoted"],
+            ["--final-operation-id", "final"],
+        ):
+            result = subprocess.run(
+                command + arguments, capture_output=True, text=True, check=False, timeout=30,
+            )
+            self.assertEqual(result.returncode, 1, result.stdout)
+            self.assertIn("error:", result.stderr)
+            self.assertEqual((self.root / "drafts.json").read_bytes(), preserved)
+        command[command.index(self.decision["subject_path"])] = "scenes/scene-002/take.mp4"
+        result = subprocess.run(command, capture_output=True, text=True, check=False, timeout=30)
+        self.assertEqual(result.returncode, 1)
+        self.assertEqual((self.root / "drafts.json").read_bytes(), preserved)
+
+    def test_executable_cli_approval_and_take_update_before_expiry(self):
+        (self.root / "drafts.json").unlink()
+        with patch.object(draft_ledger, "today", return_value=datetime.now(UTC).date()):
+            entry = draft_ledger.record_draft(
+                self.root, self.draft["asset_id"], self.draft["operation_id"],
+                "native-task", draft_ledger.today(), status="approved",
+            )
+        command = [
+            sys.executable, "-B", str(Path(draft_ledger.__file__)), "record",
+            str(self.root), "--asset", self.draft["asset_id"],
+            "--operation-id", self.draft["operation_id"],
+            "--draft-task-id", "native-task", "--take", self.decision["subject_path"],
+            "--status", "approved",
+        ]
+        result = subprocess.run(command, capture_output=True, text=True, check=False, timeout=30)
+        self.assertEqual(result.returncode, 0, result.stderr)
+        self.assertEqual(json.loads(result.stdout), {
+            **entry, "take": self.decision["subject_path"],
+        })
+
 
 if __name__ == "__main__":
     unittest.main()

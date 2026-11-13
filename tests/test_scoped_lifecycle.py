@@ -601,6 +601,86 @@ class ScopedLifecycleTests(unittest.TestCase):
         self.write("drafts.json", json.dumps(ledger))
         self.assertTrue(validation.draft_promotion_findings(self.root, final))
 
+    def test_approved_take_bookkeeping_does_not_extend_native_task_age_window(self):
+        request = self.request()
+        self.complete(request, "known")
+        decision = self.decision(request)
+        self.select(decision, "scenes/scene-001/s001_sh010/shot.md")
+        draft_ledger.record_draft(
+            self.root, request["asset_id"], request["operation_id"], "known",
+            date(2026, 10, 19), status="approved",
+        )
+        before = draft_ledger.read_ledger(self.root)
+        expected = {**before["drafts"][0], "take": decision["subject_path"]}
+        final = copy.deepcopy(request)
+        final["operation_id"] = final["asset_id"] = "final"
+        final["params"] = {"draft_task_id": "known", "resolution": "1080p"}
+        self.rehash(final)
+        with patch.object(draft_ledger, "today", return_value=date(2026, 10, 27)):
+            entry = draft_ledger.record_draft(
+                self.root, request["asset_id"], request["operation_id"], "known",
+                date(2026, 10, 27), take=decision["subject_path"], status=None,
+            )
+            self.assertEqual(entry, expected)
+            self.assertTrue(validation.draft_promotion_findings(self.root, final))
+            preserved = (self.root / "drafts.json").read_bytes()
+            with self.assertRaises(ValueError):
+                draft_ledger.record_draft(
+                    self.root, request["asset_id"], request["operation_id"], "known",
+                    date(2026, 10, 27), status="approved",
+                )
+            self.assertEqual((self.root / "drafts.json").read_bytes(), preserved)
+            self.assertEqual(draft_ledger.report(self.root, date(2026, 10, 27))[0]["status"], "expired")
+            self.assertEqual(draft_ledger.read_ledger(self.root)["drafts"][0]["status"], "approved")
+
+    def test_whole_document_approved_take_update_after_native_window_preserves_dates(self):
+        request = self.request()
+        self.complete(request, "known")
+        decision = self.decision(request)
+        self.select(decision, "scenes/scene-001/s001_sh010/shot.md")
+        draft_ledger.record_draft(
+            self.root, request["asset_id"], request["operation_id"], "known",
+            date(2026, 10, 19), status="approved",
+        )
+        document = draft_ledger.read_ledger(self.root)
+        document["drafts"][0]["take"] = decision["subject_path"]
+        with patch.object(draft_ledger, "today", return_value=date(2026, 10, 27)):
+            draft_ledger.write_ledger(self.root, document)
+        self.assertEqual(draft_ledger.read_ledger(self.root), document)
+
+    def test_new_final_linkage_requires_native_task_window_even_with_current_capabilities(self):
+        request = self.request()
+        self.complete(request, "known")
+        decision = self.decision(request)
+        self.select(decision, "scenes/scene-001/s001_sh010/shot.md")
+        draft_ledger.record_draft(
+            self.root, request["asset_id"], request["operation_id"], "known",
+            date(2026, 10, 19), status="approved",
+        )
+        final = copy.deepcopy(request)
+        final["operation_id"] = final["asset_id"] = "final"
+        final["params"] = {"draft_task_id": "known", "resolution": "1080p"}
+        final["extensions"]["expected_output"] = "scenes/scene-001/final.mp4"
+        self.rehash(final)
+        self.complete(final, "final-task")
+        before = (self.root / "drafts.json").read_bytes()
+        document = draft_ledger.read_ledger(self.root)
+        document["drafts"][0].update(status="promoted", final_operation_id="final")
+        with patch.object(draft_ledger, "today", return_value=date(2026, 10, 27)):
+            for writer in ("api", "document"):
+                with self.subTest(writer=writer), self.assertRaises(ValueError):
+                    if writer == "api":
+                        draft_ledger.record_draft(
+                            self.root, request["asset_id"], request["operation_id"], "known",
+                            date(2026, 10, 19), final_operation_id="final",
+                        )
+                    else:
+                        draft_ledger.write_ledger(self.root, document)
+                self.assertEqual((self.root / "drafts.json").read_bytes(), before)
+        with patch.object(draft_ledger, "today", return_value=date(2026, 10, 26)):
+            draft_ledger.write_ledger(self.root, document)
+        self.assertEqual(draft_ledger.read_ledger(self.root), document)
+
 
 if __name__ == "__main__":
     unittest.main()
