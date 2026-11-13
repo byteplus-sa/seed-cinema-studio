@@ -4,9 +4,9 @@
     {
       "skill": "seedance-prompt-25",
       "before_lines": 1336,
-      "after_lines": 302,
+      "after_lines": 326,
       "before_bytes": 62913,
-      "entry_bytes": 16685,
+      "entry_bytes": 18578,
       "references": [
         ".agents/skills/seedance-prompt-25/references/audio-performance-camera.md",
         ".agents/skills/seedance-prompt-25/references/keyframes-storyboards-blockouts.md",
@@ -29,8 +29,26 @@
           ".agents/skills/seedance-prompt-25/SKILL.md",
           ".agents/skills/seedance-prompt-25/references/scene-action.md"
         ],
-        "loaded_bytes": 26260,
+        "loaded_bytes": 29093,
         "measurement": "Exact file bytes for a declared loading path, not measured agent tokens or behavior."
+      }
+    },
+    {
+      "skill": "seedance-prompt",
+      "after_lines": 70,
+      "entry_bytes": 4124,
+      "references": [
+        ".agents/skills/seedance-prompt/references/model-boundaries.md"
+      ],
+      "baseline_note": "New neutral leaf; no historical before measurement is asserted.",
+      "representative_path": {
+        "scenario": "Model-neutral creative writing with capability boundaries",
+        "files": [
+          ".agents/skills/seedance-prompt/SKILL.md",
+          ".agents/skills/seedance-prompt/references/model-boundaries.md"
+        ],
+        "loaded_bytes": 7442,
+        "measurement": "Exact current file bytes, not measured agent tokens or behavior."
       }
     },
     {
@@ -229,5 +247,5 @@
       "entry_bytes": 24827
     }
   ],
-  "measurement_revision": "2026-10-19 installed workspace scope; historical before counts retained where available; current paths measured as file bytes, not agent tokens; 2026-11-13 approved Seedream remediation remeasured changed bundles only, historical before counts retained"
+  "measurement_revision": "2026-10-19 installed workspace scope; historical before counts retained where available; current paths measured as file bytes, not agent tokens; 2026-11-13 approved Seedream remediation remeasured changed bundles only, historical before counts retained; 2026-11-13 Cinema model-neutral remediation remeasured the retained 2.5 entry and added the neutral leaf without inventing a historical baseline"
 }

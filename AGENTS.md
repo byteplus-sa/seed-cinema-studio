@@ -71,6 +71,10 @@ This policy overrides older skill fallback and production-setup recipes.
 
 ## Markets and languages
 
+- General Seedance craft routes through `seedance-prompt`; retain the selected
+  model and use its applicable versioned adapter without switching models.
+  Resolve exact model and operation before genre or language. Prompt-only
+  work needs no credentials, project initialization, generation or paid probe.
 - Micro-drama story only: use `microdrama-story-formats` for any market. A market
   pack (for example `filipino-micro-drama`) supplements it only when explicitly
   selected for the confirmed audience. These are not mandatory formats for
@@ -131,6 +135,7 @@ Load only the contract relevant to the current stage:
 | Editorial snapshots and sound evidence | [Post evidence](.agents/contracts/production-post.md), plus the Studio integration in [Production policy](.agents/contracts/production-policy.md) |
 | Explicit named delivery specifications, render bindings and locks | [Named deliveries](.agents/contracts/production-deliverables.md) |
 | MCP, Ark CLI and capability routing | [Routing](.agents/contracts/routing.md) |
+| Exact execution binding, capability evidence v2 and preview mechanics | [Execution profiles](.agents/contracts/seedance-execution-profiles.md) |
 | Canon, props, screens and control references | [Element identification](.agents/contracts/element-identification.md) |
 | File prefixes and numbering | [Asset naming](.agents/contracts/asset-naming.md) |
 | Requested dialogue synchronization and assembly | [Audio-video alignment](.agents/contracts/audio-video-alignment.md) |
@@ -166,12 +171,18 @@ schemas live in `.agents/contracts/schemas/`.
   unless required checks apply. Strict retains the full review workflow.
   Explicit required rules always need truthful matching reports; supplied stale
   or failing reports always block. Never fabricate approval or listening.
-- Draft first: every new Seedance 2.5 generation, including edits, extensions
-  and retries, uses explicit `resolution: "480p"` and boolean `draft: true`.
+- Draft first: exact standard `dreamina-seedance-2-5-260628` and Premium
+  `dreamina-seedance-2-5-premium-260915` generations, including edits, extensions
+  and retries, use explicit `resolution: "480p"` and boolean `draft: true`.
   This applies in every review mode and overrides conflicting skill defaults.
   Plain 480p is not native Draft mode; resolve missing tool controls rather than
-  dropping `draft`. Other models without native Draft support use ordinary
-  480p tests. Review and select before any final-resolution generation.
+  dropping `draft`. Other exact profiles may use verified ordinary previews;
+  these are paid, non-promotable and separately authorized. Unknown mechanics
+  block execution, not writing. No substring establishes newer-model support.
+  Opt-in evidence v2 binds independently intended provider, model, operation,
+  transport and revision; its persisted digest and policy are checked before
+  submission. Profile-free historical request/context hashes remain unchanged.
+  Review and select before any final-resolution generation.
   Record each native draft task ID in
   `drafts.json` (`draft_ledger.py`) so the approved draft can be promoted to the
   final with `draft_task_id` within 7 days (see the draft and promotion contract).

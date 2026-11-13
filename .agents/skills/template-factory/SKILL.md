@@ -173,33 +173,37 @@ pin_local → breakdown_draft → breakdown_approved → elements_draft
    video.
 
 7. **Video** — use current capability evidence to choose one supported clip or
-   multiple natural-duration shots plus assembly. Compose the Seedance 2.5
-   six-part prompt from breakdown + board staging written as text + per-beat
+   multiple natural-duration shots plus assembly. Compose neutral Seedance
+   craft from breakdown + board staging written as text + per-beat
    motion grammar + verified audio grammar and sync cues when audio is
-   requested + element sheets (via `seedance-prompt-25`), run `prompt-review`,
+   requested + element sheets (via `seedance-prompt` and the selected versioned adapter), run `prompt-review`,
    persist the prepared request, then submit via the supported durable
    transport. Prefer `seedance_2_5_create_task`; use an equivalent Ark CLI route
    only before any ambiguous submission and only when it satisfies the same
    contract. Set the pin's ratio as a request parameter, never as a prompt
-   sentence. Submit each clip as a 480p native Draft (`draft: true`), review it,
+   sentence. Exact standard 2.5/Premium clips require a 480p native Draft (`draft: true`), review it,
    then promote the selected Draft by `draft_task_id`; edit inputs only before
    the Draft. Persist the task id, poll, download, and run technical and
    playback QA, including frame samples with corner crops for leaked text. Keep
    exact brand copy, logos and captions out of the video prompt (plain, clean
    space) and composite them afterwards as deterministic `html-graphic-render`
    overlays (ffmpeg `overlay` with a short alpha fade).
-   **Audio route:** when the pin's sound is score-led, ambient or a music bed,
-   generate picture with `generate_audio: false` and rebuild the sound grammar
-   with Seed Audio in post, because a "no speech" or "ambience only" line on
-   native audio does not reliably keep speech or score out. Keep native audio for on-camera
-   dialogue.
+   Other exact profiles use verified preview mechanics; ordinary previews are
+   non-promotable and unknown support blocks execution.
+   **Audio route:** preserve requested native sound, including wordless action
+   and ambience. Post-owned audio uses supported picture-only controls;
+   preserve an exact master, identify mixed layers and add no bed for silence.
+   Negative wording is not compliance evidence: inspect and reject unwanted
+   audio or offer an authorized repair. Speech absence does not select post
+   sound, and lip-sync importance does not authorize a separate generated track.
    Seedance can stretch dense beat timelines, and a stronger timing prompt does
-   not reliably fix it. Measure the take's actual cuts. When its beats land late, retime
-   in the edit (trim a held tail, clone-pad the final hold, crossfade audio)
-   rather than regenerating, and record the edit operations on the take.
+   not reliably fix it. Measure the take's actual cuts. When its beats land late,
+   offer an authorized edit or retake and record the operations. Preserve
+   fractional source duration, frame count, cuts and audio tail; trim, pad,
+   crossfade or retime only within approved change scope.
    Capture-format and texture looks in the pin (camcorder, film grain,
-   scanlines, halation) are not reliably produced by prompt words; record them
-   as a post treatment in the recipe and apply them only when the run locks
+   scanlines, halation) remain visible intent. Scope any observed failure to
+   the exact binding; record an authorized post alternative and apply it only when the run locks
    them. Otherwise assemble in the takes' original colours with no grade,
    from exact-length intermediates encoded once. Measure take loudness and
    normalise delivery masters (e.g. `loudnorm` -16 LUFS / -1.5 dBTP) after
@@ -275,7 +279,7 @@ takes only.
 | Exact typography, screen/UI, title/end card, poster, product lineup, price/CTA, or static overlay | `html-graphic-render` |
 | Generative image with exact copy/layout | Select the generated image, then finish with `html-graphic-render` |
 | Animated exact graphic | HyperFrames; FFmpeg or HyperFrames for final video composition |
-| Seedance 2.5 video prompt | `seedance-prompt-25` |
+| General Seedance creative prompt | `seedance-prompt`; selected 2.0/2.5 bindings retain their versioned adapters |
 | Prompt quality gate (generation-bound only) | `prompt-review` |
 | Persistent Studio review surface for shot takes (pre-Studio canvas: stage canvas) | `studio_project.py` (pre-Studio canvas: `showcase-html`) |
 

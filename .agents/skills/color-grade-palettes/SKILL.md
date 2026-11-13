@@ -34,12 +34,26 @@ colours" request needs a new generation.
 
 ## Correct colour decode (every route)
 
-Seedance 2.5 finals are 10-bit HEVC. Decode them as ordinary **limited-range
-BT.709**; a full-range reading lifts blacks and no longer matches the
-approved drafts. Tag the output BT.709, keep any look inside a high-bit-depth
-chain, and dither once to 8-bit at the end. Apply this chain in the single
-final encode (or the Studio render input), not as a lossy per-clip pass; keep
-per-clip intermediates lossless. Ungraded conform for that final encode:
+Choose conform from the measured stream and delivery target, never a model
+name. Preserve the master hash, original look and lossless intermediates.
+Record actual pixel format, range, primaries, transfer and matrix:
+
+```bash
+ffprobe -v error -select_streams v:0 -show_entries stream=codec_name,pix_fmt,color_range,color_primaries,color_transfer,color_space -of json master.mp4
+```
+
+| Measured stream and target | Decision |
+|---|---|
+| Matching 8-bit SDR and target | No bit-depth reduction or forced range/matrix conversion; retain correct tags |
+| 10-bit limited BT.709 to 8-bit limited BT.709 | Retained recipe below; reduce and dither once at final encode |
+| 10-bit target matching the source | Keep high bit depth; omit the 8-bit reduction/dither |
+| Full-range, different primaries/matrix or HDR transfer | Explicit approved color conversion or tone mapping to the target; tagging alone is not conversion |
+| Missing, unknown or conflicting metadata | Stop and resolve from authoritative source metadata and inspection; do not assume limited BT.709 |
+
+The fields `pix_fmt`, `color_range`, `color_primaries`, `color_transfer` and
+`color_space` must agree with the actual source and target. This retained
+recipe applies only to measured limited BT.709 input and matching 8-bit SDR
+delivery; it is not a universal Seedance wrapper:
 
 ```
 ffmpeg -i master.mp4 -vf "scale=in_range=limited:out_range=limited:in_color_matrix=bt709:out_color_matrix=bt709:sws_dither=ed,format=yuv420p,setparams=range=tv:color_primaries=bt709:color_trc=bt709:colorspace=bt709" -c:v libx264 -crf 16 -preset slow -c:a copy out.mp4
@@ -52,8 +66,9 @@ saturation and `colorbalance` for tint; all three stay at 10-bit or above.
 
 ## Source authority
 
-The grammar this skill composes into is defined by the canonical prompt skills
-`seedance-prompt-25` and `seedream-prompt`. Official sources, accessed
+General video craft composes with `seedance-prompt`; the caller uses the selected
+model and operation adapter for serialization. Seedream uses `seedream-prompt`.
+The retained 2.5 examples use `seedance-prompt-25`. Official sources, accessed
 **2026-08-13**:
 
 - [Seedance 2.5 Prompt Guide (ModelArk)](https://docs.byteplus.com/en/docs/ModelArk/2607689)
@@ -61,8 +76,8 @@ The grammar this skill composes into is defined by the canonical prompt skills
 - [Seedream 5.0 Pro official blog](https://seed.bytedance.com/en/blog/beyond-generation-it-understands-design-introducing-seedream-5-0-pro)
 
 When the official guides are updated, prefer the live pages over this skill
-where they conflict. The base prompt grammar lives in `seedance-prompt-25` and
-`seedream-prompt`; compose with the relevant one when composing a full prompt.
+where they conflict. Do not project these versioned examples onto a different
+model, operation or transport without current evidence.
 The FFmpeg filter behaviour below was checked locally on 10-bit HEVC test
 media; the look values are starting points to judge by eye, not calibrated
 LUTs.
@@ -76,12 +91,11 @@ delegated authorship. Reuse an approved sentence or graph verbatim when its
 look is locked. The tonal recipe also guides the post look on the prompt-free
 route; it does not limit the available palettes.
 
-**Texture and format looks are post treatments for video.** Grain, halation,
-scanlines, tape noise, camcorder or MiniDV texture and vignettes are built in
-the edit. Format words in a Seedance prompt do not reliably produce the
-format texture; the colour part of such a look may
-still go in the prompt when the prompt route is requested. Seedream stills may
-carry the full sentence.
+**Texture and format words express visible intent, not guaranteed controls.**
+Preserve requested grain, halation, scanlines, tape noise or camcorder texture.
+An observed failure must name the actual model, operation, transport and evidence;
+it does not establish family-wide inability. Post is an authorized alternative,
+not a compulsory substitution. Seedream stills may carry the full sentence too.
 
 ### Core palettes (9)
 
@@ -208,7 +222,9 @@ same graph to every clip that shares the palette. On route `both`, use a much
 lighter version of the graph only to match takes to each other, never to
 stack a second grade on a baked-in prompt grade.
 
-Wrap every `<LOOK>` in the decode and dither stages:
+For measured limited BT.709 input and matching 8-bit SDR delivery only, wrap
+`<LOOK>` in these decode and final reduction stages. Other profiles need their
+own measured conversion; do not relabel HDR or unknown streams:
 
 ```
 ffmpeg -i master.mp4 -vf "scale=in_range=limited:out_range=limited:in_color_matrix=bt709:out_color_matrix=bt709,format=yuv420p10le,<LOOK>,scale=in_color_matrix=bt709:out_color_matrix=bt709:out_range=limited:sws_dither=ed,format=yuv420p,setparams=range=tv:color_primaries=bt709:color_trc=bt709:colorspace=bt709" -c:v libx264 -crf 16 -preset slow -c:a copy out.mp4
@@ -246,7 +262,7 @@ overlay layer.
 
 - **Preservation is not open authorship.** Conform/source-preserving work adds
   no look outside authorized changes. Keep original colours, explicit ungraded
-  delivery and the correct limited-range BT.709 decode.
+  delivery and the decode established by actual stream metadata.
 - **Resolve actual colour conflicts.** Compatible ingredients or ordered
   per-scene looks may form one coherent treatment. Name their spatial or temporal
   scope; do not apply contradictory instructions to the same region and interval.
@@ -270,13 +286,13 @@ overlay layer.
 
 ## Self-check checklist
 
-1. Look authority is clear: delegated authorship may propose a look; preservation/conform and explicit ungraded delivery add no unauthorized look. Keep the limited-range BT.709 decode.
+1. Look authority is clear: preservation/conform and ungraded delivery add no unauthorized look. Use measured stream metadata; unknown/conflicting fields require resolution.
 2. Palette is from the bank, or a plain descriptive grade with no invented film name.
 3. Look ingredients and ordered changes are coherent within their scope; no contradictory same-region, same-interval instructions.
 4. On the prompt route, the grade sentence is placed in the Visual Style slot (Seedance) or `Style:` section (Seedream), not in the subject or action line.
 5. No conflicting color words appear elsewhere in the prompt.
 6. B&W tonal intent is explicit; grain and contrast follow the requested look, not a quota.
 7. Film-stock keywords appear only in `Style:` / visual style, never in the subject description.
-8. Texture or format looks (grain, halation, VHS, camcorder) for video are on the post route, not prompt words.
-9. A post look appears only on route `post` or `both`, sits inside the decode-and-dither wrapper, uses no `vignette` or `eq`, and is applied before overlays; on `both` it is labelled matching-only.
+8. Preserve texture or format intent (grain, halation, VHS, camcorder); post alternatives require authorization and do not erase requested visible targets.
+9. A post look appears only on route `post` or `both`, uses a measured-profile decode and any necessary final bit-depth reduction, and is applied before overlays; on `both` it is labelled matching-only.
 10. Chained scenes repeat locked looks verbatim or carry authorized transition boundaries, not accidental palette drift.

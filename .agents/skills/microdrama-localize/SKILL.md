@@ -72,7 +72,7 @@ Output: a localized deliverable set per target, never an overwrite of the source
 | --- | --- | --- | --- |
 | A. Subtitles only | Source language kept | Unchanged | None beyond the sidecar |
 | B. Re-voice, source soundtrack kept | New language on changed lines only | Unchanged; mouths still match the source language | One audio operation per scope |
-| C. Full regenerate | New language native to the video model | New clips, new reviews | Full Seedance cost per clip, drafts first |
+| C. Full regenerate | Language support verified for the exact model/operation | New clips, new reviews | Native Draft and promotion for exact standard 2.5/Premium; other profiles may offer non-promotable ordinary previews |
 
 5. **Check the language first.** Use the native-language check in
    `seedance-prompt-25-dialogue` before any route that speaks the new language.
@@ -100,7 +100,10 @@ Output: a localized deliverable set per target, never an overwrite of the source
 - Never resubmit a paid operation that may already exist. After a timeout or an
   unknown acceptance, reconcile from `task_ids.json`; never retry through a
   second transport. A retry is an explicit, scoped decision with its cost.
-- Draft first for Seedance (480p), reviewed and selected before any final
+- Resolve model/operation/transport before language. Exact standard 2.5/Premium
+  require native `draft: true` at 480p and selected `draft_task_id` promotion;
+  an ordinary preview is non-promotable, never a mandatory-Draft fallback.
+  Unknown profiles remain writing-only. Review and select before any final
   generation, as the policy requires.
 - Real-person likeness or voice inputs need authorized Advanced Creation Rights
   assets. Cloning a voice is a rights question; do not clone a voice without

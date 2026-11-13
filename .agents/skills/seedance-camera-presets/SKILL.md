@@ -5,7 +5,7 @@ description: >
   tracking, handheld, FPV, aerial, bullet time, dolly zoom, crash zoom, whip
   pan, optical zoom, Dutch angle, one-take, or static — or a shot framing
   (single, two-shot, over-the-shoulder, over-the-hip, point of view, insert) —
-  into a canonical, drop-in Camera block for the Seedance 2.5 six-part prompt
+  into a canonical, drop-in Camera block for a Seedance prompt
   formula.
   Use when the user asks for a camera
   preset, camera movement style, shot framing, or a shot's camera treatment,
@@ -20,14 +20,17 @@ description: >
 # Seedance Camera Presets
 
 This skill turns a named camera preset, movement style, or camera personality into a
-canonical, drop-in **Camera block** for the Seedance 2.5 six-part prompt formula
+canonical, drop-in **Camera block** for a Seedance prompt
 (Subject + Action + Scene + Visual Style + Camera + Audio). It is a
 **prompt-composition-only** skill: it never calls MCP tools or the Ark API, and
 it never runs generation. The base prompt grammar — the six-part formula,
 `@Image N` / `@Video N` reference-role syntax, `At Ns` timestamp syntax, and
 audio bracket syntax — is defined in `seedance-prompt-25` and is **not
-redefined here**. Compose with `seedance-prompt-25` for the full prompt
-contract; this skill only adds the preset bank on top.
+redefined here**. Compose general craft with `seedance-prompt`; the caller uses
+`seedance-prompt-20` or `seedance-prompt-25` only for the selected model and
+operation. The 2.5 vocabulary below is an authoring source, not family-wide
+capability evidence. Observations require exact model, operation, transport and
+evidence; post repairs require authorized change scope.
 
 The output of this skill is always a **Camera block** — one or two sentences
 describing shot size, angle, camera movement, and speed — plus any timestamped
@@ -105,8 +108,8 @@ table, then gives a canonical phrase template that satisfies it.
 | One-take | Subjects, spaces, and events the camera passes through in order | `One-take shot: the camera passes through <subject or space A> as <event A>, then <subject or space B> as <event B>, then <subject or space C> as <event C>, with no cuts.` |
 
 Rack focus is a focus change, not a camera move: the lens preset skill owns its
-wording and its evidence (drafts keep a face sharp, so a pull away from a face
-is added in post).
+wording and its scoped evidence. Preserve requested focus intent; a demonstrated
+failure may justify an authorized post repair, not a family-wide restriction.
 
 For a technique not in the table, follow the uncommon-cinematography-terms
 recipe from `seedance-prompt-25`:
@@ -329,4 +332,4 @@ Before a Camera block is submitted as part of a Seedance 2.5 prompt, verify:
    the prompt text.
 
 A Camera block that passes all nine checks is ready to be composed into the
-full prompt by `seedance-prompt-25`.
+full prompt by `seedance-prompt` and the selected versioned adapter.

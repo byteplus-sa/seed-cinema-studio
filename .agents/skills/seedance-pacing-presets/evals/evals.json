@@ -127,6 +127,17 @@
         "Exact strobe timing may use assembly with available footage; more generated clips need authorization.",
         "No shot puts readable text or the can's label art into generated video as an exact graphic."
       ]
+    },
+    {
+      "id": 11,
+      "prompt": "Keep this 12.48-second dialogue shot and its audio tail. Lip sync matters, but no master is supplied and I have not authorized separate audio generation.",
+      "expected_output": "Native dialogue pacing preserves fractional timing and does not invent an audio-first master or authorize generation.",
+      "files": [],
+      "expectations": [
+        "Keeps the 12.48-second duration, source cuts and audio tail without rounding, padding or retiming.",
+        "Does not generate Seed Audio or add reference_audio solely because lip sync matters.",
+        "Uses supplied or explicitly authorized master timing only when available; timing precision remains intent pending scoped evidence."
+      ]
     }
   ]
 }

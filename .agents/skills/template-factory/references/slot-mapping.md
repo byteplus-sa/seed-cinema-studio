@@ -3,16 +3,21 @@
 How each `VideoBreakdown` field maps into Seedream and Seedance prompt slots.
 This keeps the mapping reproducible and prevents slot drift.
 
-## Seedance 2.5 six-part formula (via `seedance-prompt-25`)
+## Seedance Creative Mapping (via `seedance-prompt`)
+
+The caller composes neutral craft first and uses the retained
+`seedance-prompt-20` or `seedance-prompt-25` adapter only for the selected model
+and operation. The six-part rows below are a 2.5 serialization example, not
+capability evidence for another model or transport.
 
 | Six-part slot | Source field(s) | Notes |
 |---|---|---|
 | Subject | `elements[]` descriptors, bound to `@Image N` | Copy descriptors word for word; never summarize |
 | Action | `shots[].action` + `shots[].motion.directing_prompt_text` | Per-beat stages with end states; motion direction comes from the combined breakdown |
 | Scene | `elements[]` location descriptors | `@Image` binding |
-| Visual style | `visual_style.grade` + `lighting_direction` + `lens` + `film_look` | Order: lighting → lens → palette. Capture-format and texture looks in `film_look` (camcorder, grain, scanlines, halation) go to the post recipe, not the prompt |
+| Visual style | `visual_style.grade` + `lighting_direction` + `lens` + `film_look` | Order: lighting → lens → palette. Preserve requested visible texture; a scoped observed failure may lead to an authorized post alternative, not automatic substitution |
 | Camera | `camera` + per-shot `shots[].camera` + `shots[].motion.camera_motion` (the pin's per-shot camera and light serve as the shot plan; `skill_owned_camera`) | Preserve coherent requested compound paths, order and endpoints; clarify contradictory directions without a move-count cap |
-| Audio | `audio-analysis.json` soundscape, verified events and sync rules; `audio` fallback for older runs | Native only for on-camera dialogue: `( )` music, `< >` SFX, `{ }` dialogue when authorized; describe replacement audio rather than copying source words or recordings. Score-led or ambient pins generate picture with `generate_audio: false` and map the sound grammar to a Seed Audio post bed |
+| Audio | `audio-analysis.json` soundscape, verified events and sync rules; `audio` fallback for older runs | Keep requested native sound, including wordless diegetic effects and ambience; post-owned sound uses verified picture-only controls. Preserve an exact master; mixed layers name their owners and purposeful silence adds no bed. Speech absence does not select post audio. Separate generation requires authorization; inspect actual sync and reject or repair only within authorized scope. |
 
 ## Reference binding order (Seedance)
 

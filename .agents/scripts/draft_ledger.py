@@ -16,10 +16,15 @@ from operation_store import (
     validate_layout,
 )
 from validate_request import (
-    SEEDANCE_25_MODEL,
     contained_path,
+    draft_promotion_findings,
     draft_selected,
+    execution_profile,
+    native_draft_findings,
+    native_task_identity_supported,
+    native_task_supported,
     record_scope_findings,
+    request_hash_findings,
     schema_findings,
 )
 
@@ -62,8 +67,13 @@ def require_promotable_draft(
     expected = {
         "operation_id": task["operation_id"], "draft_task_id": task["provider_task_id"],
         "prompt_sha256": task["prompt_sha256"], "request_sha256": task["request_sha256"],
-        "context": task["context"],
+        "context": task.get("context"),
     }
+    if execution_profile(task) is not None:
+        expected.update(
+            model=task["model"], operation=task["operation"], transport=task["transport"],
+            execution_profile=execution_profile(task),
+        )
     if any(entry.get(key) != value for key, value in expected.items()):
         raise ValueError("Draft ledger identity differs from the registered draft")
     if entry.get("status") != "approved" and not (
@@ -77,6 +87,15 @@ def require_promotable_draft(
         raise ValueError("Draft ledger dates are invalid") from error
     if expires != expiry_for(submitted) or not submitted <= today() <= expires:
         raise ValueError("Draft is outside its seven-day promotion window")
+    if (task.get("schema_version") == 3 or execution_profile(task) is not None) and (
+        not native_task_supported(task)
+        or request_hash_findings(project, task)
+        or record_scope_findings(project, task, context=task.get("context"))
+        or task["submission_status"] != "terminal"
+        or task["provider_status"] != "succeeded"
+        or not draft_selected(project, task, require_decision=True)
+    ):
+        raise ValueError("Promotion requires the current hash-bound selected successful native task")
 
 
 def write_ledger(project: Path, ledger: dict[str, Any]) -> None:
@@ -85,19 +104,39 @@ def write_ledger(project: Path, ledger: dict[str, Any]) -> None:
         _write_ledger(project, ledger)
 
 
-def validate_ledger_update(project: Path, ledger: dict[str, Any]) -> None:
+def take_only_update(entry: dict[str, Any], existing: dict[str, Any] | None) -> bool:
+    return (
+        existing is not None
+        and entry.get("take") is not None
+        and {key: value for key, value in entry.items() if key != "take"}
+        == {key: value for key, value in existing.items() if key != "take"}
+    )
+
+
+def validate_ledger_update(
+    project: Path, ledger: dict[str, Any], *, authorizing_task_id: str | None = None,
+) -> None:
     previous = {entry["draft_task_id"]: entry for entry in read_ledger(project)["drafts"]}
     identifiers = [entry["draft_task_id"] for entry in ledger["drafts"]]
     if len(identifiers) != len(set(identifiers)) or not set(previous).issubset(identifiers):
         raise ValueError("Draft ledger writes must preserve unique draft history")
     for entry in ledger["drafts"]:
         existing = previous.get(entry["draft_task_id"])
-        if entry == existing:
+        explicit_authority = entry["draft_task_id"] == authorizing_task_id
+        if entry == existing and not explicit_authority:
             continue
+        historical_take = not explicit_authority and take_only_update(entry, existing)
+        current_authority = explicit_authority or (
+            not historical_take and (
+                entry.get("status") in ("approved", "promoted")
+                or entry.get("final_operation_id") is not None
+            )
+        )
         if existing is not None and any(
             entry.get(key) != existing.get(key) for key in (
                 "asset", "operation_id", "draft_task_id", "prompt_sha256",
                 "request_sha256", "context", "submitted", "expires",
+                "model", "operation", "transport", "execution_profile",
             )
         ):
             raise ValueError("Draft identity is immutable")
@@ -105,20 +144,26 @@ def validate_ledger_update(project: Path, ledger: dict[str, Any]) -> None:
             None, entry.get("final_operation_id"),
         ):
             raise ValueError("A recorded final operation cannot be replaced")
+        if existing is not None and existing.get("take") not in (None, entry.get("take")):
+            raise ValueError("A recorded draft take cannot be replaced")
         task = registry_task(project, entry["operation_id"])
         scope = (
             lifecycle_scope_findings(project, task)
-            if task is not None and entry.get("status") in ("drafted", "expired")
+            if task is not None and not current_authority
             else record_scope_findings(project, task or {}, context=entry.get("context"))
         )
         if scope:
             raise ValueError("; ".join(finding.message for finding in scope))
-        if "context" not in entry and not (task and task.get("schema_version") == 3):
+        profiled = task is not None and execution_profile(task) is not None
+        if "context" not in entry and not (task and task.get("schema_version") == 3) and not profiled:
             continue
         if task is None or entry.get("context") != task.get("context"):
             raise ValueError("Draft ledger must match its registered scoped operation")
         if schema_findings(task, "generation-request.schema.json") or (
-            not SEEDANCE_25_MODEL.search(task["model"].lower())
+            not (
+                native_task_identity_supported(task)
+                if not current_authority else native_task_supported(task)
+            )
             or task["params"].get("draft") is not True
             or task["params"].get("resolution") != "480p"
             or task["provider_task_id"] != entry["draft_task_id"]
@@ -128,6 +173,13 @@ def validate_ledger_update(project: Path, ledger: dict[str, Any]) -> None:
             or entry["expires"] != expiry_for(date.fromisoformat(entry["submitted"])).isoformat()
         ):
             raise ValueError("Invalid registered scoped draft identity")
+        if profiled and (
+            entry.get("execution_profile") != execution_profile(task)
+            or any(entry.get(key) != task[key] for key in ("model", "operation", "transport"))
+        ):
+            raise ValueError("Profile ledger requires unchanged hash-bound execution identity")
+        if request_hash_findings(project, task):
+            raise ValueError("Draft ledger requires the original request digest")
         if entry["take"] is not None:
             contained_path(project, entry["take"])
             if entry["take"] != task.get("extensions", {}).get("expected_output"):
@@ -138,32 +190,45 @@ def validate_ledger_update(project: Path, ledger: dict[str, Any]) -> None:
             or not draft_selected(project, task, require_decision=True)
         ):
             raise ValueError("Draft approval requires successful output and a current selection")
-        if entry["status"] == "approved" and today() > date.fromisoformat(entry["expires"]):
-            raise ValueError("Expired draft cannot be approved for promotion")
+        if current_authority and not (
+            date.fromisoformat(entry["submitted"]) <= today() <= date.fromisoformat(entry["expires"])
+        ):
+            raise ValueError("Draft is outside its seven-day promotion window")
         final_id = entry["final_operation_id"]
         if (entry["status"] == "promoted") != (final_id is not None):
             raise ValueError("Promoted draft requires its final operation")
         if final_id is not None:
             final = registry_task(project, final_id)
             if final is None or (
-                final.get("context") != task["context"]
+                final.get("context") != task.get("context")
                 or final["params"].get("draft_task_id") != entry["draft_task_id"]
                 or final["model"] != task["model"]
                 or final["transport"] != task["transport"]
+                or final["operation"] != task["operation"]
+                or execution_profile(final) != execution_profile(task)
                 or final["prompt_sha256"] != task["prompt_sha256"]
                 or final["submission_status"] not in ("acknowledged", "terminal")
                 or not final["provider_task_id"]
             ):
                 raise ValueError("Promotion requires an acknowledged same-context final")
+            if current_authority and (
+                record_scope_findings(project, final, context=task.get("context"))
+                or request_hash_findings(project, final)
+                or native_draft_findings(final)
+                or draft_promotion_findings(project, final)
+            ):
+                raise ValueError("Promotion requires current hash-bound final evidence")
 
 
-def _write_ledger(project: Path, ledger: dict[str, Any]) -> None:
+def _write_ledger(
+    project: Path, ledger: dict[str, Any], *, authorizing_task_id: str | None = None,
+) -> None:
     if ledger.get("schema_version") != 1 or not isinstance(ledger.get("drafts"), list):
         raise ValueError("Invalid draft ledger")
     for entry in ledger.get("drafts", []):
         if "context" in entry and schema_findings(entry["context"], "production-context.schema.json"):
             raise ValueError("Invalid draft ledger context")
-    validate_ledger_update(project, ledger)
+    validate_ledger_update(project, ledger, authorizing_task_id=authorizing_task_id)
     path = project / LEDGER_FILE
     if path.is_symlink():
         raise ValueError("Draft ledger must not be a symlink")
@@ -203,10 +268,14 @@ def days_left(entry: dict[str, Any], on: date) -> int:
 
 def registry_task(project: Path, operation_id: str) -> dict[str, Any] | None:
     registry = read_json(project / REGISTRY_FILE, {"tasks": []})
-    return next(
-        (task for task in registry["tasks"] if task["operation_id"] == operation_id),
-        None,
-    )
+    matches = [task for task in registry["tasks"] if task["operation_id"] == operation_id]
+    if len(matches) > 1:
+        raise ValueError("Registered operation identity is not unique")
+    if matches and matches[0].get("provider_task_id") and sum(
+        task.get("provider_task_id") == matches[0]["provider_task_id"] for task in registry["tasks"]
+    ) != 1:
+        raise ValueError("Registered provider task identity is not unique")
+    return matches[0] if matches else None
 
 
 def record_draft(
@@ -257,12 +326,18 @@ def _record_draft(
         raise ValueError("; ".join(finding.message for finding in scope))
     if task.get("schema_version") == 3 and schema_findings(task, "generation-request.schema.json"):
         raise ValueError("Invalid scoped draft registry record")
-    if task.get("schema_version") == 3 and (
-        not SEEDANCE_25_MODEL.search(task["model"].lower())
+    if "model" in task and (
+        not (
+            native_task_supported(task)
+            if status in ("approved", "promoted") or final_operation_id is not None
+            else native_task_identity_supported(task)
+        )
         or task["params"].get("resolution") != "480p"
         or task["provider_task_id"] != draft_task_id
     ):
         raise ValueError("Scoped drafts require a registered native 480p Seedance task")
+    if (task.get("schema_version") == 3 or execution_profile(task) is not None) and request_hash_findings(project, task):
+        raise ValueError("Registered draft request hash is stale")
     if task["params"].get("draft") is not True:
         raise ValueError(f"{operation_id} was not prepared with draft=true")
     if task["provider_task_id"] not in (None, draft_task_id):
@@ -295,6 +370,11 @@ def _record_draft(
         }
         if "context" in task:
             entry["context"] = dict(task["context"])
+        if execution_profile(task) is not None:
+            entry.update(
+                model=task["model"], operation=task["operation"], transport=task["transport"],
+                execution_profile=execution_profile(task),
+            )
         ledger["drafts"].append(entry)
     if take is not None:
         if task.get("schema_version") == 3:
@@ -316,7 +396,11 @@ def _record_draft(
         status = status or "promoted"
     if status is not None:
         entry["status"] = status
-    _write_ledger(project, ledger)
+    _write_ledger(
+        project, ledger,
+        authorizing_task_id=draft_task_id
+        if status in ("approved", "promoted") or final_operation_id is not None else None,
+    )
     return entry
 
 

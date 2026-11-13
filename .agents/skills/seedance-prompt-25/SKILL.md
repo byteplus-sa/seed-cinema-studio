@@ -18,6 +18,13 @@ description: >-
 
 # Seedance Prompt
 
+This is the retained 2.5 adapter. General creative craft composes with
+`seedance-prompt`; callers select the model and operation and own sequencing.
+Tables here are scoped snapshots, not evidence for newer variants. Exact
+standard `dreamina-seedance-2-5-260628` and Premium
+`dreamina-seedance-2-5-premium-260915` retain mandatory native Draft policy.
+Unknown or unsupported mechanics block execution, never drop `draft`.
+
 Write production-grade prompts for the BytePlus Seedance 2.5 video generation
 model. Seedance 2.5 generates **up to 30 seconds** of video with native audio in
 a single pass (set the actual duration via the `duration` parameter — 30s is
@@ -298,7 +305,9 @@ capability, reference, rights, registry and locked-choice safeguards.
 - For subtitles, formulas, signs, product specs, or frame-level timing that must be completely accurate, keep the footage text-free and add the exact layer in post.
 - Mismatched first/last-frame ratios may stretch the last frame (auto-lock rules above).
 - Shot-density estimates are provisional, not count ceilings or duration floors. Preserve requested rhythm within verified request limits; exact cuts or demonstrated merging may need assembly. Reuse footage; additional generated clips require authorization.
-- A rack focus that leaves the subject soft mostly fails; the model keeps the face sharp. Add that defocus in post.
+- Preserve requested rack focus and subject defocus. Any measured failure is
+  scoped to exact model, operation, transport and evidence; an authorized post
+  repair is optional, not a universal restriction.
 - For one-click video, specify image order and character mapping explicitly if they matter.
 - Seamless transitions aim for visual/audio continuity; they do not guarantee pixel-identical preservation.
 - A generated 3D asset is not a motion reference unless an animated render is

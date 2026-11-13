@@ -205,6 +205,58 @@ class OperationStoreTests(unittest.TestCase):
             self.prepare()
         self.assertFalse((self.root / "task_ids.json").exists())
 
+    def plain_mandatory_request(self, model):
+        (self.root / "prompt.md").write_text("A quiet held shot.\n")
+        self.request.update(model=model, references=[], params={"resolution": "720p"})
+        self.request["prompt_sha256"] = self.fixture.hash("prompt.md")
+        self.caps.update(model=model, reference_roles=[], max_references=0)
+        self.fixture.rehash()
+        self.review["request_sha256"] = self.request["request_sha256"]
+
+    def test_board_compatibility_cannot_register_plain_mandatory_model(self):
+        for model in ("dreamina-seedance-2-5-260628", "dreamina-seedance-2-5-premium-260915"):
+            self.plain_mandatory_request(model)
+            for allow in (False, True):
+                with self.subTest(model=model, allow=allow), self.assertRaisesRegex(ValueError, "native"):
+                    operation_store.prepare_operation(
+                        self.root, self.request, self.caps, self.review, [],
+                        allow_board_references=allow,
+                    )
+                self.assertFalse((self.root / "task_ids.json").exists())
+
+    def test_board_compatibility_cannot_submit_preexisting_plain_mandatory_model(self):
+        for model in ("dreamina-seedance-2-5-260628", "dreamina-seedance-2-5-premium-260915"):
+            self.plain_mandatory_request(model)
+            path = self.root / "task_ids.json"
+            path.write_text(json.dumps({"schema_version": 1, "tasks": [self.request]}))
+            before = path.read_bytes()
+            for allow in (False, True):
+                with self.subTest(model=model, allow=allow), self.assertRaisesRegex(ValueError, "native"):
+                    operation_store.transition_operation(
+                        self.root, self.request["operation_id"], "prepared", "submitting",
+                        allow_board_references=allow,
+                    )
+                self.assertEqual(path.read_bytes(), before)
+
+    def test_plain_historical_adoption_never_grants_resubmission_or_native_identity(self):
+        import validate_request
+
+        self.plain_mandatory_request("dreamina-seedance-2-5-260628")
+        operation_store.adopt_submitted_operation(
+            self.root, self.request, self.caps, self.review, [],
+            "already-submitted", "succeeded", True,
+        )
+        stored = operation_store.read_registry(self.root / "task_ids.json")["tasks"][0]
+        self.assertEqual(stored["submission_status"], "terminal")
+        self.assertFalse(validate_request.native_task_supported(stored))
+        before = (self.root / "task_ids.json").read_bytes()
+        with self.assertRaises(ValueError):
+            operation_store.transition_operation(
+                self.root, stored["operation_id"], "terminal", "submitting",
+                allow_board_references=True,
+            )
+        self.assertEqual((self.root / "task_ids.json").read_bytes(), before)
+
     def test_versioned_canvas_rejects_new_or_pending_version_one_operation(self):
         canvas = {"canvas": {"approvalContractVersion": 1}}
         (self.root / "showcase.json").write_text(json.dumps(canvas))

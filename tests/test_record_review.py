@@ -5,6 +5,7 @@ import hashlib
 import importlib.util
 import io
 import json
+import subprocess
 import sys
 import tempfile
 import unittest
@@ -199,6 +200,97 @@ class RecordReviewTests(unittest.TestCase):
             text=self.fenced(self.review(audio_hash)),
         )
         self.assertEqual(code, 1)
+
+    def prepare_profiled(self, profiled: bool = True) -> dict[str, Any]:
+        import prepare_request
+        from test_seedance_capability_profiles import profile
+
+        (self.root / "project.md").write_text("# Offline recorder fixture\n")
+        (self.root / "prompt_s01_sh010_t01_v01.md").write_text("A performer waits.\n")
+        (self.root / "caps.json").write_text(json.dumps(profile()))
+        arguments = [
+            "--project", str(self.root), "--asset", "profiled",
+            "--prompt", "prompt_s01_sh010_t01_v01.md",
+            "--model", "synthetic-video", "--operation", "text_to_video",
+            "--expected-output", "output.mp4", "--param", "resolution=480p", "--write",
+        ]
+        if profiled:
+            arguments.extend([
+                "--capabilities", "caps.json", "--provider", "test-provider",
+                "--tool-schema-revision", "test-revision",
+            ])
+        result, findings = prepare_request.run(prepare_request.parser().parse_args(arguments))
+        self.assertEqual(findings, [])
+        return json.loads((self.root / result["path"]).read_text())
+
+    def test_prepared_profiled_request_records_idempotently_without_overwrite(self) -> None:
+        candidate = self.prepare_profiled()
+        digest = candidate["request_sha256"]
+        arguments = ("--request", "requests/request_profiled.json", "--write")
+        code, result = self.run_cli(*arguments, text=self.fenced(self.review(digest)))
+        self.assertEqual(code, 0, result)
+        path = self.root / result["path"]
+        original = path.read_bytes()
+        code, result = self.run_cli(*arguments, text=self.fenced(self.review(digest)))
+        self.assertEqual(code, 0, result)
+        code, result = self.run_cli(
+            *arguments, text=self.fenced(self.review(digest, "narrative.observable_event")),
+        )
+        self.assertEqual(code, 1, result)
+        self.assertIn("overwrite", result["findings"][0]["message"])
+        self.assertEqual(path.read_bytes(), original)
+
+    def test_profile_intent_and_input_mutations_reject_without_writes(self) -> None:
+        candidate = self.prepare_profiled()
+        path = self.root / "requests/request_profiled.json"
+        for field in ("profile", "intent", "params", "references", "prompt"):
+            with self.subTest(field=field):
+                changed = json.loads(json.dumps(candidate))
+                if field == "profile":
+                    changed["extensions"]["execution_profile"]["evidence"]["profile_id"] = "changed"
+                elif field == "intent":
+                    changed["extensions"]["execution_profile"]["destination"]["provider"] = "changed"
+                elif field == "params":
+                    changed["params"]["resolution"] = "720p"
+                elif field == "references":
+                    changed["references"] = json.loads(
+                        (self.root / "requests/request_s01_sh010_t01_v01.json").read_text()
+                    )["references"]
+                else:
+                    (self.root / candidate["prompt_file"]).write_text("Changed prompt\n")
+                path.write_text(json.dumps(changed))
+                code, result = self.run_cli(
+                    "--request", "requests/request_profiled.json", "--write",
+                    text=self.fenced(self.review(candidate["request_sha256"])),
+                )
+                self.assertEqual(code, 1, result)
+                self.assertIn("stale", result["findings"][0]["message"])
+                self.assertFalse((self.root / "reviews").exists())
+
+    def test_prepared_absent_profile_and_explicit_hash_controls(self) -> None:
+        candidate = self.prepare_profiled(profiled=False)
+        self.assertIsNone(validation.execution_profile(candidate))
+        code, result = self.run_cli(
+            "--request", "requests/request_profiled.json", "--write",
+            text=self.fenced(self.review(candidate["request_sha256"])),
+        )
+        self.assertEqual(code, 0, result)
+        code, result = self.run_cli(
+            "--request-sha256", candidate["request_sha256"], "--asset", "profiled", "--write",
+            text=self.fenced(self.review(candidate["request_sha256"])),
+        )
+        self.assertEqual(code, 0, result)
+
+    def test_real_recorder_cli_accepts_prepared_profiled_request(self) -> None:
+        candidate = self.prepare_profiled()
+        self.input.write_text(self.fenced(self.review(candidate["request_sha256"])))
+        result = subprocess.run([
+            sys.executable, "-B", str(SCRIPT), "--project", str(self.root),
+            "--request", "requests/request_profiled.json", "--input", str(self.input),
+            "--write",
+        ], capture_output=True, text=True, check=False, timeout=30)
+        self.assertEqual(result.returncode, 0, result.stdout + result.stderr)
+        self.assertTrue(json.loads(result.stdout)["ok"])
 
 
 if __name__ == "__main__":

@@ -4,6 +4,10 @@ Edit, object swap, recast and restyle checks for Seedance 2.5 video-to-video
 work, plus the shared video-to-video input items. Apply the universal items in
 [the index](review-checklists.md#universal--all-prompts) first.
 
+Resolve the selected model and operation before genre or language. This is a
+2.5 adapter checklist, not family-wide capability evidence; other bindings use
+their verified execution profile. Unknown support blocks execution, not writing.
+
 ## Seedance 2.5 edit (video-to-video)
 
 Source skill: `seedance-prompt-25` (editing); legacy edit guidance is bundled here.
@@ -222,19 +226,25 @@ medium. Mark N/A any item whose feature is absent and record why.
    Source text surfaces become abstract shapes; no lettering is requested.
 
 6. **Route and limits.** The operation matches the recorded route decision and
-   capability evidence (`model.supported_mode`); an unverified route is
-   labeled provisional and the request is a 480p probe. Route A uses 1–5
-   images; Route B sets the whole-second source duration and ratio.
+   exact capability evidence (`model.supported_mode`). An unverified route stays
+   provisional; a bounded probe requires explicit authorization, a supported
+   submission mechanism, cost ceiling and acceptance criteria. Denied probes
+   remain writing-only. Preserve fractional source duration (for example 12.48 s),
+   frame count, cuts and audio tail; do not round, trim, pad or retime without
+   approval. Keep ratio/duration unset where the verified edit operation inherits
+   them; a reference route uses evidenced controls and source-preserving values.
+   Native 480p Draft and an ordinary non-promotable preview are not interchangeable.
 
 7. **Same place.** A restyle keeps the source's place: the background is
-   restyled through an environment image of that place, or left as it is.
+   restyled across the whole frame in words or through an optional environment
+   image of that same place.
    Naming a different location (a city street becoming a seaside village) is
    MAJOR unless the user asked for one. A scene replacement or style word that
-   only tells the model to keep the source layout for the background is likely
-   to leave it photographic; flag it MAJOR when a whole-frame restyle is
-   requested. Keeping positions for the subject and the furniture they use is
-   correct. A restyle that intentionally keeps the original background
-   photographic is N/A.
+   preserves layout while changing the medium is valid for a words-only
+   whole-frame restyle. Missing environment imagery alone is not a finding;
+   flag an actual unchanged photographic region or contradicted place lock.
+   Keeping positions for the subject and furniture is correct. An intentionally
+   preserved photographic background records its scope.
 
 8. **Video-to-video inputs.** Apply the shared items under
    [Video-to-video inputs](#video-to-video-inputs-swap-recast-restyle).

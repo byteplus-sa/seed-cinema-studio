@@ -2,7 +2,7 @@
 name: seedance-lens-presets
 description: >
   Turns a lens, focal length, aperture, focus or sensor request into a canonical
-  visible-result phrase for Seedance 2.5 prompts or the Seedream style.
+  visible-result phrase for Seedance prompts or the Seedream style.
   Trigger words: lens, focal length, 35mm, 50mm, 85mm, wide angle, telephoto,
   anamorphic, fisheye, macro, aperture, f-stop, f/1.4, depth of field, bokeh,
   shallow DOF, deep focus, rack focus, focus pull, or a lens intent from a shot
@@ -13,6 +13,11 @@ description: >
 ---
 
 # Seedance Lens Presets
+
+Compose general craft with `seedance-prompt`; the caller uses the retained
+2.0/2.5 adapter only for the selected model and operation. Scope every observed
+failure to exact model, operation, transport and evidence. Requested optics
+remain intent; post repairs require authorized change scope.
 
 This skill converts a lens, focal length, aperture, or sensor request into a
 canonical **visible-result** phrase that drops into a Seedance 2.5 prompt's
@@ -119,18 +124,18 @@ an exact shape or near-to-far focus outcome.
 
 ### Focus changes: rack focus and focus loss
 
-This skill owns focus-change wording. Seedance tends to keep a face sharp: a
-face asked to drift out of focus often stays sharp while the model softens the
-background instead.
+This skill owns focus-change wording. A face staying sharp in a particular
+take is an observation about that take and binding, not a family-wide inability.
+Preserve the requested sharp plane, transition and endpoint.
 
 | Change | Status | What to write |
 |---|---|---|
-| Face sharp, then focus left behind on the background (rack away from a face, focus loss during a move) | **Post only** | Generate with ordinary focus on the face; add the defocus ramp in post (FFmpeg or HyperFrames), or carry the change with light, a move or a cut |
+| Face sharp, then focus left behind on the background (rack away from a face, focus loss during a move) | Authored intent; verify on the exact supported binding | Describe the sharp plane, transition and endpoint. A demonstrated failure may support an authorized defocus ramp or alternative, not automatic substitution. |
 | Foreground object sharp, then focus pulls onto a face behind it | Unverified hypothesis; check a 480p draft | `Rack focus: focus starts on <foreground object>, sharp, with <subject> soft behind it; at <N>s focus shifts smoothly to <subject>, the <foreground object> blurring as <subject>'s face turns sharp.` |
 | Between two objects with no face | Unverified hypothesis; check a 480p draft | The same template with both planes named as visible objects |
 
-Do not spend more tries on wording when a draft keeps the face sharp; the
-repair is in post. An attention shift inside one frame can also be staged: a
+Do not infer family-wide failure when a draft keeps the face sharp. An
+authorized post repair is one option. An attention shift can also be staged: a
 move past a foreground element, or the subject stepping into the sharp plane.
 
 ### Lens character
@@ -156,22 +161,21 @@ have a flare. The label does not authorize inventing either feature.
 
 | Sensor | Canonical visible-result phrase |
 |---|---|
-| **VHS** | VHS camcorder look: low resolution, visible scanlines, colors bleeding into each other, soft analog noise. Seedance video: a post treatment (see below). |
+| **VHS** | VHS camcorder look: low resolution, visible scanlines, colors bleeding into each other, soft analog noise. Visible intent; optional authorized post treatment below. |
 | **Film** | Film stock look: visible grain, gentle halation around highlights, natural tonal range. Use when requested or proposed within delegated scope. |
 | **Digital Cinema** | Digital cinema look: clean, crisp image with high dynamic range and minimal noise or grain. |
 
 Sensor character is a texture and tone choice, not a resolution guarantee.
 Pair it with the actual output resolution set in the generation interface.
 
-**Tape and camcorder looks are post treatments for Seedance video.** A
-camcorder format word ("MiniDV") in a Seedance prompt tends to return clean
-cinema footage. For a VHS, MiniDV or camcorder piece, prompt the
-camera behaviour the format implies (handheld at arm's length, an on-camera
-light; whether these cues read as tape is unverified) and apply the scanlines,
-color bleed, noise and frame size in post. The caller uses an available
-post-look capability; this skill neither invokes nor assumes an installed
-color-grade department. The sensor phrase may still serve a Seedream still,
-where it is an unverified heuristic. Grain, halation or vignette may be requested
+**Tape and camcorder labels are visible intent, not guaranteed controls.**
+Preserve requested scanlines, color bleed, noise and framing rather than
+discarding them because of an unbound clean-footage observation. A demonstrated
+failure is scoped to its model, operation, transport and evidence. An authorized
+post treatment is an alternative; the caller uses an available post-look
+capability, which this skill neither invokes nor assumes installed.
+The sensor phrase may also serve a Seedream still as an unverified heuristic.
+Grain, halation or vignette may be requested
 or proposed within delegated look scope, never added to a protected source edit
 or conform.
 
@@ -315,9 +319,10 @@ Before delivering a prompt built with this skill, verify:
    aberration behavior.
 8. **Supported controls remain separate** — no authoring field is presented
    as a provider parameter without live evidence.
-9. **Focus changes are honest** — no prompted focus pull away from a face; that
-   defocus is a post step, and a pull onto a face is marked unverified.
-10. **Tape and camcorder looks stay in post** for Seedance video; grain,
+9. **Focus changes are honest** — preserve requested focus loss and rack focus.
+   State actual model/operation/transport evidence; authorized post repair is
+   optional and unknown support is not a universal inability.
+10. **Tape and camcorder intent is preserved**; an authorized post option may add grain,
     halation and vignette stay within requested or delegated look scope.
 
 ## Guide disclaimer

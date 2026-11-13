@@ -12,12 +12,14 @@ description: >-
 
 # Seedance 2.0 Prompt
 
-This skill covers only what differs on the legacy Seedance 2.0 series. New
-work defaults to Seedance 2.5 (`seedance-prompt-25`); use 2.0 when the request
+This skill covers only what differs on the legacy Seedance 2.0 series. General
+creative craft composes with `seedance-prompt`; the existing configured default
+is unchanged. Use this adapter for an explicitly selected 2.0 model when the request
 needs 4K output through 2.0, the Fast or Mini variants, or a revision of an
 existing 2.0 take. The 2.0 action, emotion and revision rules are below; broader
 directing craft (shot plans, counts, frame-side hands, text-free frames, the
-speech budget) matches `seedance-prompt-25`, which can be composed for depth.
+speech budget) composes with `seedance-prompt`. The caller owns sequencing;
+2.0/2.5 syntax and limits do not establish support for a newer model or transport.
 
 ## Source authority
 

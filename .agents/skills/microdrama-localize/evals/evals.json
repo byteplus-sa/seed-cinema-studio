@@ -19,7 +19,7 @@
       "expected_output": "Runs the language check, chooses a line-scoped re-voice that keeps the source soundtrack, and reports an approximate lip-sync verdict.",
       "files": [],
       "expectations": [
-        "Checks the native-language list and records a route for an unlisted language instead of promising correct pronunciation.",
+        "Resolves selected model and operation before the binding-specific language list, recording unknown support instead of promising pronunciation.",
         "Keeps the source soundtrack by sending the original video with audio rather than rebuilding it from dialogue alone, or says the tool binding is unverified.",
         "Reports lip sync as approximate because mouths still match the source language.",
         "Requires a speech-to-text diff, a listening pass and a native-speaker review flagged unverified."
@@ -47,6 +47,17 @@
         "Lists dialect, slang and cultural items as unverified for the user.",
         "Handles right-to-left subtitles and asks for them to be viewed in a real player.",
         "Offers to deliver as a draft with the unverified list rather than refusing the whole task."
+      ]
+    },
+    {
+      "id": 5,
+      "prompt": "Regenerate Portuguese for exact standard 2.5 and Premium. Then promote an approved ordinary preview from another profile using draft_task_id.",
+      "expected_output": "Exact standard/Premium use verified native Draft-first promotion; ordinary previews from other profiles are non-promotable.",
+      "files": [],
+      "expectations": [
+        "Checks exact model, operation, transport, revision, language support and current profile before execution.",
+        "Promotes only the exact selected successful native task within expiry and unchanged creative/reference/profile identity.",
+        "Rejects ordinary-preview draft_task_id promotion and proposes a newly reviewed and registered final; unknown mechanics remain writing-only."
       ]
     }
   ]
