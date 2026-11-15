@@ -71,7 +71,7 @@ user asks otherwise.
 
 - Story and dialogue only. Delivery, pronunciation direction and prompt
   syntax for Seedance belong to `seedance-prompt-25-dialogue` (or a market
-  partner) and `seedance-prompt-25`. Production belongs to an orchestrator such
+  partner) and `seedance-prompt`. Production belongs to an orchestrator such
   as `micro-drama`.
 - Conflict follows the market card's content limits; with none stated, stay
   non-injurious (a sharp contact or a cut on contact, never blood or injury

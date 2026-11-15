@@ -345,30 +345,12 @@
     },
     "seedance-prompt": {
       "kind": "leaf",
-      "description": "Compose model-neutral video prompts. Use for generic Seedance prompt writing or refinement. Do not use for image prompts, media execution, source-video edits or version-specific API syntax.",
-      "readme_summary": "Write model-neutral Seedance creative prompts; preserve intent and selected model, with caller-owned adapters, execution and approval.",
+      "description": "Write and refine Seedance video prompts, including reference, edit and extension briefs. Use for any Seedance model. Do not use for image prompts, media execution or account setup.",
+      "readme_summary": "Use unified 2.5-based composition with reference, edit, extension and staging guidance for any selected Seedance model; preserve source locks and caller-owned execution.",
       "dependencies": [],
       "source_revision": "workspace",
       "upstream_hash": null,
-      "overlay_notes": "Model-neutral creative leaf; retained versioned adapters own serialization. No provider capabilities inferred."
-    },
-    "seedance-prompt-20": {
-      "kind": "leaf",
-      "description": "Write and revise Seedance 2.0 video prompts, the legacy model used for 4K output and the Fast/Mini speed variants: asset preparation within the 2.0 reference limits, Define subject definitions, task-type declaration, shot-by-shot sequencing with inline reference binding, spatial continuity for chase or action blocking, native audio, and inline constraints. Use for Seedance 2.0 prompts, shot lists, 4K or Fast/Mini requests, and corrections to 2.0 generations. For Seedance 2.5 prompts, use seedance-prompt-25 instead.",
-      "readme_summary": "Retained Seedance 2.0 adapter with reference roles, subject definitions, continuity and native audio; verify exact output capabilities without automatic model switching.",
-      "dependencies": [],
-      "source_revision": "workspace",
-      "upstream_hash": null,
-      "overlay_notes": null
-    },
-    "seedance-prompt-25": {
-      "kind": "leaf",
-      "description": "Write production-grade Seedance 2.5 video prompts with the flexible six-part formula, per-shot camera, lens and light lines, 50-material multimodal referencing, variable-duration scene staging (4-30s), timestamp pacing and dialogue timing, structured video editing (subject replacement, background replacement, audio editing), forward and backward video extension, keyframe sequences, coarse and fine blockout references, one-click video, seamless transitions, audio bracket syntax, dialogue language reinforcement, emotional direction, camera language, and mode-aware request packaging. Use this skill for Seedance 2.5 prompts, multi-reference asset orchestration, scene staging, video editing, extension, and corrections to generated motion or continuity. For legacy Seedance 2.0 prompts, 4K output through 2.0, or the Fast/Mini speed variants, use seedance-prompt-20; whitelist-only 2.5 Premium (4K) uses this skill.",
-      "readme_summary": "Retained 2.5 adapter with exact standard/Premium native Draft-first policy, verified mechanics, approved promotion and language-aware dialogue.",
-      "dependencies": [],
-      "source_revision": "workspace",
-      "upstream_hash": null,
-      "overlay_notes": "Portability overlay: preserve current-brief language, market, identity and project scope; remove prior-run assumptions and keep explicit localization examples opt-in."
+      "overlay_notes": "Consolidated 2.5-based craft and useful 2.0 practices with exact-model capability boundaries, Cinema source preservation and independent dialogue/market specialists. No provider support inferred."
     },
     "seedance-prompt-25-dialogue": {
       "kind": "leaf",

@@ -109,7 +109,8 @@ Use the compact record in the choreography contract. Always return:
 3. Paste-ready action text grouped by existing shot or stage. Describe each
    action once, carry the selected medium, and retain supplied dialogue
    verbatim when included. Leave final reference tokens, parameter packaging
-   and audio grammar to `seedance-prompt` plus the selected versioned adapter.
+   and audio grammar to `seedance-prompt`, with exact operation support verified
+   by the caller.
 4. Text QA findings and caller acceptance checks, with evidence limits.
 
 For a repair, identify the failed beat, its prior state and the smallest

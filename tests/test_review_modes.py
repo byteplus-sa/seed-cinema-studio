@@ -44,8 +44,8 @@ class ReviewModeTests(unittest.TestCase):
         for relative in (
             ".agents/contracts/production-policy.md",
             ".agents/skills/film-production/references/stage-contracts.md",
-            ".agents/skills/seedance-prompt-25/SKILL.md",
-            ".agents/skills/seedance-prompt-25/references/shot-staging.md",
+            ".agents/skills/seedance-prompt/SKILL.md",
+            ".agents/skills/seedance-prompt/references/shot-staging.md",
         ):
             with self.subTest(path=relative):
                 text = " ".join((root / relative).read_text().split()).lower()
@@ -64,7 +64,7 @@ class ReviewModeTests(unittest.TestCase):
             root / ".agents/contracts/production-brief.md",
             root / ".agents/contracts/rules.json",
         ]
-        for name in ("brief-intake", "film-production", "micro-drama", "seedance-prompt-25"):
+        for name in ("brief-intake", "film-production", "micro-drama", "seedance-prompt"):
             paths.extend((root / ".agents/skills" / name).rglob("*.md"))
         for path in paths:
             with self.subTest(path=path.relative_to(root)):

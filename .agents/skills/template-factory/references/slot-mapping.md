@@ -5,10 +5,9 @@ This keeps the mapping reproducible and prevents slot drift.
 
 ## Seedance Creative Mapping (via `seedance-prompt`)
 
-The caller composes neutral craft first and uses the retained
-`seedance-prompt-20` or `seedance-prompt-25` adapter only for the selected model
-and operation. The six-part rows below are a 2.5 serialization example, not
-capability evidence for another model or transport.
+The caller composes craft with `seedance-prompt` and verifies syntax for the
+selected model and operation. The six-part rows below are 2.5-based prompting
+conventions, not capability evidence for another model or transport.
 
 | Six-part slot | Source field(s) | Notes |
 |---|---|---|

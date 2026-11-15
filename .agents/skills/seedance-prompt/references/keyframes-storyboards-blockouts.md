@@ -1,6 +1,6 @@
 # Keyframes Storyboards Blockouts
 
-Focused reference for `seedance-prompt-25`. Read [the entrypoint](../SKILL.md) for
+Focused reference for `seedance-prompt`. Read [the entrypoint](../SKILL.md) for
 mode selection and caller responsibilities.
 
 - [Keyframes](#keyframes)
@@ -17,18 +17,28 @@ live tool mode, and artifact-specific QA.
 A declared motion-master reference remains a selected conditioning input, not a
 shortcut around review. Image text cannot itself enable an unsupported API role.
 
+A sketch or blockout remains `control_only: true` while used only for analysis.
+Intentional conditioning requires explicit selection of a derived composition
+or motion reference, its current manifest and SHA-256, an eligible
+`reference_image` or `reference_video` role and `control_only: false`.
+Flipping that flag alone never grants approval; the caller applies workspace
+production policy. Storyboard panels and their crops, redraws or regenerated
+derivatives retain planning origin and remain ineligible in every role.
+Independently authored non-board production stills and independent animated
+blockouts need their own selected lineage, rights and exact-role evidence.
+
 ### First and last frames in R2V mode
 
 A first or last frame is a clean, full-frame keyframe in the final medium: no
-panel number, caption, border or sketch line. A last frame alone is rejected;
-pair it with a first frame.
+panel number, caption, border or sketch line. Verify whether a last-frame role
+requires a first frame in the selected operation; do not invent unsupported
+combinations.
 
 State `@Image 1 is the first frame` and `@Image 2 is the last frame` directly in
 multimodal reference mode only when current tool evidence supports this grammar
 and ordered image-role combination. This text does not override API constraints.
-For supported first-frame modes, the system locks
-the aspect ratio to the first image. First and last images **must share the same
-aspect ratio**.
+Preserve the selected first-frame composition and matching first/last aspect
+ratios. Verify the operation's ratio inheritance independently.
 
 - Describe each anchor image **separately** — do not combine into one sentence.
 - Additional references supplement **only** their specified attributes and must
@@ -51,6 +61,9 @@ ownership, scene layout, and camera direction>.
 ### Multi-keyframe sequences
 
 When separate images define different stages:
+
+Use this ordered-keyframe convention only where the exact operation supports it;
+otherwise return the intended states as text and mark conditioning unresolved.
 
 ```
 Use @Image 1 through @Image N as keyframes in this order.
@@ -88,8 +101,10 @@ Carry the board into the prompt as text instead:
    subject action, end state and light (see [Shot Staging](shot-staging.md)).
 2. Bind the canonical character, location and prop references the board was
    drawn from. They own identity; the text owns composition and staging.
-3. When an exact opening composition matters, generate a clean keyframe in the
-   final medium and use it as a first frame instead of the panel.
+3. When an exact opening composition matters, propose an independently authored
+   non-board production still with its own brief, lineage, selection and eligible
+   first-frame role. Redrawing or regenerating a panel does not clear its origin;
+   without an eligible still, return text and an unresolved conditioning slot.
 
 Audit every take conditioned near a board: sample frames across the clip and
 crop the top-left corner of each sample to catch baked digits or labels early.
@@ -183,3 +198,5 @@ keeps contact / rotates with travel / reaches the final relationship> during
 After generation, verify these criteria through temporal inspection of the
 actual video. Contact sheets can confirm appearance at selected moments but
 cannot establish trajectory, speed, contact, reaching, or camera continuity.
+Frame-for-frame inheritance above is an acceptance target, not a provider
+guarantee. A mismatch remains unresolved; do not retime the source to hide it.

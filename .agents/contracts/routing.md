@@ -110,8 +110,8 @@ exact graphic layer.
 
 Resolve the actual tool schema/model binding before selecting operation, resolution, duration, reference roles/counts, or optional flags. A capability record contains model, source, verified_at, operations, parameter JSON Schemas, required_parameters, reference_roles, max_references, and supports_first_frame_with_reference_images. Recheck when the tool, binding, or operation changes; cached evidence is historical, not a live guarantee.
 
-General craft composes with `seedance-prompt`; retained 2.0/2.5 entrypoints
-remain explicit adapters. Resolve review applicability by selected model and
+General craft and mode-specific prompt guidance use `seedance-prompt`.
+Resolve review applicability by selected model and
 operation before genre or language. Opt-in version 2 evidence binds an
 independently intended provider/model/operation/transport/tool revision,
 validity, modality limits and conditional schemas. Persist and hash the

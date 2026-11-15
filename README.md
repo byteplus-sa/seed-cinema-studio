@@ -151,7 +151,7 @@ approval, provider generation or publishing follows from these commands.
 | Need | Skill |
 | --- | --- |
 | General narrative development from a supplied script or treatment | `story-development`; the `film-production` orchestrator composes `scene-craft` for scene craft |
-| General Seedance creative prompts, preserving selected model | `seedance-prompt`; the caller selects an applicable versioned adapter |
+| General Seedance prompts, preserving selected model | `seedance-prompt`; same-skill mode references and caller-verified execution controls |
 | Explicit micro-drama stories for any market, language or genre | `microdrama-story-formats` |
 | Spoken dialogue in any language, with a native-language check | `seedance-prompt-25-dialogue` |
 | Filipino market pack (reference example) | `filipino-micro-drama` and `seedance-prompt-25-filipino` |
@@ -245,9 +245,7 @@ Edit skills only under `.agents/skills/`.
 | **seedance-motion-recast** | Write Seedance 2.5 Motion Transfer prompts that keep a clip's motion, camera and cuts while rebuilding cast, wardrobe, product, location and style from locked references, with per-subject dispositions, Virtual Portrait identities, a muted source with post audio and a 480p probe ladder. |
 | **seedance-object-swap** | Write Seedance 2.5 Object Swap prompts that replace one character, outfit, product, prop, object or location in existing footage and keep the rest of the shot, with the five-part swap contract, Virtual Portrait characters, a muted source with post audio and swap QA. |
 | **seedance-pacing-presets** | Compose prompt-only rhythm, speed ramps, time-lapse, freeze frame, progressive part-by-part changes and named picture/audio transitions, including match cuts, dissolves, wipes and J/L cuts. |
-| **seedance-prompt-20** | Retained Seedance 2.0 adapter with reference roles, subject definitions, continuity and native audio; verify exact output capabilities without automatic model switching. |
-| **seedance-prompt** | Write model-neutral Seedance creative prompts; preserve intent and selected model, with caller-owned adapters, execution and approval. |
-| **seedance-prompt-25** | Retained 2.5 adapter with exact standard/Premium native Draft-first policy, verified mechanics, approved promotion and language-aware dialogue. |
+| **seedance-prompt** | Use unified 2.5-based composition with reference, edit, extension and staging guidance for any selected Seedance model; preserve source locks and caller-owned execution. |
 | **seedance-prompt-25-dialogue** | Direct spoken dialogue for Seedance in any language: native-language check, register and accent, code-switching, and word-scoped repairs. |
 | **seedance-prompt-25-filipino** | Opt-in Filipino dialogue support preserving approved words and requested language, register, code-switching and subtitle choices; separate accent notes, listening-based pronunciation review and opt-in separate lip-sync audio. |
 | **seedance-restyle** | Restyle whole-frame intent while preserving source motion, cuts and fractional timeline; review optional same-place imagery and explicitly authorized, capability-verified probes. |

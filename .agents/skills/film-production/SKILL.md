@@ -146,10 +146,9 @@ between modalities.
 | Scene geography and crowd blocking | `blocking-map` |
 | Score, ambience, SFX or dialogue audio | `seed-audio-prompt` |
 | Per-shot coverage, camera, lens intent and light for a scene | `seedance-shot-design` |
-| General Seedance creative prompt | `seedance-prompt`; retained `seedance-prompt-20` / `seedance-prompt-25` only for their selected bindings |
-| Spoken dialogue in any language | `seedance-prompt-25-dialogue` with `seedance-prompt-25` |
-| Market-specific video dialogue (for example Filipino or Taglish) | The market's dialogue skill, such as `seedance-prompt-25-filipino`, with `seedance-prompt-25` |
-| Seedance 2.0 video prompt | `seedance-prompt-20` |
+| Seedance prompt for any selected exact model | `seedance-prompt`; verify mode-specific execution controls separately |
+| Spoken dialogue in any language | `seedance-prompt-25-dialogue` with `seedance-prompt` |
+| Market-specific video dialogue (for example Filipino or Taglish) | The market's dialogue skill, such as `seedance-prompt-25-filipino`, with `seedance-prompt` |
 | Model submission, polling, artifact access, speech-to-text | `ark-mcp` |
 | Animated exact graphics or timed overlays | appropriate HyperFrames skill |
 | Assembly, media transforms, captions, word-scoped audio patches | appropriate HyperFrames or FFmpeg skill; the result is placed in Studio and rendered with `studio_project.py render` |

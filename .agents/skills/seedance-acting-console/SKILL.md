@@ -221,8 +221,8 @@ Dialogue language: English. B says as a quiet invitation: {There is one corner l
 
 For the full scene prompt, the caller places this block in the six-part formula
 (Subject + Action + Scene + Visual Style + Camera + Audio) as the subject/action
-section, using `seedance-prompt` for craft and the selected model's retained
-`seedance-prompt-20` or `seedance-prompt-25` adapter for syntax. The caller owns
+section, using `seedance-prompt` for craft and mode-specific guidance while
+verifying syntax for the selected model and operation. The caller owns
 composition; this leaf does not select or execute a model.
 
 ---

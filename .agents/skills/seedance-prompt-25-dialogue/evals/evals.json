@@ -4,10 +4,10 @@
     {
       "id": 1,
       "prompt": "Write Seedance dialogue direction for a Brazilian Portuguese confrontation between a CEO and a temp worker.",
-      "expected_output": "States Portuguese is natively supported and returns the dialogue in braces with delivery direction.",
+      "expected_output": "Returns Portuguese dialogue and delivery direction, distinguishing the historical language list from verified exact-model support.",
       "files": [],
       "expectations": [
-        "Reports a language-support verdict citing the native list.",
+        "Reports applicable exact-model evidence or leaves support unresolved; inclusion in the historical list alone does not establish support.",
         "Keeps approved dialogue inside curly braces and notes outside them.",
         "Names register and variety for each speaker.",
         "Does not add a pronunciation dictionary or request separate audio."
@@ -16,11 +16,11 @@
     {
       "id": 2,
       "prompt": "The dialogue is in Hindi. How should I direct it for Seedance?",
-      "expected_output": "Flags Hindi as outside the native list and offers routes without claiming guaranteed pronunciation.",
+      "expected_output": "Preserves requested Hindi while distinguishing its absence from the historical list from an exact-model capability verdict.",
       "files": [],
       "expectations": [
-        "Identifies Hindi as not in the native list.",
-        "Lists annotation, a supported spoken language with subtitles, and audio-first as options.",
+        "Does not infer incapability from Hindi being absent from the historical list; missing applicable evidence stays unresolved.",
+        "Keeps annotation, a supported spoken language with subtitles, and audio-first as unselected options rather than automatic replacements.",
         "Treats audio-first as requiring explicit user scope.",
         "Does not promise correct pronunciation."
       ]

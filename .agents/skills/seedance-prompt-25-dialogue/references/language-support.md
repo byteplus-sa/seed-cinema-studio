@@ -2,31 +2,33 @@
 
 Read [the entrypoint](../SKILL.md). Check this before locking dialogue.
 
-## Natively supported spoken languages
+## Historical language guidance
 
-Seedance 2.5 natively supports Chinese, English, Spanish, Indonesian, Malay,
-Thai, Arabic, Portuguese, Vietnamese, Japanese and Korean. This list comes from
-the Seedance 2.5 prompt guidance bundled in `seedance-prompt-25`
-(`references/parameter-reference.md`). Capability lists change; confirm
-against current tool or model evidence before a paid submission.
+The historical Seedance 2.5 guide listed Chinese, English, Spanish, Indonesian,
+Malay, Thai, Arabic, Portuguese, Vietnamese, Japanese and Korean. This comes from
+the Seedance 2.5 prompt guidance bundled in `seedance-prompt`
+(`references/parameter-reference.md`). Inclusion or absence does not establish
+support or incapability for the selected exact model, operation and destination.
+Use current applicable evidence; unknown support remains unresolved.
 
 ## Routing
 
 | Situation | Route |
 | --- | --- |
-| Language is on the list | Native audio with delivery direction. No annotation needed |
-| Language is on the list, accent or variety matters | Name the variety and register; treat accent as a request to verify by listening |
-| Language is not on the list (for example Hindi, Bengali, Swahili) | Pick one: pronunciation annotation in the prompt; a supported spoken language with subtitles in the target language; or, only if the user requests lip-synced audio, an audio-first track |
-| Code-switching between a supported and an unsupported language | Keep the unsupported words short, mid-sentence and at normal volume; subtitle the rest |
-| A market pack exists for the language | Compose with it for language-specific lessons |
+| Native language support is verified for the exact binding | Preserve the native route and add delivery direction; no automatic annotation |
+| Accent or variety matters | Name the requested variety and register; verify the result by listening |
+| Language support is unknown, including an unlisted language | Keep approved words and the requested language; return useful direction with support unresolved |
+| Applicable evidence establishes unsupported native language | Offer annotation as a hypothesis, a user-selected supported-language dub with post subtitles, or explicitly requested and supported audio-first; do not select a substitute |
+| Code-switching is requested | Preserve exact words, order and register; verify each language without shortening or translating the approved passage |
+| A market pack is explicitly selected | The caller may compose it for language-specific lessons; it does not establish model capability |
 
-Record the chosen route in the shot notes so reviewers know a language
-decision was made rather than assumed.
+Return the route and its evidence for the caller's shot notes; prompt-only
+writing does not create records, generate experiments or authorize submission.
 
 ## Unsupported-language rules
 
-- Do not claim the model will pronounce an unlisted language correctly. The
-  first take is an experiment.
+- Do not promise pronunciation fidelity even when language support is verified.
+  An authorized take still needs playback and listening.
 - Annotation is a cue outside the braces, short and evidence-based.
 - A supported-language dub with subtitles in the audience's language is a valid
   production choice; it is the user's decision, not the agent's.

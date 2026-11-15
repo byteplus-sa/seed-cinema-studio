@@ -43,7 +43,7 @@ plan already carries the staging.
 
 ## Clip prompt
 
-Build with `seedance-prompt-25` from the scene's shot plan: each internal shot
+Build with `seedance-prompt` from the scene's shot plan: each internal shot
 keeps its planned size, angle, camera move or hold and light direction. Optional
 hook/turn/cliffhanger templates do not require distinct shots or close-ups.
 Repeated `performance_hold` shots are valid when they serve the scene. Bind

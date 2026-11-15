@@ -1,6 +1,6 @@
 # Shot Staging
 
-Focused reference for `seedance-prompt-25`. Read [the entrypoint](../SKILL.md) for
+Focused reference for `seedance-prompt`. Read [the entrypoint](../SKILL.md) for
 mode selection and caller responsibilities.
 
 - [Shots or stages](#shots-or-stages)
@@ -91,6 +91,24 @@ Rules:
    prompt.
 
 ## Carrying a shot plan
+
+### Visual Style composition
+
+When several selected presets contribute to one look, a readable convention is
+lighting, then lens character, color grade and sensor/film look in one sentence.
+This is not a mandatory order or permission to fill missing slots with defaults.
+For example: "The visuals feature warm window light from frame-right, shallow
+depth of field with compressed bokeh, and the brief's cool muted grade."
+In a cutting clip, keep shared treatment in the opening and local light facts
+on the relevant shot; scope look changes to their approved intervals.
+
+For a selected handcrafted or animated medium, name its material behavior in
+the style and preservation constraints. An appearance reference supplements
+only its selected role. A music-led treatment retains its supplied section map
+and rhythm; using a song as conditioning requires explicit selection and verified
+audio-role support.
+
+### Plan handoff
 
 When a shot plan exists for the scene, copy each shot's size, angle, move and
 light facts into its shot line without softening them. If the prompt cannot hold

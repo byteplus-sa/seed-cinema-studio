@@ -203,7 +203,7 @@ a format that is static by design), not a neutral default.
 | Grade | Propose a custom look within delegated art direction; preserve approved palettes and ungraded conform/source edits; disclose prompt versus post route | `color-grade-palettes` |
 | Pacing | Give the action enough time; stillness, repetition, contrast, and escalation are choices | `seedance-pacing-presets` |
 | Staging | Define geography only when action or relationships depend on it | `blocking-map` |
-| Medium | Preserve requested medium; propose only when the idea benefits from that choice | `seedance-prompt-25` |
+| Medium | Preserve requested medium; propose only when the idea benefits from that choice | `seedance-prompt` |
 | Audio | Record the audio route (native, picture only, lip-sync audio, silent); separate lip-sync audio remains opt-in | `seed-audio-prompt` |
 
 These hints do not require loading sibling skills. Never require acting for a

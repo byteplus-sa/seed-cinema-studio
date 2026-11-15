@@ -66,9 +66,9 @@ saturation and `colorbalance` for tint; all three stay at 10-bit or above.
 
 ## Source authority
 
-General video craft composes with `seedance-prompt`; the caller uses the selected
-model and operation adapter for serialization. Seedream uses `seedream-prompt`.
-The retained 2.5 examples use `seedance-prompt-25`. Official sources, accessed
+General video craft composes with `seedance-prompt`; the caller verifies the selected
+model and operation controls separately. Seedream uses `seedream-prompt`.
+The video examples follow 2.5-based prompting conventions. Official sources, accessed
 **2026-08-13**:
 
 - [Seedance 2.5 Prompt Guide (ModelArk)](https://docs.byteplus.com/en/docs/ModelArk/2607689)

@@ -72,7 +72,7 @@ This policy overrides older skill fallback and production-setup recipes.
 ## Markets and languages
 
 - General Seedance craft routes through `seedance-prompt`; retain the selected
-  model and use its applicable versioned adapter without switching models.
+  exact model and verify its operation-specific controls without switching models.
   Resolve exact model and operation before genre or language. Prompt-only
   work needs no credentials, project initialization, generation or paid probe.
 - Micro-drama story only: use `microdrama-story-formats` for any market. A market

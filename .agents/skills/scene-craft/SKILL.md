@@ -280,4 +280,4 @@ prose hints for the calling workflow, not steps this skill runs:
 - The engine is genre-agnostic. Confirm genre, theme and idea with the user when writing.
 - Audit is in-chat prose; rewrites within it are in FD format.
 - Under the selected engine, prioritize **a reversal that turns the plot but does not move the audience's verdict**. Do not apply that failure label to another framework.
-- When an audited scene becomes a storyboard or video, compose with `blocking-map` for staging and `seedance-prompt-25` for the video prompt (see From scene to video).
+- When an audited scene becomes a storyboard or video, compose with `blocking-map` for staging and `seedance-prompt` for the video prompt (see From scene to video).

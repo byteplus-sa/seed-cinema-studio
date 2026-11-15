@@ -1,8 +1,8 @@
 # Seedance Execution Profiles
 
 Implementation follows `PLAN_Seedance_Model_Neutral.md` (2026-11-13).
-Creative writing uses `seedance-prompt`; retained 2.0/2.5 adapters serialize
-only their applicable bindings. A model name, price row or announcement is
+Creative writing and mode-specific prompt guidance use `seedance-prompt`;
+the caller serializes only verified bindings. A model name, price row or announcement is
 not execution evidence. No Flash capability profile is bundled.
 
 ## Version 2 Evidence

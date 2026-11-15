@@ -1,7 +1,13 @@
 # Transitions And One Click
 
-Focused reference for `seedance-prompt-25`. Read [the entrypoint](../SKILL.md) for
+Focused reference for `seedance-prompt`. Read [the entrypoint](../SKILL.md) for
 mode selection and caller responsibilities.
+
+These 2.5-based patterns describe creative intent. Verify available operations,
+reference combinations and syntax for the exact destination before execution.
+Preserve source segments, fractional timing, cuts and audio tails. A generated
+bridge or new assembly is a proposal until authorized; it does not permit
+retiming or regenerating the originals.
 
 - [One-click video](#one-click-video)
 - [Seamless video transitions](#seamless-video-transitions)

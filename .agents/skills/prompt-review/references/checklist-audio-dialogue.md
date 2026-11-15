@@ -13,9 +13,10 @@ spoken dialogue in a language other than English or in more than one language.
 
 ### Language and scope
 
-1. **Language route recorded.** The dialogue language is checked against the
-   native list; an unlisted language names its route (annotation, supported
-   spoken language with subtitles, or explicitly requested audio-first).
+1. **Language route recorded.** Check current evidence for the exact model,
+   operation and destination. A historical list proves neither support nor
+   incapability; unknown support remains unresolved without changing language,
+   approved words or sound ownership. Alternative routes need explicit selection.
 2. **Exact words protected.** Locked dialogue, names and approved spelling are
    unchanged. A pronunciation or accent request alone does not authorize
    rewriting.

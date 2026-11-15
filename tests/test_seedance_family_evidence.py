@@ -9,7 +9,7 @@ class FamilyEvidence(unittest.TestCase):
         for path in (
             "seedance-lens-presets/SKILL.md", "seedance-lens-presets/references/optics-repairs.md",
             "seedance-lighting-presets/SKILL.md", "seedance-camera-presets/SKILL.md",
-            "seedance-shot-design/SKILL.md", "seedance-prompt-25/references/audio-performance-camera.md",
+            "seedance-shot-design/SKILL.md", "seedance-prompt/references/audio-performance-camera.md",
         ):
             with self.subTest(path=path):
                 text = (ROOT / path).read_text()

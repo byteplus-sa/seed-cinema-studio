@@ -59,7 +59,7 @@ Record each shot's purpose, lens intent, move or hold and motivated light.
 | Dramatic structure of the scene | `scene-craft` |
 | Performance intentions, triggers and listening | `acting-direction`; consume the supplied plan |
 | Readable staged-fight exchanges and actor/prop states | `seedance-fight-choreography`; consume its ledger |
-| Neutral per-shot craft, references and sound ownership | `seedance-prompt`; selected model and operation use their retained 2.0/2.5 adapter for syntax |
+| Per-shot craft, references and sound ownership | `seedance-prompt`; verify syntax for the selected model and operation |
 
 These are prose pointers for the calling agent. This skill decides *which*
 choices a shot needs; the preset skills decide *how* each one is worded.

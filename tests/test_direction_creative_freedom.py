@@ -58,7 +58,7 @@ class DirectionCreativeFreedomStaticTests(unittest.TestCase):
 
     def test_delegation_keeps_absent_media_departments_out_of_routing(self):
         text = normalized(ROOT / ".agents/contracts/seedance-reference.md")
-        self.assertIn("`seedance-prompt-25` prompt", text)
+        self.assertIn("`seedance-prompt` prompt", text)
         for name in ("seedance-animation-styles", "seedance-music-video"):
             self.assertNotIn(f"`{name}`", text)
             self.assertFalse((SKILLS / name / "SKILL.md").exists())
