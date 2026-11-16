@@ -103,7 +103,7 @@ Candidate validation does not authorize activation or migration.
    Require `acting.plan_bound` and applicable `fight.readable_exchange` checks.
    Inspect actual registration, listening, response and delivery before
    selecting or promoting takes; a correct transcript alone is insufficient.
-   Write each clip prompt from its shot plan with `seedance-prompt-25` and the market's
+   Write each clip prompt from its shot plan with `seedance-prompt` and the market's
    dialogue partner skill (`seedance-prompt-25-dialogue` for any language; a
    market pack such as `seedance-prompt-25-filipino` adds language depth). Apply
    the prompt, dialogue-timing and QA rules in the

@@ -34,12 +34,23 @@ class PromptContractResourceTests(unittest.TestCase):
             entry = ROOT / '.agents/skills' / skill['skill'] / 'SKILL.md'
             with self.subTest(skill=skill['skill']):
                 self.assertLess(len(entry.read_text().splitlines()), 500)
-                self.assertGreater(len(skill['references']), 1)
+                self.assertTrue(skill['references'])
+                self.assertEqual(len(skill['references']), len(set(skill['references'])))
                 for reference in skill['references']:
                     path = ROOT / reference
                     self.assertTrue(path.is_file(), reference)
+                    self.assertTrue(outside_fences(path.read_text()).strip(), reference)
                     self.assertLess(len(path.read_text().splitlines()), 350, reference)
                     self.assertEqual(path.parents[1], entry.parent)
+                loading = skill['representative_path']
+                files = [ROOT / item for item in loading['files']]
+                self.assertEqual(files[0], entry)
+                self.assertTrue(all(path == entry or str(path.relative_to(ROOT)) in
+                                    skill['references'] for path in files))
+                self.assertIsInstance(loading['loaded_bytes'], int)
+                self.assertGreater(loading['loaded_bytes'], 0)
+                if skill['skill'] == 'seedance-prompt':
+                    self.assertEqual(loading['loaded_bytes'], sum(len(path.read_bytes()) for path in files))
 
     def test_mode_reference_links_resolve_without_loading_a_sibling_skill(self):
         for skill in self.inventory['skills']:

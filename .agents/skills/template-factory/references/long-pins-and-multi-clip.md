@@ -39,7 +39,7 @@ each clip reliable:
 | Budget per clip | Guidance |
 | --- | --- |
 | Hard cuts | Density estimates are provisional, not count ceilings or duration floors. Preserve source rhythm within verified request limits; use assembly for exact timing or demonstrated merging, reusing footage where possible. Additional generated clips require authorization. |
-| Duration | Choose supported request durations from the pin spans; trim any necessary rounding margin in assembly. Preserve the source ending without adding a compulsory hold. |
+| Duration | Choose supported request durations from measured pin spans. Trim generation headroom only when separately authorized, preserving locked final timing. Preserve the source ending without adding a compulsory hold. |
 | Split points | Split only on measured hard cuts. Do not split inside a whip, match cut, or continuous camera move. |
 
 Timing rules at clip boundaries:
@@ -68,31 +68,65 @@ Continuity across clips:
 
 ## Continuous audio across clips
 
-Native audio generated per clip does not share tempo or key across seams, and a
-"no music" or "ambience only" line does not reliably hold. For a multi-clip spot
-whose sound is score-led or ambient, generate picture with
-`generate_audio: false` and either:
+Carry the selected sound ownership into every clip request and the assembly.
+Speech absence does not select post audio, and a score-led or ambient scene
+does not authorize muting native sound or generating another track.
 
-- generate one separate music bed after the picture is locked, or
-- build the bed from the clips' native audio. Measure each clip's tempo. Loop
-  exact whole-bar segments from clips that share a tempo, and switch sources
-  only on section changes (drop, reveal, lead entry). Crossfade seams by
-  30–120 ms, then confirm with a listening pass that names each seam.
+| Selected owner | Multi-clip action |
+| --- | --- |
+| native | Preserve requested native sound, including wordless contact effects and ambience; use verified native controls, with no automatic muting or replacement bed. |
+| post | Use supported picture-only controls such as `generate_audio: false` only when verified for the selected binding. Use supplied or approved post assets; separate generation requires authorization. |
+| exact master | Keep the exact master unchanged, including its hash, offset and tail. No automatic normalization, looping, trimming, padding, splicing or crossfading of the locked master. |
+| mixed | Name each layer, its owner, source/hash, span and offset; preserve selected native layers alongside authorized post layers, with no duplicate bed. |
+| silence | Add no bed. Use verified controls and inspect for unwanted audio; reject a mismatch or offer an authorized repair, never treat negative prompt wording as proof of silence. |
 
-Long generated music beds are more exposed to provider output audits. If a bed
-is rejected, diagnose before revising and prefer the native-audio edit over
-repeated submissions. Record rejected samples, and measure the delivered bed's
-tempo and section timing; pad or splice in assembly rather than trusting the
-prompt's timing.
+Native clips need not share tempo or key. Inspect actual seams and requested
+contact sync by listening, naming each inspected range; do not infer acceptance
+from a prompt or waveform. Looping whole bars, switching sources, crossfading,
+padding or splicing are optional edits only within approved derivative scope,
+not defaults for native sound or an exact master. If separately authorized
+music generation is rejected, record the failure and diagnose before proposing
+a revised request; do not repeatedly submit or silently change the sound owner.
 
 ## Assembling the clips
 
-- Render each trimmed clip to an exact-length lossless intermediate in whole
-  frames, pad or trim its audio to the same length, join with the concat
-  demuxer, and encode once. The concat filter needs `setsar=1`.
-- Read video-stream durations, not container durations.
-- Keep the takes' original colours. Decode 10-bit HEVC finals as limited-range
-  BT.709 and tag the output BT.709; apply a look only when the recipe locks one.
+- Measure video-stream duration rather than container duration; record fractional
+  duration, frame count, fps, cuts and timestamps. Record independent sound and
+  picture spans and offsets, preserving the final word and audio tails even
+  when sound ends after picture. Missing or malformed measurements mean stop
+  and resolve; never guess timing from request duration.
+- Preserve valid lossless intermediates in whole frames at the measured frame
+  count and source timebase, including fractional seconds. Compatible picture
+  intermediates may use the concat demuxer and one final encode; the concat
+  filter needs `setsar=1`. Assemble sound separately at its selected offsets
+  and spans, without conforming locked tails to picture or using `-shortest`
+  to hide an output mismatch. Keep that mismatch unresolved until reconciled.
+- Trimming generation headroom is separately authorized and must preserve
+  locked final timing. Any source trim, pad, retime, splice or crossfade needs
+  explicit derivative adaptation approval; `approve_for_me` does not override
+  preservation locks. Record source SHA-256, derivative SHA-256, exact window,
+  timing delta and audio consequences. Denied or missing adaptation approval
+  leaves sources unchanged, with no derivative.
+- Keep the untouched master hash, original colours and lossless intermediates.
+  Apply a look only within approved look scope. Choose decode and delivery
+  conform from measured pixel format, range, primaries, transfer and matrix,
+  never from a codec name or 10-bit HEVC alone:
+
+```bash
+ffprobe -v error -select_streams v:0 -show_entries stream=codec_name,pix_fmt,color_range,color_primaries,color_transfer,color_space -of json master.mp4
+```
+
+The measured `pix_fmt`, `color_range`, `color_primaries`, `color_transfer` and
+`color_space` must agree with the source and target. Use the matching branch
+of [the measured-stream conform owner](../../color-grade-palettes/SKILL.md):
+
+| Measured source and delivery target | Conform action |
+| --- | --- |
+| Matching 8-bit SDR | No forced range/matrix conversion or bit-depth reduction; retain correct tags. |
+| 10-bit limited BT.709 | For matching 8-bit limited BT.709 delivery only, use the retained conform recipe; reduce and dither once at final encode. |
+| Matching 10-bit target | Keep high bit depth; no 8-bit reduction or dither stage. |
+| Full-range, different primaries/matrix or HDR | Explicit approved color conversion or tone mapping to the target; tagging alone is not conversion. |
+| Missing, unknown or conflicting | Stop and resolve using authoritative source metadata and inspection; never assume limited BT.709 or relabel an unresolved stream. |
 
 ## Multi-pin batches
 

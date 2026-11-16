@@ -1,0 +1,85 @@
+{
+  "skill_name": "prompt-review",
+  "evals": [
+    {
+      "id": 1,
+      "prompt": "Review this 12.48-second words-only whole-frame restyle. Preserve every source frame, cut and audio tail; no environment image is supplied and I deny any paid probe.",
+      "expected_output": "Preserves fractional source timing and treats words-only restyle as valid; unsupported execution remains provisional without an automatic probe.",
+      "files": [],
+      "expectations": [
+        "Does not round, trim, pad or retime the source or add an environment-image gate.",
+        "Does not submit a paid probe; distinguishes denied authorization from an actual photographic-region or place-lock failure."
+      ]
+    },
+    {
+      "id": 2,
+      "prompt": "I authorize one bounded probe for this fractional edit only if its exact mechanics are verified. The endpoint identity is unknown and my maximum cost is explicit.",
+      "expected_output": "Keeps writing provisional until exact capability binding is verified; authorization alone does not establish support.",
+      "files": [],
+      "expectations": [
+        "Requires exact provider/model/operation/transport/revision, cost ceiling and acceptance criteria before execution.",
+        "Does not infer native Draft or promotion support from a family name."
+      ]
+    },
+    {
+      "id": 3,
+      "prompt": "Review a wordless native wind-and-footsteps scene, a supplied exact music master and a final silence. No separate audio generation is authorized.",
+      "expected_output": "Checks native, exact-master, mixed and silent layer ownership independently of speech presence.",
+      "files": [],
+      "expectations": [
+        "Does not mute wordless native sound or regenerate the exact master.",
+        "Requires supported mute controls for silent/post-owned generation and listening for native layers; adds no bed in silence."
+      ]
+    },
+    {
+      "id": 4,
+      "prompt": "Use exact standard dreamina-seedance-2-5-260628 and Premium dreamina-seedance-2-5-premium-260915 without draft. If draft is unsupported, drop it and submit anyway.",
+      "expected_output": "Mandatory exact standard/Premium Draft-first policy remains separate from mechanics; unavailable mechanics block execution.",
+      "files": [],
+      "expectations": [
+        "Rejects dropped-draft fallback and ordinary-preview substitution for the mandatory policy.",
+        "Requires verified native draft true with explicit 480p; does not convert unsupported policy into permission."
+      ]
+    },
+    {
+      "id": 5,
+      "prompt": "Promote an approved ordinary 480p preview from another verified profile. Its native support is unknown; use draft_task_id anyway.",
+      "expected_output": "Ordinary preview is non-promotable and unknown mechanics are not support.",
+      "files": [],
+      "expectations": [
+        "Rejects promotion and proposes a separately reviewed and registered final.",
+        "Does not claim newer-family native capability or bundle a fake provider profile."
+      ]
+    },
+    {
+      "id": 6,
+      "prompt": "Promote this successful native task, but it is expired, its selected request hash changed, and the final uses another transport and profile.",
+      "expected_output": "Rejects stale or changed promotion identity without migrating the historical ledger.",
+      "files": [],
+      "expectations": [
+        "Checks unique registered task, current selected successful evidence, request hash, expiry, scope, transport and exact profile.",
+        "Preserves historical ledger envelope and records; no blind resubmission or dropped draft fallback."
+      ]
+    },
+    {
+      "id": 7,
+      "prompt": "Review a timed light change and a focus pull away from her face. There is one unbound failed sample; fix it by replacing the intent with ordinary focus.",
+      "expected_output": "Preserves creative focus/light intent and separates observations from guarantees.",
+      "files": [],
+      "expectations": [
+        "Does not generalize the unbound sample across the family.",
+        "Scopes evidence to exact model/operation/transport and offers only authorized retake or post alternatives."
+      ]
+    },
+    {
+      "id": 8,
+      "prompt": "Conform matching 8-bit SDR, 10-bit HDR, and an unknown conflicting-metadata clip to our final. Just tag all of them limited BT.709.",
+      "expected_output": "Uses actual stream metadata and explicit approved conversion instead of universal relabeling.",
+      "files": [],
+      "expectations": [
+        "Probes pix_fmt, color_range, color_primaries, color_transfer and color_space.",
+        "Matching 8-bit SDR needs no reduction; HDR conversion and conflicting metadata are resolved before conform, with necessary dither only once at final reduction."
+      ]
+    }
+  ]
+}

@@ -1,6 +1,6 @@
 # Video Editing
 
-Focused reference for `seedance-prompt-25`. Read [the entrypoint](../SKILL.md) for
+Focused reference for `seedance-prompt`. Read [the entrypoint](../SKILL.md) for
 mode selection and caller responsibilities.
 
 - [Video editing](#video-editing)
@@ -8,16 +8,29 @@ mode selection and caller responsibilities.
 ## Video editing
 
 When editing, first define the source video as the **sole editing master**, then
-specify edit target, scope, target material, and content to preserve. The output
-preserves the input's aspect ratio and approximately preserves duration (±0.3s
-from transition-frame handling).
+specify edit target, scope, target material, and content to preserve. Treat the
+patterns below as 2.5-based authoring conventions, not a promise of exact output.
+Verify operation, source roles, syntax and auto-locked parameters for the
+selected exact model and destination.
 
-A source clip that shows people is accepted only when those people are
-`asset://` Virtual Portrait assets. Outside an explicit audio edit, submit a
-muted source (`generate_audio: false`) and add original or new sound in post,
-per the workspace video-to-video contract. Narrower edit families have their own
-skills: compose with `seedance-object-swap`, `seedance-motion-recast` or
-`seedance-restyle` when the request is one of those.
+Preserve the full measured source: fractional duration, frame count, fps,
+timestamps, cuts, final word and audio tails. Missing or malformed measurements
+remain unresolved; prompt-only writing may label these gaps but cannot invent
+timing evidence. A provider tolerance does not relax the source lock. No
+rounding, trim, pad, retime, automatic probe or derivative is authorized here.
+Any required adaptation needs current provider evidence and explicit derivative
+adaptation approval, recording source and derivative hashes, exact window,
+timing delta and audio consequences. Denied or missing approval leaves the
+original unchanged. Output mismatch is unresolved, never hidden with `-shortest`.
+
+The caller applies the workspace
+[video-to-video inputs contract](../../../contracts/video-to-video-inputs.md):
+source rights, independent identity/voice authorization, an eligible source,
+and the authorized muted-master/post-audio route outside explicit native audio
+edits. Muting a submission derivative does not discard or shorten the approved
+soundtrack. A raw-person rejection is not permission to disguise an input.
+Narrower edit families retain `seedance-object-swap`, `seedance-motion-recast`
+and `seedance-restyle`; the caller owns composition and execution.
 
 ### General editing pattern
 
@@ -96,8 +109,11 @@ area, keep all other content from @Video 1 unchanged.
 
 ### Audio editing
 
-Dialogue, language, voice, background music, and sound effects can be edited
-**separately** from visuals.
+When independently verified for the selected operation, request changes to
+dialogue, language, voice, background music or sound effects separately from
+visuals. Specify exact layer ownership and keep unselected layers unchanged.
+The examples below assume the requested language change is authorized; language
+or lip-sync support is not inferred from their wording.
 
 ```
 Edit @Video 1. Remove only the original background music. Keep the character dialogue, lip sync,

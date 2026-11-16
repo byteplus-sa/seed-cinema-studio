@@ -2,34 +2,35 @@
   "schema_version": 1,
   "skills": [
     {
-      "skill": "seedance-prompt-25",
+      "skill": "seedance-prompt",
       "before_lines": 1336,
-      "after_lines": 302,
+      "after_lines": 199,
       "before_bytes": 62913,
-      "entry_bytes": 16685,
+      "entry_bytes": 11439,
       "references": [
-        ".agents/skills/seedance-prompt-25/references/audio-performance-camera.md",
-        ".agents/skills/seedance-prompt-25/references/keyframes-storyboards-blockouts.md",
-        ".agents/skills/seedance-prompt-25/references/parameter-reference.md",
-        ".agents/skills/seedance-prompt-25/references/reference-inputs.md",
-        ".agents/skills/seedance-prompt-25/references/repair-examples.md",
-        ".agents/skills/seedance-prompt-25/references/scene-action.md",
-        ".agents/skills/seedance-prompt-25/references/shot-staging.md",
-        ".agents/skills/seedance-prompt-25/references/transitions-and-one-click.md",
-        ".agents/skills/seedance-prompt-25/references/video-editing.md",
-        ".agents/skills/seedance-prompt-25/references/video-extension.md",
-        ".agents/skills/seedance-prompt-25/references/worked-examples.md"
+        ".agents/skills/seedance-prompt/references/audio-performance-camera.md",
+        ".agents/skills/seedance-prompt/references/keyframes-storyboards-blockouts.md",
+        ".agents/skills/seedance-prompt/references/model-boundaries.md",
+        ".agents/skills/seedance-prompt/references/parameter-reference.md",
+        ".agents/skills/seedance-prompt/references/reference-inputs.md",
+        ".agents/skills/seedance-prompt/references/repair-examples.md",
+        ".agents/skills/seedance-prompt/references/scene-action.md",
+        ".agents/skills/seedance-prompt/references/shot-staging.md",
+        ".agents/skills/seedance-prompt/references/transitions-and-one-click.md",
+        ".agents/skills/seedance-prompt/references/video-editing.md",
+        ".agents/skills/seedance-prompt/references/video-extension.md",
+        ".agents/skills/seedance-prompt/references/worked-examples.md"
       ],
       "retained_section_count": 6,
       "extracted_section_count": 21,
-      "baseline_note": "Entry size before progressive disclosure, after immediate reliability corrections. Byte count is not model token usage.",
+      "baseline_note": "Entry size before progressive disclosure, after immediate reliability corrections. Byte count is not model token usage. Historical 2.5 progressive-disclosure baseline retained after consolidation; current measurements describe the single generic skill.",
       "representative_path": {
         "scenario": "Stage-based T2V authoring",
         "files": [
-          ".agents/skills/seedance-prompt-25/SKILL.md",
-          ".agents/skills/seedance-prompt-25/references/scene-action.md"
+          ".agents/skills/seedance-prompt/SKILL.md",
+          ".agents/skills/seedance-prompt/references/scene-action.md"
         ],
-        "loaded_bytes": 26260,
+        "loaded_bytes": 22147,
         "measurement": "Exact file bytes for a declared loading path, not measured agent tokens or behavior."
       }
     },
@@ -119,9 +120,9 @@
     {
       "skill": "seed-audio-prompt",
       "before_lines": 524,
-      "after_lines": 131,
+      "after_lines": 150,
       "before_bytes": 31755,
-      "entry_bytes": 8700,
+      "entry_bytes": 9765,
       "references": [
         ".agents/skills/seed-audio-prompt/references/api-reference.md",
         ".agents/skills/seed-audio-prompt/references/dialogue-and-voices.md",
@@ -140,7 +141,7 @@
           ".agents/skills/seed-audio-prompt/references/references-and-modes.md",
           ".agents/skills/seed-audio-prompt/references/soundscape-arrangement.md"
         ],
-        "loaded_bytes": 22591,
+        "loaded_bytes": 23907,
         "measurement": "Exact file bytes for a declared loading path, not measured agent tokens or behavior."
       }
     },
@@ -185,10 +186,10 @@
           ".agents/skills/prompt-review/references/checklist-audio-dialogue.md"
         ],
         "measurement": "Exact current file bytes for a declared loading path, not measured agent tokens or behavior.",
-        "loaded_bytes": 33161
+        "loaded_bytes": 33846
       },
-      "after_lines": 492,
-      "entry_bytes": 24512
+      "after_lines": 495,
+      "entry_bytes": 24888
     },
     {
       "skill": "seedream-location-asset",
@@ -229,5 +230,5 @@
       "entry_bytes": 24827
     }
   ],
-  "measurement_revision": "2026-10-19 installed workspace scope; historical before counts retained where available; current paths measured as file bytes, not agent tokens; 2026-11-13 approved Seedream remediation remeasured changed bundles only, historical before counts retained"
+  "measurement_revision": "2026-10-19 installed workspace scope; historical before counts retained where available; current paths measured as file bytes, not agent tokens; 2026-11-13 approved Seedream remediation remeasured changed bundles only, historical before counts retained; 2026-11-13 Cinema model-neutral remediation remeasured the retained 2.5 entry and added the neutral leaf without inventing a historical baseline; 2026-11-14 Seedance consolidation retains historical before fields and merges mode references into the generic entry."
 }

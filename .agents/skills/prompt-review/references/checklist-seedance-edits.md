@@ -4,34 +4,40 @@ Edit, object swap, recast and restyle checks for Seedance 2.5 video-to-video
 work, plus the shared video-to-video input items. Apply the universal items in
 [the index](review-checklists.md#universal--all-prompts) first.
 
+Resolve the selected model and operation before genre or language. This is a
+2.5-based checklist, not family-wide capability evidence; other bindings use
+their verified execution profile. Unknown support blocks execution, not writing.
+
 ## Seedance 2.5 edit (video-to-video)
 
-Source skill: `seedance-prompt-25` (editing); legacy edit guidance is bundled here.
+Source skill: `seedance-prompt` (editing); legacy edit guidance is bundled here.
 
 Apply the universal items first, then this section. Mark N/A any item
 whose feature is absent (no references → skip material mapping).
+Block names below are readable conventions, not required headings. Check
+the source, requested delta and preservation contract rather than formatting.
 
 ### Editing task
 
-1. `[Edit Goal] Edit @Video 1 …` present and one-sentence; submit with
-   `omni_reference_task_type="edit"` (2.5 values: `auto | reference | edit |
-   extend` — `edit_video` is 2.0-only and is rejected).
-2. `[Source Video Role]` declares `@Video 1` as the sole editing master and
+1. The edit goal names the source and requested change. Verify the exact
+   operation and task-type controls separately; historical 2.5 examples use
+   `omni_reference_task_type="edit"`, not a family-wide API guarantee.
+2. The source role declares `@Video 1` as the sole editing master and
    lists what it defines (subjects, scene, actions, camera, event order).
-3. `[Target Material Role]` (or `[Target Reference Role]` in an object swap)
-   present iff references are used: each `@Image N` mapped to one target, and
+3. Target material roles are present when references are used: each `@Image N` mapped to one target, and
    the image's unowned content excluded ("Do not use its background/people").
    Exempt what the target class owns: a character reference owns its person, a
-   location reference owns its background. Single-person sheets directed to
-   use the close-up panel only.
-4. `[Edit Scope]` states what changes and, for what must not change, a positive
-   "exactly one <subject>, in open view at <position>" count.
-5. `[Content to Preserve]` lists identity/motion/timing/camera/lighting to keep.
+   location reference owns its background. Verify selected view eligibility;
+   a crop instruction does not authorize a rejected reference.
+4. Edit scope states what changes and the identities, total counts, visible
+   counts and positions that must remain unchanged, including occlusions.
+5. The preservation contract lists identity/motion/timing/camera/lighting to keep.
 
 ### Preservation locks (only where MUST PRESERVE says so)
 
-6. Quantity: "Exactly one <subject>, in open view at <position>." Do not name
-   extra copies (`prompt.exact_counts`).
+6. Quantity: preserve total identity separately from visible count and keep
+   source entrances, exits and occlusions. Do not expose a hidden subject or
+   invent extra copies (`prompt.exact_counts`).
 7. Non-reaction (when the subject must not react): "…facial expression, gaze,
    and gestures remain exactly as in @Video 1; only <the changed thing>
    re-animates."
@@ -42,11 +48,13 @@ whose feature is absent (no references → skip material mapping).
 
 ### Audio / lip-sync
 
-10. New dialogue in `{}` with language + regional variety + delivery style +
-    speaker; lips directed to the NEW words. CJK punctuation: `……` not `——`.
+10. New dialogue retains exact approved words, language, variety, delivery and
+    speaker. Verify destination syntax and lip-sync support independently.
 11. Same-content contract (language swap): target `{}` line is the source line
     translated, no paraphrase/omission.
-12. Diegetic audio only; SFX in `<>`, music in `()`; no non-diegetic score.
+12. Preserve each unchanged source audio layer and the approved soundtrack.
+    Native audio edits require explicit scope and verified controls; tokens
+    alone do not establish support. Do not add an unrequested score.
 
 ### Camera (only when the edit intentionally re-stages the camera)
 
@@ -151,11 +159,11 @@ and record why.
 
 ### Limits and rights
 
-8. **Reference counts.** Within hard limits (≤ 30 images, ≤ 10 videos, ≤ 10
-   audio) and the recommended range: 1–8 image subjects and one motion video.
-   Exceeding a hard limit is CRITICAL. More than eight mapped subjects, or
-   references above the recommended range, is MAJOR unless the
-   prompt records the trade-off; suggest splitting into shots and assembling.
+8. **Reference counts.** Verify hard counts, sizes, combined durations and role
+   combinations for the exact model, operation and destination. Exceeding a
+   verified hard limit is CRITICAL. Recommendations are not subject-count
+   quotas; retain all required mappings and return demonstrated conflicts.
+   Splitting and additional generation require authorization.
 
 9. **Video-to-video inputs.** Apply the shared items under
    [Video-to-video inputs](#video-to-video-inputs-swap-recast-restyle).
@@ -222,19 +230,25 @@ medium. Mark N/A any item whose feature is absent and record why.
    Source text surfaces become abstract shapes; no lettering is requested.
 
 6. **Route and limits.** The operation matches the recorded route decision and
-   capability evidence (`model.supported_mode`); an unverified route is
-   labeled provisional and the request is a 480p probe. Route A uses 1–5
-   images; Route B sets the whole-second source duration and ratio.
+   exact capability evidence (`model.supported_mode`). An unverified route stays
+   provisional; a bounded probe requires explicit authorization, a supported
+   submission mechanism, cost ceiling and acceptance criteria. Denied probes
+   remain writing-only. Preserve fractional source duration (for example 12.48 s),
+   frame count, cuts and audio tail; do not round, trim, pad or retime without
+   approval. Keep ratio/duration unset where the verified edit operation inherits
+   them; a reference route uses evidenced controls and source-preserving values.
+   Native 480p Draft and an ordinary non-promotable preview are not interchangeable.
 
 7. **Same place.** A restyle keeps the source's place: the background is
-   restyled through an environment image of that place, or left as it is.
+   restyled across the whole frame in words or through an optional environment
+   image of that same place.
    Naming a different location (a city street becoming a seaside village) is
    MAJOR unless the user asked for one. A scene replacement or style word that
-   only tells the model to keep the source layout for the background is likely
-   to leave it photographic; flag it MAJOR when a whole-frame restyle is
-   requested. Keeping positions for the subject and the furniture they use is
-   correct. A restyle that intentionally keeps the original background
-   photographic is N/A.
+   preserves layout while changing the medium is valid for a words-only
+   whole-frame restyle. Missing environment imagery alone is not a finding;
+   flag an actual unchanged photographic region or contradicted place lock.
+   Keeping positions for the subject and furniture is correct. An intentionally
+   preserved photographic background records its scope.
 
 8. **Video-to-video inputs.** Apply the shared items under
    [Video-to-video inputs](#video-to-video-inputs-swap-recast-restyle).

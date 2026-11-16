@@ -22,7 +22,7 @@ def normalized(path: Path) -> str:
 class CreativeDefaultsTests(unittest.TestCase):
     def test_compiler_and_review_do_not_soften_body_energy_by_default(self):
         for relative in (
-            "seedance-prompt-25/references/scene-action.md",
+            "seedance-prompt/references/scene-action.md",
             "prompt-review/references/checklist-seedance-legacy.md",
             "prompt-review/references/checklist-seedance-25.md",
         ):
@@ -36,7 +36,7 @@ class CreativeDefaultsTests(unittest.TestCase):
         for relative in (
             "seedance-shot-design/SKILL.md",
             "seedance-shot-design/references/coverage-patterns.md",
-            "seedance-prompt-25/references/shot-staging.md",
+            "seedance-prompt/references/shot-staging.md",
             "micro-drama/SKILL.md",
             "prompt-review/references/checklist-seedance-25.md",
         ):
@@ -76,7 +76,7 @@ class CreativeDefaultsTests(unittest.TestCase):
 
     def test_eval_expectations_do_not_restore_removed_quotas(self):
         for name in (
-            "brief-intake", "film-production", "seedance-shot-design", "seedance-prompt-25",
+            "brief-intake", "film-production", "seedance-shot-design", "seedance-prompt",
         ):
             path = SKILLS / name / "evals/evals.json"
             for case in json.loads(path.read_text())["evals"]:
@@ -102,9 +102,8 @@ class CreativeDefaultsTests(unittest.TestCase):
             "seedance-pacing-presets/references/assembly-cuts.md",
             "seedance-pacing-presets/references/cut-transitions.md",
             "seedance-pacing-presets/evals/evals.json",
-            "seedance-prompt-25/SKILL.md",
-            "seedance-prompt-20/SKILL.md",
-            "seedance-prompt-25/references/shot-staging.md",
+            "seedance-prompt/SKILL.md",
+            "seedance-prompt/references/shot-staging.md",
             "prompt-review/references/checklist-seedance-25.md",
             "prompt-review/references/checklist-seedance-legacy.md",
             "prompt-review/references/author-self-check.md",
@@ -127,14 +126,14 @@ class CreativeDefaultsTests(unittest.TestCase):
             SKILLS / relative for relative in (
                 "seedance-shot-design/SKILL.md",
                 "seedance-acting-console/SKILL.md",
-                "seedance-prompt-25/references/shot-staging.md",
+                "seedance-prompt/references/shot-staging.md",
                 "prompt-review/references/checklist-seedance-25.md",
                 "prompt-review/references/checklist-seedance-legacy.md",
                 "micro-drama/references/episode-structure.md",
                 "micro-drama/references/production-recipe.md",
                 "micro-drama/evals/evals.json",
                 "film-production/references/production-defaults.md",
-                "seedance-prompt-20/SKILL.md",
+                "seedance-prompt/references/scene-action.md",
             )
         ]
         for path in paths:
@@ -158,7 +157,7 @@ class CreativeDefaultsTests(unittest.TestCase):
                 "24. **timestamps.**", "25. **natural duration.**",
             ),
             (
-                "seedance-prompt-25/references/scene-action.md",
+                "seedance-prompt/references/scene-action.md",
                 "### timestamps and pacing", "## action description",
             ),
         ):
@@ -250,7 +249,7 @@ class CreativeDefaultsTests(unittest.TestCase):
 
     def test_legacy_and_shared_summaries_do_not_restore_creative_gates(self):
         checks = {
-            SKILLS / "seedance-prompt-20/SKILL.md": ("guide prefers slow",),
+            SKILLS / "seedance-prompt/SKILL.md": ("guide prefers slow",),
             ROOT / ".agents/contracts/seedance-reference.md": (
                 "keep \u22642 moves per shot", "1\u20132 camera moves per shot",
             ),

@@ -37,9 +37,10 @@ direction.
 ## Core decisions
 
 1. **Check language support first.** See
-   [language support](references/language-support.md). A natively supported
-   language needs only delivery direction. An unlisted language needs a
-   recorded route before anything is submitted.
+   [language support](references/language-support.md). Use evidence for the
+   selected exact model, operation and destination, not inclusion in a
+   historical list. Unknown support stays unresolved; preserve the requested
+   language and approved words while returning delivery direction.
 2. **Preserve locks.** Record exact wording, names, politeness, code-switching
    and character intent that must survive. A pronunciation request does not
    authorize rewriting dialogue.

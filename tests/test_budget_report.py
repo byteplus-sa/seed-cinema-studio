@@ -325,8 +325,9 @@ class BudgetReportTests(unittest.TestCase):
         command = [
             sys.executable, str(Path(prepare_request.__file__)),
             "--project", str(self.root), "--unit", "ep001",
-            "--asset", "cli-draft", "--model", "seedance-2-5",
+            "--asset", "cli-draft", "--model", self.fixture.caps["model"],
             "--operation", "generate", "--prompt", "scenes/scene-001/prompt.md",
+            "--param", "draft=true", "--param", "resolution=480p",
             "--expected-output", "scenes/scene-001/cli.mp4", "--write", "--replace-unregistered",
         ]
         for estimate in (None, "11"):

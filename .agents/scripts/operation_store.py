@@ -26,6 +26,7 @@ from validate_request import (
     request_review_findings,
     schema_findings,
     studio_project,
+    validate_adoption_request,
     validate_request,
 )
 
@@ -329,9 +330,14 @@ def _register_operation(
     allow_board_references: bool, *, unit_id: str | None,
     production_scope: bool, adoption: tuple[str, str, bool] | None = None,
 ) -> None:
-    findings = validate_request(
-        root, request, capabilities, allow_board_references,
-        unit_id=unit_id, production_scope=production_scope,
+    findings = (
+        validate_adoption_request(
+            root, request, capabilities, unit_id=unit_id, production_scope=production_scope,
+        )
+        if adoption is not None else validate_request(
+            root, request, capabilities, allow_board_references,
+            unit_id=unit_id, production_scope=production_scope,
+        )
     )
     findings.extend(
         request_review_findings(root, request, review, required_rule_ids)
@@ -342,9 +348,14 @@ def _register_operation(
         require_current_approval_contract(
             root, request, unit_id=unit_id, production_scope=production_scope,
         )
-        current = prepared_evidence_findings(
-            root, request, allow_board_references, unit_id=unit_id,
-            production_scope=production_scope,
+        current = (
+            validate_adoption_request(
+                root, request, capabilities, unit_id=unit_id, production_scope=production_scope,
+            )
+            if adoption is not None else prepared_evidence_findings(
+                root, request, allow_board_references, unit_id=unit_id,
+                production_scope=production_scope,
+            )
         )
         current.extend(request_review_findings(root, request, review, required_rule_ids))
         if current:

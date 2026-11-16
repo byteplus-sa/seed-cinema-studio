@@ -1,0 +1,4 @@
+interface:
+  display_name: "Seedance Prompt"
+  short_description: "Seedance composition, reference, edit and extension prompts"
+  default_prompt: "Use $seedance-prompt for unified 2.5-based composition with reference, edit and extension guidance, preserving the selected exact model, source locks and caller-owned execution."

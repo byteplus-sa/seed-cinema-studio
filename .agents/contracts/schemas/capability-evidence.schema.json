@@ -11,6 +11,37 @@
     "max_references"
   ],
   "properties": {
+    "schema_version": {"enum": [1, 2]},
+    "profile_id": {"type": "string", "minLength": 1},
+    "provider": {"type": "string", "minLength": 1},
+    "operation": {"type": "string", "minLength": 1},
+    "transport": {"enum": ["ark-mcp", "arkcli", "curl"]},
+    "tool_schema_revision": {"type": "string", "minLength": 1},
+    "valid_from": {"type": "string", "format": "date-time"},
+    "expires_at": {"type": "string", "format": "date-time"},
+    "parameter_constraints": {
+      "type": "array",
+      "items": {"type": ["object", "boolean"]}
+    },
+    "modality_limits": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "image": {"$ref": "#/$defs/modality"},
+        "video": {"$ref": "#/$defs/modality"},
+        "audio": {"$ref": "#/$defs/modality"}
+      }
+    },
+    "preview": {
+      "type": "object",
+      "required": ["native_draft", "promotion", "ordinary_preview"],
+      "additionalProperties": false,
+      "properties": {
+        "native_draft": {"$ref": "#/$defs/support"},
+        "promotion": {"$ref": "#/$defs/support"},
+        "ordinary_preview": {"$ref": "#/$defs/support"}
+      }
+    },
     "model": {
       "type": "string",
       "minLength": 1
@@ -53,5 +84,27 @@
       "type": "boolean"
     }
   },
-  "additionalProperties": true
+  "additionalProperties": true,
+  "allOf": [{
+    "if": {"properties": {"schema_version": {"const": 2}}, "required": ["schema_version"]},
+    "then": {
+      "required": [
+        "profile_id", "provider", "operation", "transport", "tool_schema_revision",
+        "valid_from", "expires_at", "preview", "modality_limits", "parameter_constraints"
+      ],
+      "properties": {"operations": {"maxItems": 1}}
+    }
+  }],
+  "$defs": {
+    "support": {"enum": ["supported", "unsupported", "unknown"]},
+    "modality": {
+      "type": "object",
+      "required": ["max_count"],
+      "additionalProperties": false,
+      "properties": {
+        "max_count": {"type": "integer", "minimum": 0},
+        "max_duration_seconds": {"type": "number", "exclusiveMinimum": 0}
+      }
+    }
+  }
 }

@@ -68,11 +68,11 @@
     {
       "id": 6,
       "prompt": "Write a Seedance 2.5 prompt for a handheld found-footage clip of a diner at night, shot on a VHS sensor — scanlines, color bleed, soft low-fi look.",
-      "expected_output": "A Seedance prompt that stages handheld found-footage behaviour in the diner and keeps the VHS tape markers (scanlines, color bleed, soft low-fi image) as a post treatment, explaining that a tape or camcorder word in a Seedance prompt tends to return clean footage.",
+      "expected_output": "Preserves handheld found-footage behaviour and requested visible tape texture; any post alternative needs authorization and scoped evidence.",
       "files": [],
       "expectations": [
         "The output does not rely on a VHS or camcorder word in the Seedance prompt to produce the tape look.",
-        "It assigns the scanlines, color bleed and soft low-fi image to post and says so.",
+        "It preserves scanlines, color bleed and soft low-fi intent; post is an optional authorized route, not a family-wide requirement.",
         "The prompt still stages the found-footage camera behaviour, such as handheld framing, with the diner subject and scene.",
         "It does not combine the tape look with a second competing sensor or lens character.",
         "It adds no grain, halation or vignette beyond the requested look."
@@ -105,11 +105,11 @@
     {
       "id": 9,
       "prompt": "Write the lens line for a push-in where her face drifts out of focus while the camera keeps moving, to show she is losing control.",
-      "expected_output": "An explanation that prompted focus loss tends not to hold, with a lens line using ordinary focus and the defocus moved to post.",
+      "expected_output": "A push-in lens line preserving the requested drifting focus and endpoint as intent, with reliability unknown until scoped observation.",
       "files": [],
       "expectations": [
-        "It does not present the drifting focus as a reliable prompt preset.",
-        "It recommends generating with ordinary focus and adding a defocus ramp in post, or using light and the edit instead.",
+        "It does not claim guaranteed success or a family-wide inability from unbound evidence.",
+        "It preserves focus loss; a retake or post defocus ramp is an option needing authorization, not an automatic ordinary-focus substitution.",
         "It does not stack extra blur or a second move in the prompt.",
         "It keeps the push-in as the camera move."
       ]
@@ -141,13 +141,13 @@
     {
       "id": 10,
       "prompt": "Write the lens line for a shot where a bloodied knife sits sharp in the foreground of a kitchen and focus then pulls onto the face of the woman standing behind it.",
-      "expected_output": "A rack focus line that names both planes as visible results, timed, with the pull onto the face marked as an unverified heuristic to check in a 480p draft.",
+      "expected_output": "A rack focus line naming both visible planes and timing as intent; any paid preview requires explicit authorization and verified mechanics.",
       "files": [],
       "expectations": [
         "The line names the knife as the starting sharp plane and the woman's face as the ending sharp plane, each as a visible result.",
         "The focus change has a time or a clear start and end.",
-        "The output marks a pull onto a face as unverified and suggests checking it in a 480p draft.",
-        "It contrasts this with a pull away from a face, which belongs in post.",
+        "The output marks reliability unverified and scopes observations to model, operation, transport and evidence.",
+        "It does not assign pulls away from a face compulsorily to post or automatically run a paid probe.",
         "No numeric aperture or focal length appears without a visible result."
       ]
     }

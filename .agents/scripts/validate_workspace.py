@@ -15,6 +15,8 @@ from jsonschema.exceptions import SchemaError
 from ruamel.yaml import YAML
 from ruamel.yaml.error import YAMLError
 
+RETIRED_SKILLS = frozenset({"seedance-prompt-20", "seedance-prompt-25"})
+
 
 @dataclass(frozen=True)
 class Finding:
@@ -225,6 +227,23 @@ def validate_workspace(
     lock = json.loads((root / "skills-lock.json").read_text())["skills"]
     catalog = json.loads((root / ".agents/catalog/skills.json").read_text())["skills"]
     known = {path.parent.name for path in skills}
+    for name in sorted(RETIRED_SKILLS):
+        alias = root / ".claude/skills" / name
+        if (
+            (root / ".agents/skills" / name).exists()
+            or (root / ".agents/skills" / name).is_symlink()
+            or name in lock
+            or name in catalog
+            or alias.exists()
+            or alias.is_symlink()
+        ):
+            findings.append(
+                Finding(
+                    "catalog.retired_skill",
+                    name,
+                    "Retired general prompt skill must not be reintroduced",
+                )
+            )
     if known != set(lock) or known != set(catalog):
         findings.append(
             Finding(

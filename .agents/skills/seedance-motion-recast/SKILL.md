@@ -208,7 +208,7 @@ length as one natural-duration recast or assemble separate shots.
 
 Load only the references the request needs. A stylized medium such as
 claymation or toy miniature is described in the prompt; the six-part formula and
-reference syntax stay with `seedance-prompt-25`. Keep a shared subject map in the
+reference syntax stay with `seedance-prompt`. Keep a shared subject map in the
 project notes.
 These are composition hints; this leaf does not load sibling skills.
 

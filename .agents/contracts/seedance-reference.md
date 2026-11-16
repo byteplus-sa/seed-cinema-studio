@@ -88,4 +88,4 @@ Record the plan and resolved phrases in `shot.md` alongside the prompt snapshot.
 Load `seedance-lighting-presets` / `color-grade-palettes` alongside
 `seedream-prompt` when generating matching element sheets. For animation
 media or music-driven timing, describe the medium or section map inside the
-`seedance-prompt-25` prompt.
+`seedance-prompt` prompt.

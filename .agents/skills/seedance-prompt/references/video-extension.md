@@ -1,6 +1,6 @@
 # Video Extension
 
-Focused reference for `seedance-prompt-25`. Read [the entrypoint](../SKILL.md) for
+Focused reference for `seedance-prompt`. Read [the entrypoint](../SKILL.md) for
 mode selection and caller responsibilities.
 
 - [Video extension](#video-extension)
@@ -11,13 +11,27 @@ Video extension creates content beyond the boundary of a source video.
 - **Forward extension**: extension's first frame continues from the source's last frame.
 - **Backward extension**: extension's last frame connects to the source's first frame.
 
-Request facts: ratio is locked to the source, so omit it; duration is settable.
-Set the extension task type explicitly when auto-detection could misread the
-request: Seedance 2.5 uses `omni_reference_task_type: extend` (`extend_video`
-is a 2.0 value and is rejected by 2.5). A source that shows generated
-or real people is rejected for privacy unless those people are `asset://`
-Virtual Portrait assets; without them, chain a new clip from an approved last
-frame or a blocking plan instead of extending.
+These are 2.5-based authoring patterns, not universal operation guarantees.
+Verify direction support, source eligibility, ratio inheritance, duration
+semantics and task-type syntax for the selected exact model and destination.
+The historical 2.5 spelling is `omni_reference_task_type: extend`; it does not
+establish support for another binding. See the scoped
+[parameter snapshot](parameter-reference.md).
+
+Preserve the original source segment, including fractional duration, frame
+count, fps, cuts, timestamps, final word and audio tails. Distinguish requested
+added time from total output time; do not round either to a convenient limit.
+Missing timing or unsupported controls remain unresolved, not permission to
+trim, pad, retime, mute or run probes. A necessary derivative requires current
+provider evidence and explicit derivative adaptation approval, with source and
+derivative hashes, exact window, timing delta and audio consequences. Denied
+approval leaves the source unchanged; output mismatch remains unresolved.
+
+The caller verifies source rights and asset authorization under the
+[video-to-video contract](../../../contracts/video-to-video-inputs.md).
+Do not disguise a rejected source or automatically replace extension with a new
+clip. An approved last-frame continuation or blocking-based shot is a distinct
+proposal requiring user selection and verified input roles.
 
 ### Forward extension
 

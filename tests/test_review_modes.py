@@ -44,8 +44,8 @@ class ReviewModeTests(unittest.TestCase):
         for relative in (
             ".agents/contracts/production-policy.md",
             ".agents/skills/film-production/references/stage-contracts.md",
-            ".agents/skills/seedance-prompt-25/SKILL.md",
-            ".agents/skills/seedance-prompt-25/references/shot-staging.md",
+            ".agents/skills/seedance-prompt/SKILL.md",
+            ".agents/skills/seedance-prompt/references/shot-staging.md",
         ):
             with self.subTest(path=relative):
                 text = " ".join((root / relative).read_text().split()).lower()
@@ -64,7 +64,7 @@ class ReviewModeTests(unittest.TestCase):
             root / ".agents/contracts/production-brief.md",
             root / ".agents/contracts/rules.json",
         ]
-        for name in ("brief-intake", "film-production", "micro-drama", "seedance-prompt-25"):
+        for name in ("brief-intake", "film-production", "micro-drama", "seedance-prompt"):
             paths.extend((root / ".agents/skills" / name).rglob("*.md"))
         for path in paths:
             with self.subTest(path=path.relative_to(root)):
@@ -393,6 +393,8 @@ class ScopedReviewModeTests(unittest.TestCase):
 
     def test_absent_mode_preserves_context_v2_fingerprints(self):
         current = self.fixture.request()
+        current["model"] = "seedance-2-5"
+        self.fixture.rehash(current)
         self.assertEqual(current["context"]["context_version"], 2)
         self.assertEqual(
             current["context"]["effective_sha256"],
@@ -407,6 +409,7 @@ class ScopedReviewModeTests(unittest.TestCase):
             "80f22118a76f799f294318cd5c2d92e8f1351993a014804e39ff616b2373fad2",
         )
         self.assertNotIn("review_mode", production_profiles.resolve_brief({}))
+        self.assertTrue(validation.native_draft_findings(current))
 
     def test_shared_mode_changes_normalized_digest_and_v3_request(self):
         request = self.fixture.request()

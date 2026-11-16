@@ -1,10 +1,15 @@
 # Seedance 2.5 Checklist
 
-Source skill: `seedance-prompt-25`. Apply the universal items in
+Source skill: `seedance-prompt`. Apply the universal items in
 [the index](review-checklists.md#universal--all-prompts) first, then this file.
 For an edit, swap, recast or restyle use [Seedance edits](checklist-seedance-edits.md)
 instead of the generation-only items below. Default severity is MAJOR; an item
 states CRITICAL or MINOR when it differs.
+
+Resolve the selected model and operation before genre or language. The tables
+and syntax here are a historical 2.5 snapshot, not evidence for a newer model or
+transport. General craft comes from `seedance-prompt`; execution uses the exact
+profile in `.agents/contracts/seedance-execution-profiles.md`.
 
 ## Request and parameters
 
@@ -13,16 +18,23 @@ follow `.agents/contracts/draft-promotion.md` before promotion. Resolution alone
 does not create a native draft; confirm the live tool supports `draft: true`.
 
 1. **Draft first and promotion (`seedance.draft_promotion`).** An initial or
-   revised draft is `draft: true` at 480p (or an explicit `resolution: "480p"`
-   where native Draft is unavailable), unless a recorded user override or
-   verified operation constraint applies. A final is promoted with
+   revised draft is `draft: true` at 480p. Exact standard
+   `dreamina-seedance-2-5-260628` and Premium
+   `dreamina-seedance-2-5-premium-260915` retain mandatory native Draft policy in
+   both review modes; unsupported mechanics block execution, not a dropped-draft
+   fallback. Other exact profiles may support an ordinary, non-promotable preview.
+   A final is promoted with
    `draft_task_id` from a passing, hash-bound draft selection under the
    project's approval mode, and carries only output settings (resolution,
-   watermark, return_last_frame, expiry, priority). A final call that also
+   watermark, return_last_frame, execution_expires_after, priority,
+   safety_identifier). Every output control and value requires verified support
+   for the selected operation and destination. A final call that also
    sends prompt, references, duration, ratio, audio or task type is CRITICAL:
    those are reused from the draft and any change must happen before the
-   draft. Without native Draft support the final is a new reviewed request with
-   its own registry entry. Multi-shot work also needs a reviewed draft assembly
+   draft. Only another exact profile with verified ordinary-preview support
+   uses a new reviewed final request with its own registry entry. Unsupported
+   native mechanics never waive mandatory standard/Premium policy.
+   Multi-shot work also needs a reviewed draft assembly
    and picture/audio decisions. Final outputs need fresh playback and audio QA:
    the final soundtrack is not byte-identical to the draft's. Prompt-only work
    needs no generated draft.
@@ -43,9 +55,10 @@ does not create a native draft; confirm the live tool supports `draft: true`.
    noncompliant audio or request an authorized repair, not automatic muting of
    requested native sound. Mixed ownership names each layer's source.
 
-3. **Reference count limits.** ≤ 30 images, ≤ 10 videos, ≤ 10 audio, ≤ 50 in
-   total; recommended 1-8 image subjects, 1-5 video subjects (5-10 s each), only
-   directly relevant audio. Exceeding a hard limit is CRITICAL.
+3. **Reference count limits.** Verify exact-model/operation/destination counts,
+   sizes, combined durations and input combinations. Historical tables are not
+   live evidence. Exceeding a verified hard limit is CRITICAL; recommendations
+   are not quotas or permission to split into additional generated clips.
 
 ## Formula
 
@@ -53,8 +66,9 @@ does not create a native draft; confirm the live tool supports `draft: true`.
    and a primary action or event. These are the only grammar-required parts;
    camera and light are craft-required for narrative shots (Shot plan items).
 
-5. **Six-part order.** Subject + Action/Event + Scene/Environment + Visual Style +
-   Camera Movement/Cut + Audio, in this order when present (MINOR).
+5. **Flexible formula.** Subject + Action/Event, with Scene/Environment,
+   Visual Style, Camera Movement/Cut and Audio as relevant. Headings and section
+   order are conventions, not quality gates; retain requested shot-plan facts.
 
 6. **Action granularity.** Describe critical action and perceptual outcomes,
    with body-part detail, range, speed, force, contact or recovery only where
@@ -70,9 +84,9 @@ does not create a native draft; confirm the live tool supports `draft: true`.
    "@Images 1 through 4 define four characters" fails. Each reference states
    what to use from it and, where leakage is possible, what not to take.
 
-8. **Organized and selected by scene.** Large bundles are grouped by type with a
-   centralized profile for important subjects, and each scene names only the
-   references it uses (MINOR when a small bundle is clear without grouping).
+8. **Organized and selected by scene.** Each scene identifies the references it
+   uses. Grouping by type and centralized profiles help large bundles; missing
+   headings alone are not a finding when ownership is clear.
 
 9. **Exclusions only where leakage is possible.** "Do not use..." appears for a
    plausible leak (people in a location plate, a background in a prop photo),
@@ -98,16 +112,19 @@ does not create a native draft; confirm the live tool supports `draft: true`.
     or last frame must be a clean, full-frame keyframe in the final medium with
     no marks. Blocking maps and other control diagrams are judged under item 12.
 
-14. **Reference photos outrank text.** Where text and a bound photo disagree on
-    a detail (gear down in the photo, retracted in the text), the photo wins;
-    the prompt aligns with the reference or the reference is replaced.
+14. **Reference conflict.** A bound photo can overpower text (gear down in the
+    photo, retracted in the brief). Flag conflicting authority and propose a
+    scoped repair; do not change approved intent or replace an approved asset
+    automatically.
 
 15. **People in video and face inputs (`model.supported_mode`).** An extension
     or video input that shows generated or real people binds them as
     `asset://` Virtual Portrait assets; a raw clip with people is rejected
     (CRITICAL). Real-person photos without an authorized asset are CRITICAL.
-    A `reference_image` face or body crop may be rejected — use the full sheet
-    or a first frame. A last-frame-only request is rejected; use first + last.
+    A rejected face/body crop is not permission to switch to a first-frame
+    role. Verify crop eligibility, last-frame prerequisites and mixed frame/
+    reference combinations for the exact operation. Unknown support remains
+    unresolved; preserve rights, independent voice authorization and mode locks.
 
 ## Shot plan and structure
 
@@ -141,8 +158,9 @@ does not create a native draft; confirm the live tool supports `draft: true`.
 19. **Light sources declared (`shot.plan_bound`).** One set of declared sources
     across the scene's cuts; a new source has a motivating event. A light that
     changes inside a shot is a timed cue on a declared source ("at 3.2 s the
-    overhead lamp clicks off"); timed cues are honoured closely, vague ones
-    drift. Check required cue visibility in silhouette; speech alone does not
+    overhead lamp clicks off"). This is authored intent, not guaranteed timing;
+    any observation is scoped to its exact model, operation, transport and
+    evidence. Check required cue visibility in silhouette; speech alone does not
     prohibit it or authorize uncovering a locked concealed face.
 
 20. **Axis carried (`shot.axis_carry`).** Each confirmed camera, lens, lighting,
@@ -161,9 +179,9 @@ does not create a native draft; confirm the live tool supports `draft: true`.
     intercut or flash timing, or demonstrated merging, without rejecting short
     shots solely by duration. Reuse suitable footage; additional generated
     clips require authorization. Asking to show and omit the same action is
-    contradictory. A rack focus that leaves the subject soft ("focus left
-    behind", subject sharp to background) mostly fails because the model keeps
-    the face sharp: plan the defocus in post (MINOR). Single-burst holds or slow
+    contradictory. Preserve requested rack focus and subject defocus. A measured
+    failure applies only to its model, operation, transport and evidence; an
+    authorized post defocus is an option, not a compulsory substitution. Single-burst holds or slow
     motion are optional repairs for demonstrated failures, not acceptance
     conditions. Preserve source action, interruptions and recovery.
 
@@ -181,8 +199,9 @@ does not create a native draft; confirm the live tool supports `draft: true`.
     rather than automatically slowing, splitting or adding holds.
     The last stage ends at the requested duration.
 
-25. **Natural duration.** Each scene runs at its natural length (4-30 s); a 30 s
-    single pass or native extension is a recorded exception.
+25. **Natural duration.** Preserve the requested rhythm and source timing
+    within verified operation limits. Longer takes and extensions follow intent,
+    not a fixed duration recipe; additional generation needs authorization.
 
 ## Craft guards
 
@@ -227,13 +246,15 @@ does not create a native draft; confirm the live tool supports `draft: true`.
 
 ## Audio and dialogue
 
-31. **Bracket syntax.** Dialogue in `{}`, music in `()`, SFX in `<>`. `【】`
-    subtitles fail item 28.
+31. **Bracket syntax.** The 2.5 guide uses dialogue in `{}`, music in `()`,
+    SFX in `<>`. Verify syntax for the selected destination; special tokens do
+    not prove audio support. `【】` subtitles fail item 28.
 
-32. **Dialogue language reinforcement.** Non-Chinese dialogue states Dialogue
-    Language + Regional Variety/Accent + Delivery Style + Speaker + `{line}`.
+32. **Dialogue language reinforcement.** State the requested language, relevant
+    variety, delivery and speaker before the exact line, with verified syntax.
     Every speaking character, including phone-screen voices and narrators, has
-    a scripted line; unscripted speakers ad-lib.
+    a scripted line. Unwanted ad-libbing is a possible failure to inspect,
+    not an inevitable model behavior.
 
 33. **Speech budget (`dialogue.speech_budget`).** Use measured delivery or a
     native-language-informed read, including pauses, onset and tail. About
@@ -285,10 +306,10 @@ does not create a native draft; confirm the live tool supports `draft: true`.
 
 ## Mode locks
 
-38. **Auto-locked parameters.** Edit: ratio and duration unset (locked to the
-    input). First/last frame: ratio follows the first image and both frames
-    share it. Extension: ratio unset, duration settable, boundary image, motion
-    trend and audio continuity checked.
+38. **Operation parameters.** Verify source inheritance, frame-role combinations
+    and extension duration semantics for the exact operation. Preserve source
+    ratio, fractional duration, cuts and audio tails; no tolerance authorizes
+    an adaptation. Check boundary image, motion trend and audio continuity.
 
 39. **Other modes.** One-click video defines material roles, image order, motion
     amount, editing style and audio. Seamless transitions define both videos'

@@ -4,12 +4,12 @@
     {
       "id": 1,
       "prompt": "Make a cinematic 30-second TVC for a running shoe: dawn city streets, one runner, a score. Take it to the first Seedance drafts.",
-      "expected_output": "A staged plan that resolves the open premise, records early sound/editorial intent, and submits authorized 480p native Drafts with picture-only generation after existing gates.",
+      "expected_output": "A staged plan that resolves premise, selected model and sound ownership before authorized generation; a score alone does not mandate picture-only.",
       "files": [],
       "expectations": [
-        "Runs brief-intake first and records a picture_only audio route, ungraded original colours and the logo/end card as post overlays in project.md.",
+        "Runs brief-intake first, resolves native or post-owned score without inferring ownership from wordlessness, and records ungraded colours and post overlays.",
         "Chooses coverage and duration for audience response, attention and ending; no sequence, angle, turn or wow quota and no extra generated clips without authorization.",
-        "Submits each sequence as a 480p native Draft with generate_audio false after mode-appropriate review and registration, without requiring a budget or estimate.",
+        "For exact standard/Premium, submits verified 480p native Drafts after review and registration; generate_audio false is used only for supported post-owned or silent output.",
         "Does not bind any storyboard image as a Seedance reference."
       ]
     },
@@ -21,7 +21,7 @@
       "expectations": [
         "Promotes only the selected, unchanged Drafts with draft_task_id, resolution and watermark.",
         "Treats the prompt change as a new reviewed 480p Draft, not an edit to a promotion.",
-        "Re-inspects every final, including a fresh speech-to-text and listening pass, before replacing drafts in Studio."
+        "Re-inspects every final with fresh playback and sound ownership checks; speech-to-text supplements listening only when speech is present."
       ]
     },
     {
@@ -31,7 +31,7 @@
       "files": [],
       "expectations": [
         "Keeps original Seedance colours and asks or records before adding any grade, grain, halation or vignette, because no look is locked in the brief.",
-        "Builds exact-length lossless intermediates, joins with the concat demuxer, encodes once and decodes HEVC finals as limited-range BT.709.",
+        "Builds exact-length intermediates preserving fractional duration, frames and tails; probes actual stream depth/range/colour before any required conversion rather than assuming limited BT.709.",
         "Places the result in Studio and renders the master with studio_project.py render; adds no AI label.",
         "Reviews what the cut reveals, withholds and emphasizes against project-specific criteria, using timestamped actual playback/listening evidence; technical validation is not artistic proof."
       ]
@@ -69,6 +69,17 @@
         "Reconciles the existing operation and never retries it through another transport.",
         "Retains native-draft, rights, current review and selection requirements for any genuinely new operation.",
         "Reports unknown costs honestly without treating them as zero."
+      ]
+    },
+    {
+      "id": 7,
+      "prompt": "Keep the wordless native wind and footsteps, preserve our exact supplied music master as a separate layer, and leave the last 1.48 seconds in silence. Do not generate more audio.",
+      "expected_output": "A mixed-ownership assembly preserving native layers, the exact master and authored silence without regeneration or silent retiming.",
+      "files": [],
+      "expectations": [
+        "Does not mute wordless native sound or regenerate the supplied master.",
+        "Records layer ownership and verifies the exact master hash and full audio tail.",
+        "Adds no bed during the authored silence and requires authorization for trim, pad or retime."
       ]
     }
   ]

@@ -135,7 +135,7 @@ take precedence over legacy fixed-duration tolerances in bundled QA examples.
    then mux the post-audio route and check sync.
 
 The canonical 2.5 edit blocks and face-protection lines come from
-`seedance-prompt-25`; keep a source subject map in the project notes. These are
+`seedance-prompt`; keep a source subject map in the project notes. These are
 composition hints; this leaf does not load sibling skills.
 
 ## Submission boundary and failure behavior

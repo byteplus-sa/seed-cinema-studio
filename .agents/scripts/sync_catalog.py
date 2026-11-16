@@ -9,7 +9,7 @@ import tempfile
 from functools import partial
 from pathlib import Path
 
-from validate_workspace import bundle_hashes, validate_skill
+from validate_workspace import RETIRED_SKILLS, bundle_hashes, validate_skill
 
 
 def replacement_text(text: str, match: re.Match[str]) -> str:
@@ -23,6 +23,18 @@ def desired_outputs(root: Path, refresh_integrity: bool) -> dict[Path, str]:
     catalog = json.loads(catalog_path.read_text())
     readme = (root / "README.md").read_text()
     skills = sorted((root / ".agents/skills").glob("*/SKILL.md"))
+    retired = RETIRED_SKILLS & (
+        {path.parent.name for path in skills} | set(catalog["skills"]) | set(lock["skills"])
+    )
+    retired |= {
+        name for name in RETIRED_SKILLS
+        if (root / ".agents/skills" / name).exists()
+        or (root / ".agents/skills" / name).is_symlink()
+        or (root / ".claude/skills" / name).exists()
+        or (root / ".claude/skills" / name).is_symlink()
+    }
+    if retired:
+        raise ValueError(f"Remove retired prompt skills before synchronization: {sorted(retired)}")
     if {p.parent.name for p in skills} != set(catalog["skills"]) or set(
         catalog["skills"]
     ) != set(lock["skills"]):

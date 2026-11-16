@@ -151,12 +151,18 @@ approval, provider generation or publishing follows from these commands.
 | Need | Skill |
 | --- | --- |
 | General narrative development from a supplied script or treatment | `story-development`; the `film-production` orchestrator composes `scene-craft` for scene craft |
+| General Seedance prompts, preserving selected model | `seedance-prompt`; same-skill mode references and caller-verified execution controls |
 | Explicit micro-drama stories for any market, language or genre | `microdrama-story-formats` |
 | Spoken dialogue in any language, with a native-language check | `seedance-prompt-25-dialogue` |
 | Filipino market pack (reference example) | `filipino-micro-drama` and `seedance-prompt-25-filipino` |
 | Add a new market pack | [docs/ADD_A_MARKET.md](docs/ADD_A_MARKET.md) |
 
-Seedance 2.5 speaks Chinese, English, Spanish, Indonesian, Malay, Thai, Arabic, Portuguese, Vietnamese, Japanese and Korean natively; other languages need an annotation, subtitle or audio-first route, which the dialogue skill records.
+Resolve exact model and operation before language or genre. The retained 2.5
+language snapshot is not a guarantee for another profile. Separate lip-sync
+audio is opt-in. [Execution profiles](.agents/contracts/seedance-execution-profiles.md)
+bind current provider/model/operation/transport/revision evidence independently.
+Exact standard/Premium keep native Draft-first policy; other verified ordinary
+previews are paid and non-promotable. Unknown mechanics block execution, not writing.
 
 ## Setup And Updates
 
@@ -234,16 +240,15 @@ Edit skills only under `.agents/skills/`.
 | **seedance-acting-console** | Encode supplied performance plans as concise Seedance intent, trigger and response cues; preserve framing, restraint and dialogue locks. |
 | **seedance-camera-presets** | Compose prompt-only camera moves and framing, including optical zoom, Dutch angle, dolly, orbit, FPV, whip pan, and single, two-shot, over-the-shoulder, point-of-view and insert framing. |
 | **seedance-fight-choreography** | Plan fictional screen-fight beats with stable participants, readable reactions and prop continuity; prompt-only, with style explicitly selected and outcome locks preserved. |
-| **seedance-lens-presets** | Translates a lens, focal length, aperture, focus or sensor request into a canonical visible-result phrase for Seedance prompts or Seedream style, and routes unreliable focus pulls and tape looks to post. |
+| **seedance-lens-presets** | Compose lens, focus and sensor intent as visible targets; scope reliability evidence and offer authorized post alternatives without changing the selected model. |
 | **seedance-lighting-presets** | Translates a named lighting setup (rim light, backlight, golden hour, night and moonlight, soft/hard light, three-point, Rembrandt, practicals, silhouette, contre-jour) into a Seedream `Lighting:` recipe and a matching Seedance phrase, and words timed light cues inside a shot. |
 | **seedance-motion-recast** | Write Seedance 2.5 Motion Transfer prompts that keep a clip's motion, camera and cuts while rebuilding cast, wardrobe, product, location and style from locked references, with per-subject dispositions, Virtual Portrait identities, a muted source with post audio and a 480p probe ladder. |
 | **seedance-object-swap** | Write Seedance 2.5 Object Swap prompts that replace one character, outfit, product, prop, object or location in existing footage and keep the rest of the shot, with the five-part swap contract, Virtual Portrait characters, a muted source with post audio and swap QA. |
 | **seedance-pacing-presets** | Compose prompt-only rhythm, speed ramps, time-lapse, freeze frame, progressive part-by-part changes and named picture/audio transitions, including match cuts, dissolves, wipes and J/L cuts. |
-| **seedance-prompt-20** | Legacy Seedance 2.0 prompt skill. Use when you need 4K output (unsupported by 2.5), Fast/Mini speed variants, or lower cost per generation. Provides reference-role classification, subject definitions, spatial continuity, shot sequencing, and native audio direction. |
-| **seedance-prompt-25** | Write Seedance 2.5 prompts from shot plans and canonical elements, with native 480p drafts, approved promotion, language-aware dialogue and planning-only storyboards. |
+| **seedance-prompt** | Use unified 2.5-based composition with reference, edit, extension and staging guidance for any selected Seedance model; preserve source locks and caller-owned execution. |
 | **seedance-prompt-25-dialogue** | Direct spoken dialogue for Seedance in any language: native-language check, register and accent, code-switching, and word-scoped repairs. |
 | **seedance-prompt-25-filipino** | Opt-in Filipino dialogue support preserving approved words and requested language, register, code-switching and subtitle choices; separate accent notes, listening-based pronunciation review and opt-in separate lip-sync audio. |
-| **seedance-restyle** | Write Seedance 2.5 Restyle prompts that redraw a whole clip in one of 24 visual styles or a custom style reference while keeping its content, motion, camera and cuts, with medium-matched Virtual Portrait anchors, an environment-image recipe that keeps the same place and restyles the background too, a muted source with post audio and a 480p probe ladder. |
+| **seedance-restyle** | Restyle whole-frame intent while preserving source motion, cuts and fractional timeline; review optional same-place imagery and explicitly authorized, capability-verified probes. |
 | **seedance-shot-design** | Plan per-shot coverage for Seedance scenes: shot count and jobs, size, framing, angle, camera move, lens intent and light per shot, with variety rules and an energy level. |
 | **seedance-virtual-portrait** | Prepares authorized face and voice references for Seedance Advanced Creation Rights, reuses completed onboarding and active assets without repeating verification, binds asset:// references, and resolves Seedance privacy and guardrail flags on real-person inputs through the registered asset route. |
 | **seedream-character-outfit** | Writes Seedream image-to-image prompts that change the outfit on an approved character sheet, with always-worn accessories, a change contract, and identity-drift QA. |

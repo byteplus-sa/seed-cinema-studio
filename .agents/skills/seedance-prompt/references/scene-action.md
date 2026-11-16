@@ -1,6 +1,6 @@
 # Scene Action
 
-Focused reference for `seedance-prompt-25`. Read [the entrypoint](../SKILL.md) for
+Focused reference for `seedance-prompt`. Read [the entrypoint](../SKILL.md) for
 mode selection and caller responsibilities.
 
 - [Scene staging](#scene-staging)
@@ -20,11 +20,12 @@ A clip that cuts uses shots rather than stages; see
 [Shot Staging](shot-staging.md). Stages suit a continuous take or a story that
 changes state without changing camera setup.
 
-**Generate per scene at its natural duration (4–30s), not per 30-second block.**
-Right-size each scene using the `duration` parameter — 7s for a single beat,
-12s for a short dialogue exchange, 20s for a multi-stage action sequence. Do
-not pad scenes to fill 30s. Chain approved scenes via `return_last_frame` /
-`first_frame` and assemble in post. Add a shared reference bundle only when
+**Preserve each scene's natural duration and requested rhythm.**
+Keep creative timing separate from verified duration controls. Do not pad a
+scene to fill a model limit or shorten a locked source to fit a recipe.
+The caller may propose chaining approved scenes via supported `return_last_frame` /
+`first_frame` roles and assembly, with authorization for additional clips.
+Add a shared reference bundle only when
 the selected live tool/model explicitly supports mixed frame/reference roles;
 a chaining recipe never overrides input compatibility.
 
@@ -54,37 +55,39 @@ Keep <character identity, number of characters, clothing, prop ownership, spatia
 and audio relationships> consistent.
 ```
 
-### When to use 30s single-pass or native extension (exception)
+### Continuous takes and extension
 
-Native extension (up to 180s, beta) and full 30s single-pass are the **exception**,
-not the default. Use them only when you explicitly need continuous, seamless
-motion across what would otherwise be scene boundaries:
+Choose a continuous take, staged sequence or extension from the brief, not a
+fixed duration recipe. Verify exact-model and operation limits independently.
+Possible creative reasons for a supported longer take or extension include:
 
 - **Single continuous take** — a one-shot with no cuts where seamless motion
   across 30s+ matters more than per-scene iteration control.
 - **Minimal scene variation** — same location, same characters, gradual change
   that the model handles well in one pass.
-- **Audio-driven long dialogue** — one long dialogue block where lip-sync must
-  be continuous across scene boundaries; extension keeps it seamless.
+- **Audio-driven long dialogue** — preserve requested continuous delivery
+  across scene boundaries; verify actual synchronization rather than promise it.
 
-If using extension: generate a 30s base take, then extend it forward/backward
-in rounds — **do not force scene changes at every 30s mark**; scene changes
-happen naturally where the story needs them.
+For a selected extension, follow [Video Extension](video-extension.md).
+Preserve the supplied source and boundary state. Additional base clips or
+extension rounds need their own authorization; do not manufacture scene changes
+at a fixed timestamp.
 
 - **Audio with extension (only when separate lip-sync audio is requested).**
-  Align a single Seed Audio master to the full timeline
-  (up to ~2 min) and pass it as `reference_audio` so dialogue and sound stay
-  continuous across the extension.
+  Preserve the exact supplied or separately authorized audio master and its
+  full timeline. Bind it only when the selected operation supports that role;
+  this writing leaf does not generate a track or guarantee synchronization.
 - **Validate seams.** Extension boundaries are not pixel-identical; inspect the
   boundary image, motion trend, and audio continuity on both sides of each seam.
-  Multi-round extension is beta — validate each seam before committing.
-- **Aspect ratio** is locked to the input video's ratio for extended segments.
+  Validate every authorized extension boundary before selecting it.
+- **Aspect ratio** follows verified operation constraints, preserving source intent.
 
 ### Timestamps and pacing
 
 Use stages by default for a continuous take, and shots when the clip cuts (see
-[Shot Staging](shot-staging.md)). Use one-second precision **only** for critical handoffs,
-entrances/exits, transitions, or explicit beats.
+[Shot Staging](shot-staging.md)). Use precise timestamps only for critical handoffs,
+entrances/exits, transitions or explicit beats. Preserve supplied fractional
+timing; one-second examples are not a rounding rule.
 
 | Pattern | Example |
 |---|---|
