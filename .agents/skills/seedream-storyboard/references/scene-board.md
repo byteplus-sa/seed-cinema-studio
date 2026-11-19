@@ -37,9 +37,12 @@ Choose a higher level only when the extra panels will change a decision about
 staging, continuity or timing. A single shot may depart from the scene level with
 a recorded reason (for example an insert that needs beats). State the panel count
 and report generation cost when available, without making an estimate a prerequisite:
-an L2 key shot is three panels, and the
-workspace default of three samples applies per panel unless a staging-only pass
-asks for one.
+an L2 key shot is three panels. Sample count is separate from panel count:
+default review mode uses one image per panel; strict mode uses three stochastic
+samples per panel when applicable. An explicit requested count or creative
+alternatives wins. Keep comparison prompts, references and effective settings
+identical except supported seed variation. A prompt-only board plan does not
+authorize generation or extra samples.
 
 ## Which shots are key
 
@@ -71,7 +74,7 @@ board.
 
 | Finding | Repair |
 | --- | --- |
-| A local defect in an otherwise right panel (a prop, a hand, a count, an expression, a detail) | **Edit that panel** with `seedream_edit_image`, using a bounding box or point when the defect is local |
+| A local defect in an otherwise right panel (a prop, a hand, a count, an expression, a detail) | **Edit that panel** with `seedream_generate_image`, using a structured `bbox` or `point` |
 | A wrong beat, geography or axis in one panel | Regenerate that panel from a corrected prompt |
 | A shared cause across most panels of a shot (element sheet, shot plan or prompt wrong) | Fix the cause, then regenerate that shot's panels |
 | A cause that touches every panel (rare) | Regenerate the scene's panels, with a recorded reason |
@@ -83,8 +86,11 @@ Rules:
   [Editing Failed Panels](editing-failed-panels.md): locked decisions, the single
   requested delta, acceptance criteria, known rejections and the invalidation scope.
 - **Inputs**: the failed panel as `@Image 1` and the approved element sheet for any
-  corrected identity or prop as `@Image 2`. The edit tool needs HTTPS URLs, so call
-  `media_upload` or `media_presign` immediately before submitting.
+  corrected identity or prop as `@Image 2`, in the same order in `images`.
+  Use HTTPS URLs from `media_upload`/`media_presign` or schema-supported base64,
+  never local filepaths. Structured `bbox`/`point` coordinates are integers in
+  0-999 on `images[0]`; do not duplicate raw tags in the prompt. The caller
+  verifies selected-model support and submits through `ark_job_submit`.
 - **Lineage**: the edit is a new version of the same panel (`_vNN+1`). The original
   stays on disk, marked rejected, with its prompt and hash. The new record keeps the
   parent file and hash, the edit prompt snapshot and the bounding box. The edit
