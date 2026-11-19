@@ -133,10 +133,11 @@ evidence; unavailable evidence stays unresolved.
   summary is not evidence. A listening pass for pronunciation, accent, register
   and speaker identity, which a transcript cannot certify.
 - **Soundtrack (B).** Music, effects and room tone from the source are intact
-  and continuous across each replaced line. Each splice stays within about 10
-  percent pitch and tempo, no last word is clipped, and tail silence is kept.
-- **Loudness and decode.** Matched to the delivery target with peaks under the
-  ceiling; clean decode; audio and video durations agree.
+  outside the authorized replacement. No last word is clipped, and independent
+  audio tails are kept. Splicing or pitch adjustment is not mandatory.
+- **Audio and decode.** Native output needs no normalization or separate mix
+  evidence. Measure an explicitly requested delivery specification without
+  automatically correcting it. Decode cleanly and report timing mismatches.
 - **Picture and timing.** A and B: video stream identical to the source master,
   or the difference explained. C: identity, wardrobe, geography, continuity and
   the hook window re-checked on every new take. Cue and line timing measured on

@@ -47,7 +47,7 @@ class SubtitleContractTests(unittest.TestCase):
     def render(self):
         self.write_manifest()
         with patch.object(portfolio, 'duration', return_value=1.0), patch.object(portfolio.subprocess, 'run'):
-            portfolio.build(self.out, [self.root], 'Hub', '', False, -16.0, 0.79)
+            portfolio.build(self.out, [self.root], 'Hub', '', False)
         return (self.out / 'index.html').read_text()
 
     def test_explicit_language_and_label_control_track_and_vtt(self):
@@ -139,7 +139,7 @@ class PortfolioTests(unittest.TestCase):
     def test_page_uses_locked_masters_and_marks_unlocked_projects(self):
         projects = [self.project('alpha'), self.project('beta', locked=False)]
         out = self.base / 'hub'
-        manifest = portfolio.build(out, projects, 'Hub', 'Two stories', False, -16.0, 0.79)
+        manifest = portfolio.build(out, projects, 'Hub', 'Two stories', False)
         page = (out / 'index.html').read_text()
         self.assertIn('../alpha/assembly/alpha_master_v01.mp4', page)
         self.assertIn('In production', page)
@@ -159,7 +159,7 @@ class PortfolioTests(unittest.TestCase):
                     {'path': 'assembly/gamma_master_v01.srt', 'kind': 'data', 'language': 'fr', 'label': 'French'}]
         (root / 'showcase.json').write_text(json.dumps(showcase))
         out = self.base / 'hub_langs'
-        portfolio.build(out, [root], 'Hub', 'One story', False, -16.0, 0.79)
+        portfolio.build(out, [root], 'Hub', 'One story', False)
         page = (out / 'index.html').read_text()
         self.assertIn('srclang="sw" label="Swahili" src="gamma.sw.vtt"', page)
         self.assertIn('srclang="en" label="English" src="gamma.en.vtt"', page)
@@ -188,15 +188,15 @@ class PortfolioTests(unittest.TestCase):
     def test_showreel_requires_every_final_lock(self):
         projects = [self.project('alpha'), self.project('beta', locked=False)]
         with self.assertRaisesRegex(ValueError, 'missing: beta'):
-            portfolio.build(self.base / 'hub', projects, 'Hub', '', True, -16.0, 0.79)
+            portfolio.build(self.base / 'hub', projects, 'Hub', '', True)
 
-    def test_showreel_matches_loudness_and_records_inputs(self):
+    def test_showreel_preserves_loudness_and_records_inputs(self):
         projects = [self.project('alpha', volume=0.05), self.project('beta', volume=0.5)]
-        manifest = portfolio.build(self.base / 'hub', projects, 'Hub', '', True, -20.0, 0.79)
+        manifest = portfolio.build(self.base / 'hub', projects, 'Hub', '', True)
         record = manifest['showreel']
         self.assertAlmostEqual(record['duration_s'], 2.0, delta=0.2)
-        gains = [item['gain_db'] for item in record['inputs']]
-        self.assertGreater(gains[0], gains[1])
+        self.assertEqual(record['audio_processing'], 'stream-copy')
+        self.assertTrue(all('gain_db' not in item for item in record['inputs']))
         self.assertEqual(record['inputs'][0]['start_s'], 0.0)
         self.assertTrue((self.base / 'hub/showreel.json').exists())
         self.assertIn('showreel.mp4', (self.base / 'hub/index.html').read_text())
@@ -205,7 +205,7 @@ class PortfolioTests(unittest.TestCase):
         root = self.project('alpha')
         (root / 'assembly/alpha_master_v01.mp4').write_bytes(b'changed')
         with self.assertRaisesRegex(ValueError, 'changed after its lock'):
-            portfolio.build(self.base / 'hub', [root], 'Hub', '', False, -16.0, 0.79)
+            portfolio.build(self.base / 'hub', [root], 'Hub', '', False)
 
 
 if __name__ == '__main__':

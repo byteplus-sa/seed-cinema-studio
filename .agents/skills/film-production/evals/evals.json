@@ -27,11 +27,11 @@
     {
       "id": 3,
       "prompt": "Assemble the approved takes into the master. Make it look cinematic.",
-      "expected_output": "An ungraded assembly in original colours unless a look is recorded, with exact-length intermediates and a Studio render.",
+      "expected_output": "An ungraded assembly in original colours unless a look is recorded, with unchanged native sound and Studio render provenance but no mandatory external finishing pass.",
       "files": [],
       "expectations": [
         "Keeps original Seedance colours and asks or records before adding any grade, grain, halation or vignette, because no look is locked in the brief.",
-        "Builds exact-length intermediates preserving fractional duration, frames and tails; probes actual stream depth/range/colour before any required conversion rather than assuming limited BT.709.",
+        "Preserves fractional duration, frames and independent audio tails. Intermediates are used only for a scoped conform; probes actual stream depth/range/colour before any required conversion rather than assuming limited BT.709.",
         "Places the result in Studio and renders the master with studio_project.py render; adds no AI label.",
         "Reviews what the cut reveals, withholds and emphasizes against project-specific criteria, using timestamped actual playback/listening evidence; technical validation is not artistic proof."
       ]
@@ -39,13 +39,13 @@
     {
       "id": 4,
       "prompt": "In the final master, the narrator mispronounces one product name in shot 3. Re-dub the narration.",
-      "expected_output": "A word-scoped fix that keeps the rest of the soundtrack and picture untouched.",
+      "expected_output": "A scoped narration re-dub honoring the user's requested extent while keeping picture and untargeted soundtrack unchanged.",
       "files": [],
       "expectations": [
-        "Proposes patching only the wrong word window instead of re-dubbing the whole track.",
-        "Uses speech_to_text word times, pitch and loudness matching, short fades, and proves samples outside the window are unchanged.",
-        "If a model re-voices the word, sends the original clip with its audio and muxes the full returned audio over the untouched picture.",
-        "Returns the affected picture/audio locks to review and re-renders in Studio."
+        "Clarifies the requested narration extent if needed instead of mandating a word-only splice.",
+        "Uses only explicitly requested or approved audio changes; no automatic normalization, fades or pitch adjustment.",
+        "Preserves picture, music and room tone outside the authorized change and verifies the actual result.",
+        "Invalidates affected supplied locks and re-renders in Studio with final listening evidence."
       ]
     },
     {
@@ -80,6 +80,17 @@
         "Does not mute wordless native sound or regenerate the supplied master.",
         "Records layer ownership and verifies the exact master hash and full audio tail.",
         "Adds no bed during the authored silence and requires authorization for trim, pad or retime."
+      ]
+    },
+    {
+      "id": 8,
+      "prompt": "Finalize this approved native clip with music under speech. The audio is already good. Do not edit it or make a separate mix. Keep Studio provenance.",
+      "expected_output": "Retains native audio unchanged without normalization, padding, trimming, ducking, carve or a separate preparation/mix artifact.",
+      "files": [],
+      "expectations": [
+        "Finalization alone does not authorize audio processing in FFmpeg, HyperFrames or a provider.",
+        "Keeps native audio and needs no separate audio-file lock or mix evidence.",
+        "Retains actual take/final listening review and Studio render provenance; unavailable listening is reported honestly."
       ]
     }
   ]

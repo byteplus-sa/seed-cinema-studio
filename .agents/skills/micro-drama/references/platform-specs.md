@@ -57,7 +57,7 @@ platform before treating it as accepted.
 | --- | --- | --- |
 | Master format | 1080x1920 H.264/AAC unless the market card sets another aspect | [micro-drama entrypoint](../SKILL.md) |
 | Codec compatibility | H.264 masters, because some platforms play HEVC poorly | [production recipe](production-recipe.md) |
-| Loudness | Every delivered episode normalized to one loudness target, for example -16 LUFS integrated and -1.5 dBFS peak; the example is a project choice, not a platform number | [production recipe](production-recipe.md) |
+| Audio | Native audio preserved unchanged; no default loudness target or processing. A requested delivery specification scopes any approved correction | [production recipe](production-recipe.md) |
 | Captions | Generated footage stays text-free; titles, cards and subtitles are added in post, with a sidecar per language named `<master-stem>.<language-code>.srt` | [micro-drama entrypoint](../SKILL.md), [production recipe](production-recipe.md) |
 | Safe margins | Everything visible stays inside the action-safe box (90% of the frame, 5% inset per edge); captions and key content stay inside the title-safe box (80%, 10% inset per edge) | [hyperframes-studio](../../hyperframes-studio/SKILL.md) section 4 |
 | Final files | Only `studio_project.py render` produces the delivered master; post work made elsewhere is placed in Studio and rendered | [production policy](../../../contracts/production-policy.md) |
@@ -104,7 +104,7 @@ Last verified: <date>
 | Length limits | | | | per episode structure | |
 | File size | | | | none set | |
 | Container and codec | | | | H.264/AAC | |
-| Loudness | | | | one project target | |
+| Loudness | | | | no default target or processing | |
 | Captions and subtitles | | | | sidecar SRT per language | |
 | Safe zones | | | | title-safe 80%, action-safe 90% | |
 | Cover or thumbnail | | | | none set | |

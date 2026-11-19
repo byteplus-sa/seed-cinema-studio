@@ -179,7 +179,7 @@ table describes machine gates, not automatic creative evaluation.
 | `brief-development` | Valid independent approval and review modes and optional market/episode fields. Active context resolution also validates the manifest, unit brief and effective settings; no screenplay quality is inferred. |
 | `scene-breakdown` through `audio-preparation` | Selected Studio has no blocking status issue. Active units additionally check declared required canon and its current copies from `canon-elements` onward. |
 | `shot-generation` | The above and a placed take for every shot; strict additionally requires a passing `check`. Default defers that expensive check to delivery. |
-| `assembly-review` | The `shot-generation` requirements, no pending selection, a `picture` lock, and an `audio` lock unless `audio-preparation` was skipped. |
+| `assembly-review` | The `shot-generation` requirements, no pending selection and a `picture` lock. Separate audio locks are optional for explicitly requested audio work; any supplied lock is validated, including stale evidence. |
 | `delivery` | Placed scoped takes, clean selection status and passing `check`. Units with named definitions require exactly one `primary: true` index entry and its current binding and named lock, validated against the current spec, output, review and dependencies. Legacy root projects and units without named definitions retain the newest eligible render in their Studio context and a matching `final_master` ledger lock. Active units also revalidate their assembly locks. |
 
 Default skips only the expensive HyperFrames `check` at `shot-generation` and
@@ -189,16 +189,22 @@ Strict runs the check at both intermediate stages; delivery runs it in both
 modes. Resolve effective selected-unit review mode, failing on invalid values.
 Output render validation is unchanged.
 
-Audio review follows actual scope even when `audio-preparation` was skipped
-because dialogue was native or sound was built in post. The skip-sensitive
-machine lock rule above is not permission to omit listening or an audio decision
-for an audible deliverable. Synthetic checks do not establish creative approval.
+Native generated audio is sufficient unchanged and needs no separate preparation,
+cue sheet, mix evidence or audio-file lock, regardless of audio-preparation status.
+Skip that optional stage when no separate audio work is requested. Listening
+belongs in the take/final review for audible media; native sound does not waive
+inspection. Final media checks inspect the delivered artifact's streams, not
+preparation-stage status or earlier source audio. Named delivery specifications
+still enforce their explicit audio-presence or silence requirements.
+Synthetic checks do not establish creative approval.
 
 Final video files. `studio_project.py render` is the only authority for rendered
 final video files; named deliveries bind its explicit render records. Post work
-made elsewhere (FFmpeg assembly, loudness passes) is placed in Studio as a clip
+made elsewhere within explicit scope is placed in Studio as a clip
 or overlay and rendered. Use `record-render` only to register a
-render that does not gate delivery. Every shot's frame stays on the
+render that does not gate delivery. Studio provenance does not require or
+authorize audio processing; follow the audio-video alignment contract.
+Every shot's frame stays on the
 timeline: a pre-assembled master cannot stand in for its shots, and titles,
 overlays and registry blocks are extra compositions beside the shot frames. A
 render is discarded when the Studio tree changes while it runs. Open the project

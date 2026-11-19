@@ -259,11 +259,14 @@ Only for an explicit micro-drama format or an existing micro-drama workflow:
 - Inspect location plates for unintended visible features. Separate recurring
   or story-critical props under the element-identification threshold rather
   than making a prior scene's door arrangement universal.
-- Audio fixes are word-scoped. Replace only the wrong word, match pitch and loudness,
-  cross-fade, and inspect identity, pronunciation, rhythm and splice continuity
-  by listening. Use tolerances measured for the current voice and delivery,
-  not a fixed percentage from another production. Prefer a retake when a splice
-  changes the voice or intended performance.
+- Native generated audio is sufficient unchanged. Finalization does not authorize
+  normalization, padding, trimming, mixing, carving, word surgery or native-audio
+  suppression. Preserve supplied masters and independent audio tails. Only
+  explicitly requested or approved audio changes use editing tools; requested
+  silence and exact-master preservation remain scoped capabilities. Inspect and
+  report defects, never silently repair them. Native sound needs no separate
+  preparation, mix evidence or audio-file lock; retain take/final listening
+  review and Studio provenance under the audio-video alignment contract.
 - Track continuity of state across episodes: wardrobe, wetness, injuries, locked
   doors and where each character is, with `series-continuity`.
 - Studio rebuild: `sync` appends new frames at the end and `place` refuses a take of

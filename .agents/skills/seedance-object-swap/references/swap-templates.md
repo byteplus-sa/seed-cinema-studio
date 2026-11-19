@@ -14,12 +14,12 @@ each template needs.
 
 ## Shared rules
 
-Fill every `<...>` from source inspection or the subject map. Every template
-ends with the same audio block, because `@Video 1` is the muted master:
+Fill every `<...>` from source inspection or the subject map. Preserve audio
+by default with operation-specific capability verification:
 
 ```text
 [Audio]
-Silent output. Sound is added in post.
+Preserve the source soundtrack and its timing; change only the requested picture.
 ```
 
 Add the face-protection line whenever a face stays visible:
@@ -30,7 +30,8 @@ Keep the original and full timeline unchanged. Verify current route constraints
 before setting duration or preparing media; no automatic 8n+1 trim, whole-second
 rounding, padding or retiming. An adaptation requires current capability evidence
 and specific user approval, with its source span, derivative hashes and audio
-consequences recorded. Muted picture and saved audio use the same selected span.
+consequences recorded. No mute, extract or mux is required for unchanged native
+sound. Exact-master transport and audio edits remain explicitly scoped.
 
 ## Product swap
 
@@ -212,13 +213,13 @@ Keep every person's identity, performance, mouth movement and lighting from
 
 Hypothetical example; no result evidence is attached.
 
-Source: `@Video 1`, the 6 s, 16:9 muted master of a static medium shot at a
+Source: `@Video 1`, the 6 s, 16:9 original master of a static medium shot at a
 café terrace. A woman in a denim jacket and gold hoop earrings lifts a red
 aluminium soda can from the table with her right hand (frame-left) at about 0:01, drinks at 0:02–0:04 while her
 fingers wrap the can's front, and sets it down at about 0:05. One can is
 visible throughout; no cuts. Target: `@Image 1`, the approved packshot of
 `@slim-can-black`, a matte-black slim 330 ml can with a copper ring-pull and a
-vertical copper wordmark. Post-audio route: original.
+vertical copper wordmark. Audio intent: preserve the source soundtrack.
 
 ```text
 [Edit Goal]
@@ -265,14 +266,14 @@ left, with a soft copper highlight on the ring-pull. Real human skin with pores
 and catchlights — never waxy, smoothed, or warped.
 
 [Audio]
-Silent output. Sound is added in post.
+Preserve the source soundtrack and its timing; change only the requested picture.
 ```
 
 Return the package to the caller with the currently verified
 `omni_reference_task_type: edit`, `@Video 1` first and `@Image 1` second,
-`generate_audio: false`, and the rung required by Cinema's draft and promotion
+verified audio-preserving controls, and the rung required by Cinema's draft and promotion
 policy. Verify native Draft and promotion support; an unsupported capability
 stays open for an approved alternative, not a silent ordinary-480p substitute.
 A contact-window probe is optional for a current difficulty and requires
 approval of its span. After QA measures timing against the selected source
-span, mux saved audio and check that the set-down sound aligns with the picture.
+span, inspect native audio and check that the set-down sound aligns with the picture.

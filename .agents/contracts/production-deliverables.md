@@ -171,7 +171,7 @@ replace an existing user delivery lock.
 Every earlier unit stage must be complete (or legitimately skipped where
 optional), and delivery must be in review or complete. Locking re-runs the
 brief and assembly-review gates, including the pinned browser check, current
-shot selections, and picture/audio locks. It never calls the primary
+shot selections, picture locks and any supplied optional audio locks. It never calls the primary
 delivery-stage gate: that gate consumes the resulting named lock, so invoking
 it from lock prerequisites would create a cycle. It stores that prerequisite
 snapshot hash and actual assembly gate evidence in the named lock.
@@ -187,7 +187,8 @@ An unbound specification or a new binding without its own lock cannot complete
 delivery, even when standalone `status` has no findings.
 
 The stage retains its browser, scoped selection, canon and assembly-lock
-checks, including required audio locks when audio preparation was skipped.
+checks. Native generated audio needs no separate preparation, mix evidence or
+audio-file lock; audible media still needs actual listening in the final review.
 Completion evidence records `primary_deliverable_id`, the exact `render_record`,
 and hash/version-bound `delivery_binding` and `delivery_lock` references.
 No duplicate unit-ledger `final_master` lock is required or written. Newer

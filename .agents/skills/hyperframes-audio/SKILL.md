@@ -17,6 +17,15 @@ description: >
 
 # HyperFrames Audio
 
+## Workspace Audio Preservation
+
+Use these processors only for explicitly requested audio editing. Native
+generated audio is sufficient unchanged, including music beneath speech.
+Finalization never requires a carve, duck, level match or separate mix evidence.
+Keep read-only diagnosis available; report defects before proposing scoped edits.
+Run Studio checks and renders through `studio_project.py`. This local overlay
+changes finishing policy, not the vendored effect implementations or provenance.
+
 A mix is a set of relationships, not a stack of processors. Two tracks that each
 sound right alone can be unlistenable together, and the fix is almost never "turn
 one down" — it is finding what they are fighting over and giving it to whichever
@@ -362,16 +371,11 @@ heard as an effect rather than as room for the voice. Drop the strength when the
 bed is the point and the voice is sparse. `0` is spectral only — one band, no
 level match at all.
 
-**Carve by default — required whenever music plays under a voice.** A bed
-under any voice track (narration, avatar speech, interview, voiceover) gets a
-carve as part of finishing the mix, not as a polish step to get to if there is
-time. Place both tracks, run the command below (default strength `0.8`; add
-`--bed` / `--voice` when detection picks wrong), confirm the written
-`data-fx-carve`, `data-fx-chain` and `data-automation` with `npx hyperframes check`,
-and only then render. A volume duck on its own is not a finished mix: it leaves
-the voice and the bed fighting in the 1–3 kHz band and costs the bed all of its
-presence for the whole voiceover. Skip the carve only when there is no voice for
-the music to sit under — a music video, a title card, a montage cut to the track.
+**Carve only for an explicitly requested mix change.** Music beneath a voice
+does not require processing. When carving is authorized, place the selected
+tracks, run the command below, inspect its effect chain and automation through
+`studio_project.py check`, then listen to the result. A dry mix or a volume duck
+alone can be the intended result; neither blocks delivery.
 
 **It always follows the voice.** There is no static mode: a fixed depth thins the
 bed through every pause, and once you have heard both there is no reason to want it.
@@ -385,14 +389,11 @@ the bed sits and writes a `gain` stage driven by an envelope. That envelope rele
 purpose — music that snaps back to full the instant a word ends sounds like a
 machine doing it.
 
-**Running it.** In Studio the carve is one module at the top of a track's effect
-rack — voice, strength, and the analysis it produced, in one card. It is
-there whenever another track could be the voice, and a bed with exactly **one**
-candidate above it is carved by default, at the default strength:
-that is what a bed under narration wants, and the module is where you change or
-switch it off. Several candidates leaves the picker waiting rather than guessing.
-Headless —
-which is the path when you are authoring a composition rather than editing one:
+**Running an authorized carve.** Studio exposes voice, strength and analysis
+in the track effect rack. Do not activate it merely because a voice candidate
+exists. Preserve existing user-authored effects; report unexpected automatic
+effects before changing them. The headless command below writes processing
+attributes when explicitly invoked; it is not a finalization step:
 
 ```bash
 node <SKILL_DIR>/scripts/carve.mjs --comp index.html

@@ -6,6 +6,12 @@ order and sound intent. The runtime snapshot service exports and checks actual
 supported Studio edits, then explicitly reconciles the current snapshot record.
 It never applies proposed JSON edit orders to Studio.
 
+These records support explicitly requested post work. Native generated audio
+is sufficient unchanged and requires no separate cue sheet, preparation or mix
+evidence. Its actual listening evidence may live in the take/final review.
+The schema below validates supplied sound records; it does not require creating
+one merely to finalize a video, silent or audible.
+
 ## API for Integration
 
 Import `.agents/scripts/production_post.py`:

@@ -87,8 +87,8 @@ stance, lens, grade, pacing, acting, staging, medium, audio) from
 `brief-intake` persisted as a `locked` block in `project.md` frontmatter. The
 brief also records:
 
-- the **audio route**: native dialogue, picture only with score, ambience and
-  SFX built in post, opt-in separate lip-sync audio, or silent;
+- the **audio intent**: native sound unchanged by default, or explicitly
+  requested post layers, exact master, separate lip-sync audio or silence;
 - the **look intent**: ungraded original model colours unless a grade or a
   capture-format look is requested, in which case it is a post treatment;
 - the **on-screen copy** (titles, captions, CTA, end card) that post will add,
@@ -255,11 +255,11 @@ Expose the audio player, prompt and timing evidence in `audio-preparation`.
 
 Exit: audio duration fits the planned video and dialogue mappings are verified.
 
-When the user has not requested lip-synced audio, skip this stage and proceed
-directly to shot generation. Seedance's native audio handles dialogue by
-default. A music track that the cut must follow (music video, beat-led spot)
+When the user has not requested separate audio work, skip this stage and proceed
+directly to shot generation. Native audio is sufficient unchanged, without
+preparation or mix evidence. A music track that the cut must follow (music video, beat-led spot)
 may be prepared here so shot durations can be planned to it. Score and ambience
-for a picture-only project are otherwise built after picture lock, at
+explicitly requested for a picture-only project are built after picture lock, at
 assembly, to the cut's measured length. This does not defer sound intent:
 planned silence, entrances and picture/sound relationships originate in the
 brief and breakdown and are tested against the actual edit.
@@ -329,10 +329,9 @@ Entry: approved takes and any requested audio assets exist.
 
 Required output: ordered edit, review render, transition and continuity review,
 audio presence check, technical decode QA, and outstanding notes. Assembly
-defaults to conform, trim, crop, overlays, end card and mix with no grade, from
-exact-length intermediates encoded once; post beds for picture-only projects
-are built here to the measured cut. Audio defects are fixed word by word, and
-re-voicing keeps the source soundtrack (see
+follows the confirmed picture edit with no unrequested grade or audio changes.
+Post beds and audio edits are scoped to explicit user requests, never added for
+wordlessness or finalization. Native sound is sufficient unchanged (see
 [production defaults](production-defaults.md)). The `assembly-review` stage
 keeps its approved inputs and comparison renders together. Review what the edit
 reveals, withholds and emphasizes against a small set of project-specific
@@ -347,13 +346,15 @@ revision. This reads Studio without applying order or trims. Runtime exports
 bind selections, measured ranges, context and tree hashes. Straight cuts, trims
 and gaps are supported; do not flatten unsupported overlaps/effects.
 `editorial-review` supplies timecoded actual-cut review. `sound-post` supplies
-`sound/<unit>/cues.json`, mix decisions and real listening evidence. These
+`sound/<unit>/cues.json`, mix decisions and real listening evidence for requested
+sound-post work, not a mandatory native-audio preparation pass. These
 leaves do not execute edits, mixing, generation or stage approval. Default does
 not require these full reports; retain output sanity and truthful lock evidence.
 
-Exit: picture and audio have separate mode-authorized locks bound to the exact
-artifact and passing review hashes. Audio lock is required when audio is in
-scope, including native or post-built sound after skipping audio preparation.
+Exit: picture has a mode-authorized lock bound to the exact artifact and review.
+Separate audio locks are optional for requested audio work; supplied locks
+remain validated. Native audio needs no separate audio artifact or mix evidence;
+its listening review can be part of the take/final review.
 In `ask_for_approval`, wait for explicit user locks. Record-validator success
 does not certify playback, listening, color or creative quality. Unavailable
 inspection stays unresolved.

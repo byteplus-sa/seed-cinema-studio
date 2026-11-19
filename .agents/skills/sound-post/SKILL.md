@@ -9,12 +9,17 @@ Act as an independent leaf. Write cue sheets, mix decisions and evidence;
 never invoke sibling skills, call providers, mix media or render. Follow the
 [post contract](../../contracts/production-post.md).
 
+Native generated audio is sufficient unchanged. A separate cue sheet, mix
+record or audio preparation artifact is not a finalization prerequisite.
+Use this skill for requested planning, audio-edit decisions or listening reports;
+native listening evidence may stay in the take/final review.
+
 ## Inputs
 
 Read the explicit edit record and hash, actual master or stems when available,
-locked dialogue, sound intent, rights restrictions and the chosen delivery
-loudness/peak specification. Ask for a missing delivery specification rather
-than assuming every format has the same target. No audio input means planning
+locked dialogue, sound intent, rights restrictions and any explicitly requested
+loudness/peak specification. Do not invent a target or block on its absence.
+No audio input means planning
 only, not a listening pass.
 
 Consume early sound/editorial intent from the brief: what sound leads, reveals,
@@ -29,8 +34,8 @@ cues to measured timing and assess their intended effect by actual listening.
    music, effects and deliberate silence separately. An unacquired cue has no
    source reference; never fill one with a pretend file.
 2. Preserve dialogue intelligibility and speaker identity. Specify ambience
-   continuity across cuts, intended score entrances/exits, transitions,
-   ducking and headroom in `mix_notes`. Do not rebuild a source soundtrack
+   continuity across cuts and requested score entrances/exits or transitions
+   in `mix_notes`. Ducking or other processing needs explicit user scope. Do not rebuild a source soundtrack
    when only a scoped dialogue repair is requested.
 3. Write `sound/<unit>/cues.json` bound to the exact editorial JSON. Keep
    proposed gains separate from measured loudness. Overlapping cues are normal
@@ -47,12 +52,10 @@ cues to measured timing and assess their intended effect by actual listening.
    `not_applicable` needs an intentionally silent cut and a rationale, not a
    missing tool.
 6. Return cue decisions, delivery measurements if actually available,
-   defects and execution handoffs. Request word-scoped repairs for isolated
-   wrong words; retain correct speech and room tone. Treat about ten percent
-   pitch or tempo adjustment as an advisory review flag, not a universal gate.
-   Compare the actual speaker's local pitch, timbre, prosody and timing and
-   listen across the splice and full line. Smaller changes can also sound
-   wrong; measurements alone never establish repair quality.
+   defects and execution handoffs. Offer scoped alternatives for wrong words;
+   do not prescribe splicing or re-voicing without the user's audio-editing
+   decision. Preserve untargeted sound and inspect actual voice and continuity
+   for any authorized edit. Measurements alone never establish repair quality.
 
 ```bash
 uv run python .agents/scripts/production_post.py sound projects/<slug> \

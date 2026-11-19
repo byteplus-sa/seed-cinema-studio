@@ -339,8 +339,6 @@ def canvas_validation_errors(data, proj, expected_stage=None):
             required_locks = []
             if stage["id"] == "assembly-review":
                 required_locks.append("picture")
-                if stages[CANVAS_STAGE_IDS.index("audio-preparation")].get("status") != "skipped":
-                    required_locks.append("audio")
             if stage["id"] == "delivery":
                 required_locks.append("final_master")
             locks = stage.get("locks", {})
@@ -389,8 +387,7 @@ def canvas_validation_errors(data, proj, expected_stage=None):
                         review_file = contained_path(proj, review_path)
                         review = validated_review(proj, review_path, file_sha256(review_file), artifact_path, file_sha256(artifact))
                         if isinstance(lock_kind, str) and lock_stages.get(lock_kind) == stage["id"]:
-                            audio_required = lock_kind == "final_master" and stages[CANVAS_STAGE_IDS.index("audio-preparation")].get("status") != "skipped"
-                            validate_stage_media(proj, lock_kind, artifact_path, review, audio_required=audio_required)
+                            validate_stage_media(proj, lock_kind, artifact_path, review)
                     except (SelectionError, TypeError) as error:
                         errors.append(f"{stage['id']}: invalid lock candidate: {error}")
                     if isinstance(lock_kind, str) and isinstance(artifact_path, str):
@@ -471,8 +468,7 @@ def canvas_validation_errors(data, proj, expected_stage=None):
                     errors.append(f"{stage['id']}: {lock_kind} user decision requires local UI authorization")
                 try:
                     review = validated_review(proj, lock.get("review_path"), lock.get("review_sha256"), lock.get("artifact_path"), lock.get("artifact_sha256"))
-                    audio_required = lock_kind == "final_master" and stages[CANVAS_STAGE_IDS.index("audio-preparation")].get("status") != "skipped"
-                    validate_stage_media(proj, lock_kind, lock["artifact_path"], review, audio_required=audio_required)
+                    validate_stage_media(proj, lock_kind, lock["artifact_path"], review)
                 except SelectionError as error:
                     errors.append(f"{stage['id']}: {lock_kind} review is invalid: {error}")
                 upstream = decision.get("upstream_sha256", {})

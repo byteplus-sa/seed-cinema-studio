@@ -11,19 +11,22 @@ audio is opt-in per the entrypoint's audio-preparation stage.
 | --- | --- |
 | Dialogue and natural scene sound only | Native Seedance audio; no separate bed |
 | One music identity across episodes (theme, sting, end-card tag) | A library asset under `projects/<series>/library/`, generated once and reused |
-| Ambience or music that must be absent or exactly controlled | A bed generated in post and mixed over the approved picture |
-| Clip where native audio added speech, chanting, cheering or a score although it was forbidden | Keep the provider master untouched; build a derived post master with a generated bed |
+| Requested silence | Supported silent generation or explicitly approved muting; no bed |
+| Explicitly requested separate music or ambience | A scoped post layer; preserve any supplied exact master |
+| Clip with unwanted native sound | Keep the provider master untouched, report the defect and obtain a scoped repair or retake decision |
 
 ## Native audio can ignore a negative
 
 In one run with `generate_audio: true` and an explicit "no music, no spoken words"
 line, six of nine ambient-only clips still carried speech, chants, cheers or a
 score. A negated instruction is not a guarantee. Check the delivered render, not
-the draft (a final's audio is not identical to its draft), by extracting the audio
-and transcribing it with `speech_to_text`; treat model-based listening as a flag
+the draft (a final's audio is not identical to its draft), through actual listening
+and speech-to-text when relevant; extract only if the chosen diagnostic needs it. Treat model-based listening as a flag
 and add a human listen for anything the checks disagree about.
 
 ## Generating a bed
+
+Only when the user explicitly requests or approves a separate bed:
 
 1. Use `seed_audio_generate` (text prompt up to 3,000 characters; optional
    `audio_references` or one image reference; `output.format`, `sample_rate`,
@@ -36,14 +39,14 @@ and add a human listen for anything the checks disagree about.
    them in Studio as an audio clip with explicit start and gain.
 4. Under dialogue, lower the bed instead of lowering the dialogue; keep dialogue
    as the loudest element.
-5. Loop or trim only at silent or low-energy points, and cross-fade the seam.
+5. Loop, trim or cross-fade only within the approved audio-edit scope.
 
 ## Mix and delivery
 
-- Mix in Studio as clips and overlays, then render; do not ship an FFmpeg-only
+- For requested mixing, assemble in Studio as clips and overlays, then render; do not ship an FFmpeg-only
   mux as the final (see the production policy's final-files rule).
-- Normalize to the project's single loudness target and peak ceiling and record
-  both in the delivery manifest (see the audio-video alignment contract).
+- Native audio is sufficient unchanged. No default normalization, target,
+  limiter or carve is required (see the audio-video alignment contract).
 - A music identity reused across a series is one asset with one hash; do not
   regenerate it per episode.
 - Music and voices from real people or recognizable songs need rights clearance;

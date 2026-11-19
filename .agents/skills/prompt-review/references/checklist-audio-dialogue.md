@@ -45,9 +45,10 @@ spoken dialogue in a language other than English or in more than one language.
 
 ### Repairs
 
-8. **Word-scoped.** A repair targets the wrong word (cue retake or splice); a
-   whole-clip re-voice needs explicit user scope.
-9. **Splice quality.** Set tolerances from the current voice and delivery, then
+8. **User-scoped.** A heard defect does not authorize word surgery. A splice,
+   re-voice or other audio edit requires explicit user scope; finalization alone
+   preserves native audio unchanged.
+9. **Requested splice quality.** Set tolerances from the current voice and delivery, then
    verify identity, pronunciation, rhythm and continuity by listening. No
    fixed percentage from a previous production establishes acceptance.
 10. **Audio binding evidenced.** An explicitly requested lip-sync track preserves

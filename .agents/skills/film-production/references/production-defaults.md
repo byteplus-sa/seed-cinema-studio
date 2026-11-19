@@ -47,7 +47,7 @@ Record one audio route in the brief and carry it into every shot request:
 
 | Route | When | Request setting | Sound built |
 | --- | --- | --- | --- |
-| Native sound | Requested native dialogue, wordless diegetic action or ambience | Supported native audio enabled | In the clip; inspect actual sound and sync |
+| Native sound | Default, including dialogue, wordless action, score or ambience | Supported native audio enabled | In the clip; preserve unchanged and inspect actual sound and sync |
 | Picture only, post audio | Sound explicitly owned by post | Supported native audio disabled | Authorized score, ambience and SFX in post |
 | Exact master | A supplied exact master must remain unchanged | Picture-only where supported | Preserve the exact master and align the picture to it |
 | Mixed | Each native, master and post layer is named | Verified controls for that mix | Preserve each layer's authority and sync |
@@ -121,8 +121,8 @@ the identities are registered `asset://` Virtual Portrait assets. Plan for it:
   clips at natural duration, held together by a locked blocking map and
   matching first frames, then assemble.
 - With assets, follow the video-to-video inputs contract: bind identities as
-  `asset://` references, submit a muted source (`generate_audio: false`), and
-  add original or new audio in post.
+  `asset://` references and preserve audio by default. Verify the selected
+  operation's audio behavior; muting, extraction and muxing are not prerequisites.
 - A last-frame-only request is rejected; use first and last frames together.
 
 ## 6. Text, overlays and labels
@@ -134,8 +134,9 @@ brief requires it.
 
 ## 7. Assembly defaults
 
-Assemble to the confirmed edit and delivery choices: conform, trim, necessary
-reframes and mix. Add overlays and end cards only when the brief calls for them.
+Assemble to the confirmed picture edit and delivery choices. Audio editing,
+including a mix, is performed only when explicitly requested or approved by the
+user. Add overlays and end cards only when the brief calls for them.
 Review the edit as a creative pass, not only a conform: compare its opening,
 attention, performance and ending with project-specific artistic criteria.
 Conform final sound cues to the measured edit and verify actual playback/listening.
@@ -152,15 +153,17 @@ Conform final sound cues to the measured edit and verify actual playback/listeni
   HDR or different primaries/transfer/range needs an explicit approved conversion,
   not relabeling. Missing, unknown or conflicting metadata requires resolution
   from authoritative source information or inspection before conform.
-- Render each clip to an **exact-length lossless intermediate** in whole frames,
-  preserve fractional source timing, cuts, frame count and audio tail. Any
-  pad or trim needs authorization; join with the concat demuxer and
-  encode once. The concat filter needs `setsar=1`. Read the video-stream
-  duration, not the container duration.
+- If an explicitly requested picture conform needs intermediates, preserve
+  fractional source timing, cuts, frame count and audio tails. Any pad or trim
+  needs authorization. Compatible concat demuxing can avoid re-encoding; a
+  selected concat filter needs `setsar=1`. Read video and audio durations
+  independently. No external FFmpeg pass is required merely to finalize.
 - Check frame edges: the model sometimes draws rounded black side bars; a small
   centre punch-in on that clip removes them.
-- Normalize to the delivery loudness target from the alignment contract, then
-  place the result in Studio and render it there.
+- Native generated audio is sufficient unchanged. No default loudness target,
+  normalization, gain matching, padding, trim, fade or carve precedes delivery.
+  Preserve exact supplied masters and independent tails. Studio rendering is
+  provenance, not permission to edit audio or demand a separate mix record.
 
 ## 8. Review and fix loop
 
@@ -182,24 +185,15 @@ that sound is intentionally absent.
   final-state quotas. Preserve a readable abrupt ending when intended.
   Trimming the head cannot lengthen a missing response at the tail; propose an
   appropriate edit or authorized retake only when the required response is lost.
-- **Word-scoped audio fixes:** patch only the wrong word windows; never re-dub a
-  whole track. Transcribe with word times, splice pitch- and loudness-matched
-  replacements with short fades, and prove that samples outside each window are
-  identical. Measure the actual speaker's local pitch and timing, then listen
-  for timbre, prosody and continuity. About 10% pitch or tempo adjustment is
-  an advisory review flag, not a universal acceptance or rejection threshold.
-  Smaller changes can also sound wrong; unavailable listening remains
-  unresolved. Retaining a known defect requires a recorded decision.
-- **Re-voicing keeps the source soundtrack:** when a model re-voices a clip,
-  send the original video with its audio, name the words to fix, take the full
-  audio back, normalize to the original loudness and mux it over the untouched
-  picture (copy the video stream and confirm its hash is unchanged). Measure the
-  original first: loudness over time, its own transcript and its non-voice
-  sounds, then confirm they survive.
-- **Music beds:** provider audits reject a share of music generations; record
-  rejected samples. Tempo and arc timing are only roughly obeyed, so measure and
-  pad or splice in assembly. Short lines truncate unless the prompt states the
-  clip length and trailing silence.
+- **Audio defects:** report the heard issue and offer a scoped retake, accepted
+  defect or explicitly requested audio edit. Do not prescribe word splicing,
+  pitch/gain matching, fades or re-voicing as routine repair.
+- **Authorized audio edits:** preserve picture and untargeted sound. Record
+  approved windows/layers, source and output hashes, and actual listening.
+  Use compatible stream-copy transport where possible; disclose required
+  transcoding. A re-voice does not authorize normalization or other finishing.
+- **Requested music beds:** record rejected samples and measure actual timing.
+  Mismatches need a scoped decision, not automatic padding or splicing.
 - **Retakes:** fix hard-gate failures with one targeted
   change per retake, written as a revision (locked decisions, delta,
   acceptance, known rejections, invalidation scope).

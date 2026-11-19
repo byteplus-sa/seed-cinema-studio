@@ -147,6 +147,18 @@ class ShowcaseCanvasModeTests(unittest.TestCase):
         errors = showcase.canvas_validation_errors(data, self.root, 'delivery')
         self.assertTrue(any('final_master lock is required' in error for error in errors))
 
+    def test_canvas_never_requires_separate_native_audio_lock(self):
+        data = self.lifecycle_canvas()
+        canvas = data['canvas']
+        canvas['approvalContractVersion'] = 1
+        canvas['currentStage'] = 'assembly-review'
+        for stage in canvas['stages'][:-1]:
+            stage['status'] = 'complete'
+            stage['sources'] = [{'path': 'project.md', 'kind': 'brief'}]
+        errors = showcase.canvas_validation_errors(data, self.root, 'assembly-review')
+        self.assertTrue(any('picture lock is required' in error for error in errors))
+        self.assertFalse(any('audio lock is required' in error for error in errors))
+
     def test_malformed_lock_candidates_return_validation_findings(self):
         data = self.lifecycle_canvas()
         data['canvas']['approvalContractVersion'] = 1

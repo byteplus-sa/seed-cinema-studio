@@ -41,6 +41,8 @@ without a manifest.
   reads each episode's final-master lock, adds one WebVTT subtitle track per language
   (named `<master-stem>.<language-code>.srt`) and a canvas link per card, and joins the locked masters back to back with hard
   cuts (each episode already opens on its title and closes on its card),
-  gain-matched to one loudness target with a limiter. It records input hashes,
-  gains and start times, and refuses a showreel while any episode is unlocked.
+  using compatible stream copy without gain matching, limiting or audio edits.
+  It records input hashes and start times, and refuses a showreel while any
+  episode is unlocked or stream layouts are incompatible. A separate conform
+  needs explicit scope; no native-audio finishing pass is required.
 - A highlight trailer is a separate deliverable. Make one only when asked.

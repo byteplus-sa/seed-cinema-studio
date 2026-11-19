@@ -5,6 +5,13 @@ and micro-drama with BytePlus Seedream, Seedance and Seed Audio. HyperFrames Stu
 remains the editor and review surface; this is not a new standalone application.
 Format, genre, medium, audience, language and delivery are independent choices.
 
+Native generated audio is sufficient unchanged. Finalization never requires an
+FFmpeg pass, normalization, padding/trimming, mixing, carving or word splicing.
+Requested silence, exact-master preservation and audio edits remain scoped
+capabilities. Native sound needs no separate preparation or mix evidence;
+Studio render provenance and actual take/final listening review remain distinct
+requirements. See [Audio preservation](.agents/contracts/audio-video-alignment.md).
+
 ## Prompts Without MCP
 
 No usable `ark-mcp` connected? Describe the content you want and receive
@@ -242,8 +249,8 @@ Edit skills only under `.agents/skills/`.
 | **seedance-fight-choreography** | Plan fictional screen-fight beats with stable participants, readable reactions and prop continuity; prompt-only, with style explicitly selected and outcome locks preserved. |
 | **seedance-lens-presets** | Compose lens, focus and sensor intent as visible targets; scope reliability evidence and offer authorized post alternatives without changing the selected model. |
 | **seedance-lighting-presets** | Translates a named lighting setup (rim light, backlight, golden hour, night and moonlight, soft/hard light, three-point, Rembrandt, practicals, silhouette, contre-jour) into a Seedream `Lighting:` recipe and a matching Seedance phrase, and words timed light cues inside a shot. |
-| **seedance-motion-recast** | Write Seedance 2.5 Motion Transfer prompts that keep a clip's motion, camera and cuts while rebuilding cast, wardrobe, product, location and style from locked references, with per-subject dispositions, Virtual Portrait identities, a muted source with post audio and a 480p probe ladder. |
-| **seedance-object-swap** | Write Seedance 2.5 Object Swap prompts that replace one character, outfit, product, prop, object or location in existing footage and keep the rest of the shot, with the five-part swap contract, Virtual Portrait characters, a muted source with post audio and swap QA. |
+| **seedance-motion-recast** | Write Seedance 2.5 Motion Transfer prompts that keep a clip's motion, camera and cuts while rebuilding cast, wardrobe, product, location and style from locked references, with per-subject dispositions, Virtual Portrait identities, preserved native audio and a 480p probe ladder. |
+| **seedance-object-swap** | Write Seedance 2.5 Object Swap prompts that replace one character, outfit, product, prop, object or location in existing footage and keep the rest of the shot, with the five-part swap contract, Virtual Portrait characters, preserved native audio and swap QA. |
 | **seedance-pacing-presets** | Compose prompt-only rhythm, speed ramps, time-lapse, freeze frame, progressive part-by-part changes and named picture/audio transitions, including match cuts, dissolves, wipes and J/L cuts. |
 | **seedance-prompt** | Use unified 2.5-based composition with reference, edit, extension and staging guidance for any selected Seedance model; preserve source locks and caller-owned execution. |
 | **seedance-prompt-25-dialogue** | Direct spoken dialogue for Seedance in any language: native-language check, register and accent, code-switching, and word-scoped repairs. |

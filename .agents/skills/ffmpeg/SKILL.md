@@ -7,6 +7,13 @@ description: Video and audio processing with FFmpeg. Use for format conversion, 
 
 FFmpeg is the essential tool for video/audio processing. This skill covers single-clip operations and format conversion for video projects (Seedance/Seedream assembly and Remotion alike).
 
+Native generated audio is sufficient unchanged. These recipes are explicit
+editing capabilities, not required finalization steps. Preserve source audio
+with compatible stream copy when changing picture; apply audio filters, mutes,
+padding, trimming, re-encoding or replacement only within explicit user scope.
+Read-only probes and diagnostic extracts remain available. Required transcoding
+or timeline changes need disclosure and approval; preserve independent tails.
+
 ## Routing
 
 - Multi-clip **chronological** assembly / crossfade → this skill (concat and `xfade`)
@@ -133,7 +140,7 @@ while `acrossfade` advances the audio timeline by *audio* duration — the
 mismatch accumulates per boundary and shows up as lip-sync drift by the last
 scene.
 
-Check first, then fix:
+Inspect first; a mismatch requires a scoped decision, not an automatic fix:
 
 ```bash
 # Per-clip A/V durations
@@ -141,8 +148,9 @@ ffprobe -v error -select_streams v:0 -show_entries stream=duration -of csv=p=0 c
 ffprobe -v error -select_streams a:0 -show_entries stream=duration -of csv=p=0 clip.mp4
 ```
 
-If audio < video, pad each audio input to the exact video duration before the
-`acrossfade` chain so both chains use the same per-clip length and stay locked:
+Only when audio crossfades and padding to the picture timeline are explicitly
+approved, this recipe aligns the chains. A picture dissolve alone does not
+authorize it; preserve native audio and independent tails otherwise:
 
 ```bash
 ffmpeg -i a.mp4 -i b.mp4 -filter_complex "\
@@ -153,7 +161,7 @@ ffmpeg -i a.mp4 -i b.mp4 -filter_complex "\
  -map "[v]" -map "[a]" -c:v libx264 -c:a aac out.mp4
 ```
 
-Then confirm the final A/V totals agree within ~10 ms. Also set `settb=AVTB` on
+Then confirm the approved timing and codec tolerance. Also set `settb=AVTB` on
 every video branch so `xfade` does not fail with a timebase mismatch when the
 chain mixes a `concat` output with raw inputs.
 
@@ -340,7 +348,9 @@ Increase CRF (23→28) or reduce resolution
 
 ## Platform-Specific Output Optimization
 
-After Remotion renders your video (typically to `out/video.mp4`), use FFmpeg to optimize for each distribution platform.
+Use the following conversion recipes only for explicitly requested platform
+exports after verifying current requirements. Rendering alone does not require
+a second optimization or audio-processing pass.
 
 ### Workflow Integration
 

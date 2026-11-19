@@ -53,7 +53,8 @@ with a verified full-soundtrack video-conditioned tool when available, or
 verified voice/background separation plus scoped new speech and mixing.
 Do not infer a video-to-audio binding from text-to-audio support. Do not
 replace the entire soundtrack with dialogue alone. Initial localization is
-line-scoped; correction of one wrong word is word-scoped. Inspect pitch, tempo,
+line-scoped; a correction needs explicit user audio-editing scope, not mandatory
+word surgery. Native output needs no finalization processing. Inspect pitch, tempo,
 speaker identity and audible continuity against the actual source and intended
 delivery. A fixed percentage from another production neither approves nor
 rejects a patch; unavailable listening leaves it unresolved.
@@ -77,7 +78,7 @@ For each target version, record actual evidence or `unverified`:
 
 - Locked-line transcript comparison, speaker/order and missing/extra words.
 - Listening for pronunciation, accent, register, voice identity, cut tails,
-  room tone, background preservation, peaks and loudness target.
+  room tone, background preservation, and any explicitly requested loudness target.
 - Actual picture/timing review. Subtitles/re-voice require unchanged picture;
   verify stream identity when possible and explain any remux/re-encode. A
   changed container hash alone says nothing about picture equality.

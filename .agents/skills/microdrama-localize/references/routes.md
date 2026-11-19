@@ -45,16 +45,14 @@ replace only the spoken lines.
      capability evidence lists it, and then send the original video with its
      audio and the new text and take the full audio back. Otherwise record the
      route as the stem-based one above, or use route A.
-3. Splice the new audio onto the video in Studio as a clip or overlay and
-   render a new master version. Muted-source and post-audio rules follow
+3. Assemble the explicitly requested replacement audio in Studio and
+   render a new master version. Audio preservation and scoped editing follow
    [video-to-video inputs](../../../contracts/video-to-video-inputs.md).
-4. Fix wrong words one at a time with a word-scoped patch, never a second full
-   re-voice. About 10 percent pitch or tempo adjustment is an advisory review
-   flag, not a universal gate. Compare the actual speaker's local pitch,
-   timbre, prosody and timing, then listen across the splice and full line.
-   Smaller changes can also sound wrong; missing listening evidence stays
-   unresolved rather than passing on measurements alone.
-5. Loudness-match to the delivery target in the
+4. Report wrong words and agree a scoped repair before audio editing.
+   Do not mandate word surgery, fades or pitch/gain matching. Compare actual
+   voice and continuity after any approved edit; missing listening stays unresolved.
+5. Preserve native audio without a finishing pass. Only an explicitly requested
+   loudness specification scopes an approved correction under the
    [audio-video alignment](../../../contracts/audio-video-alignment.md)
    contract.
 

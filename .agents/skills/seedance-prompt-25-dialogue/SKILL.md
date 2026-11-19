@@ -51,10 +51,11 @@ direction.
    register mismatch, wrong spoken word, pronunciation, accent, pacing and
    audio/video alignment. Without a recording, a predicted issue is a
    hypothesis, not an observed failure.
-5. **Make the smallest repair.** Prefer delivery direction for delivery
-   problems and a targeted note for a verified pronunciation issue. After a take
-   exists, fix only the wrong word: retake with a cue or splice that word,
-   never re-voice the whole clip. See [repairs](references/repairs.md).
+5. **Scope the repair.** Prefer delivery direction for delivery problems and
+   a targeted note for a verified pronunciation issue. Report a heard defect
+   before proposing alternatives. A splice or re-voice requires explicit user
+   audio-editing scope; finalization preserves native audio unchanged.
+   See [repairs](references/repairs.md).
 6. **Keep spoken words separate from guidance.** Copy dialogue inside
    `{curly braces}`. Put accent, pronunciation and acting notes outside braces
    unless the user asks to change the spoken text.

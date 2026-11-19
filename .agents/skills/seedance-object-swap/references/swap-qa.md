@@ -4,12 +4,12 @@ Focused reference for `seedance-object-swap`. Read [the entrypoint](../SKILL.md)
 for routing and caller responsibilities.
 
 - [Picture checks](#picture-checks)
-- [Audio checks after mux](#audio-checks-after-mux)
+- [Audio checks](#audio-checks)
 - [Failures and repairs](#failures-and-repairs)
 
 ## Picture checks
 
-Inspect the silent output side by side with the source, frame by frame around
+Inspect the actual output side by side with the source, frame by frame around
 each contact window and cut. Record each item as pass, fail or not applicable.
 
 - **Residual original.** No frame shows the original element, a blend of old
@@ -34,7 +34,7 @@ each contact window and cut. Record each item as pass, fail or not applicable.
   halo.
 - **Everything else untouched.** Faces, wardrobe, accessories, other props,
   background, camera, cuts and mouth movement match `@Video 1`.
-- **Technical.** The output decodes cleanly and has no audio stream. Measure
+- **Technical.** The output decodes cleanly with streams matching audio intent. Measure
   decoded timestamps, duration, playback speed and cut boundaries against the
   full source or specifically approved span. Neither 8n+1 nor a blanket duration
   tolerance establishes a timing pass. Report mismatches; any trim, padding,
@@ -47,18 +47,17 @@ An unsupported native Draft or promotion capability stays open for an approved
 alternative. A contact-window probe requires a difficulty in the current source
 or result and user approval of its span. Prior runs are not gates.
 
-## Audio checks after mux
+## Audio checks
 
-Apply after the post-audio route is muxed, following the
-[video-to-video inputs contract](../../../contracts/video-to-video-inputs.md#post-audio).
+Apply to the actual native or explicitly edited output, following the
+[video-to-video inputs contract](../../../contracts/video-to-video-inputs.md#audio-preservation).
 
-- Measure picture and audio before muxing; do not hide a mismatch with padding
+- Measure picture and audio without requiring a mux; do not hide a mismatch with padding
   or `-shortest`. Any corrective padding, trim or retiming needs specific user
-  approval and a recorded derivative. Muted picture and saved audio derive
-  from the same selected source span.
+  approval and a recorded derivative. Preserve independent audio tails.
 - Two or three sync points (set-downs, hits, plosives) land on the picture.
-- On-screen speech stays on the mouths. A visible offset routes to the
-  re-voiced route or a new take.
+- On-screen speech stays on the mouths. Report a visible offset and offer a
+  scoped repair or retake, never automatic re-voicing.
 - Listen in full; waveforms and loudness readings do not replace listening.
 
 ## Failures and repairs

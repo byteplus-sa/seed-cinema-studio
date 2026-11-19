@@ -549,7 +549,7 @@ class PrimaryDeliveryTests(unittest.TestCase):
                     path.write_bytes(original)
                     self.assertEqual(self.gate()[0], [])
 
-    def test_primary_preserves_audio_lock_requirement_when_preparation_skipped(self):
+    def test_primary_native_audio_needs_no_separate_mix_lock(self):
         self.select_primary(self.spec["id"])
         service = studio.selection_service()
         with patch.object(service, "probe_media_streams", return_value={"video"}):
@@ -558,7 +558,6 @@ class PrimaryDeliveryTests(unittest.TestCase):
             self.lock()
         with (
             patch.object(service, "probe_media_streams", return_value={"video", "audio"}),
-            self.assertRaisesRegex(ValueError, "audio lock is required"),
         ):
             self.complete()
 
