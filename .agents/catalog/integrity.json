@@ -40,7 +40,7 @@
     ".agents/skills/filipino-micro-drama/references/series-bible.md": "5557fe8ff792b43e5c7c9c2d146ade985e7f7e250bc9af3285e4ad7e05cbd80e",
     ".agents/skills/filipino-micro-drama/references/taglish-dialogue.md": "9aa880b9a8d5e9488483699c65127c7c682ebc1f6823c9a4d99692ddad280887",
     ".agents/skills/filipino-micro-drama/references/visual-signifiers.md": "ae1e88bff25ff456748590ecd168a56431b9725e9ec4daa84ed0a619809dfa00",
-    ".agents/skills/film-production/SKILL.md": "acd94aa4502ceeef8843231ffedd01188ac3bdda4f894338da77d6b2ce81b697",
+    ".agents/skills/film-production/SKILL.md": "12ed675d3ecc563c4e5cc80a485578c5c9726b9ec34fdc8b2f94d00e9aab65a1",
     ".agents/skills/film-production/agents/openai.yaml": "2b219efe3f66c0bd66485ccd80c770e0a571226f67f87e2ce48b9aecf700cedb",
     ".agents/skills/film-production/evals/evals.json": "41ee3fa817fda86e4f40e996ed94ca53626441fca9a372cb7e0d2ac750660299",
     ".agents/skills/film-production/references/handoff-contracts.md": "e34a35ce2eb282c14d0e338ea60e2e629561fbc770f2bfb47e7f18eb370b20e5",
@@ -412,7 +412,7 @@
     ".agents/skills/seedance-lighting-presets/SKILL.md": "d21249381157f6a337dd9c0a125ac8b4c99fa140480d6ff161c476bc4b3866c6",
     ".agents/skills/seedance-lighting-presets/agents/openai.yaml": "35fb1651a884d0a3130f0aea82f5c0c604607801cd67793c83967509b5d2ae8e",
     ".agents/skills/seedance-lighting-presets/evals/evals.json": "6850f696155447c053720c7fb70a6eb1e7fbd08982b0868176a583779da9367e",
-    ".agents/skills/seedance-motion-recast/SKILL.md": "835e03f888bb273b167239ca682e57d48529901b6350a9e6e4d48253da5da4b7",
+    ".agents/skills/seedance-motion-recast/SKILL.md": "210cc849ba6e0be7844a53ef7913001417b0a12bc28a8e21730338838621931e",
     ".agents/skills/seedance-motion-recast/agents/openai.yaml": "c6319864900d164606858d762b1012299c2cc9860cbbc0b1abec38ce778b2ff1",
     ".agents/skills/seedance-motion-recast/evals/evals.json": "dd796c518cd155d5537474cca2820b7ad3137cbc5e10f471382f061266092a24",
     ".agents/skills/seedance-motion-recast/references/audio-and-lipsync.md": "254b4e5249d10945d2b48a92f0f0016d10f7bc3dcad56dfd44a258b32a1e08f9",
@@ -513,10 +513,13 @@
     ".agents/skills/seedream-location-asset/references/worked-examples.md": "9c4c2c10c01a10a0da7582ab75b3a2fac251c8cd4b7b9bea900362492cf07a8b",
     ".agents/skills/seedream-prompt/SKILL.md": "f7db67f69d0b2f749900e4abb33ee957f514add5f61622406ac5801b70c3c2b3",
     ".agents/skills/seedream-prompt/agents/openai.yaml": "80dc8ea06eb61c82d715d228b20c632091401456ba02e255994e624fd0e8c288",
+    ".agents/skills/seedream-prompt/evals/evals.json": "deacf0a1f4528906e0452d10f96c85b0d395670aef68d4d737cbd10e2768e488",
     ".agents/skills/seedream-prompt/references/image-editing.md": "8e002a2cf09e3c22f5f4a77c0a848b340dd34f346fe439664bdc285d6ddca71f",
     ".agents/skills/seedream-prompt/references/image-generation.md": "9b5f61fe44d05979a92f7f3c650227430ecc74506f69ebf1e8505d8e3010939a",
+    ".agents/skills/seedream-prompt/references/layout-and-typography.md": "d6f62ef3c627d5415553ffac28bef6dd6c66a081c8610fbcc2c73468ff07bdcc",
     ".agents/skills/seedream-prompt/references/photographic-detail.md": "cc992821c0e46909209c4853487ebc6ad0767a30d15442a689dd09605738e104",
     ".agents/skills/seedream-prompt/references/quick-reference.md": "f68fcc0de2b2624d2a8329a74875de9186d07fbf738c70eb74b22f73083c6cc9",
+    ".agents/skills/seedream-prompt/references/transparent-assets.md": "569292b9b2b82bcdb09f309d74a316492442ebbab7f764624dc32af6ace4828b",
     ".agents/skills/seedream-prompt/references/worked-examples.md": "ff1bcd73c7b7d8fc149ffd8c1ee9858caf67625e9f38c1d66b91242906baf5cf",
     ".agents/skills/seedream-prop-asset/SKILL.md": "9d2ed6f7d5b6d5408343ecbd3d6fda5a6720ce81f2b1bfe77b9c951aa6e39ceb",
     ".agents/skills/seedream-prop-asset/agents/openai.yaml": "a2ba783fc1358e2ac56bba95a482f2284e2caaa4f6893a40e202cab0487d570e",
@@ -571,9 +574,6 @@
     ".agents/skills/template-factory/references/templates/psychedelic-neon-cosmic/template.md": "38cbbea99269dd4235d4c9383a1bfad79fee785bd6ba152223e350f6ca15a7d0",
     ".agents/skills/template-factory/scripts/validate_breakdown.py": "af039a0ee8c6dbe837436280a20706f5ec1b0a03a38cef386efaea60d41e1b5c",
     ".agents/skills/update/SKILL.md": "84bad9faed61b7a4d0082c1ee2c05fc791bd60612d3bf76c683c0f7d9fb601d6",
-    ".agents/skills/update/evals/evals.json": "cd53060a15b832fd51e1d62aac1f95b0e90d6530b85857a9477b07b7183e4d8f",
-    ".agents/skills/seedream-prompt/evals/evals.json": "deacf0a1f4528906e0452d10f96c85b0d395670aef68d4d737cbd10e2768e488",
-    ".agents/skills/seedream-prompt/references/layout-and-typography.md": "d6f62ef3c627d5415553ffac28bef6dd6c66a081c8610fbcc2c73468ff07bdcc",
-    ".agents/skills/seedream-prompt/references/transparent-assets.md": "569292b9b2b82bcdb09f309d74a316492442ebbab7f764624dc32af6ace4828b"
+    ".agents/skills/update/evals/evals.json": "cd53060a15b832fd51e1d62aac1f95b0e90d6530b85857a9477b07b7183e4d8f"
   }
 }
