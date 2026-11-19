@@ -1703,19 +1703,27 @@ class StudioProjectTests(unittest.TestCase):
         self.assertEqual(entry["locks"]["picture"]["actor"], "agent")
         self.assertEqual(schema_findings(value, "studio-stages.schema.json"), [])
 
-    def test_audio_lock_is_required_unless_audio_preparation_was_skipped(self):
+    def test_native_audio_needs_no_separate_lock_even_after_preparation(self):
         self.ready_for_assembly(skip_audio=False)
         self.lock_assembly()
-        with self.assertRaisesRegex(studio.StudioError, "audio lock is required"):
-            studio.complete_stage(
-                self.project, "assembly-review", fake_runner(stdout=CHECK_OK)
-            )
+        studio.complete_stage(
+            self.project, "assembly-review", fake_runner(stdout=CHECK_OK)
+        )
+
+    def test_explicit_audio_lock_is_validated_even_when_preparation_skipped(self):
+        self.ready_for_assembly()
+        self.lock_assembly()
         (self.project / "library").mkdir()
         (self.project / "library/mix.wav").write_bytes(b"audio bytes")
         self.record_lock("audio", "library/mix.wav")
         studio.complete_stage(
             self.project, "assembly-review", fake_runner(stdout=CHECK_OK)
         )
+        (self.project / "library/mix.wav").write_bytes(b"changed audio")
+        with self.assertRaisesRegex(studio.StudioError, "audio lock is stale"):
+            studio.complete_stage(
+                self.project, "assembly-review", fake_runner(stdout=CHECK_OK)
+            )
 
     def test_user_can_lock_through_chat_under_ask_for_approval(self):
         self.ready_for_assembly("ask_for_approval")

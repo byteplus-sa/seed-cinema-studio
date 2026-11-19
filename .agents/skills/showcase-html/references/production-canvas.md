@@ -76,8 +76,10 @@ canvases without a contract version remain readable without inventing earlier
 approval evidence.
 
 For a version 1 canvas, `assembly-review` cannot be `approved` or `complete`
-without a picture lock and, unless `audio-preparation` was skipped, an audio
-lock. `delivery` additionally requires a final master lock. Each lock in
+without a picture lock. Separate audio locks are optional for explicitly
+requested audio work; supplied locks remain validated. Native audio needs no
+separate preparation or mix evidence. `delivery` additionally requires a final
+master lock. Each lock in
 `canvas.stages[].locks` records `decision_id`, `decision_sha256`, `result`, `artifact_path`,
 `artifact_sha256`, `review_path`, `review_sha256`, `actor`, and `reason`.
 The decision JSON, accepted artifact, and review must also be listed in that

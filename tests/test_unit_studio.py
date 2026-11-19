@@ -452,7 +452,7 @@ class UnitStudioTests(unittest.TestCase):
         index.write_text(index.read_text() + "<!-- revised edit -->")
         self.assertIsNotNone(studio.lock_subject_problem(context, "picture", output))
 
-    def test_native_audio_requires_audio_lock_even_when_preparation_was_skipped(self):
+    def test_native_audio_completes_without_separate_audio_lock(self):
         context = self.context()
         self.finish_unit(context, "agent")
         service = studio.selection_service()
@@ -460,23 +460,11 @@ class UnitStudioTests(unittest.TestCase):
             with (
                 self.subTest(stage=stage),
                 patch.object(service, "probe_media_streams", return_value={"video", "audio"}),
-                self.assertRaisesRegex(ValueError, "audio lock is required"),
             ):
                 studio.complete_stage(context, stage, self.runner)
-        studio.reopen_stage(context, "assembly-review")
-        audio = "units/ep001/studio/renders/mix.wav"
-        self.write(audio, "synthetic reviewed audio")
-        with patch.object(service, "probe_media_streams", return_value={"video", "audio"}):
-            studio.record_lock(context, self.decision(
-                context, "units/ep001/studio/renders/cut.mp4", "native-picture", kind="picture",
-            ))
-            studio.record_lock(context, self.decision(context, audio, "native-audio", kind="audio"))
-            studio.complete_stage(context, "assembly-review", self.runner)
-            studio.start_stage(context, "delivery")
-            studio.record_lock(context, self.decision(
-                context, "units/ep001/studio/renders/master.mp4", "native-final", kind="final_master",
-            ))
-            studio.complete_stage(context, "delivery", self.runner)
+        self.assertNotIn("audio", studio.stage_entry(
+            studio.read_stages(context), "assembly-review",
+        )["locks"])
         self.assertEqual(studio.read_stages(context)["stages"][-1]["status"], "complete")
 
     def test_unknown_scoped_streams_cannot_be_treated_as_silent(self):
@@ -484,10 +472,10 @@ class UnitStudioTests(unittest.TestCase):
         self.finish_unit(context, "agent")
         service = studio.selection_service()
         with patch.object(service, "probe_media_streams", return_value=set()):
-            failures, _ = studio.stage_gate(context, "assembly-review", self.runner)
+            failures, _ = studio.stage_gate(context, "delivery", self.runner)
         self.assertTrue(any("stream" in failure for failure in failures), failures)
 
-    def test_audio_added_in_render_requires_lock_even_when_placed_takes_are_silent(self):
+    def test_audio_in_render_uses_final_listening_review_without_separate_mix_lock(self):
         context = self.context()
         self.finish_unit(context, "agent")
         service = studio.selection_service()
@@ -495,7 +483,17 @@ class UnitStudioTests(unittest.TestCase):
             return {"video", "audio"} if path.parent.name == "renders" else {"video"}
         with patch.object(service, "probe_media_streams", side_effect=streams):
             failures, _ = studio.stage_gate(context, "delivery", self.runner)
-        self.assertTrue(any("audio lock is required" in failure for failure in failures), failures)
+        self.assertEqual(failures, [])
+
+    def test_silent_final_is_not_forced_to_restore_audio_from_source_takes(self):
+        context = self.context()
+        self.finish_unit(context, "agent")
+        service = studio.selection_service()
+        def streams(path):
+            return {"video"} if path.parent.name == "renders" else {"video", "audio"}
+        with patch.object(service, "probe_media_streams", side_effect=streams):
+            failures, _ = studio.stage_gate(context, "delivery", self.runner)
+        self.assertEqual(failures, [])
 
 
 if __name__ == "__main__":

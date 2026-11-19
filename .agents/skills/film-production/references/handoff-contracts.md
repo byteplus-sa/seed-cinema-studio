@@ -63,10 +63,12 @@ handoff when the user has not requested lip-synced audio.
 
 Accept only mode-authorized approved takes. Pass local paths, hashes, actual
 video-stream duration, resolution, frame rate, colour range and transfer,
-audio properties and route (native, or picture only awaiting a post bed),
+audio properties and intent (native unchanged by default; silence, exact master
+or post editing only when explicitly requested),
 intended order, trim points, transition notes, and known defects. Do not treat
 `succeeded` as creative approval. Assembly keeps the takes' original colours
-unless the brief records a look.
+unless the brief records a look. Native audio needs no separate preparation,
+mix evidence or audio-file lock; keep listening in the take/final review.
 
 ## Draft to final generation
 

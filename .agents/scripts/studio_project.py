@@ -1859,39 +1859,9 @@ def delivery_gate(
     return delivery_failures(context, discover_shots(context), render_record)
 
 
-def scoped_audio_required(context: ProductionContext, ledger: dict[str, Any]) -> bool:
-    paths = set()
-    for shot in discover_shots(context):
-        asset = placed_asset(context, shot.shot_id)
-        if asset:
-            paths.add(studio_path(context, "assets", asset))
-    digest = tree_digest(context)
-    for _, record in read_render_records(context):
-        if record["produced_by"] == "render" and record["inputs"]["studio_sha256"] == digest:
-            paths.add(contained_path(context.production_root, record["output"]["path"]))
-    for stage in ("assembly-review", "delivery"):
-        for lock in stage_entry(ledger, stage).get("locks", {}).values():
-            paths.add(contained_path(context.production_root, lock["artifact_path"]))
-    if not paths:
-        raise StudioError("No scoped media streams to verify for audio requirements")
-    audio = False
-    for path in sorted(paths):
-        streams = selection_service().probe_media_streams(path)
-        if not isinstance(streams, set) or not streams.intersection({"video", "audio"}):
-            raise StudioError(f"Cannot verify media streams for {path.name}")
-        audio = audio or "audio" in streams
-    return audio
-
-
-def required_locks(
-    ledger: dict[str, Any], stage_id: str, project: Path | ProductionContext | None = None,
-) -> list[str]:
+def required_locks(ledger: dict[str, Any], stage_id: str) -> list[str]:
     if stage_id == "assembly-review":
-        audio = stage_entry(ledger, "audio-preparation")["status"] != "skipped"
-        if project is not None:
-            context = studio_context(project)
-            if not context.legacy:
-                audio = scoped_audio_required(context, ledger) or audio
+        audio = "audio" in stage_entry(ledger, stage_id).get("locks", {})
         return ["picture", "audio"] if audio else ["picture"]
     return ["final_master"] if stage_id == "delivery" else []
 
@@ -1916,7 +1886,7 @@ def lock_failures(
     locks = stage_entry(ledger, stage_id).get("locks", {})
     failures = []
     try:
-        required = required_locks(ledger, stage_id, project)
+        required = required_locks(ledger, stage_id)
     except (ValueError, OSError) as error:
         return [f"Cannot determine required audio locks: {error}"]
     for kind in required:
@@ -1963,10 +1933,8 @@ def lock_failures(
                     context.production_root, decision["review_path"], decision["review_sha256"],
                     decision["subject_path"], decision["subject_sha256"],
                 )
-                audio_required = kind == "final_master" and scoped_audio_required(context, ledger)
                 service.validate_stage_media(
                     context.production_root, kind, lock["artifact_path"], review,
-                    audio_required=audio_required,
                 )
             except (ValueError, OSError, KeyError, TypeError) as error:
                 failures.append(f"{kind} lock is stale: {error}")
@@ -2252,14 +2220,8 @@ def _record_lock(project: Path | ProductionContext, decision: dict[str, Any]) ->
         subject,
         subject_sha,
     )
-    audio_required = (
-        kind == "final_master"
-        and stage_entry(ledger, "audio-preparation")["status"] != "skipped"
-    )
-    if kind == "final_master" and not project.legacy:
-        audio_required = scoped_audio_required(project, ledger) or audio_required
     service.validate_stage_media(
-        project.production_root, kind, subject, review, audio_required=audio_required
+        project.production_root, kind, subject, review
     )
     entry.setdefault("locks", {})[kind] = {
         "decision_id": decision["decision_id"],

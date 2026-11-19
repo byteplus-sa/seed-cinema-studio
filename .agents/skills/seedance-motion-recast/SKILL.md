@@ -6,8 +6,8 @@ description: >-
   cuts and timing while rebuilding cast, wardrobe, product, location and style
   from locked reference images. Covers the motion-only authority split, an
   explicit mapping or disposition for every visible source subject, bleed and
-  extra-people guards, Virtual Portrait asset:// identity references, a muted
-  source master with audio added in post, named look presets, and a 480p
+  extra-people guards, Virtual Portrait asset:// identity references,
+  unchanged native audio and scoped audio edits, named look presets, and a 480p
   key-beat probe ladder. Consumes a subject_map.json when available or
   inspects the source itself. Use to recast performers, localize a take for
   another market, or rebuild its world around the same performance. Not for
@@ -45,7 +45,7 @@ Input:
 - A source clip inspected per the
   [video-to-video inputs contract](../../contracts/video-to-video-inputs.md)
   (duration, fps, aspect ratio, audio presence, cuts, SHA-256, recorded
-  rights), its muted master and the saved source audio.
+  rights), preserving the source audio without mandatory derivatives.
 - Either a `subject_map.json` from a separate subject-mapping step, or the
   agent's own inspection of the source (see
   [multi-subject mapping](references/multi-subject-mapping.md)). Use a subject
@@ -53,19 +53,19 @@ Input:
 - Approved target elements with hashes, one image per view. Characters are
   Virtual Portrait `asset://` assets; products, props and locations are
   approved sheets or authorized downloads.
-- The requested style (a named preset or free text) and post-audio route.
+- The requested style (a named preset or free text) and audio intent.
 
 Output: a recast prompt package containing the ordered `@Video`/`@Image`
 bindings with roles and hashes, the disposition table for every source subject,
 the prompt text, the selected route and parameters, the reference-count check,
-the post-audio route and the test-ladder rung it targets.
+any explicitly requested audio change and the test-ladder rung it targets.
 
 ## Source timing
 
 Preserve the full measured source: fractional duration, frame count, fps,
 decoded timestamps, cuts, playback speed, the final word and audio tails.
-Derive the muted master and saved audio from the same full timeline unless a
-specific derivative is approved; preserve the original picture and sound.
+Preserve the original picture and sound; no mute or extraction is required.
+Prepare only explicitly requested or approved derivatives.
 
 Missing or malformed timing measurements stop an execution-ready package.
 Never guess duration, round a supplied value, or invent inspection evidence;
@@ -83,8 +83,8 @@ submission. Offer unselected source-preserving alternatives or a handoff.
 
 For an approved derivative, record source SHA-256, derivative SHA-256, the
 exact window, command, timing delta and audio consequences. Keep source and
-derivative measurements separate; muted picture and saved audio use the same
-approved span. Never overwrite the original or extend the approved scope.
+derivative measurements separate and preserve audio outside the approved
+change. Never overwrite the original or extend the approved scope.
 
 No automatic 8n+1 frame recipe or whole-second rounding is permitted. Do not
 trim, pad or retime to satisfy a preferred length. Check current input limits;
@@ -94,7 +94,7 @@ These timing rules govern referenced recipes: examples, repair suggestions
 and old ladders do not authorize adaptations or extra probes. If a reference
 conflicts, preserve the full measured timeline and the approval gates above.
 
-An output mismatch remains unresolved after measuring picture, saved audio,
+An output mismatch remains unresolved after measuring picture, source audio,
 timestamps, cut boundaries and playback speed and inspecting opening/ending
 sync. Never hide it with `-shortest`, padding or truncation. Retain the masters,
 report lost frames, the final word or sound tails, and obtain the same
@@ -133,8 +133,8 @@ full-duration native Draft before supported promotion by `draft_task_id`.
    warn the user that stability drops and propose splitting into shots.
 6. **No baked text.** Keep generated footage free of captions, taglines, CTAs,
    end cards and legible signage copy; add text in post.
-7. **Submit the muted master** with `generate_audio: false`; sound returns in
-   post through the recorded route in
+7. **Preserve audio by default.** Native sound needs no mute, extraction or mux.
+   Verify current operation support and scope any requested audio changes in
    [audio and lip-sync](references/audio-and-lipsync.md).
 8. **Native Draft first**: use the full measured source span with explicit
    `resolution: "480p"` and boolean `draft: true` in every review mode.
@@ -147,8 +147,8 @@ full-duration native Draft before supported promotion by `draft_task_id`.
 
 The default route rebuilds cast and world from a Virtual Portrait `asset://`
 image while keeping the source's motion, timing and camera. It binds `@Video 1`
-as an `asset://` video when the source shows a person, and runs with
-`generate_audio: false`. Evaluate multi-subject, location-image and moving-camera
+as an `asset://` video when the source shows a person. Resolve supported audio
+settings from the requested intent. Evaluate multi-subject, location-image and moving-camera
 cases in the full-duration native Draft and record the result. Do not infer
 route verification from another run or require an extra partial probe.
 
@@ -156,13 +156,13 @@ route verification from another run or require an extra partial probe.
   `@Video 1` with role `reference_video`, stated as a motion-only reference (an `asset://` video when
   the source shows a person).
   Bind targets as `reference_image`. Set `omni_reference_task_type` to `auto`,
-  `ratio` to the source ratio and `generate_audio` to `false`. Set `duration`
+  `ratio` to the source ratio and supported audio settings to preserve intent. Set `duration`
   to the full measured fractional source length only when the selected
   operation and transport accept it. Unsupported or unknown fractional
   duration support leaves an unresolved handoff, not a rounded request.
   Offer an unselected source-preserving edit route or a specifically approved
   derivative after checking current requirements; never silently switch routes.
-  Measure returned picture and saved audio before muxing.
+  Measure returned picture and audio without assuming a mux is needed.
 - **Fallback plan B: full-frame edit.** If the output keeps the source's
   people, clothing or location, switch to the edit task type the live tool
   accepts for Seedance 2.5 and write the edit variant in
@@ -183,8 +183,8 @@ length as one natural-duration recast or assemble separate shots.
 ## Procedure and reference loading
 
 1. **Route check.** Confirm the request is a recast, not a region edit.
-2. **Gates and intake.** Record footage rights, measure source timing, write
-   the full-span muted master and save the source audio without tail loss.
+2. **Gates and intake.** Record footage rights and measure source timing,
+   preserving the full source and its audio without tail loss.
    Any adaptation follows [Source timing](#source-timing).
    Register or reuse a Virtual Portrait for every new
    character (rule 3).
@@ -196,19 +196,19 @@ length as one natural-duration recast or assemble separate shots.
 5. **Prompt.** Assemble the template in
    [recast grammar](references/recast-grammar.md). Add guards from
    [guards and failures](references/guards-and-failures.md), a look from
-   [style presets](references/style-presets.md), and the silent audio line and
-   post route from [audio and lip-sync](references/audio-and-lipsync.md).
+   [style presets](references/style-presets.md), and the audio intent from
+   [audio and lip-sync](references/audio-and-lipsync.md).
 6. **Package.** Return bindings, dispositions, prompt, route, parameters and
    ladder rung to the caller for prompt-review and submission.
 7. **QA after generation.** Apply the QA checks in
-   [guards and failures](references/guards-and-failures.md), mux the post-audio
-   route without hiding timing mismatches, and run the lip-sync checks when
+   [guards and failures](references/guards-and-failures.md), retain native audio
+   unchanged unless editing was requested, and run the lip-sync checks when
    someone speaks on screen. Inspect the full span, including final words,
    audio tails and cut boundaries, before selection or promotion.
 
 Load only the references the request needs. A stylized medium such as
 claymation or toy miniature is described in the prompt; the six-part formula and
-reference syntax stay with `seedance-prompt`. Keep a shared subject map in the
+reference syntax stay with `seedance-prompt-25`. Keep a shared subject map in the
 project notes.
 These are composition hints; this leaf does not load sibling skills.
 
@@ -233,7 +233,7 @@ bundle or route per retry.
       timestamps, ratio, audio, cuts, SHA-256, rights; final word and tails kept
 - [ ] Any timing derivative has current requirement evidence, explicit user
       adaptation approval, separate span/hashes, timing delta and audio effects
-- [ ] Muted master bound as `@Video 1`; source audio saved; `generate_audio: false`
+- [ ] Source bound as `@Video 1`; verified audio behavior preserves requested intent
 - [ ] Every new character bound as a Virtual Portrait `asset://` reference
 - [ ] Subject map ambiguities resolved, or own inspection covers every cut
 - [ ] Every visible source subject and swappable object has a disposition
@@ -243,8 +243,8 @@ bundle or route per retry.
 - [ ] Motion Authority names what `@Video 1` supplies and excludes its appearance
 - [ ] Guards: exact people count, wardrobe only from references, residual originals
 - [ ] Style block present; no overlay text, captions or legible signage requested
-- [ ] Post-audio route recorded, with lip-sync QA when someone speaks on screen
+- [ ] Any audio edit explicitly scoped, with lip-sync QA when someone speaks on screen
 - [ ] Source with a person bound as an `asset://` video; route evidence recorded
 - [ ] Full-duration native Draft first; any extra partial probe is optional
       and explicitly approved, recorded separately and not delivery
-- [ ] Mux timing measured; no automatic padding, truncation or `-shortest`
+- [ ] Audio timing inspected; no automatic mux, padding, truncation or `-shortest`

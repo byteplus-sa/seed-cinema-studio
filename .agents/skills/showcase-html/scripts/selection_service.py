@@ -316,14 +316,15 @@ def validate_stage_media(root, lock_kind, subject_path, review, audio_required=F
         required_streams = {'audio'}
     else:
         raise SelectionError('Unknown stage lock kind')
+    streams = probe_media_streams(contained_path(Path(root).resolve(), subject_path))
     if lock_kind == 'final_master' and audio_required:
         required_streams.add('audio')
-        if 'listen' not in review['inspection_method'].lower():
-            raise SelectionError('Audiovisual final master requires listening evidence')
-    streams = probe_media_streams(contained_path(Path(root).resolve(), subject_path))
     if not required_streams.issubset(streams):
         missing = ', '.join(sorted(required_streams - streams))
         raise SelectionError(f'{lock_kind} lock requires a {missing} stream')
+    if (lock_kind == 'final_master' and (audio_required or 'audio' in streams)
+            and 'listen' not in review['inspection_method'].lower()):
+        raise SelectionError('Audiovisual final master requires listening evidence')
 
 
 def validated_decision(root, decision, subject_path, subject_sha256, mode, user_event=None, allow_chat=False, context=None, allow_existing=False):
@@ -633,9 +634,7 @@ def record_stage_decision(root, decision, expected_revision=None, user_event=Non
             raise SelectionError('An agent cannot replace a user stage lock')
         decision_path, decision_content, decision_sha256 = validated_decision(root, decision, subject, subject_sha256, mode['mode'], user_event)
         review = validated_review(root, decision['review_path'], decision['review_sha256'], subject, subject_sha256)
-        audio_stage = next((item for item in showcase['canvas'].get('stages', []) if item.get('id') == 'audio-preparation'), None)
-        audio_required = audio_stage is None or audio_stage.get('status') != 'skipped'
-        validate_stage_media(root, lock_kind, subject, review, audio_required=audio_required)
+        validate_stage_media(root, lock_kind, subject, review)
         stage.setdefault('locks', {})[lock_kind] = {
             'decision_id': decision['decision_id'],
             'decision_sha256': decision_sha256,

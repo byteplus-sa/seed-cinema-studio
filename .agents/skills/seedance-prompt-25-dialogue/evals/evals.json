@@ -28,12 +28,12 @@
     {
       "id": 3,
       "prompt": "In take 2 the actor says the wrong name in an otherwise perfect clip. Fix it.",
-      "expected_output": "Chooses a word-scoped repair and keeps the performance.",
+      "expected_output": "Verifies the defect and offers scoped alternatives without automatically editing the soundtrack.",
       "files": [],
       "expectations": [
         "Verifies with a transcript diff and listening.",
-        "Proposes a retake with one cue or a word-only splice.",
-        "Refuses to re-voice the whole clip.",
+        "Offers a retake with one cue or an explicitly approved audio edit.",
+        "Does not splice, normalize, fade or re-voice from a generic fix request alone.",
         "Bases splice acceptance on the actual speaker, local pitch and timing continuity, and listening rather than a universal percentage threshold."
       ]
     },

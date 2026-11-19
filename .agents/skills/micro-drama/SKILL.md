@@ -6,7 +6,7 @@ description: >-
   Orchestrates a market story writer when one exists (for example
   filipino-micro-drama) or the market-neutral microdrama-story-formats, then canon sheets, planning-only storyboards,
   Seedance 2.5 scene clips with native dialogue, dialogue-accuracy QA,
-  assembly, loudness-matched delivery, and an optional full-episode showreel,
+  assembly, audio-preserving delivery, and an optional full-episode showreel,
   all in a HyperFrames Studio project. Use for micro-dramas, vertical
   dramas, ReelShort/DramaBox-style series, TikTok drama episodes, or batches of
   several independent episodes produced in parallel. Do not use for a single
@@ -121,13 +121,13 @@ Candidate validation does not authorize activation or migration.
    plan. An optional template is a cold open, title card, three scene clips with short
    dissolves, and a to-be-continued card; a confirmed format overrides these
    cards, scene count and transitions. Keep original
-   colours unless the brief records a look. Fix wrong words with word-scoped audio
-   patches. Add a subtitle sidecar per requested language and
-   normalize loudness. Picture and audio locks come from real playback and
-   listening evidence.
+   colours unless the brief records a look. Preserve native audio unchanged;
+   report defects and obtain explicit scope before audio editing. Add a subtitle
+   sidecar per requested language. Native sound needs no separate preparation,
+   mix evidence or audio-file lock; take/final reviews include actual listening.
 8. **Delivery.** Final lock and passing Studio stage-exit checks, with the final
-   master from `studio_project.py render`; FFmpeg assembly, subtitle and
-   loudness work is placed in Studio as a clip or overlay and rendered, not
+   master from `studio_project.py render`; explicitly authorized external
+   assembly is placed in Studio as a clip or overlay and rendered, not
    delivered directly (pre-Studio canvas: `--check --stage delivery`).
 
 Resolve audience response, attention and ending only when the premise remains
@@ -157,7 +157,7 @@ legacy-only for existing series without a manifest.
   speech-to-text before a take can pass. A model's own summary of what was
   said is not sufficient.
 - Retakes fix failures without budget-related caps as a new native
-  Draft in both review modes. Dialogue repairs patch only the wrong word windows. Record
+  Draft in both review modes. Audio editing requires explicit user scope. Record
   residual defects instead of silently promoting a flawed take.
 - Provider success is `review`, never approval. Never resubmit an ambiguous
   paid operation; reconcile it from the task registry.

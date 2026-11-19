@@ -146,12 +146,13 @@ between modalities.
 | Scene geography and crowd blocking | `blocking-map` |
 | Score, ambience, SFX or dialogue audio | `seed-audio-prompt` |
 | Per-shot coverage, camera, lens intent and light for a scene | `seedance-shot-design` |
-| Seedance prompt for any selected exact model | `seedance-prompt`; verify mode-specific execution controls separately |
-| Spoken dialogue in any language | `seedance-prompt-25-dialogue` with `seedance-prompt` |
-| Market-specific video dialogue (for example Filipino or Taglish) | The market's dialogue skill, such as `seedance-prompt-25-filipino`, with `seedance-prompt` |
+| Seedance 2.5 video prompt | `seedance-prompt-25` |
+| Spoken dialogue in any language | `seedance-prompt-25-dialogue` with `seedance-prompt-25` |
+| Market-specific video dialogue (for example Filipino or Taglish) | The market's dialogue skill, such as `seedance-prompt-25-filipino`, with `seedance-prompt-25` |
+| Seedance 2.0 video prompt | `seedance-prompt-20` |
 | Model submission, polling, artifact access, speech-to-text | `ark-mcp` |
 | Animated exact graphics or timed overlays | appropriate HyperFrames skill |
-| Assembly, media transforms, captions, word-scoped audio patches | appropriate HyperFrames or FFmpeg skill; the result is placed in Studio and rendered with `studio_project.py render` |
+| Assembly, media transforms, captions, explicitly requested audio edits | appropriate HyperFrames or FFmpeg skill within the requested scope; retain Studio render provenance without requiring audio processing |
 | Studio project, stage gates, review and selection | `studio_project.py` with the `hyperframes-studio` conventions; pre-Studio canvas projects use `showcase-html` |
 
 <!-- markdownlint-enable MD013 -->
@@ -165,19 +166,16 @@ department workflow.
 Read [production defaults](references/production-defaults.md) before the first
 paid video submission and again at assembly. In short:
 
-1. **Draft first in both modes.** Exact standard 2.5 and Premium shots require native
+1. **Draft first in both modes.** Every new Seedance 2.5 shot is a native
    480p Draft with boolean `draft: true`, reviewed and
    selected, then promoted to the delivery target. Edit inputs only before the
    Draft; re-check audio on the final. Record each provider draft task ID with
    `draft_ledger.py` and follow the [draft and promotion contract](../../contracts/draft-promotion.md).
-   Other exact selected model/operation/transport bindings use verified profiles;
-   ordinary previews are non-promotable and unknown support blocks execution.
-2. **Audio route from the brief.** Requested native dialogue, wordless action
-   and diegetic ambience retain native sound. Post-owned layers use supported
-   picture-only controls; preserve an exact master. Mixed ownership names each
-   layer. Purposeful silence adds no bed. Inspect actual sound; reject unwanted
-   audio or propose an authorized repair, never silently change ownership.
-   Lip-sync importance alone does not authorize separate audio generation.
+2. **Preserve audio by default.** Native generated audio is sufficient unchanged,
+   including ambience-only, score-driven and wordless pieces. Do not suppress it
+   or build a post bed for finalization. Only explicitly requested silence,
+   exact master preservation or audio editing changes this scope; verify the
+   selected operation's controls and preserve independent audio tails.
 3. **Structure from the confirmed brief.** Derive scenes, duration, ending,
    aspect and coverage from the script or treatment and disclosed profile.
    Preserve held shots and wordless passages. Advertising cadence and
@@ -189,11 +187,11 @@ paid video submission and again at assembly. In short:
    blocking map.
 6. **Text-free footage.** Overlays, end cards and any required labels are added
    in post; add a disclosure label only when the user, platform or brief requires one.
-7. **Ungraded assembly** in original colours, exact-length intermediates, one
-   final encode.
-8. **Narrow fixes.** Word-scoped audio patches and re-voicing that keeps the
-   source soundtrack. Compare speech-to-text against locked dialogue and listen
-   to disputed words; a wordless piece does not invent a dialogue gate.
+7. **Ungraded assembly** in original colours, preserving source timing and sound.
+   External conform and intermediate renders are capabilities, not prerequisites.
+8. **Scoped fixes.** Report defects and obtain the user's audio-editing decision
+   before patching or re-voicing. Compare speech-to-text against locked dialogue
+   and listen to disputed words; wordless work has no spoken-dialogue gate.
 
 ## Run one stage at a time
 
@@ -286,8 +284,9 @@ Write every revision as:
 - **Invalidation scope:** dependent artifacts that return to `review` if inputs
   change.
 
-Prefer a bounded edit over full regeneration after composition or performance is
-approved: a post repair, a word-scoped audio patch, or one corrected shot.
+Offer bounded alternatives after composition or performance is approved.
+An audio patch or re-voice requires explicit user scope; a generic finalize or
+fix request does not authorize word surgery.
 Preserve rejected history and never overwrite source media.
 
 ## Finish the run

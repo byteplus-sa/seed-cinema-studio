@@ -131,18 +131,11 @@ another shot) are recorded, not retaken.
   leaked corner mark, a centre punch-in for black side bars, or removing a
   defective shot from inside a multi-shot clip and dissolving across the gap
   when no dialogue is lost.
-- **Dialogue fixes are word-scoped.** Patch only the wrong word windows; never
-  re-dub a whole clip. Transcribe with word times, splice pitch- and
-  loudness-matched replacements with short fades, and prove that samples
-  outside each window are unchanged. Measure the actual speaker's local pitch
-  and timing, then listen for timbre, prosody and continuity. About 10% pitch
-  or tempo adjustment is an advisory review flag, not a universal pass/fail
-  gate; smaller changes can also sound wrong. Unavailable listening remains
-  unresolved, and retaining a known defect requires a recorded decision.
-- When a model re-voices words, send the original clip with its audio, name
-  the words to fix, take the full audio back, match the original loudness and
-  mux it over the untouched picture. Never send dialogue alone: the score,
-  room tone and effects must survive.
+- **Audio edits require explicit user scope.** Report heard defects and offer
+  a scoped retake or audio edit. Do not prescribe word splicing, loudness
+  matching, fades or re-voicing merely to finalize. Preserve picture and
+  untargeted sound in any authorized edit; inspect actual voice and continuity.
+  Unavailable listening remains unresolved.
 - Record every repair beside the clip with its source hash and command.
 
 ## Cost reporting
@@ -173,17 +166,18 @@ Do not declare or enforce per-episode spending caps or ask for budget approval.
   card.
 - No grade unless the brief records a look: keep the original Seedance colours. Decode HEVC finals as
   limited-range BT.709 and tag the output BT.709.
-- Render each clip to an exact-length lossless intermediate in whole frames
-  with its audio padded or trimmed to match, join, and encode once.
-- Normalize every delivered episode to one loudness target (for example
-  -16 LUFS integrated, -1.5 dBFS peak); measure each episode's loudness first.
+- Preserve native audio unchanged through the confirmed picture assembly.
+  No automatic padding, trimming, normalization, fades or gain matching.
+  Preserve independent tails; a timing mismatch requires a scoped decision.
 - Some FFmpeg builds lack `drawtext`. Render cards as deterministic PNGs and
   subtitles as a sidecar. Add no AI or fictional label unless required.
 - Studio projects record shot-take selections with
-  `studio_project.py record-selection` and picture, audio and final-master
+  `studio_project.py record-selection` and picture and final-master
   locks with `studio_project.py record-lock`. For a revision after delivery,
   such as removing a shot the user dislikes, render a new master version with
   `studio_project.py render` (it never overwrites an earlier render).
+  Separate audio locks are optional for explicitly requested audio work; native
+  audio listening belongs in take/final reviews, not a separate mix artifact.
   Pre-Studio canvas projects record reviews and locks with the showcase-html
   `stage_lock.py` tool (`review`, `lock`, `advance`) and reopen with
   `stage_lock.py reopen --stage assembly-review`; the earlier version stays on

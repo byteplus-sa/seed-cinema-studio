@@ -237,7 +237,7 @@
         "stage_exit"
       ],
       "owner_path": ".agents/contracts/production-policy.md",
-      "summary": "`assembly-review` needs a picture lock (and an audio lock unless audio-preparation was skipped) and `delivery` needs a final_master lock on the delivery render; each is a hash-bound decision authorized by the agent under approve_for_me or by the user's chat words, and goes stale if its files change.",
+      "summary": "`assembly-review` needs a picture lock and validates any supplied optional audio lock; unchanged native audio needs no separate preparation or mix evidence. `delivery` needs the applicable final_master lock and current Studio render provenance with actual listening review for audible media.",
       "exceptions": []
     },
     {
@@ -371,17 +371,15 @@
       "exceptions": []
     },
     {
-      "id": "v2v.muted_source",
+      "id": "v2v.audio_preservation",
       "severity": "error",
       "applies_to": [
         "editing",
         "recast"
       ],
       "owner_path": ".agents/contracts/video-to-video-inputs.md",
-      "summary": "A video-to-video request binds the recorded muted source master with generate_audio false and adds sound in post.",
-      "exceptions": [
-        "A recorded, user-requested native-audio exception for a named take."
-      ]
+      "summary": "Preserve source and generated audio by default with verified operation-specific support. Native audio needs no mute, extract or mux pass. Silence, exact-master transport and audio editing remain explicitly scoped capabilities; unknown support or timing changes require resolution.",
+      "exceptions": []
     },
     {
       "id": "v2v.virtual_portrait_identity",

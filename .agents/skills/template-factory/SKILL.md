@@ -205,10 +205,11 @@ pin_local → breakdown_draft → breakdown_approved → elements_draft
    scanlines, halation) remain visible intent. Scope any observed failure to
    the exact binding; record an authorized post alternative and apply it only when the run locks
    them. Otherwise assemble in the takes' original colours with no grade,
-   from exact-length intermediates encoded once. Measure take loudness and
-   normalise delivery masters (e.g. `loudnorm` -16 LUFS / -1.5 dBTP) after
-   mode-authorized take locks; place the result in Studio and deliver it with
-   `studio_project.py render`.
+   from picture intermediates only when needed. Native generated audio is
+   sufficient unchanged; no normalization, padding, trimming, mix or carve is
+   required before delivery. Preserve independent audio tails and supplied
+   exact masters. Audio editing requires explicit user scope. Retain
+   `studio_project.py render` provenance without a separate native-audio mix record.
    When the picture needs several clips, follow the shot budget, trim-point,
    state-ledger, and continuous-audio rules in
    [long pins and multi-clip takes](references/long-pins-and-multi-clip.md).

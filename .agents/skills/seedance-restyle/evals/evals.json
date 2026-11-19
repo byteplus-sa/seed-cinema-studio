@@ -4,12 +4,12 @@
     {
       "id": 1,
       "prompt": "Turn our 10-second office comedy clip into 2D anime. Same two coworkers, same gags, same camera. We own the footage.",
-      "expected_output": "A restyle package with the cel-anime-2d fragment and a content inventory for both coworkers, preserving the same office and full source timeline. An environment image is optional and requires a current need and approval. The muted master is @Video 1 with generate_audio false and an original-audio post route. The ladder follows Cinema's draft and promotion policy using verified route capabilities; a short probe is proposed only for an inspected difficulty and an approved span.",
+      "expected_output": "A restyle package with the cel-anime-2d fragment and a content inventory for both coworkers, preserving the same office, full source timeline and sound. An environment image is optional and requires a current need and approval. The original master is @Video 1 with verified audio support, without a mandatory mute, extract or mux. The ladder follows Cinema's draft and promotion policy using verified route capabilities; a short probe is proposed only for an inspected difficulty and an approved span.",
       "files": [],
       "assertions": [
         "The edit scope redraws every person, object and surface in the style and states exactly two people.",
         "Each coworker keeps identity cues (hair shape, wardrobe colours) described from the source, not by name.",
-        "@Video 1 is the muted master, generate_audio is false and the saved source audio is the recorded post-audio route.",
+        "@Video 1 retains source sound and native output needs no separate preparation or mix evidence; exact-master preservation requires verified support or approved stream-copy transport.",
         "The prompt names the office surfaces to redraw without requiring or automatically generating an environment image; any selected image is justified, approved and hashed.",
         "The background remains the same office with source geometry and layout authoritative; absent image roles are omitted and actual bindings are numbered.",
         "The full original timeline is preserved with no automatic 8n+1 trim, padding, rounding or retiming; any adaptation requires current capability evidence and specific user approval.",
@@ -58,7 +58,7 @@
       "expected_output": "A full-timeline restyle package that rejects automatic 8n+1 trimming and whole-second rounding. It checks current route constraints, preserves the original, and leaves incompatible settings open for an approved alternative. Returned timing is measured, not guaranteed by a past probe.",
       "files": [],
       "assertions": [
-        "The 247-frame original remains unchanged and muted picture and saved audio derive from the same full span unless a specific adaptation is approved.",
+        "The 247-frame original and its audio remain unchanged without mandatory derivatives unless a specific adaptation is approved.",
         "Neither 241 frames nor 10 seconds is imposed; current capability evidence and user approval are required for any trim, padding, rounding or retiming.",
         "QA measures decoded timestamps, duration, playback speed and cut boundaries; neither 8n+1 nor a 0.3-second tolerance establishes a pass.",
         "An unsupported route or native Draft capability is reported as an open item with alternatives, not silently replaced or justified by old probe evidence."

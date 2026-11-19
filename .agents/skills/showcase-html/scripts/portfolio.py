@@ -2,8 +2,8 @@
 
 Each project contributes its final-master lock from showcase.json. A project
 without a final_master lock is shown as in production. With --showreel, the
-locked masters are joined back to back with hard cuts and per-project gain to
-one loudness target, and a build record is written beside the video.
+compatible locked masters are joined back to back by stream copy without audio
+processing, and a build record is written beside the video.
 
 Selected delivery SRT sources accept language and label metadata. Language
 falls back only to an explicit .<language>.srt suffix; unknown language fails.
@@ -21,6 +21,7 @@ import os
 import re
 import subprocess
 import sys
+import tempfile
 from pathlib import Path
 from typing import Any
 
@@ -125,25 +126,51 @@ def srt_to_vtt(source: Path, target: Path) -> None:
     target.write_text("WEBVTT\n\n" + re.sub(r"(\d\d:\d\d:\d\d),(\d\d\d)", r"\1.\2", text), encoding="utf-8")
 
 
-def build_showreel(entries: list[dict[str, Any]], out: Path, target_lufs: float, limit: float) -> dict[str, Any]:
-    masters = [entry["master"] for entry in entries]
-    gains = [round(target_lufs - integrated_lufs(path), 2) for path in masters]
-    inputs: list[str] = []
-    parts: list[str] = []
-    labels = ""
-    for index, (path, gain) in enumerate(zip(masters, gains)):
-        inputs += ["-i", str(path)]
-        parts.append(f"[{index}:v]setpts=PTS-STARTPTS,format=yuv420p[v{index}]")
-        parts.append(f"[{index}:a]asetpts=PTS-STARTPTS,volume={gain}dB,alimiter=limit={limit}:level=false[a{index}]")
-        labels += f"[v{index}][a{index}]"
-    parts.append(f"{labels}concat=n={len(masters)}:v=1:a=1[v][a]")
-    subprocess.run(
-        ["ffmpeg", "-v", "error", "-y", *inputs, "-filter_complex", ";".join(parts),
-         "-map", "[v]", "-map", "[a]", "-c:v", "libx264", "-profile:v", "high", "-preset", "slow",
-         "-crf", "18", "-pix_fmt", "yuv420p", "-c:a", "aac", "-b:a", "192k", "-ar", "48000",
-         "-movflags", "+faststart", str(out)],
-        check=True,
+def stream_layout(path: Path) -> list[dict[str, Any]]:
+    result = subprocess.run(
+        ["ffprobe", "-v", "error", "-show_entries",
+         ("stream=codec_type,codec_name,codec_tag_string,profile,level,width,height,pix_fmt,"
+          "sample_rate,channels,channel_layout,time_base,extradata_hash"),
+         "-show_data_hash", "sha256", "-of", "json", str(path)],
+        capture_output=True, text=True, check=True,
     )
+    document = json.loads(result.stdout)
+    streams = document.get("streams") if isinstance(document, dict) else None
+    if (not isinstance(streams, list) or not streams
+            or any(not isinstance(stream, dict) or not stream.get("codec_name")
+                   or not stream.get("time_base") for stream in streams)
+            or not any(stream.get("codec_type") == "video" for stream in streams)):
+        raise ValueError(f"Cannot verify compatible video streams for {path}")
+    return streams
+
+
+def build_showreel(entries: list[dict[str, Any]], out: Path) -> dict[str, Any]:
+    if not entries:
+        raise ValueError("showreel requires at least one locked master")
+    record_path = out.with_suffix(".json")
+    if any(path.exists() or path.is_symlink() for path in (out, record_path)):
+        raise ValueError("showreel output or build record already exists")
+    masters = [entry["master"] for entry in entries]
+    for entry in entries:
+        path = entry["master"]
+        if any(character in str(path) for character in "\r\n\0"):
+            raise ValueError("showreel source path contains a control character")
+        if sha256(path) != entry["master_sha256"]:
+            raise ValueError(f"{path}: final master changed after its lock")
+    layouts = [stream_layout(path) for path in masters]
+    if any(layout != layouts[0] for layout in layouts[1:]):
+        raise ValueError("showreel requires compatible streams; request a separate conform explicitly")
+    with tempfile.NamedTemporaryFile(mode="w+", suffix=".ffconcat", encoding="utf-8") as inputs:
+        inputs.write("ffconcat version 1.0\n")
+        for path in masters:
+            escaped = str(path.resolve()).replace("'", "'\\''")
+            inputs.write(f"file '{escaped}'\n")
+        inputs.flush()
+        subprocess.run(
+            ["ffmpeg", "-v", "error", "-nostdin", "-n", "-f", "concat", "-safe", "0",
+             "-i", inputs.name, "-map", "0", "-c", "copy", "-movflags", "+faststart", str(out)],
+            check=True,
+        )
     starts, cursor = [], 0.0
     for path in masters:
         starts.append(round(cursor, 3))
@@ -152,15 +179,15 @@ def build_showreel(entries: list[dict[str, Any]], out: Path, target_lufs: float,
         "output": out.name,
         "output_sha256": sha256(out),
         "duration_s": duration(out),
-        "target_lufs": target_lufs,
-        "limiter_linear": limit,
+        "audio_processing": "stream-copy",
         "transitions": "hard cuts between complete episodes",
         "inputs": [
-            {"project": entry["slug"], "path": str(entry["master"]), "sha256": entry["master_sha256"], "gain_db": gain, "start_s": start}
-            for entry, gain, start in zip(entries, gains, starts)
+            {"project": entry["slug"], "path": str(entry["master"]), "sha256": entry["master_sha256"], "start_s": start}
+            for entry, start in zip(entries, starts)
         ],
     }
-    out.with_suffix(".json").write_text(json.dumps(record, indent=2) + "\n")
+    with record_path.open("x", encoding="utf-8") as destination:
+        destination.write(json.dumps(record, indent=2) + "\n")
     return record
 
 
@@ -192,8 +219,7 @@ article video,.pending{{width:100%;aspect-ratio:9/16;background:#000;display:blo
 """
 
 
-def build(out_dir: Path, projects: list[Path], title: str, subtitle: str, showreel: bool,
-          target_lufs: float, limit: float) -> dict[str, Any]:
+def build(out_dir: Path, projects: list[Path], title: str, subtitle: str, showreel: bool) -> dict[str, Any]:
     out_dir.mkdir(parents=True, exist_ok=True)
     out_dir = out_dir.resolve()
     entries = [project_entry(project.resolve()) for project in projects]
@@ -227,7 +253,7 @@ def build(out_dir: Path, projects: list[Path], title: str, subtitle: str, showre
             missing = [entry["slug"] for entry in entries if entry["master"] is None]
             raise ValueError(f"showreel needs a final_master lock for every project; missing: {', '.join(missing)}")
         reel_name = "showreel.mp4"
-        reel_record = build_showreel(locked, out_dir / reel_name, target_lufs, limit)
+        reel_record = build_showreel(locked, out_dir / reel_name)
     (out_dir / "index.html").write_text(page(title, subtitle, cards, reel_name), encoding="utf-8")
     manifest = {
         "title": title,
@@ -249,12 +275,10 @@ def main(argv: list[str] | None = None) -> int:
     parser.add_argument("--title", default="Portfolio")
     parser.add_argument("--subtitle", default="")
     parser.add_argument("--showreel", action="store_true")
-    parser.add_argument("--target-lufs", type=float, default=-16.0)
-    parser.add_argument("--limit", type=float, default=0.79, help="limiter ceiling as linear gain (0.79 is about -2 dBFS)")
     args = parser.parse_args(argv)
     try:
         manifest = build(Path(args.out_dir), [Path(p) for p in args.projects], args.title, args.subtitle,
-                         args.showreel, args.target_lufs, args.limit)
+                         args.showreel)
     except (ValueError, OSError, subprocess.CalledProcessError) as error:
         print(json.dumps({"ok": False, "error": str(error)}), file=sys.stderr)
         return 1

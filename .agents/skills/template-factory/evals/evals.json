@@ -89,7 +89,7 @@
         "Does not infer picture-only or post ownership merely because the ad is wordless; negative no-speech prose is not a supported mute control.",
         "Preserves native score and ambience if native-owned; separate Seed Audio generation requires explicit authorization and does not copy source recording or melody.",
         "Measures actual sound timing and tail; padding, splicing or retiming needs authorization and preserves any exact supplied master.",
-        "Assembles in the takes' original colours from exact-length intermediates."
+        "Assembles in the takes' original colours with unchanged native audio; no external finishing pass or intermediate is required merely to finalize."
       ]
     },
     {

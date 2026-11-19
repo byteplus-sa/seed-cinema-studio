@@ -230,8 +230,10 @@ uv run python $S reopen projects/<project> --stage assembly-review \
 
    `portfolio.py OUT_DIR PROJECT...` builds one page for several projects from
    their final-master locks, with subtitle tracks and canvas links. With
-   `--showreel` it joins every locked master back to back, gain-matched to
-   `--target-lufs` (default -16) with a limiter, and writes a build record.
+   `--showreel` it joins compatible locked masters back to back by stream copy,
+   without gain matching, limiting or audio re-encoding, and writes a build
+   record. Incompatible stream layouts fail for an explicitly scoped conform;
+   no silence is invented. There are no loudness or limiter CLI flags.
 
    Portfolio subtitle metadata belongs on each selected delivery-stage `sources`
    entry, for example `{"path":"assembly/master.srt","kind":"data","language":"es","label":"Spanish"}`.
