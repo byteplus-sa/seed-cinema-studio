@@ -343,8 +343,8 @@ class StudioProjectTests(unittest.TestCase):
             with self.subTest(boundary=boundary):
                 studio.init_studio(self.project)
 
-                def interrupt(path, content, **kwargs):
-                    if path.name == boundary:
+                def interrupt(path, content, stop_at=boundary, **kwargs):
+                    if path.name == stop_at:
                         raise OSError("interrupted")
                     real_write(path, content, **kwargs)
 
