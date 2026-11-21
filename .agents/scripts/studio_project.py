@@ -506,9 +506,26 @@ def picture_interval(path: Path, runner: Runner = subprocess.run) -> tuple[float
 
 def probe_duration(path: Path, runner: Runner = subprocess.run) -> float | None:
     try:
-        return picture_interval(path, runner)[1]
-    except StudioError:
+        completed = runner(
+            [
+                "ffprobe",
+                "-v",
+                "error",
+                "-show_entries",
+                "format=duration",
+                "-of",
+                "json",
+                str(path),
+            ],
+            capture_output=True,
+            text=True,
+            check=False,
+            timeout=PROBE_TIMEOUT_S,
+        )
+        value = float(json.loads(completed.stdout)["format"]["duration"])
+    except (OSError, ValueError, KeyError, TypeError, subprocess.TimeoutExpired):
         return None
+    return value if completed.returncode == 0 and value > 0 else None
 
 
 def display_dimensions(stream: dict[str, Any]) -> tuple[Fraction, Fraction]:

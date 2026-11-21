@@ -505,7 +505,7 @@ class DeliverableMediaSmokeTests(unittest.TestCase):
             self.assertAlmostEqual(media["duration_s"], 2)
             self.assertAlmostEqual(media["streams"][0]["picture_start_s"], 0.2)
             self.assertAlmostEqual(media["streams"][0]["picture_end_s"], 0.55)
-            self.assertAlmostEqual(studio.probe_duration(source), 0.55)
+            self.assertAlmostEqual(studio.probe_duration(source), 2)
 
     def test_physical_portrait_rotation_metadata_and_anamorphic_sample_aspect(self):
         with tempfile.TemporaryDirectory() as folder:

@@ -455,9 +455,7 @@ class StudioProjectTests(unittest.TestCase):
         )
 
     def test_probe_duration_parses_ffprobe_output_and_tolerates_failure(self):
-        good = fake_runner(stdout=json.dumps({"format": {"start_time": "0"}, "frames": [
-            {"best_effort_timestamp_time": "0"}, {"best_effort_timestamp_time": "5.96", "duration_time": "0.04"},
-        ]}))
+        good = fake_runner(stdout=json.dumps({"format": {"duration": "6.0"}}))
         self.assertEqual(studio.probe_duration(Path("x.mp4"), good), 6.0)
         self.assertIsNone(
             studio.probe_duration(Path("x.mp4"), fake_runner(returncode=1, stdout=""))

@@ -122,7 +122,10 @@ authorized transactional writer; never rebuild automatically during sync.
 including source trims and gaps. Its additional `runtime` binding includes the
 whole Studio tree, current context and selected-take evidence. It probes source
 picture intervals using decoded frame timestamps. A trim may end at the final
-frame boundary. An independent audio tail is outside the picture interval.
+frame boundary. Studio placement retains the full source media span so native
+sound can continue after the final image. Author an independent audio tail
+on its own timeline when the picture cut ends earlier. A straight-cut export
+rejects a picture trim into that tail.
 
 ```bash
 uv run python .agents/scripts/editorial.py export projects/<slug> --unit <unit> \
