@@ -62,17 +62,20 @@ Python (PIL). This puts all variants in a single image with labels.
 from PIL import Image, ImageDraw
 
 def contact_sheet(images, labels, out, cols=3, cell_pad=10, header_h=60, bg=(255,255,255)):
-    """images: list of PIL Images (assumed same size), labels: list of str."""
-    W, H = images[0].size
+    if not images or len(images) != len(labels) or cols < 1:
+        raise ValueError("Supply an image and label per cell and at least one column")
+    width = max(image.width for image in images)
+    height = max(image.height for image in images)
     rows = (len(images) + cols - 1) // cols
-    sheet = Image.new('RGB', (cols*W + (cols+1)*cell_pad, rows*H + (rows+1)*cell_pad + header_h), bg)
-    d = ImageDraw.Draw(sheet)
-    for i, (im, lab) in enumerate(zip(images, labels)):
-        r, c = divmod(i, cols)
-        x = cell_pad + c*(W+cell_pad)
-        y = header_h + cell_pad + r*(H+cell_pad)
-        sheet.paste(im, (x, y))
-        d.text((x, 12), lab, fill='black')
+    row_height = header_h + height + cell_pad
+    sheet = Image.new("RGB", (cols * (width + cell_pad) + cell_pad, rows * row_height + cell_pad), bg)
+    draw = ImageDraw.Draw(sheet)
+    for index, (image, label) in enumerate(zip(images, labels)):
+        row, column = divmod(index, cols)
+        x = cell_pad + column * (width + cell_pad)
+        y = cell_pad + row * row_height
+        draw.text((x, y), label, fill="black")
+        sheet.paste(image, (x, y + header_h))
     return sheet
 
 def sheet_from_paths(paths, labels, out):

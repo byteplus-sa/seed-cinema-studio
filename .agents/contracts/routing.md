@@ -121,7 +121,7 @@ profile-free request/context hashes remain unchanged. Follow
 2.5/Premium policy requires native Draft, ordinary previews are non-promotable,
 unknown profiles block execution and no model substring establishes support.
 
-The workspace default remains Seedance 2.5; legacy 2.0 may be selected for a verified capability such as an available lower-cost variant. Requested 4K needs 2.0 or, when the operator has enabled it, the whitelist-only 2.5 Premium model (the 2.5 feature set plus 4K); standard 2.5 tops out at 1080p. Skills defer to this paragraph for 4K routing. A face in a shot is a QA concern, not an automatic model switch. Chaining does not override unsupported mixed frame/reference inputs.
+The workspace default remains regular Seedance 2.5. A face alone never selects another model. Chaining cannot enable unsupported combinations of frames and references. Resolve ordinary generation, native Draft, and promotion separately for the selected exact model, transport, schema revision and current account evidence. A regular 2.5 binding may advertise ordinary 4K while its Draft promotes only to 1080p. Preserve explicit pins and the required Draft flow. An ordinary capability never bypasses a mandatory Draft, and a 4K request never silently selects another model.
 
 Credential names are BYTEPLUS_MODELARK_API_KEY and BYTEPLUS_SEED_AUDIO_API_KEY. A transport may document compatibility aliases. Resolve secrets, region, and base URL at runtime; never serialize credentials into requests, fixtures, snapshots, or logs.
 

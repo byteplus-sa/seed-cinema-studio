@@ -160,7 +160,7 @@ history remains warning-only; prepared board bindings remain errors.
 | `sheet` | Write sheet page sources and render plans. `--pages 1,3` writes only those pages; `--font` names a local font family to require |
 | `render-sheet` | Render the pages with the renderer script you name: `--renderer <path to html-graphic-render's render_html.py>`, optional `--pages` |
 | `overview` | Write the floor plan sources when `board.md` has a `layout` block |
-| `animatic` | Build the timed MP4 with FFmpeg. `--size` defaults from the board aspect ratio; `--audio` is padded or trimmed to the picture length and its hash is recorded |
+| `animatic` | Build the timed MP4 with FFmpeg. `--size` defaults from the board aspect ratio; `--audio` copies the supplied audio streams with their independent tails and records the source hash. Incompatible MP4 audio requires an explicit production choice. Use `--fit-audio` only when the user requests a fitted, AAC-encoded review proxy |
 | `review-page` | Write the static review page under `review/` |
 
 ## Procedure
@@ -221,10 +221,9 @@ Fix failed panels, not the board.
    Studio project when the decision comes from the user's chat words (`--user-words`
    makes the actor the user in either mode). Use its `ref` output as the request
    reference. The decision cannot later approve the final panel.
-4. **Edit** with `seedream_edit_image`: the failed panel as `@Image 1`, the approved
-   element sheet as `@Image 2` when identity or a prop changes, HTTPS URLs from
-   `media_upload` or `media_presign` immediately before the call, and a bounding box
-   (the tool rejects an edit with no point or bounding box; `repair-plan` defaults to
+4. **Edit** via `ark_job_submit` targeting the discovered `seedream_generate_image` tool (pass ordered references in `images`): the failed panel as `@Image 1`, the approved
+   element sheet as `@Image 2` when identity or a prop changes, using reference kinds accepted by the connected image schema. Supply a bounding box for this localized repair
+   (`repair-plan` defaults to
    the full frame and warns, and a global change usually drifts, so prefer a box or
    regeneration). Put the box in the request params as the object printed in
    `bbox_request_format`, not as the comma string. One failed dimension per edit.

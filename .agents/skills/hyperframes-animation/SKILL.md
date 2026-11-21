@@ -79,7 +79,7 @@ node <SKILL_DIR>/scripts/animation-map.mjs <composition-dir> \
 
 Reads every GSAP timeline registered on `window.__timelines`, enumerates tweens, samples bboxes, computes flags, outputs `animation-map.json`. Use it to audit choreography (dead zones, stagger consistency, lifecycle warnings) after authoring.
 
-`animation-map.mjs` resolves helper packages from the current project first, then can bootstrap the bundled HyperFrames package version. Set `HYPERFRAMES_SKILL_PKG_VERSION=<version>` only when running the skill outside the bundled CLI/skill install and you need to pin that bootstrap version explicitly.
+`animation-map.mjs` checks installed HyperFrames packages against Cinema’s 0.8.141 pin before import. If a helper is missing, an explicitly permitted temporary bootstrap uses the same version. A conflicting installed or requested version stops the command and preserves project dependencies.
 
 ## See Also
 

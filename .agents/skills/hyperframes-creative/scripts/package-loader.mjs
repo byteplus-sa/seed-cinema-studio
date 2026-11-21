@@ -1,6 +1,6 @@
 // package-loader — bootstrap optional helper packages only when missing, with
 // defense-in-depth so a malicious or typo'd dependency can't run on install:
-//   • specs are version-pinned (assertPinnedPackageSpecs) — no floating "latest"
+//   • specs match the Cinema helper pin — no floating "latest"
 //   • install runs `npm install --ignore-scripts` — package lifecycle scripts
 //     never execute
 //   • `--no-save` into a throwaway tmp dir — the host project is left untouched
@@ -17,24 +17,42 @@ import { createInterface } from "node:readline/promises";
 import { fileURLToPath, pathToFileURL } from "node:url";
 
 const HERE = dirname(fileURLToPath(import.meta.url));
+const CINEMA_HELPER_VERSION = "0.8.141";
 const VERSION_OVERRIDE_ENV = "HYPERFRAMES_SKILL_PKG_VERSION";
 const BOOTSTRAP_ENV = "HYPERFRAMES_SKILL_DEPS_BOOTSTRAPPED";
 const BOOTSTRAP_CONFIRM_ENV = "HYPERFRAMES_SKILL_BOOTSTRAP_DEPS";
 const NODE_MODULES_ENV = "HYPERFRAMES_SKILL_NODE_MODULES";
 
 export async function importPackagesOrBootstrap(packageNames, options = {}) {
+  const roots = new Set(packageNames.map(name => splitPackageSpecifier(name).rootName));
+  const specs = options.npmPackages ?? [...roots].map(hyperframesPackageSpec);
+  const versions = new Map();
+  for (const spec of specs) {
+    const separator = spec.lastIndexOf("@");
+    const root = spec.slice(0, separator);
+    const version = spec.slice(separator + 1);
+    if (separator <= 0 || !roots.has(root) || versions.has(root) || !/^\d+\.\d+\.\d+$/.test(version)) {
+      throw new Error(`Expected exactly one pinned version for each requested helper: ${spec}`);
+    }
+    if (root.startsWith("@hyperframes/") && spec !== hyperframesPackageSpec(root)) {
+      throw new Error(`${root} expected ${CINEMA_HELPER_VERSION}, found ${version}`);
+    }
+    versions.set(root, version);
+  }
+  if (versions.size !== roots.size) {
+    throw new Error("An exact package pin is required for each requested helper");
+  }
   const entries = new Map();
   const missing = [];
 
   for (const packageName of packageNames) {
-    const entry = resolvePackageEntry(packageName);
+    const entry = resolvePackageEntry(packageName, versions.get(splitPackageSpecifier(packageName).rootName));
     if (entry) entries.set(packageName, entry);
     else missing.push(packageName);
   }
 
   if (missing.length > 0 && !process.env[BOOTSTRAP_ENV]) {
-    const npmPackages = options.npmPackages ?? missing;
-    assertPinnedPackageSpecs(npmPackages);
+    const npmPackages = specs;
     await confirmBootstrap(npmPackages);
     bootstrapWithNpmInstall(npmPackages);
   }
@@ -44,7 +62,7 @@ export async function importPackagesOrBootstrap(packageNames, options = {}) {
       [
         `Could not resolve required package(s): ${missing.join(", ")}`,
         "Install them in this project, for example:",
-        `  npm install --save-dev ${packageNames.map(shellQuote).join(" ")}`,
+        `  npm install --save-dev ${specs.map(shellQuote).join(" ")}`,
       ].join("\n"),
     );
   }
@@ -139,27 +157,14 @@ export async function initializeSessionWithRetry(producer, createSession, option
 }
 
 export function hyperframesPackageSpec(packageName) {
-  const override = process.env[VERSION_OVERRIDE_ENV]?.trim();
-  if (override) return `${packageName}@${override}`;
-
-  const version = readBundledHyperframesVersion();
-  if (version) return `${packageName}@${version}`;
-
-  // Global skill installs have no hyperframes package.json
-  // in their ancestor chain, so the bundled version is unknowable. Fall back to
-  // @latest instead of throwing: already-installed packages still import, and a
-  // bootstrap install can still proceed (@latest satisfies the pinned-spec guard).
-  process.stderr.write(
-    [
-      `hyperframes: could not determine the bundled version for ${packageName}; using @latest.`,
-      `Set ${VERSION_OVERRIDE_ENV}=<version> to pin it.`,
-      "",
-    ].join("\n"),
-  );
-  return `${packageName}@latest`;
+  const requested = process.env[VERSION_OVERRIDE_ENV]?.trim();
+  if (requested && requested !== CINEMA_HELPER_VERSION) {
+    throw new Error(`Cinema helpers require ${CINEMA_HELPER_VERSION}; received ${requested}`);
+  }
+  return `${packageName}@${CINEMA_HELPER_VERSION}`;
 }
 
-function resolvePackageEntry(packageName) {
+function resolvePackageEntry(packageName, expectedVersion) {
   const bases = [process.cwd(), HERE, ...envNodeModulesDirs(), ...nodeModulesDirsFromPath()];
   const { rootName, subpath } = splitPackageSpecifier(packageName);
 
@@ -169,13 +174,18 @@ function resolvePackageEntry(packageName) {
     if (seen.has(normalized)) continue;
     seen.add(normalized);
 
+    const packageDir = findPackageDir(normalized, rootName);
+    if (!packageDir) continue;
+    const manifest = JSON.parse(readFileSync(join(packageDir, "package.json"), "utf8"));
+    if (manifest.name !== rootName || manifest.version !== expectedVersion) {
+      throw new Error(`${rootName} expected ${expectedVersion}, found ${manifest.version}`);
+    }
     try {
       return createRequire(join(normalized, "__hyperframes_skill_loader__.cjs")).resolve(
         packageName,
       );
     } catch {
-      const packageDir = findPackageDir(normalized, rootName);
-      const packageEntry = packageDir ? readPackageEntry(packageDir, subpath) : null;
+      const packageEntry = readPackageEntry(packageDir, subpath);
       if (packageEntry) return packageEntry;
     }
   }
@@ -190,31 +200,6 @@ function splitPackageSpecifier(packageName) {
     rootName: segments.slice(0, rootLength).join("/"),
     subpath: segments.slice(rootLength).join("/"),
   };
-}
-
-function readBundledHyperframesVersion() {
-  for (const ancestor of ancestors(HERE)) {
-    const directVersion = readPackageVersion(join(ancestor, "package.json"));
-    if (directVersion) return directVersion;
-
-    const monorepoCliVersion = readPackageVersion(
-      join(ancestor, "packages", "cli", "package.json"),
-    );
-    if (monorepoCliVersion) return monorepoCliVersion;
-  }
-  return null;
-}
-
-function readPackageVersion(packageJsonPath) {
-  try {
-    const manifest = JSON.parse(readFileSync(packageJsonPath, "utf8"));
-    if (manifest.name === "hyperframes" || manifest.name === "@hyperframes/cli") {
-      return typeof manifest.version === "string" ? manifest.version : null;
-    }
-  } catch {
-    // Keep searching ancestor package manifests.
-  }
-  return null;
 }
 
 function envNodeModulesDirs() {
@@ -271,26 +256,6 @@ function exportEntry(exports) {
     return root.node.import ?? root.node.default ?? null;
   }
   return null;
-}
-
-function assertPinnedPackageSpecs(packageSpecs) {
-  const unpinned = packageSpecs.filter((spec) => !hasVersionSpec(spec));
-  if (unpinned.length === 0) return;
-  throw new Error(
-    [
-      `Refusing to bootstrap unpinned package spec(s): ${unpinned.join(", ")}`,
-      "Pass pinned npm package specs, for example:",
-      `  ${packageSpecs.map((spec) => (hasVersionSpec(spec) ? spec : `${spec}@<version>`)).join(" ")}`,
-    ].join("\n"),
-  );
-}
-
-function hasVersionSpec(packageSpec) {
-  if (packageSpec.startsWith("@")) {
-    const slash = packageSpec.indexOf("/");
-    return slash !== -1 && packageSpec.indexOf("@", slash + 1) !== -1;
-  }
-  return packageSpec.includes("@");
 }
 
 async function confirmBootstrap(packageSpecs) {

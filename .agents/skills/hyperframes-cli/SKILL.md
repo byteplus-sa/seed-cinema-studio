@@ -20,8 +20,8 @@ Run commands as `npx hyperframes ...` unless project instructions provide a wrap
 ## Development loop
 
 1. **Scaffold:** `npx hyperframes init <project>` (centered blank). Or capture a site. Pass `--example=<name>` only to start from a named example.
-2. **Find the move:** if the request names an asset, sound, image, voice or fast visual edit, resolve it through `/media-use` before proposing a plan. Otherwise, before authoring motion by hand, search for a primitive that already does it: `npx hyperframes catalog --query "reveal a headline one line at a time"`. Ask for the effect you want rather than the mechanism you have in mind. Install with `npx hyperframes add <name>` (see `/hyperframes-registry`). Author by hand only once nothing fits.
-3. **Author:** write the composition using `/hyperframes-core`. To know what is on a project's timeline (tracks, clips, starts, ends, what plays), run `npx hyperframes timeline --json` instead of reading `index.html` and every sub-composition file: nested rows carry absolute main-timeline `absStart`/`absEnd` and their owning `file`, not just their local, per-sub-composition time. Prefer `--json` over the text form; it costs fewer tokens for the same or better correctness. See `references/upgrade-info-misc.md` for one-liners that answer common questions without reading the whole output.
+2. **Find the move:** if the request names an asset, sound, image, voice or fast visual edit, resolve it through [Cinema media routing](../../contracts/routing.md) before proposing a plan. Otherwise, before authoring motion by hand, search for a primitive that already does it: `npx hyperframes catalog --query "reveal a headline one line at a time"`. Ask for the effect you want rather than the mechanism you have in mind. Install with `npx hyperframes add <name>` (see `/hyperframes-registry`). Author by hand only once nothing fits.
+3. **Author:** Inspect the Studio index and its referenced compositions for timing, tracks and owning files. Use the pinned Studio status/check commands to validate the edit.
 4. **Get fast feedback while editing:** run `npx hyperframes lint` after the first HTML pass and after structural changes.
 5. **Run the final gate:** run `npx hyperframes check`; it reruns lint before opening the browser. Do not prepend a redundant standalone lint invocation. Add `--snapshots` for annotated overview frames and finding crops.
 6. **Inspect sub-compositions:** when `index.html` mounts `data-composition-src`, capture midpoint snapshots and inspect each mounted scene.
@@ -30,18 +30,9 @@ Run commands as `npx hyperframes ...` unless project instructions provide a wrap
 9. **Hand the project to the desktop app (on offer):** when the render's Framey line ends in `hyperframes open …`, offer `npx hyperframes open [dir]`. It opens the project in the HyperFrames desktop app and adds it to Home; under Claude Code, Codex or Grok its chat picks up this conversation. Without the app it exits 1 and prints the download link. `--json` for agents. When `open` says to run `catch-up` once the person is back, or any command ends with a line naming it, run `npx hyperframes catch-up [dir]` before your next change: it lists what was asked and changed in the app since the hand-off. An older CLI has no `catch-up`.
 10. **Verify the output:** confirm the file exists and is non-empty. Read the render summary's second line (`beginframe` vs `screenshot`, GPU, stage timings). `screenshot` + `software gpu` on Linux is the slow path. `ffprobe -v error -show_format -show_streams` and compare duration (and fps if the brief set it) to the root `data-duration`.
 
-<!-- history (trial): remove this block together with the command -->
+### Protect existing edits
 
-### Project history in your turn
-
-Every write to the project is kept as an entry that can be undone. Use it at two moments only, never on every step:
-
-- **Start of a turn:** `npx hyperframes history begin --who <your-name> --label "<what you are about to do>"`, then `npx hyperframes history --since mine --who <your-name>` to see what the person changed since your last turn. Build on their edits; never overwrite them.
-- **A check failed, or the person says it got worse:** `npx hyperframes history undo --who <your-name>` undoes your newest turn and leaves the person's edits alone. Do not hand-edit back. On a conflict it exits 2 and prints both choices.
-
-End each turn with `npx hyperframes history end`, so your writes read as yours, not as "Changed outside the app". While a turn is open, every write to the project counts as yours until 10 minutes pass without one; after that the turn has ended by itself.
-
-<!-- /history (trial) -->
+Inspect the current files before editing. The pinned Cinema wrapper does not expose upstream timeline or history commands. Use Studio status and check, inspect the relevant composition, and preserve the user’s changes when a check fails.
 
 ## Mandatory creator-edit cross-references
 
@@ -54,7 +45,7 @@ End each turn with `npx hyperframes history end`, so your writes read as yours, 
 - For fade-in/fade-out, crossfade, track gain, volume automation, ducking,
   voiceover carve, or FX on placed audio, read `/hyperframes-audio`. Load core
   alongside it when clip placement or picture timing also changes.
-- A request naming an asset, sound, image, voice or fast visual edit resolves through `/media-use` before a plan is proposed.
+- A request naming an asset, sound, image, voice or fast visual edit resolves through [Cinema media routing](../../contracts/routing.md) before a plan is proposed.
   Copy creator edit markup from `/hyperframes-core` → `references/creator-editing-recipes.md`.
 
 ```bash
@@ -166,7 +157,7 @@ The following references and owning skills are mandatory command contracts, not 
 | Google Cloud Run deployment and rendering                                                          | `references/cloudrun.md`              |
 | `info`, `upgrade`, `compositions`, `timeline`, `docs`, `benchmark`, telemetry, media preprocessing | `references/upgrade-info-misc.md`     |
 
-For composition variables, also read `/hyperframes-core` → `references/variables-and-media.md`. For `hyperframes add` and `hyperframes catalog`, use `/hyperframes-registry`. Before `hyperframes present`, read `/slideshow`; before `hyperframes keyframes`, read `/hyperframes-keyframes`. For TTS, transcription, captions, or background removal choices, use `/media-use`.
+For composition variables, also read `/hyperframes-core` → `references/variables-and-media.md`. For `hyperframes add` and `hyperframes catalog`, use `/hyperframes-registry`. Before `hyperframes present`, read `/slideshow`; before `hyperframes keyframes`, read `/hyperframes-keyframes`. For TTS, transcription, captions, or background removal choices, use [Cinema media routing](../../contracts/routing.md).
 
 The specialized commands are deliberately documented by their owning workflows:
 
@@ -178,7 +169,7 @@ npx hyperframes media-treatment --capabilities
 npx hyperframes figma asset KEY:10-20
 ```
 
-`present` serves a navigable deck with presenter and audience synchronization. `beats` is the standalone Studio beat-grid utility defined in `references/beats.md`. `keyframes` surfaces seek-safe animation and motion-path diagnostics. `media-treatment` discovers, applies, and clears deterministic looks on local footage — start with `--capabilities` for the overview and `--capability <name>` for one family; `/media-use` owns which treatment a brief is asking for. `figma` imports over the REST API with the `asset`, `tokens`, and `component` subcommands and needs `FIGMA_TOKEN`; motion and shader import have no REST endpoint and are agent-only, so `/figma` owns those.
+`present` serves a navigable deck with presenter and audience synchronization. `beats` is the standalone Studio beat-grid utility defined in `references/beats.md`. `keyframes` surfaces seek-safe animation and motion-path diagnostics. `media-treatment` discovers, applies, and clears deterministic looks on local footage — start with `--capabilities` for the overview and `--capability <name>` for one family; [Cinema media routing](../../contracts/routing.md) owns which treatment a brief is asking for. `figma` imports over the REST API with the `asset`, `tokens`, and `component` subcommands and needs `FIGMA_TOKEN`; motion and shader import have no REST endpoint and are agent-only, so `/figma` owns those.
 
 ## Commands you should not run
 

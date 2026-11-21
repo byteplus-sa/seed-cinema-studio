@@ -305,6 +305,59 @@ class StudioProjectTests(unittest.TestCase):
         self.assertEqual(after.count("## Frame"), 2)
         self.assertIn("- take: s01_sh010_t01_v01.mp4", after)
 
+    def test_interrupted_sync_resumes_without_duplicate_frames(self):
+        for shot in ("s01_sh010", "s01_sh020"):
+            self.add_shot(shot, selected=f"{shot}_t01_v01.mp4")
+        studio.init_studio(self.project)
+        real_write = studio.atomic_write
+
+        def interrupt(path, content, **kwargs):
+            if path.name == "s01_sh020.html":
+                raise OSError("interrupted")
+            real_write(path, content, **kwargs)
+
+        with (
+            mock.patch.object(studio, "atomic_write", side_effect=interrupt),
+            self.assertRaisesRegex(OSError, "interrupted"),
+        ):
+            studio.sync(self.project)
+        first = self.root / "compositions/s01_sh010.html"
+        original = first.read_text()
+        first.write_text("edited by the operator")
+        with self.assertRaisesRegex(studio.StudioError, "changed"):
+            studio.sync(self.project)
+        self.assertEqual(first.read_text(), "edited by the operator")
+        first.write_text(original)
+        studio.sync(self.project)
+        studio.sync(self.project)
+        for shot in ("s01_sh010", "s01_sh020"):
+            self.assertEqual((self.root / "index.html").read_text().count(f'compositions/{shot}.html'), 1)
+            self.assertEqual((self.root / "STORYBOARD.md").read_text().count(f'— {shot}'), 1)
+        self.assertFalse((self.root / ".sync-pending.json").exists())
+
+    def test_sync_retries_each_publication_boundary(self):
+        for shot in ("s01_sh010", "s01_sh020"):
+            self.add_shot(shot, selected=f"{shot}_t01_v01.mp4")
+        real_write = studio.atomic_write
+        for boundary in ("s01_sh010.html", "s01_sh020.html", "STORYBOARD.md", "index.html", "provenance.json"):
+            with self.subTest(boundary=boundary):
+                studio.init_studio(self.project)
+
+                def interrupt(path, content, stop_at=boundary, **kwargs):
+                    if path.name == stop_at:
+                        raise OSError("interrupted")
+                    real_write(path, content, **kwargs)
+
+                with (
+                    mock.patch.object(studio, "atomic_write", side_effect=interrupt),
+                    self.assertRaisesRegex(OSError, "interrupted"),
+                ):
+                    studio.sync(self.project)
+                studio.sync(self.project)
+                for shot in ("s01_sh010", "s01_sh020"):
+                    self.assertEqual((self.root / "index.html").read_text().count(f"compositions/{shot}.html"), 1)
+                shutil.rmtree(self.root)
+
     def test_active_take_is_used_when_nothing_is_selected(self):
         self.add_shot(
             takes={"s01_sh010_t01_v01.mp4": b"a", "s01_sh010_t02_v01.mp4": b"b"},

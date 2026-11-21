@@ -120,7 +120,7 @@ Always include:
 Use this canonical neutral-expression phrase verbatim in every character sheet:
 
 ```text
-Relaxed neutral expression in all panels: mouth relaxed and closed, eyes looking straight into camera, no smile, no frown, no raised brows, no emotion.
+Relaxed neutral expression in all panels: mouth relaxed and closed, eyes toward camera in the frontal views and head facing away in the back view, no smile, no frown, no raised brows, no emotion.
 ```
 
 ### Wearables: always-worn versus scene-variant
@@ -274,7 +274,7 @@ Task:
 Text-to-Image (T2I)
 
 Subject:
-Character reference sheet, single character [name / description, complexion, appeal traits, hair length relative to the garments]. Same person in all panels, consistent identity. Plain fabric with no visible label or print unless the costume has canonical graphics. Relaxed neutral expression in all panels: mouth relaxed and closed, eyes looking straight into camera, no smile, no frown, no raised brows, no emotion. Three-panel sheet only: one full-body back view, one full-body front view, and one face close-up panel. Worn outfit elements only — hat, helmet, always-worn eyewear, jewelry — nothing held in the hands, no props, no weapons.
+Character reference sheet, single character [name / description, complexion, appeal traits, hair length relative to the garments]. Same person in all panels, consistent identity. Plain fabric with no visible label or print unless the costume has canonical graphics. Relaxed neutral expression in all panels: mouth relaxed and closed, eyes toward camera in the frontal views and head facing away in the back view, no smile, no frown, no raised brows, no emotion. Three-panel sheet only: one full-body back view, one full-body front view, and one face close-up panel. Worn outfit elements only — hat, helmet, always-worn eyewear, jewelry — nothing held in the hands, no props, no weapons.
 
 Setting:
 Clean plain gray studio background, consistent across all three panels. No props, no held objects, no furniture, no background variation.
@@ -305,7 +305,7 @@ Task:
 Text-to-Image (T2I)
 
 Subject:
-3-view character reference sheet for a film character. The same man in all three views: youthful attractive man in his early 30s, warm olive-brown skin, dark thick curly hair, thin mustache with a small soul-patch under the lip, faint stubble along the jaw, two small silver hoop earrings on the left ear, thin silver chain necklace, subtly asymmetrical face, a small subtle healed scar near the right eye. Age-of-sail pirate costume: faded mustard-yellow durag tied at the back with the tails hanging down, small shark tooth pendant attached to the durag above the left temple, open plain off-white linen shirt with no label or print, worn dark leather vest, wide sash belt, baggy dark breeches, scuffed leather boots, weathered and dirty fabrics. Relaxed neutral expression in all panels: mouth relaxed and closed, eyes looking straight into camera, no smile, no frown, no raised brows, no emotion. Three panels only: full-body back view, full-body front view, and frontal face close-up.
+3-view character reference sheet for a film character. The same man in all three views: youthful attractive man in his early 30s, warm olive-brown skin, dark thick curly hair, thin mustache with a small soul-patch under the lip, faint stubble along the jaw, two small silver hoop earrings on the left ear, thin silver chain necklace, subtly asymmetrical face, a small subtle healed scar near the right eye. Age-of-sail pirate costume: faded mustard-yellow durag tied at the back with the tails hanging down, small shark tooth pendant attached to the durag above the left temple, open plain off-white linen shirt with no label or print, worn dark leather vest, wide sash belt, baggy dark breeches, scuffed leather boots, weathered and dirty fabrics. Relaxed neutral expression in all panels: mouth relaxed and closed, eyes toward camera in the frontal views and head facing away in the back view, no smile, no frown, no raised brows, no emotion. Three panels only: full-body back view, full-body front view, and frontal face close-up.
 
 Setting:
 Plain gray seamless studio backdrop, consistent across all three panels, with thin subtle vertical divider lines separating the panels.
@@ -333,8 +333,8 @@ Recommended sequence:
 4. If needed, optionally compose with `seedream-character-sheet-cleanup`.
    For a new outfit on an approved sheet, compose with
    `seedream-character-outfit` instead of regenerating the identity.
-5. Save each generated result under `elements/<character-id>/` beside `character.md`.
-6. Record the approved filename as `selected_variant` in `character.md`; keep reference images in the same element folder using the `ref_<NN>_...` convention.
+5. Save each generated result under `elements/<character-id>/` beside the Studio manifest `element.md`.
+6. In Studio projects use `studio_project.py lock-element` with the mode-authorized decision to record approval and `selected_variant` in the YAML frontmatter of `element.md`; keep reference images in the same element folder using the `ref_<NN>_...` convention.
 
 ## Example asset
 

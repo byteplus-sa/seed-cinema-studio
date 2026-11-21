@@ -25,7 +25,7 @@ This skill is the **technical contract** — how to build one hyperframes projec
 | `references/minimal-composition.md`     | start from the smallest renderable composition skeleton                                                                                                             |
 | `references/composition-patterns.md`    | choose monolithic vs modular; structure a modular `index.html`; pick a sub-comp archetype                                                                           |
 | `references/data-attributes.md`         | look up any `data-*` (root / clip / sub-comp host / legacy aliases); use `class="clip"`                                                                             |
-| `references/tracks-and-clips.md`        | understand what `data-track-index` does (and does not) control, z-index, time a clip relative to another; list every track and clip with `npx hyperframes timeline` |
+| `references/tracks-and-clips.md`        | understand what `data-track-index` does (and does not) control, z-index, time a clip relative to another; inspect the Studio index and referenced compositions |
 | `references/creator-editing-recipes.md` | copy truthful cut/trim/reorder/retime/freeze/camera/mask/crossfade/audio editing recipes and their limits                                                           |
 | `references/sub-compositions.md`        | wire a sub-composition (host attrs, `<template>`, per-instance vars) and animate inside it                                                                          |
 | `references/variables-and-media.md`     | declare variables; place `<video>`/`<audio>`, set volume, trim                                                                                                      |
@@ -83,7 +83,7 @@ Surfaced here; full rationale in the linked reference. Do not violate:
 ## Editing existing compositions
 
 - Read the files first. Preserve unrelated timing, tracks, IDs, variables, media paths.
-- To know what is on a project's timeline (tracks, clips, starts, ends, what plays), run `npx hyperframes timeline [--json]` instead of reading `index.html` and every sub-composition file.
+- Inspect the Studio index and its referenced compositions for timing, tracks and owning files. Use the pinned Studio status/check commands to validate the edit.
 - Match existing composition IDs and timeline keys.
 - Adding a clip: set its `data-start`/`data-duration` intentionally against the clips around it. `data-track-index` is a Studio display lane, not a timing constraint, so it does not need to be free.
 - A clip that ends past the root `data-duration` is cut off: extend the root `data-duration` to the clip's end in the same edit (`lint` warns `clip_ends_past_root_duration`).

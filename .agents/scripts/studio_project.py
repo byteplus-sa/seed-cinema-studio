@@ -283,7 +283,9 @@ def scope_matches(project: Path | ProductionContext, record: dict[str, Any]) -> 
 
 
 @contextmanager
-def studio_writer(project: Path | ProductionContext) -> Iterator[ProductionContext]:
+def studio_writer(
+    project: Path | ProductionContext, *, resume_sync: bool = False,
+) -> Iterator[ProductionContext]:
     context = studio_context(project)
     root = studio_root(context)
     digest = hashlib.sha256(str(root).encode()).hexdigest()
@@ -292,6 +294,8 @@ def studio_writer(project: Path | ProductionContext) -> Iterator[ProductionConte
     with os.fdopen(descriptor, "r+") as handle:
         fcntl.flock(handle, fcntl.LOCK_EX)
         try:
+            if not resume_sync and (root / ".sync-pending.json").exists():
+                raise StudioError("Studio sync is incomplete; retry sync before other writes")
             yield studio_context(context)
         finally:
             fcntl.flock(handle, fcntl.LOCK_UN)
@@ -1052,13 +1056,44 @@ def canvas_size(
     return dimensions(shots[0].aspect, shots[0].resolution)
 
 
+def finish_sync(project: ProductionContext, journal: Path) -> None:
+    if journal.is_symlink():
+        raise StudioError("Sync journal must be a regular file")
+    if not journal.exists():
+        return
+    records = json.loads(read_text(journal))
+    if not isinstance(records, dict) or not records:
+        raise StudioError("Invalid sync journal")
+    pending = []
+    for relative, record in records.items():
+        if relative not in {"index.html", "STORYBOARD.md"} and not re.fullmatch(
+            r"compositions/[A-Za-z][A-Za-z0-9_-]*\.html", relative
+        ):
+            raise StudioError("Invalid sync publication path")
+        if not isinstance(record, list) or len(record) != 2:
+            raise StudioError("Invalid sync publication record")
+        original, desired = record
+        if not isinstance(desired, str) or (original is not None and not isinstance(original, str)):
+            raise StudioError("Invalid sync publication content")
+        target = studio_path(project, relative)
+        if target.is_symlink() or target.parent.is_symlink():
+            raise StudioError("Sync publication cannot replace a symlink")
+        current = read_text(target) if target.exists() else None
+        if current != desired:
+            require_unchanged(target, original)
+            pending.append((target, desired, original))
+    for target, desired, original in pending:
+        atomic_write(target, desired, expected=original)
+    journal.unlink()
+
+
 def sync(
     project: Path | ProductionContext,
     requested: dict[str, str] | None = None,
     probe: Probe = probe_duration,
     size_probe: SizeProbe = probe_size,
 ) -> SyncReport:
-    with studio_writer(project) as context:
+    with studio_writer(project, resume_sync=True) as context:
         return _sync(context, requested, probe, size_probe)
 
 
@@ -1069,6 +1104,8 @@ def _sync(
     size_probe: SizeProbe,
 ) -> SyncReport:
     project = studio_context(project)
+    journal = studio_path(project, ".sync-pending.json")
+    finish_sync(project, journal)
     requested = requested or {}
     shots = discover_shots(project)
     if not shots:
@@ -1170,15 +1207,16 @@ def _sync(
     require_unchanged(storyboard_path, original_storyboard)
     for path, _ in compositions:
         require_unchanged(path, None)
-    for path, content in compositions:
-        atomic_write(path, content, expected=None)
+    writes: dict[str, tuple[str | None, str]] = {
+        f"compositions/{path.name}": (None, content) for path, content in compositions
+    }
     if storyboard_changed:
-        atomic_write(storyboard_path, header + "".join(sections), expected=original_storyboard)
+        writes["STORYBOARD.md"] = (original_storyboard, header + "".join(sections))
     if pending:
-        atomic_write(
-            index_path, with_root_duration(html, max(root_duration(html), cursor)),
-            expected=original_html,
-        )
+        writes["index.html"] = (original_html, with_root_duration(html, max(root_duration(html), cursor)))
+    if writes:
+        atomic_write(journal, json.dumps(writes), expected=None)
+        finish_sync(project, journal)
     write_provenance(project, shots)
     return report
 

@@ -198,14 +198,6 @@ shoulder and the back of his head sit soft and dark at the left of the frame
 while Marta is sharp and facing the camera, medium close-up, eye level, ending
 on a static lock.`
 
-**Dutch angle template:** `Dutch angle on <subject>: hold the camera rolled
-<clockwise/counterclockwise> so the horizon stays visibly diagonal, framing
-<shot size>.` State a mild or pronounced cant when relevant. A held cant is an
-orientation, not a rolling camera move; describe a changing roll separately and
-describe its compatibility with the camera path. It may accompany a move, such as
-a slow dolly in. These additions are prompt-authoring heuristics, not verified
-model controls or guarantees of simulated optics.
-
 ## Parameter schema
 
 Fill these knobs when composing a Camera block. Only `move` (or `style`) is

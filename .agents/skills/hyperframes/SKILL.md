@@ -66,16 +66,12 @@ Apply the first matching row; do not evaluate lower state rows:
 | Specific operation on an existing HyperFrames project: inspect, diagnose, validate, preview, render, publish, or batch-render | Perform only that operation. Skip intent and workflow routing; load `/hyperframes-cli` and any required domain skills.                                                                                                                 |
 | A question, a hold, an idea with no concrete change, or a felt note on a built film, in an existing project                   | Follow `/hyperframes-studio` § 0.                                                                                                                                                                                                      |
 | A new film asked for inside an existing project                                                                               | Apply the workspace production routing above; `film-production` owns the lifecycle and `/hyperframes-studio` supplies editing conventions. |
-| Specific edit to an existing project                                                                                          | Make the edit. Do not run the intent layer. To know what is on a project's timeline (tracks, clips, starts, ends, what plays), run `npx hyperframes timeline [--json]` instead of reading `index.html` and every sub-composition file. |
+| Specific edit to an existing project                                                                                          | Make the edit. Do not run the intent layer. Inspect the Studio index and its referenced compositions for timing, tracks and owning files. Use the pinned Studio status/check commands to validate the edit. |
 | `BRIEF.md` exists                                                                                                             | Apply the workspace production overlay first. For remaining composition-only work, read `workflow` and `flow`; enter an available local workflow, or report its absence under § 4. Companion composition work uses the local domain skills in § 5. |
 | No brief, but `hyperframes.json` or `STORYBOARD.md` exists                                                                    | Resume from project files and recorded preferences. Infer the owning workflow from existing artifacts. If it cannot be determined uniquely, ask one routing-only question; do not run the intent interview.                            |
 | Fresh creation                                                                                                                | Apply the workspace production overlay first. Only for remaining non-production workflows, run the intent layer in `references/intent-interview.md`, then route once using § 2. |
 
-<!-- history (trial): remove this block together with the command -->
-
-When you edit an existing project, bracket your edits with project history (`/hyperframes-cli`, Project history in your turn).
-
-<!-- /history (trial) -->
+Before editing, inspect the current files and preserve user-owned changes. The Cinema wrapper does not expose upstream history commands.
 
 If a fresh request does not identify the subject or input, ask what the video is about before routing. Check preferences and recipes before asking anything (`references/intent-interview.md`, step 1). A `figma.com` input or a named recipe changes intake, not routing — the interview's "Adapt orthogonal inputs" section handles both.
 
@@ -142,7 +138,7 @@ If the matched workflow's `SKILL.md` is present under `.agents/skills/<workflow-
 | Motion rules, scene blueprints, transitions, runtime adapters                                                                               | `/hyperframes-animation` |
 | Seek-safe GSAP, CSS, Anime.js, WAAPI, FLIP, paths, masks, SVG, 3D keyframes, or `hyperframes keyframes` diagnostics                         | `/hyperframes-keyframes` |
 | Design specs, concept, palette, typography, narration, beat planning                                                                        | `/hyperframes-creative`  |
-| Images, icons, logos, audio, captions, grades, LUTs, reusable media                                                                         | `/media-use`             |
+| Images, icons, logos, audio, captions, grades, LUTs, reusable media                                                                         | [Cinema media routing](../../contracts/routing.md)             |
 | Voiceover carve, audio effect chains, automation envelopes, or one chain/fader across several tracks (submix bus)                           | `/hyperframes-audio`     |
 | Init, lint, check, snapshots, compare, batch render, Studio, render, publish, or diagnostics                                                | `/hyperframes-cli`       |
 | Registry blocks and components                                                                                                              | `/hyperframes-registry`  |
@@ -158,20 +154,13 @@ Creator edit phrases are cross-domain requests. Load every skill named in the ma
 | fade, crossfade, track gain/volume, automation, duck/carve, audio effects, or one effect across several tracks     | `/hyperframes-core` + `/hyperframes-audio`; core places clips, audio mixes placed tracks, including submix buses. |
 | picture and sound edits that combine cuts with camera motion or mixing                                             | `/hyperframes-core` + `/hyperframes-keyframes` when there is visual motion + `/hyperframes-audio` when sound is mixed or processed. |
 | lay out a project so it reads well in Studio: caption track, tracks per element kind, sub-compositions, safe zones | `/hyperframes-studio` + `/hyperframes-core`; studio owns the layout conventions, core owns each edit.                                                                             |
-| source or generate media, or preprocess an unsupported mid-source freeze                                           | `/media-use`; sourcing/generation/preprocessing only, never placed-track mixing.                                                                                                  |
+| source or generate media, or preprocess an unsupported mid-source freeze                                           | [Cinema media routing](../../contracts/routing.md); sourcing/generation/preprocessing only, never placed-track mixing.                                                                                                  |
 
 Constant `data-playback-rate` is render-safe for picture and pitch-preserved
 sound. Speed ramps are a `rate` lane in `data-automation`.
 For copyable edit contracts, load `/hyperframes-core` → `references/creator-editing-recipes.md`.
 
-Broad feedback about how photographic media looks or behaves also routes to
-`/media-use`, even when the user never says “color grading” or “effect”: fix
-dark/flat/boring footage, stylize a clip, hide a face, or improve a media
-reveal. Read `../media-use/references/media-treatments.md` before editing a
-treatment; it governs how footage is treated, never whether media may be used.
-Do not substitute a generic LUT, CSS filter/overlay, or opacity tween for an
-existing canonical treatment primitive. Keep text/layout/motion-only edits in
-their owning domain.
+For dark footage, a requested grade or a reveal, inspect the source and use the Cinema finishing route in the [workspace routing contract](../../contracts/routing.md). For new media or voiceover use its sourcing route. Keep placed-track mixing in the audio domain.
 During a build with important photographic media, include one grounded
 media-polish scan in the final quality pass; leaving suitable media unchanged is
 a valid result.
