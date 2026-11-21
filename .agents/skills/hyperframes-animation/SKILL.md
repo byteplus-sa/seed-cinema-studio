@@ -79,7 +79,7 @@ node <SKILL_DIR>/scripts/animation-map.mjs <composition-dir> \
 
 Reads every GSAP timeline registered on `window.__timelines`, enumerates tweens, samples bboxes, computes flags, outputs `animation-map.json`. Use it to audit choreography (dead zones, stagger consistency, lifecycle warnings) after authoring.
 
-`animation-map.mjs` checks installed helper versions against Cinema’s exact 0.8.141 pin before import. If a helper is missing, an explicitly permitted temporary bootstrap uses the same version. A conflicting installed or requested version stops the command and preserves project dependencies.
+`animation-map.mjs` checks installed HyperFrames packages against Cinema’s 0.8.141 pin before import. If a helper is missing, an explicitly permitted temporary bootstrap uses the same version. A conflicting installed or requested version stops the command and preserves project dependencies.
 
 ## See Also
 

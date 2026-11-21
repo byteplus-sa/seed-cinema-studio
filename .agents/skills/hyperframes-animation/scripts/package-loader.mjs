@@ -24,15 +24,29 @@ const BOOTSTRAP_CONFIRM_ENV = "HYPERFRAMES_SKILL_BOOTSTRAP_DEPS";
 const NODE_MODULES_ENV = "HYPERFRAMES_SKILL_NODE_MODULES";
 
 export async function importPackagesOrBootstrap(packageNames, options = {}) {
-  const specs = [...new Set(packageNames.map(name => hyperframesPackageSpec(splitPackageSpecifier(name).rootName)))];
-  if (options.npmPackages && (options.npmPackages.length !== specs.length || specs.some(spec => !options.npmPackages.includes(spec)))) {
-    throw new Error("Helper bootstrap packages must match the requested Cinema pins");
+  const roots = new Set(packageNames.map(name => splitPackageSpecifier(name).rootName));
+  const specs = options.npmPackages ?? [...roots].map(hyperframesPackageSpec);
+  const versions = new Map();
+  for (const spec of specs) {
+    const separator = spec.lastIndexOf("@");
+    const root = spec.slice(0, separator);
+    const version = spec.slice(separator + 1);
+    if (separator <= 0 || !roots.has(root) || versions.has(root) || !/^\d+\.\d+\.\d+$/.test(version)) {
+      throw new Error(`Expected exactly one pinned version for each requested helper: ${spec}`);
+    }
+    if (root.startsWith("@hyperframes/") && spec !== hyperframesPackageSpec(root)) {
+      throw new Error(`${root} expected ${CINEMA_HELPER_VERSION}, found ${version}`);
+    }
+    versions.set(root, version);
+  }
+  if (versions.size !== roots.size) {
+    throw new Error("An exact package pin is required for each requested helper");
   }
   const entries = new Map();
   const missing = [];
 
   for (const packageName of packageNames) {
-    const entry = resolvePackageEntry(packageName);
+    const entry = resolvePackageEntry(packageName, versions.get(splitPackageSpecifier(packageName).rootName));
     if (entry) entries.set(packageName, entry);
     else missing.push(packageName);
   }
@@ -150,7 +164,7 @@ export function hyperframesPackageSpec(packageName) {
   return `${packageName}@${CINEMA_HELPER_VERSION}`;
 }
 
-function resolvePackageEntry(packageName) {
+function resolvePackageEntry(packageName, expectedVersion) {
   const bases = [process.cwd(), HERE, ...envNodeModulesDirs(), ...nodeModulesDirsFromPath()];
   const { rootName, subpath } = splitPackageSpecifier(packageName);
 
@@ -163,8 +177,8 @@ function resolvePackageEntry(packageName) {
     const packageDir = findPackageDir(normalized, rootName);
     if (!packageDir) continue;
     const manifest = JSON.parse(readFileSync(join(packageDir, "package.json"), "utf8"));
-    if (manifest.name !== rootName || manifest.version !== CINEMA_HELPER_VERSION) {
-      throw new Error(`${rootName} expected ${CINEMA_HELPER_VERSION}, found ${manifest.version}`);
+    if (manifest.name !== rootName || manifest.version !== expectedVersion) {
+      throw new Error(`${rootName} expected ${expectedVersion}, found ${manifest.version}`);
     }
     try {
       return createRequire(join(normalized, "__hyperframes_skill_loader__.cjs")).resolve(

@@ -95,3 +95,27 @@ test("installed packages must match the pin before import", async () => {
     rmSync(dir, { recursive: true, force: true });
   }
 });
+
+test("contrast-report accepts its independently pinned sharp and fails without installing missing dependencies", () => {
+  const directory = mkdtempSync(join(tmpdir(), "hf-contrast-pins-"));
+  const env = {...process.env, HYPERFRAMES_SKILL_BOOTSTRAP_DEPS: "0", HYPERFRAMES_SKILL_DEPS_BOOTSTRAPPED: "", HYPERFRAMES_SKILL_NODE_MODULES: ""};
+  const invoke = () => spawnSync(process.execPath, [join(HERE, "contrast-report.mjs")], {cwd: directory, env, encoding: "utf8"});
+  try {
+    for (const [name, version] of [["@hyperframes/producer", "0.8.141"], ["@hyperframes/core", "0.8.141"], ["sharp", "0.34.5"]]) {
+      const pkg = join(directory, "node_modules", name);
+      mkdirSync(pkg, {recursive: true});
+      writeFileSync(join(pkg, "package.json"), JSON.stringify({name, version, exports: {".": "./index.js", "./compiler": "./index.js"}}));
+      writeFileSync(join(pkg, "index.js"), "module.exports = {}");
+    }
+    const ready = invoke();
+    assert.equal(ready.status, 2, ready.stderr);
+    assert.match(ready.stderr, /missing <composition-dir>/);
+    rmSync(join(directory, "node_modules", "sharp"), {recursive: true});
+    const missing = invoke();
+    assert.equal(missing.status, 1);
+    assert.match(missing.stderr, /Required helper package\(s\) are missing/);
+    assert.match(missing.stderr, /sharp@0\.34\.5/);
+  } finally {
+    rmSync(directory, { recursive: true, force: true });
+  }
+});
