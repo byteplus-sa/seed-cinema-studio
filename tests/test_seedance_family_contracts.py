@@ -6,6 +6,28 @@ ROOT = Path(__file__).resolve().parents[1] / ".agents/skills"
 
 
 class FamilyContracts(unittest.TestCase):
+    def test_film_draft_summary_preserves_exact_model_execution_boundaries(self):
+        text = (ROOT / "film-production/SKILL.md").read_text()
+        defaults = text.split("## Production defaults\n", 1)[1]
+        summary = " ".join(defaults.split("\n2.", 1)[0].split())
+        for identifier in (
+            "dreamina-seedance-2-5-260628",
+            "dreamina-seedance-2-5-premium-260915",
+        ):
+            self.assertIn(identifier, summary)
+        for clause in (
+            "both modes", 'resolution: "480p"', "draft: true",
+            "draft_task_id", "draft_ledger.py", "7 days",
+            "seedance-execution-profiles.md", "selected exact model",
+            "operation", "transport", "verified", "paid", "non-promotable",
+            "separately authorized", "new reviewed/registered request",
+            "Unknown support blocks execution, not prompt-only writing",
+            "never drop `draft` or substitute plain 480p",
+        ):
+            with self.subTest(clause=clause):
+                self.assertIn(clause, summary)
+        self.assertNotIn("Every new Seedance 2.5 shot", summary)
+
     def test_restyle_review_preserves_fractional_source_and_denied_probe(self):
         text = (ROOT / "prompt-review/references/checklist-seedance-edits.md").read_text()
         self.assertIn("fractional", text)

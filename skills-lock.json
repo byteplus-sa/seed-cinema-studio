@@ -79,7 +79,7 @@
       "source": "./local",
       "sourceType": "local",
       "skillPath": ".agents/skills/film-production/SKILL.md",
-      "computedHash": "acd94aa4502ceeef8843231ffedd01188ac3bdda4f894338da77d6b2ce81b697"
+      "computedHash": "12ed675d3ecc563c4e5cc80a485578c5c9726b9ec34fdc8b2f94d00e9aab65a1"
     },
     "html-graphic-render": {
       "source": "./local",
@@ -218,7 +218,7 @@
       "source": "./local",
       "sourceType": "local",
       "skillPath": ".agents/skills/seedance-motion-recast/SKILL.md",
-      "computedHash": "835e03f888bb273b167239ca682e57d48529901b6350a9e6e4d48253da5da4b7"
+      "computedHash": "210cc849ba6e0be7844a53ef7913001417b0a12bc28a8e21730338838621931e"
     },
     "seedance-object-swap": {
       "source": "./local",

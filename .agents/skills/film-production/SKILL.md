@@ -146,10 +146,9 @@ between modalities.
 | Scene geography and crowd blocking | `blocking-map` |
 | Score, ambience, SFX or dialogue audio | `seed-audio-prompt` |
 | Per-shot coverage, camera, lens intent and light for a scene | `seedance-shot-design` |
-| Seedance 2.5 video prompt | `seedance-prompt-25` |
-| Spoken dialogue in any language | `seedance-prompt-25-dialogue` with `seedance-prompt-25` |
-| Market-specific video dialogue (for example Filipino or Taglish) | The market's dialogue skill, such as `seedance-prompt-25-filipino`, with `seedance-prompt-25` |
-| Seedance 2.0 video prompt | `seedance-prompt-20` |
+| Seedance video prompt for any selected model | `seedance-prompt`; preserve the exact model and verify operation-specific controls |
+| Spoken dialogue in any language | `seedance-prompt-25-dialogue` with `seedance-prompt` |
+| Market-specific video dialogue (for example Filipino or Taglish) | The market's dialogue skill, such as `seedance-prompt-25-filipino`, with `seedance-prompt` |
 | Model submission, polling, artifact access, speech-to-text | `ark-mcp` |
 | Animated exact graphics or timed overlays | appropriate HyperFrames skill |
 | Assembly, media transforms, captions, explicitly requested audio edits | appropriate HyperFrames or FFmpeg skill within the requested scope; retain Studio render provenance without requiring audio processing |
@@ -166,11 +165,22 @@ department workflow.
 Read [production defaults](references/production-defaults.md) before the first
 paid video submission and again at assembly. In short:
 
-1. **Draft first in both modes.** Every new Seedance 2.5 shot is a native
-   480p Draft with boolean `draft: true`, reviewed and
-   selected, then promoted to the delivery target. Edit inputs only before the
-   Draft; re-check audio on the final. Record each provider draft task ID with
-   `draft_ledger.py` and follow the [draft and promotion contract](../../contracts/draft-promotion.md).
+1. **Draft first in both modes.** Preserve the selected exact model and verify
+   its operation and transport under the
+   [execution profiles contract](../../contracts/seedance-execution-profiles.md).
+   Exact standard `dreamina-seedance-2-5-260628` and Premium
+   `dreamina-seedance-2-5-premium-260915` generations, including edits,
+   extensions and retries, require native Draft with explicit
+   `resolution: "480p"` and boolean `draft: true`; never drop `draft` or
+   substitute plain 480p when native controls are missing. Review and select
+   before promotion by `draft_task_id` within 7 days. Edit inputs only before
+   the Draft; re-check audio on the final. Record each provider draft task ID
+   with `draft_ledger.py` and follow the
+   [draft and promotion contract](../../contracts/draft-promotion.md).
+   Other exact bindings use only verified execution profiles: ordinary previews
+   are paid, non-promotable and separately authorized; their final is a new
+   reviewed/registered request. Unknown support blocks execution, not
+   prompt-only writing. No model substring establishes support.
 2. **Preserve audio by default.** Native generated audio is sufficient unchanged,
    including ambience-only, score-driven and wordless pieces. Do not suppress it
    or build a post bed for finalization. Only explicitly requested silence,
