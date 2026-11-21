@@ -27,9 +27,7 @@ class EditorialTests(unittest.TestCase):
         self.addCleanup(self.temp.cleanup)
         self.root = Path(self.temp.name).resolve()
         self.write("project.md", "---\napproval_mode: approve_for_me\n---\nSynthetic film\n")
-        self.probe = patch.object(studio, "probe_media", return_value={
-            "duration_s": 6.0, "streams": [{"codec_type": "video"}],
-        })
+        self.probe = patch.object(studio, "picture_interval", return_value=(0, 6))
         self.probe.start()
         self.addCleanup(self.probe.stop)
         self.audio = patch.object(studio, "probe_has_audio", return_value=False)
@@ -103,6 +101,31 @@ class EditorialTests(unittest.TestCase):
 
     def export(self, output=None):
         return editorial.export_edit(self.context, output or self.output)
+
+    def test_picture_trim_cannot_extend_into_an_independent_audio_tail(self):
+        frame = self.context.studio_root / "compositions/s001_sh010.html"
+        original = frame.read_text()
+        frame.write_text(original.replace('data-start="0" data-duration="4"',
+                                          'data-start="0" data-media-start="2" data-duration="1"'))
+        with patch.object(studio, "picture_interval", return_value=(0, 1)), self.assertRaisesRegex(ValueError, "picture"):
+            self.export()
+
+    def test_inclusive_first_frame_and_exclusive_final_picture_boundary(self):
+        frame = self.context.studio_root / "compositions/s001_sh010.html"
+        original = frame.read_text()
+        other = self.context.studio_root / "compositions/s002_sh010.html"
+        other.write_text(other.read_text().replace('data-start="0" data-duration="4"',
+                                                    'data-start="0" data-media-start="0.2" data-duration="0.04"'))
+        with patch.object(studio, "picture_interval", return_value=(0.2, 0.55)):
+            frame.write_text(original.replace('data-start="0" data-duration="4"',
+                                              'data-start="0" data-media-start="0.5" data-duration="0.05"'))
+            entry = json.loads(self.export().read_text())["entries"][0]
+            self.assertAlmostEqual(entry["source_out_s"], 0.55)
+            for media_start in ("0.1", "0.501"):
+                frame.write_text(original.replace('data-start="0" data-duration="4"',
+                                                  f'data-start="0" data-media-start="{media_start}" data-duration="0.05"'))
+                with self.assertRaisesRegex(ValueError, "picture"):
+                    self.export("editorial/main/invalid-trim.json")
 
     def test_export_reads_actual_order_trims_gaps_and_measured_duration(self):
         text = self.index.read_text()
@@ -218,7 +241,7 @@ class EditorialTests(unittest.TestCase):
             self.assertEqual(self.files(), before)
         frame.write_text(original)
         with (
-            patch.object(studio, "probe_media", return_value={"duration_s": 6, "streams": []}),
+            patch.object(studio, "picture_interval", side_effect=ValueError("No video")),
             self.assertRaisesRegex(ValueError, "video"),
         ):
             self.export()
@@ -242,9 +265,9 @@ class EditorialTests(unittest.TestCase):
     def test_manual_change_during_probe_is_preserved_and_export_aborts(self):
         def probe(_):
             self.index.write_text(self.index.read_text() + "<!-- concurrent -->")
-            return {"duration_s": 6, "streams": [{"codec_type": "video"}]}
+            return (0, 6)
         with (
-            patch.object(studio, "probe_media", side_effect=probe),
+            patch.object(studio, "picture_interval", side_effect=probe),
             self.assertRaisesRegex(ValueError, "changed|tree"),
         ):
             self.export()
@@ -402,9 +425,9 @@ class EditorialTests(unittest.TestCase):
             calls += 1
             if calls == 3:
                 main.write_text(main.read_text() + "\n")
-            return {"duration_s": 6, "streams": [{"codec_type": "video"}]}
+            return (0, 6)
         with (
-            patch.object(studio, "probe_media", side_effect=probe),
+            patch.object(studio, "picture_interval", side_effect=probe),
             self.assertRaisesRegex(ValueError, "revision"),
         ):
             editorial.reconcile_edit(self.context, self.output, expected_revision=revision)
@@ -418,9 +441,9 @@ class EditorialTests(unittest.TestCase):
             if calls == 4:
                 review = self.root / "review/s001_sh010.json"
                 review.write_text(review.read_text() + "\n")
-            return {"duration_s": 6, "streams": [{"codec_type": "video"}]}
+            return (0, 6)
         with (
-            patch.object(studio, "probe_media", side_effect=probe),
+            patch.object(studio, "picture_interval", side_effect=probe),
             self.assertRaises(ValueError),
         ):
             self.export()
@@ -430,8 +453,8 @@ class EditorialTests(unittest.TestCase):
         path = self.export()
         def probe(_):
             path.write_text(path.read_text() + "\n")
-            return {"duration_s": 6, "streams": [{"codec_type": "video"}]}
-        with patch.object(studio, "probe_media", side_effect=probe):
+            return (0, 6)
+        with patch.object(studio, "picture_interval", side_effect=probe):
             findings = editorial.check_edit(self.context, self.output)
         self.assertTrue(any("changed during check" in finding.message for finding in findings))
         self.assertTrue(path.read_bytes().endswith(b"\n\n\n"))

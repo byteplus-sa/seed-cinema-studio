@@ -150,6 +150,16 @@
         "It names the lens preset skill as the owner of rack focus wording rather than writing a rack focus template here.",
         "Any Camera block it gives names the subject, a start and an end."
       ]
+    },
+    {
+      "id": 13,
+      "prompt": "One uninterrupted take: whip right from the clock to the bell on the chime and hold.",
+      "expected_output": "A continuous rightward reframe landing and holding on the bell.",
+      "files": [],
+      "expectations": [
+        "The chime triggers the pan.",
+        "Stays in the same shot, with no invented cut or foreground occlusion."
+      ]
     }
   ]
 }

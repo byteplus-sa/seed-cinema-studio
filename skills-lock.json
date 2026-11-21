@@ -193,7 +193,7 @@
       "source": "./local",
       "sourceType": "local",
       "skillPath": ".agents/skills/seedance-camera-presets/SKILL.md",
-      "computedHash": "3b068ff986bc0723b739498602934ac6ac2bcbd344f8e4dfe8862a40392e4a4d"
+      "computedHash": "daec68c2853f4fde6448f3e27958c1a264d2e1a0e1eaaeff1d13f3081353fa02"
     },
     "seedance-fight-choreography": {
       "source": "./local",
@@ -230,7 +230,7 @@
       "source": "./local",
       "sourceType": "local",
       "skillPath": ".agents/skills/seedance-pacing-presets/SKILL.md",
-      "computedHash": "90d8d76bb345a50cf3f0b455e2604eb98ef93d2d4e8e94915b559e8510429135"
+      "computedHash": "5a995b06418e0c7f4a9696d747d6660a8eb937783019c7004b573adaea6c7b64"
     },
     "seedance-prompt": {
       "source": "./local",
@@ -260,7 +260,7 @@
       "source": "./local",
       "sourceType": "local",
       "skillPath": ".agents/skills/seedance-shot-design/SKILL.md",
-      "computedHash": "d41aa4fd7d328742b042de5823ccb68a4a879df80276a4e3c74ed2e2b3166452"
+      "computedHash": "bd00e137d939b008caf1c7ec10643a37f6470f75e5c1075871ec38bf191db018"
     },
     "seedance-virtual-portrait": {
       "source": "./local",
@@ -346,7 +346,7 @@
       "source": "./local",
       "sourceType": "local",
       "skillPath": ".agents/skills/blocking-map/SKILL.md",
-      "computedHash": "0d387e5116b4d05f9221a95106746bc3252fa697bcc514f57949ffcf978d079d"
+      "computedHash": "fdbe8675ae7aa0fb93dd8e9e3ccbfa4f81f06e3c122cafa60c8b36d80afec72d"
     },
     "scene-craft": {
       "source": "./local",

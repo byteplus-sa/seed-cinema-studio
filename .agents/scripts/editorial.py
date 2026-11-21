@@ -202,7 +202,7 @@ def _studio_file(context: ProductionContext, relative: str, prefix: str) -> Path
 
 def _entry(
     context: ProductionContext, host: Node, shots: dict[str, studio.Shot],
-    selections: dict[str, dict[str, Any]], probes: dict[str, float],
+    selections: dict[str, dict[str, Any]], probes: dict[str, tuple[float, float]],
 ) -> dict[str, Any]:
     attrs = host.attributes
     if host.tag != "div" or host.children or not attrs.get("id"):
@@ -245,21 +245,14 @@ def _entry(
     if studio.sha256_file(asset) != selection["take"]["sha256"]:
         raise EditorialError("Placed video differs from the selected take")
     if shot_id not in probes:
-        media = studio.probe_media(source)
-        measured = media.get("duration_s")
-        if (
-            not isinstance(measured, int | float) or isinstance(measured, bool)
-            or not math.isfinite(measured) or measured <= 0
-            or not any(stream.get("codec_type") == "video" for stream in media.get("streams", []))
-        ):
-            raise EditorialError("Selected take requires a measured video duration")
-        probes[shot_id] = float(measured)
-    if source_in + video_duration > probes[shot_id] + 0.000001:
-        raise EditorialError("Video trim exceeds measured source duration")
+        probes[shot_id] = studio.picture_interval(source)
+    picture_start, picture_end = probes[shot_id]
+    if source_in < picture_start - 0.000001 or source_in + video_duration > picture_end + 0.000001:
+        raise EditorialError("Video trim exceeds the measured picture interval")
     return {
         "id": "", "host_id": attrs["id"], "shot_id": shot_id, **selection,
         "timeline_start_s": start + local_start, "source_in_s": source_in,
-        "source_out_s": source_in + length, "source_duration_s": probes[shot_id],
+        "source_out_s": source_in + length, "source_duration_s": picture_end,
     }
 
 
@@ -292,7 +285,7 @@ def _capture(context: ProductionContext) -> dict[str, Any]:
         previous_end = end
     shots = {shot.shot_id: shot for shot in studio.discover_shots(context)}
     selections: dict[str, dict[str, Any]] = {}
-    probes: dict[str, float] = {}
+    probes: dict[str, tuple[float, float]] = {}
     entries = [_entry(context, host, shots, selections, probes) for host in hosts]
     entries.sort(key=lambda entry: entry["timeline_start_s"])
     for index_, entry in enumerate(entries):

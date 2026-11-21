@@ -16,10 +16,11 @@ from collections.abc import Callable, Iterator
 from contextlib import contextmanager
 from dataclasses import dataclass, field
 from datetime import UTC, datetime
+from fractions import Fraction
 from html import escape
 from pathlib import Path
 from typing import Any
-from urllib.parse import quote
+from urllib.parse import quote, unquote, urlsplit
 
 import production_context
 from production_context import ProductionContext, discover_unit_shots, resolve_context
@@ -474,28 +475,59 @@ def duration_for(shot: Shot, filename: str) -> float:
     return float(value)
 
 
+def picture_interval(path: Path, runner: Runner = subprocess.run) -> tuple[float, float]:
+    """First visible frame and exclusive picture end on the media playback clock."""
+    try:
+        result = runner([
+            "ffprobe", "-v", "error", "-select_streams", "v:0", "-show_frames",
+            "-show_entries", ("frame=best_effort_timestamp_time,duration_time,pkt_duration_time:"
+                              "stream=start_time,duration:format=start_time"), "-of", "json", str(path),
+        ], capture_output=True, text=True, check=False, timeout=RENDER_TIMEOUT_S)
+        if result.returncode:
+            raise ValueError("ffprobe failed")
+        data = json.loads(result.stdout)
+        frames = data["frames"]
+        first, last = frames[0], frames[-1]
+        origin = float(data["format"].get("start_time", 0))
+        start = float(first["best_effort_timestamp_time"]) - origin
+        last_start = float(last["best_effort_timestamp_time"]) - origin
+        duration = float(last.get("duration_time", last.get("pkt_duration_time", 0)))
+        if duration > 0:
+            end = last_start + duration
+        else:
+            stream = data["streams"][0]
+            end = float(stream["start_time"]) + float(stream["duration"]) - origin
+        if not all(math.isfinite(value) for value in (start, last_start, end)) or end <= last_start or last_start < start:
+            raise ValueError("Invalid frame timing")
+        return max(0.0, start), end
+    except (OSError, ValueError, TypeError, IndexError, KeyError, subprocess.TimeoutExpired) as error:
+        raise StudioError("Cannot measure the displayed video frame interval") from error
+
+
 def probe_duration(path: Path, runner: Runner = subprocess.run) -> float | None:
     try:
-        completed = runner(
-            [
-                "ffprobe",
-                "-v",
-                "error",
-                "-show_entries",
-                "format=duration",
-                "-of",
-                "json",
-                str(path),
-            ],
-            capture_output=True,
-            text=True,
-            check=False,
-            timeout=PROBE_TIMEOUT_S,
-        )
-        value = float(json.loads(completed.stdout)["format"]["duration"])
-    except (OSError, ValueError, KeyError, TypeError, subprocess.TimeoutExpired):
+        return picture_interval(path, runner)[1]
+    except StudioError:
         return None
-    return value if completed.returncode == 0 and value > 0 else None
+
+
+def display_dimensions(stream: dict[str, Any]) -> tuple[Fraction, Fraction]:
+    try:
+        width, height = Fraction(int(stream["width"])), Fraction(int(stream["height"]))
+        sar = stream.get("sample_aspect_ratio")
+        if sar not in (None, "N/A", "0:1"):
+            width *= Fraction(str(sar).replace(":", "/"))
+        rotation = Fraction(str(stream.get("rotation", 0))) % 360
+    except (KeyError, TypeError, ValueError, ZeroDivisionError) as error:
+        raise StudioError("Video display dimensions cannot be determined") from error
+    if width <= 0 or height <= 0 or rotation % 90:
+        raise StudioError("Video display dimensions or rotation are unsupported")
+    return (height, width) if rotation in (90, 270) else (width, height)
+
+
+def display_rotation(stream: dict[str, Any]) -> Any:
+    return next((side["rotation"] for side in stream.get("side_data_list", []) if "rotation" in side),
+                stream.get("tags", {}).get("rotate", 0))
 
 
 def probe_size(path: Path, runner: Runner = subprocess.run) -> tuple[int, int] | None:
@@ -508,7 +540,7 @@ def probe_size(path: Path, runner: Runner = subprocess.run) -> tuple[int, int] |
                 "-select_streams",
                 "v:0",
                 "-show_entries",
-                "stream=width,height",
+                "stream=width,height,sample_aspect_ratio:stream_side_data=rotation:stream_tags=rotate",
                 "-of",
                 "json",
                 str(path),
@@ -519,13 +551,14 @@ def probe_size(path: Path, runner: Runner = subprocess.run) -> tuple[int, int] |
             timeout=PROBE_TIMEOUT_S,
         )
         stream = json.loads(completed.stdout)["streams"][0]
-        width, height = int(stream["width"]), int(stream["height"])
+        width, height = (round(value) for value in display_dimensions({**stream, "rotation": display_rotation(stream)}))
     except (
         OSError,
         ValueError,
         KeyError,
         IndexError,
         TypeError,
+        ZeroDivisionError,
         subprocess.TimeoutExpired,
     ):
         return None
@@ -1463,8 +1496,9 @@ def run_hyperframes(
     arguments: list[str],
     runner: Runner = subprocess.run,
     timeout: int = CHECK_TIMEOUT_S,
+    *, source: Path | None = None,
 ) -> subprocess.CompletedProcess[str]:
-    root = studio_root(project)
+    root = source if source is not None else studio_root(project)
     if not (root / "index.html").is_file():
         raise StudioError("No Studio project; run studio_project.py sync first")
     try:
@@ -1563,21 +1597,66 @@ def probe_media(path: Path, runner: Runner = subprocess.run) -> dict[str, Any]:
     }
 
 
-def tree_digest(project: Path | ProductionContext) -> str:
-    root = studio_root(project)
+DEVELOPMENT_DIRS = frozenset({".git", "node_modules", ".next", "__pycache__"})
+STUDIO_STATE = frozenset({
+    "BRIEF.md", "STORYBOARD.md", "provenance.json", "stages.json", "stage-history", "canon.json",
+    "renders", ".sync-pending.json", ".hyperframes", ".thumbnails", ".waveform-cache", "snapshots",
+    ".DS_Store", "coverage",
+})
+RESOURCE_URL = re.compile(
+    r"""(?:\b(?:src|href|poster|data-composition-src)\s*=\s*|@import\s+|url\(\s*)["']?([^"'\s)>]+)""",
+    re.IGNORECASE,
+)
+
+
+def render_inputs(root: Path) -> list[Path]:
+    def inputs(path: Path) -> Iterator[Path]:
+        if path.name in DEVELOPMENT_DIRS:
+            return
+        if path.is_symlink():
+            raise StudioError("Studio render inputs must be local files and directories")
+        if path.is_dir():
+            for child in sorted(path.iterdir()):
+                yield from inputs(child)
+        elif path.is_file():
+            yield path
+
     files = [root / "index.html", root / "hyperframes.json"]
     for name in ("compositions", "assets"):
-        directory = studio_path(project, name)
-        if directory.is_dir():
-            files += sorted(path for path in directory.rglob("*") if path.is_file())
+        files.extend(sorted(inputs(root / name)))
+    for extra in sorted(root.iterdir()):
+        if extra.name not in STUDIO_STATE | {"index.html", "hyperframes.json", "compositions", "assets"}:
+            files.extend(inputs(extra))
+    for path in files:
+        if path.is_symlink() or not path.resolve().is_relative_to(root.resolve()):
+            raise StudioError("Studio render inputs must remain inside the Studio tree")
+        if path.suffix.lower() in {".html", ".htm", ".css", ".svg"}:
+            for reference in RESOURCE_URL.findall(path.read_text()):
+                url = urlsplit(reference)
+                if url.scheme == "file":
+                    raise StudioError("Render resources must use Studio-relative paths")
+                if url.scheme or url.netloc or not url.path:
+                    continue
+                local = unquote(url.path)
+                target = (root / local.lstrip("/") if local.startswith("/") else path.parent / local).resolve()
+                relative = target.relative_to(root).parts if target.is_relative_to(root) else ()
+                if not relative or relative[0] in STUDIO_STATE or DEVELOPMENT_DIRS.intersection(relative):
+                    raise StudioError(f"Render resource is outside the supported input tree: {reference}")
+    return files
+
+
+def input_digest(root: Path, files: list[Path]) -> str:
     digest = hashlib.sha256()
     for path in files:
-        if not path.resolve().is_relative_to(root.resolve()):
-            raise StudioError("Studio render inputs must remain inside the Studio tree")
         digest.update(
             f"{path.relative_to(root).as_posix()}\0{sha256_file(path)}\n".encode()
         )
     return digest.hexdigest()
+
+
+def tree_digest(project: Path | ProductionContext) -> str:
+    root = studio_root(project)
+    return input_digest(root, render_inputs(root))
 
 
 def record_render(
@@ -1660,14 +1739,22 @@ def _render(
         raise StudioError(
             f"{output.name} already exists; choose a new --name instead of overwriting"
         )
-    before = tree_digest(project)
+    root = studio_root(project)
+    files = render_inputs(root)
+    before = input_digest(root, files)
     try:
-        completed = run_hyperframes(
-            project,
-            ["render", "--quality", quality, "--output", str(output)],
-            runner,
-            RENDER_TIMEOUT_S,
-        )
+        with tempfile.TemporaryDirectory(prefix="cinema-render-") as directory:
+            source = Path(directory).resolve() / "studio"
+            for path in files:
+                copy = source / path.relative_to(root)
+                copy.parent.mkdir(parents=True, exist_ok=True)
+                shutil.copyfile(path, copy)
+            if input_digest(source, render_inputs(source)) != before:
+                raise StudioError("Studio inputs changed while preparing the render")
+            completed = run_hyperframes(
+                project, ["render", "--quality", quality, "--output", str(output)],
+                runner, RENDER_TIMEOUT_S, source=source,
+            )
         if completed.returncode != 0 or not output.is_file():
             detail = (completed.stderr or completed.stdout)[-400:].strip()
             raise StudioError(f"hyperframes render failed: {detail}")
