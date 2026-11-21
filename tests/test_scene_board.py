@@ -877,7 +877,8 @@ class RepairTests(BoardTestCase):
         result = self.plan(["s02_sh010_p020"])
         action = result["actions"][0]
         self.assertEqual(action["action"], "edit")
-        self.assertEqual(action["tool"], "seedream_edit_image")
+        self.assertEqual(action["tool"], "seedream_generate_image")
+        self.assertEqual(action["submit_via"], "ark_job_submit")
         self.assertEqual(action["next_version"], "s02_sh010_p020_t01_v02.png")
         self.assertNotIn("s02_sh010_p020", result["untouched_panels"])
         self.assertIn("s02_sh010_p010", result["untouched_panels"])
@@ -1808,33 +1809,27 @@ class AnimaticAudioTests(BoardTestCase):
             handle.writeframes(b"\x00\x00" * int(8000 * seconds_long))
         return name
 
-    def test_short_audio_is_padded_so_the_video_keeps_its_full_length(self) -> None:
-        audio = self.write_wav("scratch.wav", 3)
-        result = MODULE.build_animatic(self.root, "scene-02", "640x360", audio)
-        self.assertAlmostEqual(result["duration_s"], 12.5)
-        probe = subprocess.run(
-            [
-                "ffmpeg",
-                "-hide_banner",
-                "-i",
-                str(self.root / result["file"]),
-                "-f",
-                "null",
-                "-",
-            ],
-            capture_output=True,
-            text=True,
-            check=False,
-        )
-        clock = (
-            [line for line in probe.stderr.splitlines() if "time=" in line][-1]
-            .split("time=")[1]
-            .split()[0]
-        )
-        hours, minutes, secs = clock.split(":")
-        self.assertAlmostEqual(
-            int(hours) * 3600 + int(minutes) * 60 + float(secs), 12.5, delta=0.3
-        )
+    def test_preserve_short_equal_and_long_audio_in_animatic(self) -> None:
+        for duration in (3, 12.5, 14):
+            with self.subTest(duration=duration):
+                audio = self.write_wav("scratch.wav", duration)
+                result = MODULE.build_animatic(self.root, "scene-02", "640x360", audio)
+                output = self.root / result["file"]
+                probe = subprocess.run(
+                    ["ffprobe", "-v", "error", "-select_streams", "a:0", "-show_entries",
+                     "stream=codec_name,duration", "-of", "json", str(output)],
+                    capture_output=True, text=True, check=True,
+                )
+                stream = json.loads(probe.stdout)["streams"][0]
+                self.assertEqual(stream["codec_name"], "pcm_s16le")
+                self.assertAlmostEqual(float(stream["duration"]), duration, places=2)
+                self.assertAlmostEqual(result["duration_s"], max(12.5, duration), delta=0.05)
+
+    def test_audio_fit_requires_explicit_choice(self) -> None:
+        audio = self.write_wav("scratch.wav", 14)
+        result = MODULE.build_animatic(self.root, "scene-02", "640x360", audio, fit_audio=True)
+        self.assertAlmostEqual(result["duration_s"], 12.5, delta=0.05)
+        self.assertEqual(json.loads((self.root / result["record"]).read_text())["audio_mode"], "fit")
 
     def test_changing_the_audio_marks_the_animatic_stale(self) -> None:
         audio = self.write_wav("scratch.wav", 3)

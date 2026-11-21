@@ -36,8 +36,7 @@ Composition hints: `seedream-character-sheet` made the parent sheet,
 ## Inputs and output
 
 Inputs:
-1. The approved parent sheet: file, SHA-256, pixel size, and its
-   `character.md` identity descriptor.
+1. The approved parent sheet: file, SHA-256, pixel size, and approved identity descriptor.
 2. The outfit as a text description, garment or outfit photos, or an acquired
    real-brand garment.
 3. Always-worn accessories, if any.
@@ -78,7 +77,7 @@ PRESERVE: face, eyes, brows, nose, mouth, skin tone, marks, hair, build,
 REMOVE:   every named item of the original outfit
 ```
 
-`PRESERVE` quotes the identity descriptor from `character.md` word for word.
+`PRESERVE` quotes the approved identity descriptor from the parent element manifest or its existing character sidecar word for word.
 List body marks (mole, scar, tattoo) that a lower neckline or shorter sleeve
 could newly expose, or hide.
 
@@ -103,7 +102,7 @@ Lighting, Composition, Constraints.
 - Describe every garment without canonical graphics as plain fabric with no
   visible label or print. Neck labels, cuffs and chest areas otherwise grow
   invented lettering that the video then animates.
-- Keep the canonical neutral-expression phrase, the matte-skin and anti-AI-look
+- Keep frontal gaze in camera-facing panels and keep the rear-facing head turned away. Retain the canonical neutral-expression phrase, the matte-skin and anti-AI-look
   wording, and the empty-hands constraint from `seedream-character-sheet`.
 - Match the parent's panel layout, size and background. Read the size from the
   parent file; do not assume 16:9.
@@ -152,12 +151,12 @@ Each outfit is a new element and the parent is never edited:
 
 ```text
 elements/<character-id>-<outfit-id>/
-  character.md
+  element.md
   char_<character-id>-<outfit-id>_<sheet-type>_v<NN>.png
   prompt_char_<character-id>-<outfit-id>_<sheet-type>_v<NN>.md
 ```
 
-`<sheet-type>` equals the parent's. Record in `character.md`:
+`<sheet-type>` equals the parent's. Record the selection and identity in the YAML frontmatter of the Studio manifest `element.md`. Preserve existing character notes as sidecars:
 
 ```yaml
 element_id: gloria-office
@@ -167,8 +166,11 @@ parent_sheet: char_gloria_turnaround_v02.png
 parent_sha256: <hash>
 outfit_id: office
 accessories_always_worn: [round clear-lens glasses]
+status: review
 selected_variant: null
 ```
+
+Use `studio_project.py lock-element` with the mode-authorized decision to record the approved selection.
 
 If the parent hash changes, mark the outfit sheet stale and revalidate it.
 

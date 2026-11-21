@@ -54,7 +54,7 @@ State what the hat covers and what hair shows, in the back view as well.
 
 ```text
 A navy baseball cap worn forward; the cap covers the crown, and the same
-[hair length and color from character.md] shows below the cap at the nape and
+[hair length and color from the approved parent identity descriptor] shows below the cap at the nape and
 sides. The face is fully visible under the brim.
 ```
 

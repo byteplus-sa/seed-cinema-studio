@@ -50,13 +50,12 @@ mentioned in prose are relative to this skill directory unless a link says other
 ## Submission boundary and failure behavior
 
 The caller owns production authorization, the exact request preflight, and the
-complete hash-bound prompt review. The caller reviews inline by default and
+review required by the project’s review mode. Default uses compact inline preflight. Strict review and required-rule evidence stay hash-bound. The caller
 uses a sub-agent only when the user explicitly requests sub-agent prompt review
 for the project or specific generation. A leaf returns its prompt package without
 loading sibling skills. An explicitly declared orchestrator may coordinate the
 review and submission stages. Missing required inputs remain unresolved; a draft
-or technical success does not establish user approval. Preserve optional timing,
-the three-image sampling default where applicable, and the requested delta.
+or technical success does not establish user approval. Preserve optional timing and the requested audio delta.
 
 ## Evidence and creative advice
 
@@ -106,9 +105,7 @@ Generation mode and request limits belong in request metadata or validation, not
 This section owns audio verification for the Seed Audio prompting skills.
 
 - **Words**: transcribe the local file with word times (for example
-  `speech_to_text` with `audio_file_path`; set the transcript language). The
-  transcript is the authority for dropped, added or garbled words; spelling-only
-  variants of names are noise.
+  `speech_to_text` with `audio_file_path`; set the transcript language). Compare the transcript with the locked words. Listen to disputed words or obtain a listener’s confirmation, including names and code-switching. If listening is unavailable, mark the discrepancy unresolved and preserve the locked text.
 - **Accent and pronunciation**: a native listener decides. A listening model
   (for example `seed_audio_understand`) cannot judge accent and mislabels
   music and drones; use it for soundtrack audits and same-speaker spot checks,

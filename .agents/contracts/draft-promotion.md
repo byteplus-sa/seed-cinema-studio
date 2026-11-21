@@ -8,9 +8,9 @@ generation, source selection or promotion checks. This contract applies to
 every new Seedance 2.5 generation;
 `production-policy.md` owns approval, review and registry rules.
 
-## Verified provider behavior
+## Native Draft mechanics
 
-Source: the `seedance_2_5_create_task` and `seedance_2_5_premium_create_task`
+Historical source: the `seedance_2_5_create_task` and `seedance_2_5_premium_create_task`
 tool schemas in `ark-mcp`, read through `ark_job_capabilities` on 2026-10-14,
 where both listed `draft` and `draft_task_id`. Check it again through
 `ark_job_capabilities` before the first submission of a project and record the
@@ -19,7 +19,7 @@ result as capability evidence.
 | Step | Request | Result |
 | --- | --- | --- |
 | 1. Draft | `draft: true`; explicit `resolution: "480p"`; prompt, references, duration, ratio, `generate_audio` as for a normal request | A 480p preview, billed as a normal 480p video. Its provider `task_id` is the **draft ID** |
-| 2. Final | `draft_task_id: "<draft ID>"` only, plus optional `resolution`, `return_last_frame`, `watermark`, `execution_expires_after`, `priority`, `safety_identifier` | The approved Draft rendered at the family's final resolution (1080p for Seedance 2.5; 4k for Seedance 2.5 Premium), billed independently |
+| 2. Final | `draft_task_id: "<draft ID>"` only, plus optional `resolution`, `return_last_frame`, `watermark`, `execution_expires_after`, `priority`, `safety_identifier` | The approved Draft at the verified promotion resolution on that exact binding, billed independently. Ordinary generation resolutions do not establish promotion support |
 
 - `draft` and `draft_task_id` are mutually exclusive.
 - The final reuses the Draft's model, prompt, media, duration, ratio, seed,
@@ -86,9 +86,6 @@ result as capability evidence.
 
 ## When native promotion is unavailable
 
-If the tool, model or operation does not support `draft` or `draft_task_id`
-(an older tool, another transport, an edit or extension operation, or an expired
-Draft), a 480p request is only a cheap iteration. The final is then a fresh paid
-generation using the selected prompt and approved inputs, with its own registry
-entry and mode-appropriate preflight/review, and it can change picture, timing and audio. Record
-the constraint in the project handoff.
+For the exact standard or Premium bindings requiring native Draft, missing controls or an expired Draft block promotion. Resolve the capability mismatch or create a newly authorized native Draft. Preserve the selected model.
+
+For other exact operation profiles, follow [execution profiles](seedance-execution-profiles.md). A verified ordinary preview uses the evidenced resolution and cannot be promoted. Any fresh final requires its own authorization, review and registration.

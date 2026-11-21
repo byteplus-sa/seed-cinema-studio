@@ -41,7 +41,7 @@ supplied, never impose micro-drama structure on a film.
    and rights, preserve background stems and patch changed lines only.
    For regenerate, sequence the existing video workflow with unchanged canon,
    reviewed 480p drafts and separately reviewed final takes.
-6. Before any generation, sequence inline `prompt-review` and durable
+6. Before any generation, apply the review-mode preflight (full review in strict mode) and durable
    `prepare_request.py --register`. Reconcile unknown submissions from
    `task_ids.json`; never duplicate a paid operation or switch transports
    as a retry. Preserve current authorization and creative scope.

@@ -95,7 +95,7 @@ parameters, audio intent, and the test-ladder rung.
 
 ## Route and parameters
 
-Seedance 2.5 edit, through `seedance_2_5_create_task`:
+For an authorized Seedance 2.5 edit, the caller submits `seedance_create_task` through `ark_job_submit` with the selected exact model. Retrieve the job result with `ark_job_get`, retain every provider task ID, and poll via `gen_task_get(task_ids=[...])`. Reconcile a missing acknowledgement before any new submission.
 
 - `videos`: the selected source as `@Video 1`, first in order; an `asset://` video
   when the source shows a person (see the

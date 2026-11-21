@@ -42,7 +42,7 @@
     {
       "id": 4,
       "prompt": "Review of scene-02's board found one panel (s02_sh010_p020) with a duplicated lamp on the desk; the other eleven panels are approved. Fix it.",
-      "expected_output": "A repair plan that edits only that panel with seedream_edit_image under a one-dimension revision contract, keeps the other panels untouched, and lists only the affected sheet page and animatic segment as stale.",
+      "expected_output": "A repair plan that edits only that panel with seedream_generate_image through ark_job_submit under a one-dimension revision contract, keeps the other panels untouched, and lists only the affected sheet page and animatic segment as stale.",
       "files": [],
       "assertions": [
         "The panel is marked needs_edit and repaired by an image edit, not by regenerating the board or the shot.",

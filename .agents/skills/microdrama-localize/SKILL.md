@@ -94,8 +94,7 @@ Output: a localized deliverable set per target, never an overwrite of the source
 - Honor the project's `approval_mode`. A user-stated lock on text, route or
   voice is never overridden by an agent decision.
 - Register every generation-bound operation with `prepare_request.py --register`
-  before submission and save the acknowledged task id at once. Run
-  `prompt-review` inline on every new prompt and resolve CRITICAL and MAJOR
+  before submission and save the acknowledged task id at once. Use compact inline preflight in default mode and full hash-bound review in strict mode. Retain required-rule evidence and resolve CRITICAL and MAJOR
   findings. A changed input invalidates the review.
 - Never resubmit a paid operation that may already exist. After a timeout or an
   unknown acceptance, reconcile from `task_ids.json`; never retry through a

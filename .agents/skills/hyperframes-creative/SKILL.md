@@ -64,7 +64,7 @@ re-vendoring instead of silently restoring upstream aesthetic quotas.
 - `scripts/extract-audio-data.py` — pre-extract audio bands for audio-reactive compositions.
 - `scripts/package-loader.mjs` — support script for bundled creative tooling.
 
-`contrast-report.mjs` resolves helper packages from the current project first, then can bootstrap the bundled HyperFrames package version. Set `HYPERFRAMES_SKILL_PKG_VERSION=<version>` only when running the skill outside the bundled CLI/skill install and you need to pin that bootstrap version explicitly.
+`contrast-report.mjs` checks installed helper versions against Cinema’s exact 0.8.141 pin before import. If a helper is missing, an explicitly permitted temporary bootstrap uses the same version. A conflicting installed or requested version stops the command and preserves project dependencies.
 
 Run with explicit paths, for example:
 

@@ -79,7 +79,7 @@ the selected operation's support. Keep a silent run silent.
 | Draft resolution | 480p proposal, subject to current capability checks and explicit brief overrides; record delivery target separately after draft review and selection |
 | Ratio | Current brief's supported ratio; JSON proposes 1:1 when no ratio is selected |
 | Duration | Sum of current planned shot durations; fit each request to verified clip limits and assemble as needed |
-| Storyboard | Sketch by default, one panel per current beat unless a panel budget is specified, 3 variants unless overridden, QA and selection under the current approval mode |
+| Storyboard | Sketch by default, one panel per current beat unless a panel budget is specified, use one variant by default (strict proposes three, explicit counts win), QA and selection under the current approval mode |
 | watermark | false only when supported and not overridden by the user |
 
 ## Reuse contract

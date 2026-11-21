@@ -277,23 +277,26 @@ captions and optional contact sheets, with zero setup — no `showcase.json`
 required and no server.
 
 ```bash
+# From the repository root, set project_dir to the intended project.
+project_dir="projects/example-project"
+
 # Compare two video takes (auto-groups by folder, auto-populates ffprobe metadata):
 uv run python .agents/skills/showcase-html/scripts/generate_showcase.py \
-  --quick scenes/scene-01/s01_sh010/s01_sh010_t01_v01.mp4 \
-         scenes/scene-01/s01_sh010/s01_sh010_t02_v01.mp4 \
+  --quick "$project_dir/scenes/scene-01/s01_sh010/s01_sh010_t01_v01.mp4" \
+         "$project_dir/scenes/scene-01/s01_sh010/s01_sh010_t02_v01.mp4" \
   --contact-sheets
 
 # Compare images:
 uv run python .agents/skills/showcase-html/scripts/generate_showcase.py \
-  --quick elements/example-hero/char_example-hero_turnaround_v01.png \
-         elements/example-hero/char_example-hero_turnaround_v02.png \
-         elements/example-hero/char_example-hero_turnaround_v03.png
+  --quick "$project_dir/elements/example-hero/char_example-hero_turnaround_v01.png" \
+         "$project_dir/elements/example-hero/char_example-hero_turnaround_v02.png" \
+         "$project_dir/elements/example-hero/char_example-hero_turnaround_v03.png"
 
 # Mix of videos, images, and audio:
 uv run python .agents/skills/showcase-html/scripts/generate_showcase.py \
-  --quick scenes/scene-01/s01_sh010/s01_sh010_t01_v01.mp4 \
-         elements/example-reel/screen_menu_v01.png \
-         library/sfx_sonic-logo_v01.wav
+  --quick "$project_dir/scenes/scene-01/s01_sh010/s01_sh010_t01_v01.mp4" \
+         "$project_dir/elements/example-reel/screen_menu_v01.png" \
+         "$project_dir/library/sfx_sonic-logo_v01.wav"
 ```
 
 Quick mode does not open a browser unless you pass `--open`. The output is
@@ -387,10 +390,10 @@ side-by-side. Each scene becomes one takes group with:
 
 ```bash
 # Generate with auto-populated ffprobe metadata:
-python3 scripts/generate_showcase.py projects/<project> --stage <stage-id>
+uv run python .agents/skills/showcase-html/scripts/generate_showcase.py projects/<project> --stage <stage-id>
 
 # Generate with ffprobe metadata + contact sheet images:
-python3 scripts/generate_showcase.py projects/<project> \
+uv run python .agents/skills/showcase-html/scripts/generate_showcase.py projects/<project> \
   --stage <stage-id> --contact-sheets
 ```
 
