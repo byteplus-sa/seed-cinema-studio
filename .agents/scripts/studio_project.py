@@ -1656,8 +1656,10 @@ def render_inputs(root: Path) -> list[Path]:
                     continue
                 local = unquote(url.path)
                 target = (root / local.lstrip("/") if local.startswith("/") else path.parent / local).resolve()
-                relative = target.relative_to(root).parts if target.is_relative_to(root) else ()
-                if not relative or relative[0] in STUDIO_STATE or DEVELOPMENT_DIRS.intersection(relative):
+                if not target.is_relative_to(root):
+                    raise StudioError(f"Render resource is outside the supported input tree: {reference}")
+                parts = target.relative_to(root).parts
+                if (parts and parts[0] in STUDIO_STATE) or DEVELOPMENT_DIRS.intersection(parts):
                     raise StudioError(f"Render resource is outside the supported input tree: {reference}")
     return files
 

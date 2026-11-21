@@ -161,7 +161,7 @@ class DeliverableTests(unittest.TestCase):
 
     def test_linked_stylesheet_edit_invalidates_locked_delivery_and_inflight_render(self):
         index = self.context.studio_root / "index.html"
-        index.write_text(index.read_text().replace('</head>', '<link rel="stylesheet" href="title.css"></head>'))
+        index.write_text(index.read_text().replace('</head>', '<base href="./"><link rel="stylesheet" href="title.css"></head>'))
         css = index.with_name("title.css")
         css.write_text("body {color: red}")
         self.record = studio.render(self.context, "with-title", "delivery", self.fixture.runner)
