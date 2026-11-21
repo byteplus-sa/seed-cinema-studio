@@ -162,6 +162,10 @@ def probe_media(path: Path, runner: studio.Runner = subprocess.run) -> dict[str,
             if stream.get("codec_type") not in {"audio", "video", "subtitle"}:
                 raise ValueError("Unsupported media stream type")
             item = {key: stream[key] for key in keys if key in stream}
+            if stream.get("codec_type") == "video":
+                item["sample_aspect_ratio"] = stream.get("sample_aspect_ratio", "1:1")
+                item["rotation"] = studio.display_rotation(stream)
+                item["picture_start_s"], item["picture_end_s"] = studio.picture_interval(path, runner)
             if "language" in stream.get("tags", {}):
                 item["language"] = stream["tags"]["language"]
             streams.append(item)
@@ -192,7 +196,7 @@ def _streams_match(spec: dict[str, Any], media: dict[str, Any]) -> None:
     subtitles = [stream for stream in streams if stream.get("codec_type") == "subtitle"]
     if len(video) != 1:
         raise ValueError("Delivery requires exactly one video stream")
-    if any(video[0].get(key) != spec[key] for key in ("width", "height")):
+    if studio.display_dimensions(video[0]) != (spec["width"], spec["height"]):
         raise ValueError("Video dimensions do not match the delivery specification")
     try:
         expected = Fraction(str(spec["fps"]))
@@ -215,6 +219,21 @@ def _streams_match(spec: dict[str, Any], media: dict[str, Any]) -> None:
     )
     if sorted(str(stream.get("language", "")) for stream in subtitles) != expected_languages:
         raise ValueError("Embedded subtitle languages do not match the specification")
+
+
+def _check_picture(context: ProductionContext, spec: dict[str, Any], media: dict[str, Any]) -> None:
+    _streams_match(spec, media)
+    video = next(stream for stream in media["streams"] if stream["codec_type"] == "video")
+    timeline = (context.studio_root / "index.html").read_text()
+    expected_end = studio.root_duration(timeline)
+    if studio.timeline_end(timeline) > expected_end + 0.000001:
+        raise ValueError("Studio cut duration ends before a hosted shot")
+    start, end = video["picture_start_s"], video["picture_end_s"]
+    frame = 1 / float(Fraction(str(spec["fps"])))
+    if (not all(math.isfinite(value) for value in (expected_end, start, end))
+            or expected_end <= 0 or end <= start or abs(start) > 0.000001
+            or abs(end - expected_end) >= frame - 0.000001):
+        raise ValueError("Rendered picture does not cover the current cut duration")
 
 
 def _render(root: Path, context: ProductionContext, relative: str) -> dict[str, Any]:
@@ -277,6 +296,10 @@ def _binding_problems(
             problems.append(str(error))
     try:
         _render(root, context, version["render_record"]["path"])
+        media = version["media"]
+        if not any("picture_end_s" in stream for stream in media["streams"]):
+            media = probe_media(_path(root, version["output"]["path"]))
+        _check_picture(context, document["spec"], media)
         if studio.tree_digest(context) != version["studio_sha256"]:
             problems.append("Bound Studio tree changed")
     except (OSError, ValueError, TypeError, KeyError) as error:
@@ -494,7 +517,7 @@ def bind(
         media = probe_media(_path(root, output["path"]), runner)
         if not math.isfinite(media["duration_s"]) or media["duration_s"] <= 0:
             raise ValueError("Invalid probed duration")
-        _streams_match(document["spec"], media)
+        _check_picture(context, document["spec"], media)
         recorded_media = record["output"]["probe"]
         if (
             abs(recorded_media["duration_s"] - media["duration_s"]) > 0.01

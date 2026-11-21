@@ -52,7 +52,7 @@ class DeliverableTests(unittest.TestCase):
         self.media = {
             "duration_s": 4.0,
             "streams": [{"codec_type": "video", "width": 1920, "height": 1080,
-                         "r_frame_rate": "25/1"}],
+                         "r_frame_rate": "25/1", "picture_start_s": 0, "picture_end_s": 4}],
         }
         self.probe_patch = patch.object(deliverables, "probe_media", return_value=self.media)
         self.decode_patch = patch.object(deliverables, "verify_decode")
@@ -112,6 +112,92 @@ class DeliverableTests(unittest.TestCase):
             self.root, identifier, decision or self.decision(identifier),
             expected_revision=self.status(identifier)["revision"], runner=self.fixture.runner,
         )
+
+    def test_binding_compares_picture_with_approved_current_cut(self):
+        video = self.media["streams"][0]
+        video.update(picture_start_s=0, picture_end_s=0.08)
+        with self.assertRaisesRegex(ValueError, "picture"):
+            self.bind()
+        video.update(picture_start_s=0.5, picture_end_s=4.5)
+        with self.assertRaisesRegex(ValueError, "picture"):
+            self.bind()
+        video.update(picture_start_s=0, picture_end_s=4)
+        self.assertTrue(self.bind()["ok"])
+        index = self.context.studio_root / "index.html"
+        cut = index.read_text().replace('data-start="2" data-duration="2"', 'data-start="1" data-duration="1"')
+        cut = cut.replace('data-start="0" data-duration="2"', 'data-start="0" data-duration="1"')
+        index.write_text(studio.with_root_duration(cut, 2))
+        cutdown = studio.render(self.context, "cutdown", "delivery", self.fixture.runner)
+        video.update(picture_end_s=2)
+        self.assertTrue(self.bind(record=cutdown)["ok"])
+
+    def test_earlier_binding_without_frame_evidence_rechecks_picture_before_lock(self):
+        state = self.bind()
+        path = self.root / state["binding"]["path"]
+        version = json.loads(path.read_text())
+        old_video = version["media"]["streams"][0]
+        del old_video["picture_start_s"], old_video["picture_end_s"]
+        path.write_text(json.dumps(version))
+        manifest = self.root / f"deliverables/{self.spec['id']}.json"
+        spec = json.loads(manifest.read_text())
+        spec["versions"][0]["sha256"] = studio.sha256_file(path)
+        manifest.write_text(json.dumps(spec))
+        self.assertTrue(self.status()["ok"])
+        self.media["streams"][0]["picture_end_s"] = 0.08
+        state = self.status()
+        self.assertFalse(state["ok"])
+        with self.assertRaisesRegex(ValueError, "picture"):
+            self.lock()
+        self.assertFalse(self.status()["locks"])
+
+    def test_display_geometry_must_match_placement(self):
+        video = self.media["streams"][0]
+        video.update(rotation=90, sample_aspect_ratio="1:1")
+        with self.assertRaisesRegex(ValueError, "dimensions"):
+            self.bind()
+        video.update(rotation=0, sample_aspect_ratio="4:3")
+        with self.assertRaisesRegex(ValueError, "dimensions"):
+            self.bind()
+
+    def test_linked_stylesheet_edit_invalidates_locked_delivery_and_inflight_render(self):
+        index = self.context.studio_root / "index.html"
+        index.write_text(index.read_text().replace('</head>', '<base href="./"><link rel="stylesheet" href="title.css"></head>'))
+        css = index.with_name("title.css")
+        css.write_text("body {color: red}")
+        self.record = studio.render(self.context, "with-title", "delivery", self.fixture.runner)
+        self.prepare_stages()
+        self.bind()
+        self.lock()
+        css.write_text("body {color: blue}")
+        self.assertFalse(self.status()["ok"])
+
+        def change_during_render(argv, **kwargs):
+            if "render" in argv:
+                css.write_text("body {color: green}")
+            return self.fixture.runner(argv, **kwargs)
+
+        with self.assertRaisesRegex(ValueError, "changed during"):
+            studio.render(self.context, "concurrent-title", "delivery", change_during_render)
+        self.assertFalse((index.parent / "renders/concurrent-title.mp4").exists())
+
+    def test_render_sees_authored_dependencies_and_cannot_read_editor_state(self):
+        root = self.context.studio_root
+        (root / "title.css").write_text("body {color: red}")
+        cache = root / "node_modules" / "tool"
+        cache.mkdir(parents=True)
+        (cache / "huge-unused-file").write_text("implementation cache")
+        (root / "renders" / "old.mp4").write_bytes(b"previous output")
+        def inspect_inputs(argv, **kwargs):
+            if "render" in argv:
+                staged = Path(argv[argv.index("render") + 1])
+                self.assertEqual((staged / "title.css").read_text(), "body {color: red}")
+                self.assertFalse((staged / "renders" / "old.mp4").exists())
+                self.assertFalse((staged / "node_modules").exists())
+            return self.fixture.runner(argv, **kwargs)
+        studio.render(self.context, "isolated", "delivery", inspect_inputs)
+        (root / "title.css").write_text('body {background:url("renders/old.mp4")}')
+        with self.assertRaisesRegex(ValueError, "supported input tree"):
+            studio.render(self.context, "bad-reference", "delivery", self.fixture.runner)
 
     def test_explicit_binding_does_not_pick_newest_render(self):
         newer = studio.render(self.context, "newer", "delivery", self.fixture.runner)
@@ -259,6 +345,7 @@ class DeliverableTests(unittest.TestCase):
                 second = self.fixture.context(unit)
                 self.fixture.select_shots(second)
                 record = studio.render(second, "other", "delivery", self.fixture.runner)
+                self.media["streams"][0]["picture_end_s"] = studio.root_duration((second.studio_root / "index.html").read_text())
             self.bind(identifier, record)
             self.assertEqual((self.root / "deliverables/ep001-en-master.json").read_bytes(), before)
         self.assertEqual(self.status()["lock"], locked["lock"])
@@ -406,6 +493,41 @@ class DeliverableTests(unittest.TestCase):
 @unittest.skipUnless(os.environ.get("DELIVERABLES_MEDIA_SMOKE") == "1",
                      "Set DELIVERABLES_MEDIA_SMOKE=1 for real FFmpeg decode")
 class DeliverableMediaSmokeTests(unittest.TestCase):
+    def test_displayed_vfr_interval_excludes_independent_audio_and_preserves_last_frame(self):
+        with tempfile.TemporaryDirectory() as folder:
+            source = Path(folder) / "vfr-tail.mkv"
+            subprocess.run([
+                "ffmpeg", "-v", "error", "-f", "lavfi", "-i", "color=s=32x24:r=20:d=0.2",
+                "-f", "lavfi", "-i", "sine=duration=2", "-vf", r"setpts=if(lt(N\,2)\,N\,2*N)+4",
+                "-fps_mode", "passthrough", "-c:v", "ffv1", "-c:a", "pcm_s16le", str(source),
+            ], capture_output=True, check=True)
+            media = deliverables.probe_media(source)
+            self.assertAlmostEqual(media["duration_s"], 2)
+            self.assertAlmostEqual(media["streams"][0]["picture_start_s"], 0.2)
+            self.assertAlmostEqual(media["streams"][0]["picture_end_s"], 0.55)
+            self.assertAlmostEqual(studio.probe_duration(source), 2)
+
+    def test_physical_portrait_rotation_metadata_and_anamorphic_sample_aspect(self):
+        with tempfile.TemporaryDirectory() as folder:
+            base = Path(folder)
+            for name, size, sar, display in (("landscape", "64x48", "1", (64, 48)),
+                                              ("portrait", "48x64", "1", (48, 64)),
+                                              ("anamorphic", "48x48", "4/3", (64, 48))):
+                media = base / f"{name}.mp4"
+                subprocess.run([
+                    "ffmpeg", "-v", "error", "-f", "lavfi", "-i", f"color=s={size}:r=25:d=0.08",
+                    "-vf", f"setsar={sar}", "-c:v", "libx264", str(media),
+                ], check=True, capture_output=True)
+                self.assertEqual(studio.probe_size(media), display)
+                self.assertEqual(studio.display_dimensions(deliverables.probe_media(media)["streams"][0]), display)
+            rotated = base / "tagged.mp4"
+            subprocess.run([
+                "ffmpeg", "-v", "error", "-display_rotation", "90", "-i", str(base / "landscape.mp4"),
+                "-c", "copy", str(rotated),
+            ], check=True, capture_output=True)
+            self.assertEqual(studio.probe_size(rotated), (48, 64))
+            self.assertEqual(studio.display_dimensions(deliverables.probe_media(rotated)["streams"][0]), (48, 64))
+
     def test_real_media_probe_decode_and_truncated_output_rejection(self):
         if not shutil.which("ffmpeg") or not shutil.which("ffprobe"):
             self.skipTest("FFmpeg and ffprobe are required")

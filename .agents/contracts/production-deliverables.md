@@ -129,7 +129,12 @@ to bypass those checks.
 The service probes the selected output again with `ffprobe -show_format
 -show_streams`, checks duration and recorded stream fields against its render
 record, then checks dimensions, frame rate, audio, and embedded subtitles
-against the specification. FPS allows a 0.001 rounding tolerance and checks
+against the specification. The picture must begin at playback time zero and
+its last displayed frame must end within one output frame of the approved
+Studio cut. A longer independent audio tail does not extend the picture. The
+width and height describe square-pixel presentation after sample aspect ratio
+and display rotation. Previous bindings without picture evidence are probed
+when checked. FPS allows a 0.001 rounding tolerance and checks
 both nominal and average rates when available; this is not exhaustive
 per-frame constant-rate certification.
 
@@ -145,6 +150,12 @@ spec mismatch fail binding. There is no header-only success fallback.
 The immutable binding records `ffmpeg-full-audio-video-decode: pass`, actual
 probed streams/duration, context, scenes, specification, Studio tree digest,
 exact render-record/output hashes, shot-manifest/take hashes, and sidecar hashes.
+Studio renders from a temporary copy of its local input tree, including linked
+stylesheets, scripts, fonts and nested media. Editor state, caches, previous
+renders, snapshots, version control and installed packages are outside this
+source tree. Put production assets and bundled runtime dependencies inside the
+Studio source tree. A source edit invalidates an existing picture approval.
+
 Context and dependency hashes are rechecked after decoding before committing.
 Locking relies on that decode evidence and unchanged bytes; it does not decode
 again. Technical decode is not creative, language, continuity, or listening

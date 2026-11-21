@@ -121,7 +121,11 @@ authorized transactional writer; never rebuild automatically during sync.
 `.agents/scripts/editorial.py` exports supported actual Studio placements,
 including source trims and gaps. Its additional `runtime` binding includes the
 whole Studio tree, current context and selected-take evidence. It probes source
-durations and rejects unsupported edits instead of flattening them.
+picture intervals using decoded frame timestamps. A trim may end at the final
+frame boundary. Studio placement retains the full source media span so native
+sound can continue after the final image. Author an independent audio tail
+on its own timeline when the picture cut ends earlier. A straight-cut export
+rejects a picture trim into that tail.
 
 ```bash
 uv run python .agents/scripts/editorial.py export projects/<slug> --unit <unit> \
