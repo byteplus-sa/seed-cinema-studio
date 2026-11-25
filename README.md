@@ -209,6 +209,13 @@ implicit. Slash-command discovery depends on the host agent.
 
 ## Skills
 
+Ark MCP usage guidance comes from the global skill at
+`~/.agents/skills/ark-mcp/SKILL.md`; no project-local copy or alias is shipped.
+Repository contracts remain authoritative for generation scope, review,
+model selection and persistence. If the global skill is missing, report it
+and use live MCP tool schemas and official documentation; do not recreate
+a local bundle. Loading the skill does not configure or connect an MCP server.
+
 Edit skills only under `.agents/skills/`.
 
 | Skill | Summary |
@@ -220,7 +227,6 @@ Edit skills only under `.agents/skills/`.
 | **sound-post** | Write edit-bound sound cue sheets, mix decisions and honest listening evidence without generating or mixing media. |
 | **subtitle-sidecars** | Write multilingual SRT/WebVTT from locked text and measured timing using the retained shared subtitle engine. |
 | **production-localize** | Localize delivered films, shorts and episodes through explicit routes with source preservation and honest language and lip-sync QA. |
-| **ark-mcp** | Upstream Ark MCP usage skill for Seedream 5.5, Seedance 2.5 4K and Flash, audio, 3D, OmniHuman, MediaKit, assets and durable background jobs; repository contracts remain authoritative. |
 | **brief-intake** | Shape intent-led briefs; hand off footage for native-first, capability-checked analysis while preserving confirmed decisions. |
 | **color-grade-palettes** | Compose requested or delegated custom looks as prompt palettes or high-bit-depth-safe post grades, preserving ungraded conform and source locks. |
 | **ffmpeg** | Video and audio processing with FFmpeg. Use for format conversion, resizing, compression, audio extraction, and preparing assets for editing and assembly. Covers converting GIF to MP4, resizing video, extracting audio, compressing files, and any media transformation task. |

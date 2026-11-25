@@ -25,6 +25,13 @@ preferences; ZIP update tooling has its own documented runtime requirements.
 
 ## Generation Access
 
+Ark MCP usage guidance comes from the global skill at
+`~/.agents/skills/ark-mcp/SKILL.md`; no project-local copy or alias is shipped.
+Repository contracts remain authoritative for generation scope, review,
+model selection and persistence. If the global skill is missing, report it
+and use live MCP tool schemas and official documentation; do not recreate
+a local bundle. Loading the skill does not configure or connect an MCP server.
+
 Before generation or production setup, follow
 [Generation access](.agents/contracts/generation-access.md). Without usable
 `ark-mcp`, return paste-ready prompts, ordered references and parameters in chat;

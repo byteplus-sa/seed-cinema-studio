@@ -146,29 +146,6 @@
       }
     },
     {
-      "skill": "ark-mcp",
-      "references": [
-        ".agents/skills/ark-mcp/references/background-job-output.md",
-        ".agents/skills/ark-mcp/references/environment.md",
-        ".agents/skills/ark-mcp/references/models-and-limits.md",
-        ".agents/skills/ark-mcp/references/polling-and-artifacts.md",
-        ".agents/skills/ark-mcp/references/tool-reference.md",
-        ".agents/skills/ark-mcp/references/understanding-media-assets.md",
-        ".agents/skills/ark-mcp/references/workflows.md"
-      ],
-      "representative_path": {
-        "scenario": "Focused capability or checklist loading",
-        "files": [
-          ".agents/skills/ark-mcp/SKILL.md",
-          ".agents/skills/ark-mcp/references/tool-reference.md"
-        ],
-        "measurement": "Exact current file bytes for a declared loading path, not measured agent tokens or behavior.",
-        "loaded_bytes": 41100
-      },
-      "after_lines": 249,
-      "entry_bytes": 16056
-    },
-    {
       "skill": "prompt-review",
       "references": [
         ".agents/skills/prompt-review/references/checklist-audio-dialogue.md",

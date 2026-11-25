@@ -6,7 +6,7 @@
   "cases": [
     {
       "id": "audio_unknown_without_id",
-      "skill": "ark-mcp",
+      "skill": "film-production",
       "prompt": "The audio generation call timed out without a provider ID. The prepared request is saved. Continue.",
       "expected_decisions": {
         "next_action": "reconcile",
@@ -16,7 +16,7 @@
     },
     {
       "id": "audio_known_poll_timeout",
-      "skill": "ark-mcp",
+      "skill": "film-production",
       "prompt": "The provider returned task-17, then polling timed out. Finish the existing soundscape.",
       "expected_decisions": {
         "next_action": "poll_existing",
@@ -26,7 +26,7 @@
     },
     {
       "id": "audio_download_failure",
-      "skill": "ark-mcp",
+      "skill": "film-production",
       "prompt": "Task-17 succeeded, but the download failed. Get the soundscape locally.",
       "expected_decisions": {
         "next_action": "download_existing",
@@ -332,7 +332,7 @@
     },
     {
       "id": "draft_promotion_unselected",
-      "skill": "ark-mcp",
+      "skill": "film-production",
       "prompt": "A completed native 480p draft has review_status approved in the registry, but this mode-aware Studio project has no hash-bound selection decision. Register its final promotion.",
       "expected_decisions": {
         "submission_allowed": false,
