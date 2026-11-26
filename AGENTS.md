@@ -106,13 +106,25 @@ The Python package metadata is `seed-cinema-studio-tools`, local only, with
 dependency versions unchanged;
 repository/checkout names, schema IDs, renderer lock namespaces and legacy
 entrypoints are separate compatibility boundaries. No rename or publish is
-implied by using the production APIs. Seed Audio 1.5
-early-access skills are intentionally not included (also left out: Blender, ad
-and UGC formats, VFX and effects skills, and the Lark showcase skill).
+implied by using the production APIs. Seed Audio 1.5 generation/API tooling
+remains excluded; `seed-audio-15-prompt` is a prompt-only adaptation for explicit
+1.5 requests. Blender, ad and UGC formats, VFX and effects skills, and the
+Lark showcase skill also remain excluded.
 
 Edit skills only under `.agents/skills/<name>/`. `.claude/skills/<name>`,
 `.claude/catalog`, `.claude/contracts` and `.claude/scripts` are relative symlinks
 into `.agents/`; never replace a link with a copy.
+
+## Seed Audio Prompt Routing
+
+Use `seed-audio-15-prompt` only for explicitly selected Seed Audio 1.5 prompt work.
+Keep existing audio skills and defaults unchanged; unspecified audio prompts
+retain their existing route. This prompt-only skill does not generate media,
+inspect assets or call APIs. Its supplied planning limits do not establish
+live capabilities or account access; the caller verifies the selected
+destination separately before any authorized generation.
+Maintain this adaptation through explicit repository changes, without
+automatic self-updates; keep it outside automated sync allowlists.
 
 ## Scope and authority
 

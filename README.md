@@ -250,6 +250,7 @@ Edit skills only under `.agents/skills/`.
 | **prompt-review** | Review BytePlus prompts in strict review_mode or for explicit review/required rules; default generation uses minimal inline preflight without full checklists. |
 | **scene-board-sheet** | Derive a scene's storyboard record from its shot plan at L1, L2 (default) or L3, register generated and edited panels, plan panel-only repairs, and build annotated sheets, an animatic and a static review page. |
 | **seed-audio-prompt** | Write structured Seed Audio 1.0 prompts for full-soundscape audio generation including dialogue, music, SFX, and ambience. |
+| **seed-audio-15-prompt** | Repository-managed, prompt-only optimization for explicitly selected Seed Audio 1.5 speech, soundscapes, visual-script conversion and stem separation; no API execution. |
 | **seedance-acting-console** | Encode supplied performance plans as concise Seedance intent, trigger and response cues; preserve framing, restraint and dialogue locks. |
 | **seedance-camera-presets** | Compose prompt-only camera moves and framing, including optical zoom, Dutch angle, dolly, orbit, FPV, whip pan, and single, two-shot, over-the-shoulder, point-of-view and insert framing. |
 | **seedance-fight-choreography** | Plan fictional screen-fight beats with stable participants, readable reactions and prop continuity; prompt-only, with style explicitly selected and outcome locks preserved. |
