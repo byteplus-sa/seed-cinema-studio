@@ -40,6 +40,8 @@ Before the first optimization in each conversation, read:
 
 For stem separation or extraction, read sound guide section 13. Define targets from user-supplied audible attributes or exact quote anchors; this skill does not execute the audio-understanding or extraction pipeline described in the source document.
 
+For a reported mispronunciation, follow the [targeted pronunciation guidance](references/sound-writing-guide.md#targeted-pronunciation) when the selected operation accepts a text prompt.
+
 For abstract terms, conflicts, timing capacity, reference relationships, or complex sound problems, read the relevant entries in [Troubleshooting](references/troubleshooting.md). Within a conversation, do not reread unchanged material already understood. Visiting source links is not a prerequisite: the installed package must contain enough knowledge to optimize prompts.
 
 ## Inviolable principles

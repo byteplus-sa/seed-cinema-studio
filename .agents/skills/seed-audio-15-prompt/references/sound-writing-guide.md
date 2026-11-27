@@ -47,6 +47,12 @@ Literal Chinese example: Source “没事，我挺好的。” with explicit con
 
 Source “林,林深? 真的是你啊” with explicit tentative recognition followed by surprise may become “林……林深？真的是你啊！” Both original occurrences of “林” remain. If the source contains only “林深”, this example does not authorize adding another “林”.
 
+### Targeted pronunciation
+
+Keep the speaker, exact spoken line, and requested language or regional variety. Anchor a brief cue to the affected word and describe the intended sound or syllable stress using a supplied pronunciation or an approved reference identified for that word. Place the cue outside the spoken quote, including any phonetic spelling. When the intended pronunciation is unclear, keep the line intact and flag the word for confirmation.
+
+For playback review, identify the affected word and any supplied timestamp so a reviewer fluent in the intended variety can compare the source and revised delivery. An automated transcript can flag wording differences for that review. Confirm the sound or stress by listening.
+
 ## 3. Voices: separate stable timbre from current-line performance
 
 ### Stable timbre
